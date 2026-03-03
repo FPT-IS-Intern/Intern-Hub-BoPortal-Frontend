@@ -1,0 +1,38 @@
+@mixin custom-icon-file($path, $size: 1.25rem) {
+  display: inline-block !important;
+  width: $size !important;
+  height: $size !important;
+  background-color: currentColor !important;
+  -webkit-mask: url($path) center/contain no-repeat !important;
+  mask: url($path) center/contain no-repeat !important;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.custom-icon-home {
+  @include custom-icon-file('../assets/icons/home.svg');
+}
+
+.custom-icon-feedback {
+  @include custom-icon-file('../assets/icons/feedback.svg');
+}
+
+.custom-icon-training {
+  @include custom-icon-file('../assets/icons/training.svg');
+}
+
+.custom-icon-projects {
+  @include custom-icon-file('../assets/icons/projects.svg');
+}
+
+.custom-icon-news {
+  @include custom-icon-file('../assets/icons/news.svg');
+}
+
+.custom-icon-arrow-left {
+  @include custom-icon-file('../assets/icons/arrow-left.svg', 1rem);
+}
+
+.custom-icon-arrow-right {
+  @include custom-icon-file('../assets/icons/arrow-right.svg', 1rem);
+}

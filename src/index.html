@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Intern Hub BoPortal</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg"
+    />
+  </head>
+  <body>
+    <app-root>
+      <style>
+        .app-loading-screen {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          width: 100vw;
+          background-color: #f7f9fc;
+          font-family: Arial, sans-serif;
+        }
+        .app-loading-logo {
+          width: 80px;
+          height: auto;
+          margin-bottom: 24px;
+          animation: pulse 2s infinite ease-in-out;
+        }
+        .app-loader {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #e18308;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+          margin-bottom: 20px;
+        }
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        @keyframes pulse {
+          0%,
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+          }
+        }
+        .app-loading-text {
+          color: #333;
+          font-size: 16px;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+        }
+      </style>
+      <div class="app-loading-screen">
+        <img
+          src="https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg"
+          alt="Brand Logo"
+          class="app-loading-logo"
+        />
+        <div class="app-loader"></div>
+        <div class="app-loading-text">BoPortal đang khởi tạo...</div>
+      </div>
+    </app-root>
+  </body>
+</html>

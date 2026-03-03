@@ -1,0 +1,31 @@
+:root {
+    /* ===== COLORS ===== */
+    --color-primary: #0f172a;
+    /* slate-900 */
+    --color-secondary: #334155;
+    /* slate-700 */
+    --color-accent: #2563eb;
+    /* blue-600 */
+
+    --color-bg-layout: #0b1220;
+    --color-bg-card: #111827;
+
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #cbd5f5;
+    --color-border: #334155;
+
+    /* ===== TYPOGRAPHY ===== */
+    --font-family-base: 'Inter', 'Roboto', system-ui, sans-serif;
+
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 24px;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+
+    --line-height-base: 1.5;
+}

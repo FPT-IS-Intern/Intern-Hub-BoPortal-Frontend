@@ -1,0 +1,52 @@
+// src/styles.scss
+@use 'dynamic-ds/src/lib/styles/system-design';
+// Import fonts
+@use './styles/fonts';
+@use './styles/custom-icons';
+
+// Apply Inter font globally
+:root {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+}
+
+// Nếu browser hỗ trợ variable fonts
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family:
+      'InterVariable',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      sans-serif;
+    --z-layout: 100;
+    --z-header: 100;
+    --z-sidebar: 100;
+
+    /* Overlay & Modal dùng chung */
+    --z-overlay: 1000;
+    --z-modal: 1100;
+  }
+}
+
+* {
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: inherit;
+  height: 100%;
+}
