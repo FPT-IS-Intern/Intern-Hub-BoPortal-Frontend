@@ -9,8 +9,8 @@ on:
       - 'src/**'
       - 'package*.json'
       - 'angular.json'
-      - 'federation.config.js'
       - 'Dockerfile'
+      - 'nginx.conf'
       - '.github/workflows/docker.yml'
 
 concurrency:
@@ -39,7 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_REGISTRY }}/internhub-v2/dev/shell
+          images: ${{ secrets.DOCKERHUB_REGISTRY }}/internhub-v2/dev/bo-portal-mfe
           tags: |
             type=raw,value=latest
 
