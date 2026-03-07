@@ -1,0 +1,24 @@
+<div class="matrix-wrapper">
+    <table class="permission-table">
+        <thead>
+            <tr>
+                <th class="col-function">Chức năng</th>
+                @for (col of columns; track col.key) {
+                <th class="col-permission">{{ col.label }}</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (row of rows; track row.function; let i = $index) {
+            <tr [class.row-alt]="i % 2 === 1">
+                <td class="col-function cell-function">{{ row.function }}</td>
+                @for (col of columns; track col.key) {
+                <td class="col-permission cell-checkbox">
+                    <label nz-checkbox [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()"></label>
+                </td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

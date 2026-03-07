@@ -1,0 +1,30 @@
+<div class="page-body">
+  <!-- Page header -->
+  <header class="page-header">
+    <nz-breadcrumb class="breadcrumb">
+      <nz-breadcrumb-item>
+        <a routerLink="/dashboard">
+          <span nz-icon nzType="home" nzTheme="outline"></span>
+        </a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cấu Hình Hệ Thống</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Ma Trận Phân Quyền</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <h1 class="page-title">Ma Trận Phân Quyền</h1>
+  </header>
+
+  <!-- Role selector + Refresh -->
+  <app-role-selector [roles]="roleOptions" [selectedRole]="selectedRole" (roleChange)="selectedRole = $event"
+    (refresh)="onRefresh()"></app-role-selector>
+
+  <!-- Permission matrix table -->
+  <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
+    (permissionChange)="permissionRows = $event"></app-permission-table>
+
+  <!-- Apply button -->
+  <div class="actions">
+    <button nz-button nzType="primary" nzSize="large" class="apply-btn" (click)="onSubmit()">
+      Áp dụng
+    </button>
+  </div>
+</div>

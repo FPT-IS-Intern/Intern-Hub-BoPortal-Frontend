@@ -1,0 +1,66 @@
+.matrix-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(10, 47, 77, 0.14);
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.permission-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th,
+    td {
+        border-bottom: 1px solid rgba(2, 48, 94, 0.09);
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    th {
+        background: #ee8e1b;
+        color: #e9edf1;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .col-function {
+        width: 350px;
+        min-width: 200px;
+        text-align: left;
+    }
+
+    .col-permission {
+        min-width: 80px;
+    }
+
+    .cell-function {
+        background: #fed8b3;
+        color: #2a3034;
+        font-weight: 500;
+    }
+
+    .row-alt .cell-function {
+        background: #fff;
+    }
+
+    .cell-checkbox {
+        background: #fff;
+
+        label {
+            margin: 0;
+        }
+    }
+
+    .row-alt .cell-checkbox {
+        background: #fafafa;
+    }
+}
+
+:deep(.ant-checkbox-checked .ant-checkbox-inner) {
+    background-color: #e18308 !important;
+    border-color: #e18308 !important;
+}

@@ -1,0 +1,29 @@
+.role-section {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    max-width: 350px;
+}
+
+.role-select {
+    flex: 1;
+    min-width: 0;
+}
+
+.refresh-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #ee8e1b !important;
+    border-color: #ee8e1b !important;
+
+    &:hover {
+        background: #c36f06 !important;
+        border-color: #c36f06 !important;
+    }
+}
