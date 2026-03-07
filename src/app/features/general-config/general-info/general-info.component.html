@@ -1,0 +1,65 @@
+<section class="config-card" [formGroup]="form">
+  <h2 class="card-title">Danh sách thành viên</h2>
+  <div class="card-fields">
+    <div class="field-group">
+      <label class="field-label">Tên ứng dụng</label>
+      <input
+        nz-input
+        formControlName="appName"
+        placeholder="Điền tên ứng dụng..."
+        class="field-input"
+      />
+    </div>
+    <div class="field-group upload-group">
+      <label class="field-label">Logo</label>
+      <div class="logo-upload-area">
+        <div class="logo-preview">
+          @if (logoFile(); as file) {
+            <img
+              [src]="file.url"
+              alt="Logo"
+              class="logo-img"
+            />
+          } @else {
+            <div class="logo-placeholder">
+              <span class="logo-placeholder-text">FPT IS</span>
+            </div>
+          }
+        </div>
+        <div class="upload-actions">
+          <button
+            nz-button
+            nzType="default"
+            nzSize="small"
+            class="upload-btn"
+            type="button"
+            (click)="fileInput.click()"
+          >
+            <span nz-icon nzType="upload" nzTheme="outline"></span>
+            Tải file lên
+          </button>
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            hidden
+            (change)="onFileSelect($event)"
+          />
+          @if (logoFile(); as file) {
+            <div class="file-info">
+              <span class="file-name">{{ file.name }}</span>
+              <button
+                type="button"
+                class="remove-btn"
+                (click)="removeLogo(); $event.stopPropagation()"
+                aria-label="Xóa file"
+              >
+                <span nz-icon nzType="close" nzTheme="outline"></span>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
