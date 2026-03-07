@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { BoPortalPageComponent } from './features/bo-portal-page/bo-portal-page.component';
+import { GeneralConfigComponent } from './features/general-config/main-config/general-config.component';
 import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
 
@@ -77,6 +78,10 @@ export const routes: Routes = [
             { label: 'Quản trị', value: 'Tập trung', tone: 'success' },
           ],
         },
+      },
+      {
+        path: 'settings/general',
+        component: GeneralConfigComponent,
       },
       {
         path: '404',
