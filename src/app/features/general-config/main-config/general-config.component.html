@@ -1,0 +1,36 @@
+<div class="page-body" [formGroup]="form">
+  <!-- Page header -->
+  <header class="page-header">
+    <nz-breadcrumb class="breadcrumb">
+      <nz-breadcrumb-item>
+        <a routerLink="/dashboard">
+          <span nz-icon nzType="home" nzTheme="outline"></span>
+        </a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cấu Hình Hệ Thống</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cấu Hình Chung</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <h1 class="page-title">Cấu Hình Chung</h1>
+  </header>
+
+  <!-- Main content -->
+  <div class="content-grid">
+    <div class="content-left">
+      <!-- Card 1: Danh sách thành viên -->
+      <app-general-info [form]="form"></app-general-info>
+
+      <!-- Card 2: Định dạng hệ thống -->
+      <app-system-format [form]="form"></app-system-format>
+    </div>
+
+    <!-- Card 3: Thời gian ghi nhận -->
+    <app-time-config [form]="form"></app-time-config>
+  </div>
+
+  <!-- Apply button -->
+  <div class="actions">
+    <button nz-button nzType="primary" nzSize="large" class="apply-btn" (click)="onSubmit()">
+      Áp dụng
+    </button>
+  </div>
+</div>
