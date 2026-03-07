@@ -1,0 +1,20 @@
+<section class="config-card config-card-right" [formGroup]="form">
+    <h2 class="card-title">Thời gian ghi nhận</h2>
+    <div class="time-fields">
+        <div class="field-group">
+            <label class="field-label">Thời gian làm việc</label>
+            <nz-time-picker formControlName="workingTime" nzFormat="HH:mm:ss" nzPlaceHolder="hh:mm:ss"
+                class="field-time-picker"></nz-time-picker>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Thời gian tan ca</label>
+            <nz-time-picker formControlName="shiftEndTime" nzFormat="HH:mm:ss" nzPlaceHolder="hh:mm:ss"
+                class="field-time-picker"></nz-time-picker>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Checkout tự động</label>
+            <nz-time-picker formControlName="autoCheckout" nzFormat="HH:mm:ss" nzPlaceHolder="hh:mm:ss"
+                class="field-time-picker"></nz-time-picker>
+        </div>
+    </div>
+</section>
