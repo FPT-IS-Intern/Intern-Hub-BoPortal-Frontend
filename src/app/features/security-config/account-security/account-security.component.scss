@@ -1,0 +1,15 @@
+.cards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.cards-margin-top {
+    margin-top: 16px;
+}
+
+@media (max-width: 1024px) {
+    .cards-row {
+        grid-template-columns: 1fr;
+    }
+}

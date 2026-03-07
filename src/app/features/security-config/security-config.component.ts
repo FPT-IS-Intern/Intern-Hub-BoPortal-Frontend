@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SecurityConfigService } from '../../services/security-config.service';
+import { PasswordPolicyComponent } from './password-policy/password-policy.component';
+import { AccountSecurityComponent } from './account-security/account-security.component';
+import { SessionSecurityComponent } from './session-security/session-security.component';
 
 @Component({
   selector: 'app-security-config',
@@ -18,10 +19,11 @@ import { SecurityConfigService } from '../../services/security-config.service';
     RouterModule,
     ReactiveFormsModule,
     NzBreadCrumbModule,
-    NzInputModule,
-    NzSelectModule,
     NzButtonModule,
     NzIconModule,
+    PasswordPolicyComponent,
+    AccountSecurityComponent,
+    SessionSecurityComponent,
   ],
   templateUrl: './security-config.component.html',
   styleUrl: './security-config.component.scss',
@@ -29,11 +31,6 @@ import { SecurityConfigService } from '../../services/security-config.service';
 })
 export class SecurityConfigComponent implements OnInit {
   protected readonly form: FormGroup;
-
-  protected readonly allowSpaceOptions = [
-    { label: 'Có', value: true },
-    { label: 'Không', value: false },
-  ];
 
   constructor(
     private readonly fb: FormBuilder,

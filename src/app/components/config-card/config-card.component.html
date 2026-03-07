@@ -1,0 +1,17 @@
+<section class="config-card" [formGroup]="form">
+    <h2 class="card-title">{{ title }}</h2>
+    <div class="field-row">
+        @if (type === 'number') {
+        <input nz-input type="number" [formControlName]="controlName" class="field-input" />
+        } @else if (type === 'select') {
+        <nz-select [formControlName]="controlName" nzPlaceHolder="Chọn" class="field-select">
+            @for (opt of options; track opt.value) {
+            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+            }
+        </nz-select>
+        }
+        @if (unit) {
+        <span class="field-unit">{{ unit }}</span>
+        }
+    </div>
+</section>

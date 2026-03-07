@@ -1,0 +1,46 @@
+.config-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid rgba(225, 131, 8, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.config-card-full {
+    width: 100%;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: -0.5px;
+    color: #f5a84a;
+}
+
+.field-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.field-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.field-unit {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2a3034;
+    white-space: nowrap;
+}
+
+:deep(.ant-input) {
+    border-radius: 6px !important;
+    border-color: rgba(13, 46, 67, 0.24) !important;
+}
