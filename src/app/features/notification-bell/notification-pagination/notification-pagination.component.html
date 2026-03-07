@@ -1,0 +1,21 @@
+<div class="pagination-bar">
+    <div class="pagination-left">
+        <span class="page-range">
+            Hiển thị {{ displayRange }}
+            <span nz-icon nzType="info-circle" nzTheme="outline" class="info-icon"></span>
+        </span>
+        <button nz-button nzType="default" nzSize="small" class="approve-all-btn" (click)="onApproveAll()">
+            Duyệt tất cả
+        </button>
+    </div>
+    <nz-pagination class="pagination-center" [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="pageSize"
+        [nzPageSizeOptions]="pageSizeOptions" [nzShowSizeChanger]="false" nzSize="small"
+        (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"></nz-pagination>
+    <div class="pagination-right">
+        <nz-select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="page-size-select">
+            @for (opt of pageSizeOptions; track opt) {
+            <nz-option [nzValue]="opt" [nzLabel]="opt + ' / trang'"></nz-option>
+            }
+        </nz-select>
+    </div>
+</div>

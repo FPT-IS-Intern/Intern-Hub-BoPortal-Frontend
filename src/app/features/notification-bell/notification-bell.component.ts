@@ -1,13 +1,12 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
+import { NotificationTableComponent } from './notification-table/notification-table.component';
+import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
 
 export interface NotificationRecord {
   id: string;
@@ -23,17 +22,17 @@ export interface NotificationRecord {
     RouterModule,
     FormsModule,
     NzBreadCrumbModule,
-    NzTableModule,
     NzButtonModule,
     NzIconModule,
-    NzPaginationModule,
-    NzSelectModule,
+    NotificationTableComponent,
+    NotificationPaginationComponent,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationBellComponent {
+  private readonly cdr = inject(ChangeDetectorRef);
   protected pageIndex = 1;
   protected pageSize = 10;
   protected total = 200;
