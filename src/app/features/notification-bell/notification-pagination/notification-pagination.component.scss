@@ -1,7 +1,6 @@
 .pagination-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
     padding: 12px 16px;
     border-top: 1px solid rgba(10, 47, 77, 0.14);
@@ -12,7 +11,15 @@
 .pagination-left {
     display: flex;
     align-items: center;
+}
+
+.pagination-right-group {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 16px;
+    min-width: 0;
 }
 
 .page-range {
@@ -46,9 +53,7 @@
 }
 
 .pagination-center {
-    flex: 1;
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 8px;
 }
