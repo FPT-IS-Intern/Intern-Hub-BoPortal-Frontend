@@ -9,8 +9,11 @@
         </button>
     </div>
     <nz-pagination class="pagination-center" [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="pageSize"
-        [nzPageSizeOptions]="pageSizeOptions" [nzShowSizeChanger]="false" nzSize="small"
+        [nzPageSizeOptions]="pageSizeOptions" [nzShowSizeChanger]="false" [nzShowTotal]="totalTemplate" nzSize="small"
         (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"></nz-pagination>
+    <ng-template #totalTemplate let-total>
+        <span class="total-text">Tổng {{ total }}</span>
+    </ng-template>
     <div class="pagination-right">
         <nz-select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="page-size-select">
             @for (opt of pageSizeOptions; track opt) {
