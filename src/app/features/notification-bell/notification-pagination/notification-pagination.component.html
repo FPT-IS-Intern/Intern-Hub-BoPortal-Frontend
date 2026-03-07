@@ -10,7 +10,8 @@
     </div>
     <nz-pagination class="pagination-center" [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="pageSize"
         [nzPageSizeOptions]="pageSizeOptions" [nzShowSizeChanger]="false" [nzShowTotal]="totalTemplate" nzSize="small"
-        (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"></nz-pagination>
+        [nzShowLessItems]="true" (nzPageIndexChange)="onPageIndexChange($event)"
+        (nzPageSizeChange)="onPageSizeChange($event)"></nz-pagination>
     <ng-template #totalTemplate let-total>
         <span class="total-text">Tổng {{ total }}</span>
     </ng-template>
