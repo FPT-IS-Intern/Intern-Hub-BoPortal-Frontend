@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -7,6 +7,10 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule } from '@angular/forms';
 import { RoleSelectorComponent } from './role-selector/role-selector.component';
 import { PermissionTableComponent } from './permission-table/permission-table.component';
+import { PermissionService } from '../../services/permission.service';
+import { PermissionRow } from '../../models/permission.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs';
 
 const PERMISSION_COLUMNS = [
   { key: 'create', label: 'Tạo' },
@@ -17,30 +21,6 @@ const PERMISSION_COLUMNS = [
   { key: 'approver', label: 'Người duyệt' },
   { key: 'crudTask', label: 'CRUD nhiệm vụ' },
 ] as const;
-
-const PERMISSION_ROWS = [
-  'Cấu hình hệ thống',
-  'Quản lý danh mục',
-  'Quản lý người dùng',
-  'Quản lý phiếu yêu cầu',
-  'Quản lý chấm công',
-  'Quản lý dự án',
-  'Đánh giá',
-  'Tin tức',
-  'Lộ trình học tập',
-  'Hòm thư góp ý',
-];
-
-export interface PermissionRow {
-  function: string;
-  create: boolean;
-  view: boolean;
-  update: boolean;
-  delete: boolean;
-  approve: boolean;
-  approver: boolean;
-  crudTask: boolean;
-}
 
 @Component({
   selector: 'app-permission-matrix',
@@ -59,36 +39,75 @@ export interface PermissionRow {
   styleUrl: './permission-matrix.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PermissionMatrixComponent {
+export class PermissionMatrixComponent implements OnInit {
+  private readonly permissionService = inject(PermissionService);
+  private readonly message = inject(NzMessageService);
+
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected readonly roleOptions = [
     { label: 'Admin', value: 'admin' },
     { label: 'Manager', value: 'manager' },
     { label: 'User', value: 'user' },
   ];
-  protected selectedRole: string | null = null;
-  protected permissionRows: PermissionRow[];
+  protected selectedRole: string | null = 'admin';
+  protected permissionRows: PermissionRow[] = [];
+  protected isLoading = false;
 
-  constructor() {
-    this.permissionRows = PERMISSION_ROWS.map((fn) => ({
-      function: fn,
-      create: false,
-      view: fn === 'Quản lý phiếu yêu cầu',
-      update: false,
-      delete: false,
-      approve: false,
-      approver: false,
-      crudTask: false,
-    }));
+  ngOnInit(): void {
+    this.loadPermissions();
+  }
+
+  protected onRoleChange(role: string | null): void {
+    this.selectedRole = role;
+    if (role) {
+      this.loadPermissions();
+    } else {
+      this.permissionRows = [];
+    }
   }
 
   protected onRefresh(): void {
-    // TODO: Load permissions for selected role
-    console.log('Refresh permissions for role:', this.selectedRole);
+    this.loadPermissions();
+  }
+
+  protected loadPermissions(): void {
+    if (!this.selectedRole) return;
+
+    this.isLoading = true;
+    this.permissionService
+      .getPermissions(this.selectedRole)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.permissionRows = res.data;
+          } else {
+            this.message.error(res.message || 'Không thể tải dữ liệu phân quyền');
+          }
+        },
+        error: () => this.message.error('Lỗi kết nối máy chủ'),
+      });
   }
 
   protected onSubmit(): void {
-    console.log('Apply permissions:', this.permissionRows);
-    // TODO: Gọi API lưu ma trận phân quyền
+    if (!this.selectedRole) {
+      this.message.warning('Vui lòng chọn vai trò');
+      return;
+    }
+
+    this.isLoading = true;
+    this.permissionService
+      .updatePermissions(this.selectedRole, this.permissionRows)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.message.success('Cập nhật phân quyền thành công');
+          } else {
+            this.message.error(res.message || 'Cập nhật thất bại');
+          }
+        },
+        error: () => this.message.error('Lỗi kết nối máy chủ'),
+      });
   }
 }
