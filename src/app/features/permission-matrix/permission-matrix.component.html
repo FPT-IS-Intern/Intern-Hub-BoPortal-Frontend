@@ -14,7 +14,7 @@
   </header>
 
   <!-- Role selector + Refresh -->
-  <app-role-selector [roles]="roleOptions" [selectedRole]="selectedRole" (roleChange)="selectedRole = $event"
+  <app-role-selector [roles]="roleOptions" [selectedRole]="selectedRole" (roleChange)="onRoleChange($event)"
     (refresh)="onRefresh()"></app-role-selector>
 
   <!-- Permission matrix table -->
@@ -23,7 +23,7 @@
 
   <!-- Apply button -->
   <div class="actions">
-    <button nz-button nzType="primary" nzSize="large" class="apply-btn" (click)="onSubmit()">
+    <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoading" class="apply-btn" (click)="onSubmit()">
       Áp dụng
     </button>
   </div>

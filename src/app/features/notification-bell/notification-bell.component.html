@@ -1,0 +1,103 @@
+<div class="page-body">
+  <!-- Page header -->
+  <header class="page-header">
+    <nz-breadcrumb class="breadcrumb">
+      <nz-breadcrumb-item>
+        <a routerLink="/dashboard">
+          <span nz-icon nzType="home" nzTheme="outline"></span>
+        </a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cấu Hình Hệ Thống</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Thông báo</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Chuông thông báo</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <h1 class="page-title">Chuông thông báo</h1>
+  </header>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table class="notification-table">
+      <thead>
+        <tr>
+          <th class="col-code">Mã thông báo</th>
+          <th class="col-content">Nội dung</th>
+          <th class="col-action">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of listOfData; track record.id) {
+          <tr>
+            <td class="col-code">{{ record.code }}</td>
+            <td class="col-content">{{ record.content }}</td>
+            <td class="col-action">
+              <button
+                nz-button
+                nzType="default"
+                nzSize="small"
+                class="edit-btn"
+                (click)="onEdit(record)"
+                aria-label="Chỉnh sửa"
+              >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination-bar">
+      <div class="pagination-left">
+        <span class="page-range">
+          Hiển thị {{ displayRange }}
+          <span nz-icon nzType="info-circle" nzTheme="outline" class="info-icon"></span>
+        </span>
+        <button
+          nz-button
+          nzType="default"
+          nzSize="small"
+          class="approve-all-btn"
+          (click)="onApproveAll()"
+        >
+          Duyệt tất cả
+        </button>
+      </div>
+      <nz-pagination
+        class="pagination-center"
+        [nzPageIndex]="pageIndex"
+        [nzTotal]="total"
+        [nzPageSize]="pageSize"
+        [nzPageSizeOptions]="pageSizeOptions"
+        [nzShowSizeChanger]="false"
+        nzSize="small"
+        (nzPageIndexChange)="onPageIndexChange($event)"
+        (nzPageSizeChange)="onPageSizeChange($event)"
+      ></nz-pagination>
+      <div class="pagination-right">
+        <nz-select
+          [ngModel]="pageSize"
+          (ngModelChange)="onPageSizeChange($event)"
+          class="page-size-select"
+        >
+          @for (opt of pageSizeOptions; track opt) {
+            <nz-option [nzValue]="opt" [nzLabel]="opt + ' / trang'"></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apply button -->
+  <div class="actions">
+    <button
+      nz-button
+      nzType="primary"
+      nzSize="large"
+      class="apply-btn"
+      (click)="onSubmit()"
+    >
+      Áp dụng
+    </button>
+  </div>
+</div>

@@ -11,7 +11,6 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     imports: [CommonModule, FormsModule, NzSelectModule, NzButtonModule, NzIconModule],
     templateUrl: './role-selector.component.html',
     styleUrl: './role-selector.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleSelectorComponent {
     @Input() roles: { label: string; value: string }[] = [];

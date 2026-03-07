@@ -9,7 +9,6 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
     imports: [CommonModule, FormsModule, NzCheckboxModule],
     templateUrl: './permission-table.component.html',
     styleUrl: './permission-table.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PermissionTableComponent {
     @Input() columns: readonly any[] = [];

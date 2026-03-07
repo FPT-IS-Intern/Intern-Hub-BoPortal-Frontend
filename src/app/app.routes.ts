@@ -3,6 +3,7 @@ import { BoPortalPageComponent } from './features/bo-portal-page/bo-portal-page.
 import { GeneralConfigComponent } from './features/general-config/main-config/general-config.component';
 import { SecurityConfigComponent } from './features/security-config/security-config.component';
 import { PermissionMatrixComponent } from './features/permission-matrix/permission-matrix.component';
+import { NotificationBellComponent } from './features/notification-bell/notification-bell.component';
 import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
 
@@ -92,6 +93,10 @@ export const routes: Routes = [
       {
         path: 'settings/permissions',
         component: PermissionMatrixComponent,
+      },
+      {
+        path: 'settings/notifications/bell',
+        component: NotificationBellComponent,
       },
       {
         path: '404',

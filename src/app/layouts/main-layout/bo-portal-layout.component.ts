@@ -109,6 +109,11 @@ export class BoPortalLayoutComponent {
         content: 'Ma trận phân quyền',
         url: '/settings/permissions',
       },
+      {
+        iconLeft: SIDEBAR_ICONS.NEWS,
+        content: 'Chuông thông báo',
+        url: '/settings/notifications/bell',
+      },
     ],
   };
 

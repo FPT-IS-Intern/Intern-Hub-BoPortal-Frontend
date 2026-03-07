@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -37,11 +37,11 @@ const PERMISSION_COLUMNS = [
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PermissionMatrixComponent implements OnInit {
   private readonly permissionService = inject(PermissionService);
   private readonly message = inject(NzMessageService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected readonly roleOptions = [
@@ -63,6 +63,7 @@ export class PermissionMatrixComponent implements OnInit {
       this.loadPermissions();
     } else {
       this.permissionRows = [];
+      this.cdr.markForCheck();
     }
   }
 
@@ -74,18 +75,25 @@ export class PermissionMatrixComponent implements OnInit {
     if (!this.selectedRole) return;
 
     this.isLoading = true;
+    this.cdr.markForCheck();
+
     this.permissionService
       .getPermissions(this.selectedRole)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }))
       .subscribe({
         next: (res) => {
-          if (res.success) {
+          if (res.data) {
             this.permissionRows = res.data;
-          } else {
-            this.message.error(res.message || 'Không thể tải dữ liệu phân quyền');
+            this.cdr.markForCheck();
           }
         },
-        error: () => this.message.error('Lỗi kết nối máy chủ'),
+        error: (err) => {
+          console.error('Load permissions error:', err);
+          this.message.error('Không thể tải dữ liệu phân quyền');
+        },
       });
   }
 
@@ -96,18 +104,22 @@ export class PermissionMatrixComponent implements OnInit {
     }
 
     this.isLoading = true;
+    this.cdr.markForCheck();
+
     this.permissionService
       .updatePermissions(this.selectedRole, this.permissionRows)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }))
       .subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.message.success('Cập nhật phân quyền thành công');
-          } else {
-            this.message.error(res.message || 'Cập nhật thất bại');
-          }
+        next: () => {
+          this.message.success('Cập nhật phân quyền thành công');
         },
-        error: () => this.message.error('Lỗi kết nối máy chủ'),
+        error: (err) => {
+          console.error('Update permissions error:', err);
+          this.message.error('Cập nhật phân quyền thất bại');
+        },
       });
   }
 }
