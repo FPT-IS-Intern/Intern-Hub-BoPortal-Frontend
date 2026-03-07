@@ -20,9 +20,8 @@
 
     <!-- Custom Pagination -->
     <app-notification-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total"
-      [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange" [startCount]="3" [middleCount]="3"
-      [endCount]="3" (pageIndexChange)="onPageIndexChange($event)" (pageSizeChange)="onPageSizeChange($event)"
-      (approveAll)="onApproveAll()"></app-notification-pagination>
+      [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange" (pageIndexChange)="onPageIndexChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)" (approveAll)="onApproveAll()"></app-notification-pagination>
   </div>
 
   <!-- Apply button -->

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+﻿import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,9 +14,7 @@ export class NotificationPaginationComponent implements OnChanges {
     @Input() total = 0;
     @Input() pageSizeOptions: number[] = [10, 20, 50];
     @Input() displayRange = '';
-    @Input() startCount = 3;
-    @Input() middleCount = 3;
-    @Input() endCount = 3;
+
 
     @Output() pageIndexChange = new EventEmitter<number>();
     @Output() pageSizeChange = new EventEmitter<number>();
@@ -30,6 +28,8 @@ export class NotificationPaginationComponent implements OnChanges {
         this.buildPages();
     }
 
+    private currentMiddle: number[] = [];
+
     private buildPages(): void {
         const total = this.totalPages;
 
@@ -38,52 +38,72 @@ export class NotificationPaginationComponent implements OnChanges {
             return;
         }
 
-        const current = Math.min(Math.max(this.pageIndex, 1), total);
-        this.pages = this.getCustomPagination(total, current);
+        // Clamp page index
+        this.pageIndex = Math.min(Math.max(this.pageIndex, 1), total);
+
+        // Cập nhật lại dải pages (có state)
+        this.pages = this.getCustomPagination(total, this.pageIndex);
     }
 
     private getCustomPagination(totalPage: number, currentPage: number): (number | string)[] {
+        const midSize = 4; // Số lượng index ở giữa
+
+        // 1. Nếu total nhỏ (ví dụ <= 6), hiện tất cả không cần ...
         if (totalPage <= 6) {
             return Array.from({ length: totalPage }, (_, i) => i + 1);
         }
 
-        const head = [1, 2, 3].filter((p) => p <= totalPage);
-        const tailStart = Math.max(totalPage - 2, 1);
-        const tail = [tailStart, tailStart + 1, totalPage]
-            .filter((p, idx, arr) => p <= totalPage && arr.indexOf(p) === idx);
+        // 2. XỬ LÝ VÙNG ĐẦU (Nếu đang ở trang 1, 2)
+        if (currentPage < 3) {
+            this.currentMiddle = []; // Reset state
+            return [1, 2, 3, '...', totalPage];
+        }
 
-        // Middle window: current-1, current, current+1, current+2
-        let middle = [currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
-        middle = middle.filter((p, idx, arr) =>
-            p > 3 &&
-            p < tail[0] &&
-            arr.indexOf(p) === idx
-        );
+        // 3. XỬ LÝ VÙNG CUỐI (Nếu đang ở sát nút cuối)
+        if (currentPage > totalPage - 2) {
+            this.currentMiddle = []; // Reset state
+            return [1, '...', totalPage - 2, totalPage - 1, totalPage];
+        }
 
-        let result: (number | string)[] = [...head];
-        const pushEllipsis = (): void => {
-            if (result[result.length - 1] !== '...') {
-                result.push('...');
+        // 4. XỬ LÝ VÙNG GIỮA (Phân bổ động có nhớ trạng thái)
+
+        // Nếu chuyển từ vùng đầu/cuối vào màn giữa, khởi tạo dải middle
+        if (this.currentMiddle.length === 0) {
+            this.currentMiddle = Array.from({ length: midSize }, (_, i) => Math.min(currentPage + i, totalPage - 1));
+        } else {
+            // Kiểm tra click chạm biên để dịch chuyển khung middle
+            const first = this.currentMiddle[0];
+            const last = this.currentMiddle[this.currentMiddle.length - 1];
+
+            if (currentPage <= first && first > 2) {
+                // Click vào mép trái (hoặc nhảy trang vượt quá) -> trượt sang trái
+                const newFirst = Math.max(3, currentPage - 1);
+                this.currentMiddle = Array.from({ length: midSize }, (_, i) => newFirst + i);
+            } else if (currentPage >= last && last < totalPage - 1) {
+                // Click vào mép phải -> trượt sang phải
+                const newFirst = Math.min(currentPage - (midSize - 2), totalPage - midSize);
+                // Đảm bảo newFirst không nhỏ hơn 3
+                const safeFirst = Math.max(3, newFirst);
+                this.currentMiddle = Array.from({ length: midSize }, (_, i) => safeFirst + i);
             }
-        };
-
-        // Ellipsis between head and middle.
-        if (middle.length > 0 && middle[0] > 4) {
-            pushEllipsis();
-        } else if (middle.length === 0 && totalPage > 6) {
-            pushEllipsis();
+            // Ngược lại: Click số ở giữa khung -> Không dịch chuyển (khung giữ nguyên)
         }
 
-        result = [...result, ...middle];
+        const res: (number | string)[] = [];
+        res.push(1);
 
-        // Ellipsis between middle and tail.
-        const lastMiddle = middle.length > 0 ? middle[middle.length - 1] : 3;
-        if (tail.length > 0 && lastMiddle < tail[0] - 1) {
-            pushEllipsis();
+        if (this.currentMiddle[0] > 2) {
+            res.push('...');
         }
 
-        result = [...result, ...tail];
-        return result;
+        res.push(...this.currentMiddle);
+
+        if (this.currentMiddle[this.currentMiddle.length - 1] < totalPage - 1) {
+            res.push('...');
+        }
+
+        res.push(totalPage);
+        return res;
     }
 
     goToPage(page: number | string): void {
