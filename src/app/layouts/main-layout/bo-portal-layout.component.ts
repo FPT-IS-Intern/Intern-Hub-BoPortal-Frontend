@@ -96,8 +96,13 @@ export class BoPortalLayoutComponent {
       },
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
-        content: 'Cấu hình hệ thống',
+        content: 'Cấu hình chung',
         url: '/settings/general',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.NEWS,
+        content: 'Bảo mật',
+        url: '/settings/security',
       },
     ],
   };

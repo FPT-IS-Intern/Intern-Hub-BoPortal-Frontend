@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { BoPortalPageComponent } from './features/bo-portal-page/bo-portal-page.component';
 import { GeneralConfigComponent } from './features/general-config/main-config/general-config.component';
+import { SecurityConfigComponent } from './features/security-config/security-config.component';
 import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
 
@@ -82,6 +83,10 @@ export const routes: Routes = [
       {
         path: 'settings/general',
         component: GeneralConfigComponent,
+      },
+      {
+        path: 'settings/security',
+        component: SecurityConfigComponent,
       },
       {
         path: '404',

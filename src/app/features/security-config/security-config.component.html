@@ -1,0 +1,155 @@
+<div class="page-body" [formGroup]="form">
+  <!-- Page header -->
+  <header class="page-header">
+    <nz-breadcrumb class="breadcrumb">
+      <nz-breadcrumb-item>
+        <a routerLink="/dashboard">
+          <span nz-icon nzType="home" nzTheme="outline"></span>
+        </a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>Cấu Hình Hệ Thống</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Bảo Mật</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <h1 class="page-title">Bảo Mật</h1>
+  </header>
+
+  <!-- Main content -->
+  <div class="content-wrapper">
+    <!-- Row 1: 2 columns -->
+    <div class="cards-row">
+      <div class="cards-col">
+        <section class="config-card">
+          <h2 class="card-title">Độ dài tối thiểu</h2>
+          <div class="field-row">
+            <input
+              nz-input
+              type="number"
+              formControlName="minLength"
+              class="field-input"
+            />
+            <span class="field-unit">Kí tự</span>
+          </div>
+        </section>
+        <section class="config-card">
+          <h2 class="card-title">Số kí tự in hoa</h2>
+          <div class="field-row">
+            <input
+              nz-input
+              type="number"
+              formControlName="uppercaseCount"
+              class="field-input"
+            />
+            <span class="field-unit">Kí tự</span>
+          </div>
+        </section>
+        <section class="config-card">
+          <h2 class="card-title">Thời hạn</h2>
+          <div class="field-row">
+            <input
+              nz-input
+              type="number"
+              formControlName="expirationDays"
+              class="field-input"
+            />
+            <span class="field-unit">Ngày</span>
+          </div>
+        </section>
+      </div>
+      <div class="cards-col">
+        <section class="config-card">
+          <h2 class="card-title">Độ dài tối đa</h2>
+          <div class="field-row">
+            <input
+              nz-input
+              type="number"
+              formControlName="maxLength"
+              class="field-input"
+            />
+            <span class="field-unit">Kí tự</span>
+          </div>
+        </section>
+        <section class="config-card">
+          <h2 class="card-title">Số</h2>
+          <div class="field-row">
+            <input
+              nz-input
+              type="number"
+              formControlName="digitCount"
+              class="field-input"
+            />
+            <span class="field-unit">Kí tự</span>
+          </div>
+        </section>
+        <section class="config-card">
+          <h2 class="card-title">Số kí tự đặc biệt</h2>
+          <div class="field-row">
+            <input
+              nz-input
+              type="number"
+              formControlName="specialCharCount"
+              class="field-input"
+            />
+            <span class="field-unit">Kí tự</span>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Row 2: Full width -->
+    <section class="config-card config-card-full">
+      <h2 class="card-title">Thời gian tự động đăng xuất khi không hoạt động</h2>
+      <div class="field-row">
+        <input
+          nz-input
+          type="number"
+          formControlName="autoLogoutMinutes"
+          class="field-input"
+        />
+        <span class="field-unit">Phút</span>
+      </div>
+    </section>
+
+    <!-- Row 3: 2 columns -->
+    <div class="cards-row">
+      <section class="config-card">
+        <h2 class="card-title">Số lần đăng nhập sai tối đa</h2>
+        <div class="field-row">
+          <input
+            nz-input
+            type="number"
+            formControlName="maxLoginAttempts"
+            class="field-input"
+          />
+          <span class="field-unit">Lần</span>
+        </div>
+      </section>
+      <section class="config-card">
+        <h2 class="card-title">Có chứa khoảng trắng không?</h2>
+        <div class="field-row">
+          <nz-select
+            formControlName="allowSpace"
+            nzPlaceHolder="Chọn"
+            class="field-select"
+          >
+            @for (opt of allowSpaceOptions; track opt.value) {
+              <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+            }
+          </nz-select>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Apply button -->
+  <div class="actions">
+    <button
+      nz-button
+      nzType="primary"
+      nzSize="large"
+      class="apply-btn"
+      (click)="onSubmit()"
+    >
+      Áp dụng
+    </button>
+  </div>
+</div>
