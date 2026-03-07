@@ -97,7 +97,7 @@ export class BoPortalLayoutComponent {
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Cấu hình hệ thống',
-        url: '/settings',
+        url: '/settings/general',
       },
     ],
   };

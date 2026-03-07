@@ -6,10 +6,10 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { GeneralInfoComponent } from '../general-info/general-info.component';
-import { SystemFormatComponent } from '../system-format/system-format.component';
-import { TimeConfigComponent } from '../time-config/time-config.component';
-import { GeneralConfigService } from '../../../services/general-config.service';
+import { GeneralInfoComponent } from './general-info/general-info.component';
+import { SystemFormatComponent } from './system-format/system-format.component';
+import { TimeConfigComponent } from './time-config/time-config.component';
+import { GeneralConfigService } from '../../services/general-config.service';
 
 @Component({
   selector: 'app-general-config',
