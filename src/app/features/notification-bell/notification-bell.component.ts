@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -29,7 +29,6 @@ export interface NotificationRecord {
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationBellComponent {
   private readonly cdr = inject(ChangeDetectorRef);

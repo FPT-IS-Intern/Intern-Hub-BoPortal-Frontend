@@ -1,15 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
     selector: 'app-notification-pagination',
     standalone: true,
-    imports: [CommonModule, FormsModule, NzPaginationModule, NzSelectModule, NzButtonModule, NzIconModule],
+    imports: [CommonModule],
     templateUrl: './notification-pagination.component.html',
     styleUrl: './notification-pagination.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,12 +20,46 @@ export class NotificationPaginationComponent {
     @Output() pageSizeChange = new EventEmitter<number>();
     @Output() approveAll = new EventEmitter<void>();
 
-    onPageIndexChange(index: number): void {
-        this.pageIndexChange.emit(index);
+    get totalPages(): number {
+        return Math.ceil(this.total / this.pageSize);
     }
 
-    onPageSizeChange(size: number): void {
-        this.pageSizeChange.emit(size);
+    get pageItems(): (number | string)[] {
+        const total = this.totalPages;
+        const current = this.pageIndex;
+        const items: (number | string)[] = [];
+
+        if (total <= 7) {
+            for (let i = 1; i <= total; i++) items.push(i);
+            return items;
+        }
+
+        // Always show first page
+        items.push(1);
+
+        if (current <= 4) {
+            // Near start: 1, 2, 3, 4, 5, ..., total
+            items.push(2, 3, 4, 5, '...', total);
+        } else if (current >= total - 3) {
+            // Near end: 1, ..., total-4, total-3, total-2, total-1, total
+            items.push('...', total - 4, total - 3, total - 2, total - 1, total);
+        } else {
+            // In middle: 1, ..., curr-1, curr, curr+1, ..., total
+            items.push('...', current - 1, current, current + 1, '...', total);
+        }
+
+        return items;
+    }
+
+    onPageIndexChange(index: number | string): void {
+        if (typeof index === 'number' && index !== this.pageIndex && index >= 1 && index <= this.totalPages) {
+            this.pageIndexChange.emit(index);
+        }
+    }
+
+    onPageSizeChange(event: Event): void {
+        const value = (event.target as HTMLSelectElement).value;
+        this.pageSizeChange.emit(Number(value));
     }
 
     onApproveAll(): void {

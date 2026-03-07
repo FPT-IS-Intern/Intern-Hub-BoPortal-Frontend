@@ -1,25 +1,63 @@
 <div class="pagination-bar">
+    <!-- Left section: Display Range + Approve All -->
     <div class="pagination-left">
         <span class="page-range">
             Hiển thị {{ displayRange }}
-            <span nz-icon nzType="info-circle" nzTheme="outline" class="info-icon"></span>
+            <span class="info-icon" title="Thông tin hiển thị">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+            </span>
         </span>
-        <button nz-button nzType="default" nzSize="small" class="approve-all-btn" (click)="onApproveAll()">
+        <button class="custom-approve-btn" (click)="onApproveAll()">
             Duyệt tất cả
         </button>
     </div>
-    <nz-pagination class="pagination-center" [nzPageIndex]="pageIndex" [nzTotal]="total" [nzPageSize]="pageSize"
-        [nzPageSizeOptions]="pageSizeOptions" [nzShowSizeChanger]="false" [nzShowTotal]="totalTemplate" nzSize="small"
-        [nzShowLessItems]="true" (nzPageIndexChange)="onPageIndexChange($event)"
-        (nzPageSizeChange)="onPageSizeChange($event)"></nz-pagination>
-    <ng-template #totalTemplate let-total>
-        <span class="total-text">Tổng {{ total }}</span>
-    </ng-template>
-    <div class="pagination-right">
-        <nz-select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)" class="page-size-select">
-            @for (opt of pageSizeOptions; track opt) {
-            <nz-option [nzValue]="opt" [nzLabel]="opt + ' / trang'"></nz-option>
+
+    <!-- Center section: Page Numbers -->
+    <div class="pagination-center">
+        <button class="nav-btn" [disabled]="pageIndex === 1" (click)="onPageIndexChange(pageIndex - 1)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+
+        <div class="page-numbers">
+            @for (item of pageItems; track $index) {
+            @if (item === '...') {
+            <span class="ellipsis">...</span>
+            } @else {
+            <button class="page-btn" [class.active]="item === pageIndex" (click)="onPageIndexChange(item)">
+                {{ item }}
+            </button>
             }
-        </nz-select>
+            }
+        </div>
+
+        <button class="nav-btn" [disabled]="pageIndex === totalPages" (click)="onPageIndexChange(pageIndex + 1)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+
+        <span class="total-text">Tổng {{ total }}</span>
+    </div>
+
+    <!-- Right section: Page Size Select -->
+    <div class="pagination-right">
+        <div class="custom-select-wrapper">
+            <select [value]="pageSize" (change)="onPageSizeChange($event)" class="custom-page-size-select">
+                @for (opt of pageSizeOptions; track opt) {
+                <option [value]="opt">{{ opt }} / trang</option>
+                }
+            </select>
+            <span class="select-arrow">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </span>
+        </div>
     </div>
 </div>
