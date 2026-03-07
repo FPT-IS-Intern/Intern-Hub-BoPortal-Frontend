@@ -1,0 +1,11 @@
+<section class="config-card" [formGroup]="form">
+    <h2 class="card-title">Định dạng hệ thống</h2>
+    <div class="field-group">
+        <label class="field-label">Ngôn ngữ</label>
+        <nz-select formControlName="language" nzPlaceHolder="Chọn ngôn ngữ" nzAllowClear class="field-select">
+            @for (opt of languageOptions; track opt.value) {
+            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+            }
+        </nz-select>
+    </div>
+</section>
