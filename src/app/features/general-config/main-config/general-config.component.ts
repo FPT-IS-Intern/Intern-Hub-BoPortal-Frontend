@@ -54,7 +54,6 @@ export class GeneralConfigComponent implements OnInit {
       },
       error: (err) => {
         console.error('Fetch config error:', err);
-        alert('Không thể tải cấu hình hệ thống');
       },
     });
   }
