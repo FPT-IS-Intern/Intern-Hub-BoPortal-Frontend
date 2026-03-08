@@ -25,39 +25,11 @@
 .time-fields {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
-.field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-    min-width: 200px;
-}
-
-.field-label {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    color: #2a3034;
-}
-
-.field-time-picker {
-    width: 100%;
-    height: 36px;
-    padding: 0 12px;
-    border: 1px solid rgba(13, 46, 67, 0.24);
-    border-radius: 6px;
-    font-size: 14px;
-    color: #2a3034;
-    background-color: #fff;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    box-sizing: border-box;
-
-    &:focus {
-        border-color: #e18308;
-        box-shadow: 0 0 0 2px rgba(225, 131, 8, 0.1);
+:host ::ng-deep app-shared-input-time {
+    .shared-input-container {
+        gap: 4px;
     }
 }

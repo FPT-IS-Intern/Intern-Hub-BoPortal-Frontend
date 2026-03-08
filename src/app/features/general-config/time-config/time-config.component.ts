@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { SharedInputTimeComponent } from '../../../components/shared-input-time/shared-input-time.component';
 
 @Component({
     selector: 'app-time-config',
@@ -8,6 +9,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
     imports: [
         CommonModule,
         ReactiveFormsModule,
+        SharedInputTimeComponent,
     ],
     templateUrl: './time-config.component.html',
     styleUrl: './time-config.component.scss',
