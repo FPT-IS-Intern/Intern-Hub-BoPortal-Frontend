@@ -10,7 +10,7 @@ import { SecurityConfigService } from '../../services/security-config.service';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
-import { ConfirmPopup } from '../../components/confirm-popup/confirm-popup';
+import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-security-config',

@@ -10,7 +10,7 @@ import { GeneralInfoComponent } from '../general-info/general-info.component';
 import { SystemFormatComponent } from '../system-format/system-format.component';
 import { TimeConfigComponent } from '../time-config/time-config.component';
 import { GeneralConfigService } from '../../../services/general-config.service';
-import { ConfirmPopup } from '../../../components/confirm-popup/confirm-popup';
+import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-general-config',

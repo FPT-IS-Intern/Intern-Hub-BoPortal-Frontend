@@ -7,8 +7,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule } from '@angular/forms';
 import { NotificationTableComponent } from './notification-table/notification-table.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
-import { ModalPopup } from '../../components/modal-popup/modal-popup';
-import { ConfirmPopup } from '../../components/confirm-popup/confirm-popup';
+import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
+import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
 export interface NotificationRecord {
   id: string;

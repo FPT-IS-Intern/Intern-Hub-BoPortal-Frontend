@@ -11,7 +11,7 @@ import { PermissionService } from '../../services/permission.service';
 import { PermissionRow } from '../../models/permission.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
-import { ConfirmPopup } from '../../components/confirm-popup/confirm-popup';
+import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
 const PERMISSION_COLUMNS = [
   { key: 'create', label: 'Tạo' },
