@@ -1,8 +1,58 @@
-<header
-  class="app-header"
-  [style.padding]="paddingHeader"
->
+<header class="app-header" [style.padding]="paddingHeader">
   <div class="header-left">
     <img class="logo" [src]="data.logo || 'assets/FPT-IS-Logo.png'" alt="Logo" />
+  </div>
+
+  <div class="header-right">
+    <div class="icon-group">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round" class="vanilla-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <div class="icon-box">
+        <div class="badge-container">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+            stroke-linecap="round" stroke-linejoin="round" class="vanilla-icon">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="custom-badge" *ngIf="data.notificationsCount && data.notificationsCount > 0"></span>
+        </div>
+      </div>
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round" class="vanilla-icon">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <div class="user-profile-container">
+      <div class="user-profile" (click)="toggleDropdown($event)" [class.active]="isDropdownOpen">
+        <div class="avatar-box">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"
+            stroke-linecap="round" stroke-linejoin="round" class="user-icon-svg">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <span class="user-name">{{ data.userName }}</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+          stroke-linecap="round" stroke-linejoin="round" class="down-icon-svg" [class.rotate]="isDropdownOpen">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <div class="custom-dropdown-menu" *ngIf="isDropdownOpen">
+        <div class="dropdown-item">Hồ sơ cá nhân</div>
+        <div class="dropdown-item">Cài đặt</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" (click)="logout()">Đăng xuất</div>
+      </div>
+    </div>
   </div>
 </header>

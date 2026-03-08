@@ -1,17 +1,17 @@
 :host {
   width: 100%;
   display: block;
+  background-color: transparent;
 }
 
 .app-header {
   height: 64px;
   width: 100%;
-  padding: 0 32px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  background-color: transparent;
+  justify-content: space-between;
   box-sizing: border-box;
+  background-color: transparent;
 }
 
 .header-left {
@@ -28,5 +28,174 @@
     &:hover {
       transform: scale(1.05);
     }
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .icon-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon-box {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--neutral-color-10, #ffffff);
+      border: 1px solid var(--neutral-color-100, #e5e7eb);
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--neutral-color-600, #4b5563);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--neutral-color-50, #f9fafb);
+        color: var(--brand-600, #e18308);
+        border-color: var(--brand-200, #fde68a);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .badge-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .custom-badge {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 8px;
+          height: 8px;
+          background-color: #ef4444;
+          border-radius: 50%;
+          border: 2px solid white;
+        }
+      }
+    }
+  }
+
+  .user-profile-container {
+    position: relative;
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px 6px 6px;
+      background-color: var(--neutral-color-10, #ffffff);
+      border: 1px solid var(--neutral-color-100, #e5e7eb);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover,
+      &.active {
+        background-color: var(--neutral-color-50, #f9fafb);
+        border-color: var(--brand-200, #fde68a);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+        .down-icon-svg {
+          color: var(--brand-600);
+        }
+      }
+
+      .avatar-box {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: var(--brand-500, #e18308);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        overflow: hidden;
+
+        .user-icon-svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--neutral-color-900, #111827);
+        white-space: nowrap;
+      }
+
+      .down-icon-svg {
+        width: 14px;
+        height: 14px;
+        color: var(--neutral-color-400, #9ca3af);
+        transition: all 0.2s ease;
+
+        &.rotate {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    .custom-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 180px;
+      background-color: white;
+      border: 1px solid var(--neutral-color-100, #e5e7eb);
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      padding: 6px;
+      animation: slideIn 0.2s ease-out;
+
+      .dropdown-item {
+        padding: 10px 12px;
+        font-size: 14px;
+        color: var(--neutral-color-700, #374151);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background-color: var(--brand-50, #fff7ed);
+          color: var(--brand-600, #e18308);
+        }
+
+        &.danger {
+          color: #ef4444;
+
+          &:hover {
+            background-color: #fef2f2;
+            color: #b91c1c;
+          }
+        }
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background-color: var(--neutral-color-100, #e5e7eb);
+        margin: 6px 12px;
+      }
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
