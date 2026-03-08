@@ -13,7 +13,7 @@ export const permissionGuard: (requiredPermission: string) => CanActivateFn = (r
         return permissionService.getPermissions('current_role').pipe(
             take(1),
             map(res => {
-                const permissions = res.data || [];
+                const permissions = (res as any).data || [];
                 const hasPermission = permissions.some((p: any) => p.function === requiredPermission && p.view);
                 if (hasPermission) {
                     return true;
