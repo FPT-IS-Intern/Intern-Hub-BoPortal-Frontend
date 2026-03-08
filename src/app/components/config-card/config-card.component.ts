@@ -1,13 +1,11 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @Component({
     selector: 'app-config-card',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, NzInputModule, NzSelectModule],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './config-card.component.html',
     styleUrl: './config-card.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

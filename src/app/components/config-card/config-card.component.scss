@@ -29,6 +29,27 @@
 .field-select {
     flex: 1;
     min-width: 0;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid rgba(13, 46, 67, 0.24);
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2a3034;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+
+    &:focus {
+        border-color: #E18308;
+        box-shadow: 0 0 0 2px rgba(225, 131, 8, 0.1);
+    }
+}
+
+.field-select {
+    cursor: pointer;
+    appearance: auto;
 }
 
 .field-unit {
@@ -38,8 +59,13 @@
     white-space: nowrap;
 }
 
-:deep(.ant-input),
-:deep(.ant-select-selector) {
-    border-radius: 6px !important;
-    border-color: rgba(13, 46, 67, 0.24) !important;
+// Ẩn mũi tên tăng/giảm của input[type=number]
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.field-input[type=number] {
+    -moz-appearance: textfield;
 }
