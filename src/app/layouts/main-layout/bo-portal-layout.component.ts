@@ -92,7 +92,7 @@ export class BoPortalLayoutComponent {
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Chuông thông báo',
-        url: '/notifications/bell',
+        url: '/notifications',
       },
     ],
   };

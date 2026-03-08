@@ -29,7 +29,7 @@ export const routes: Routes = [
         component: PermissionMatrixComponent,
       },
       {
-        path: 'notifications/bell',
+        path: 'notifications',
         component: NotificationBellComponent,
       },
       {
