@@ -48,11 +48,15 @@ $disabled-text: #828F96;
             gap: 12px;
         }
 
-        ::ng-deep app-input-text {
+        ::ng-deep app-shared-input-text {
             .label-text {
                 color: $text-main !important;
+                font-weight: 500 !important;
             }
 
+            input {
+                height: 36px !important; // Điều chỉnh theo yêu cầu người dùng
+            }
         }
 
         .btn-login {

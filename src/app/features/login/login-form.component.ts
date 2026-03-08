@@ -7,12 +7,12 @@ import { AuthService } from '../../services/auth.service';
 import { LoginRequest, LoginResponse } from '../../models/auth.model';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
-import { InputTextComponent } from "@goat-bravos/intern-hub-layout";
+import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
 
 @Component({
     selector: 'app-login-form',
     standalone: true,
-    imports: [CommonModule, RouterLink, ErrorMessageComponent, InputTextComponent],
+    imports: [CommonModule, RouterLink, ErrorMessageComponent, SharedInputTextComponent],
     templateUrl: './login-form.component.html',
     styleUrls: ['./login-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
