@@ -26,7 +26,7 @@
     }
   }
 
-  > div {
+  >div {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 2px;
   flex: 1;
 
   width: 59px;
@@ -60,14 +60,14 @@
     background-color 0.3s ease;
 }
 
-.sidebar-wrapper.expanded > div {
+.sidebar-wrapper.expanded>div {
   background-color: var(--neutral-color-50);
 }
 
 .sub-menu {
   display: flex;
   flex-direction: column;
-  gap: 0; 
+  gap: 0;
   padding-left: 12px;
   margin-top: 0;
   transition: all 0.3s ease;
@@ -89,13 +89,18 @@
   overflow: visible;
   font-weight: 600;
 
-  &:hover {
+  &:hover,
+  &.active {
     background-color: rgba(233, 237, 241, 0.285) !important;
   }
 }
 
-.sidebar-wrapper.expanded .sidebar-item:hover {
-  background-color: var(--expanded-hover-bg, var(--neutral-400)) !important;
+.sidebar-wrapper.expanded .sidebar-item {
+
+  &:hover,
+  &.active {
+    background-color: var(--expanded-hover-bg, var(--neutral-400)) !important;
+  }
 }
 
 .sidebar a {

@@ -1,113 +1,76 @@
 <div class="sidebar-wrapper" [class.expanded]="isSidebarExpanded"
-     [style.--expanded-hover-bg]="data.defaultBackgroundColorHoverExpanded || 'var(--neutral-400)'">
-  <div [style.background-color]="isSidebarExpanded ? (data.backgroundColor || 'var(--neutral-color-50)') : 'var(--brand-500)'">
+  [style.--expanded-hover-bg]="data.defaultBackgroundColorHoverExpanded || 'var(--neutral-400)'">
+  <div
+    [style.background-color]="isSidebarExpanded ? (data.backgroundColor || 'var(--neutral-color-50)') : 'var(--brand-500)'">
     <aside class="sidebar">
       @for (item of data.menuItems; track $index) {
-        <div class="sidebar-item-container">
-          <app-functional-label
-            class="sidebar-item"
-            [class.active]="activeItem === item || rla.isActive"
-            routerLinkActive="active"
-            #rla="routerLinkActive"
-            [isActive]="activeItem === item || rla.isActive"
-            [isSidebarExpanded]="isSidebarExpanded"
-            [iconLeft]="item.iconLeft"
-            [iconRight]="isSidebarExpanded ? getRightIcon(item) : undefined"
-            [content]="item.content"
-            [routerLink]="item.url"
-            [colorIconLeft]="isSidebarExpanded ? (item.colorIconLeftExpanded || data.defaultColorIconLeftExpanded || item.colorIconLeft || data.defaultColorIconLeft) : (item.colorIconLeft || data.defaultColorIconLeft)"
-            [colorIconRight]="isSidebarExpanded ? (item.colorIconRightExpanded || data.defaultColorIconRightExpanded || item.colorIconRight) : item.colorIconRight"
-            [colorContent]="isSidebarExpanded ? (item.colorContentExpanded || data.defaultColorContentExpanded || item.colorContent || data.defaultColorContent) : (item.colorContent || data.defaultColorContent)"
-            [colorContentHover]="item.colorContentHover || data.defaultColorContentHover"
-            [backgroundColor]="isSidebarExpanded ? (item.backgroundColorExpanded || data.defaultBackgroundColorExpanded || item.backgroundColor || data.defaultBackgroundColor) : (item.backgroundColor || data.defaultBackgroundColor)"
-            [borderRadius]="item.borderRadius || data.defaultBorderRadius"
-            (clicked)="onMenuItemClick(item, $event)"
-            (rightIconClicked)="toggleSubMenu(item, $event)"
-            [colorIconLeftHover]="item.colorIconLeftHover || data.defaultColorIconLeftHover"
-            [colorIconRightHover]="item.colorIconRightHover"
-            [disabled]="!!item.disabled"
-            [disabledColorIconLeft]="data.disabledColorIconLeft"
-            [disabledColorContent]="data.disabledColorContent"
-            [disabledBackgroundColor]="data.disabledBackgroundColor"
-            [activeBackgroundColor]="data.activeBackgroundColor || 'var(--brand-300)'"
-            [activeColorContent]="data.activeColorContent || 'var(--brand-500)'"
-            [activeColorIconLeft]="data.activeColorIconLeft || 'var(--brand-500)'"
-            [backgroundColorHover]="item.backgroundColorHover || data.defaultBackgroundColorHover"
-            [width]="item.width || data.defaultWidth"
-            [height]="item.height || data.defaultHeight"
-          ></app-functional-label>
+      <div class="sidebar-item-container">
+        <app-functional-label class="sidebar-item" [class.active]="activeItem === item || rla.isActive"
+          routerLinkActive="active" #rla="routerLinkActive" [isActive]="activeItem === item || rla.isActive"
+          [isSidebarExpanded]="isSidebarExpanded" [iconLeft]="item.iconLeft"
+          [iconRight]="isSidebarExpanded ? getRightIcon(item) : undefined" [content]="item.content"
+          [routerLink]="item.url"
+          [colorIconLeft]="isSidebarExpanded ? (item.colorIconLeftExpanded || data.defaultColorIconLeftExpanded || item.colorIconLeft || data.defaultColorIconLeft) : (item.colorIconLeft || data.defaultColorIconLeft)"
+          [colorIconRight]="isSidebarExpanded ? (item.colorIconRightExpanded || data.defaultColorIconRightExpanded || item.colorIconRight) : item.colorIconRight"
+          [colorContent]="isSidebarExpanded ? (item.colorContentExpanded || data.defaultColorContentExpanded || item.colorContent || data.defaultColorContent) : (item.colorContent || data.defaultColorContent)"
+          [colorContentHover]="item.colorContentHover || data.defaultColorContentHover"
+          [backgroundColor]="isSidebarExpanded ? (item.backgroundColorExpanded || data.defaultBackgroundColorExpanded || item.backgroundColor || data.defaultBackgroundColor) : (item.backgroundColor || data.defaultBackgroundColor)"
+          [borderRadius]="item.borderRadius || data.defaultBorderRadius" (clicked)="onMenuItemClick(item, $event)"
+          (rightIconClicked)="toggleSubMenu(item, $event)"
+          [colorIconLeftHover]="item.colorIconLeftHover || data.defaultColorIconLeftHover"
+          [colorIconRightHover]="item.colorIconRightHover" [disabled]="!!item.disabled"
+          [disabledColorIconLeft]="data.disabledColorIconLeft" [disabledColorContent]="data.disabledColorContent"
+          [disabledBackgroundColor]="data.disabledBackgroundColor"
+          [activeBackgroundColor]="data.activeBackgroundColor || 'var(--brand-300)'"
+          [activeColorContent]="data.activeColorContent || 'var(--brand-500)'"
+          [activeColorIconLeft]="data.activeColorIconLeft || 'var(--brand-500)'"
+          [backgroundColorHover]="item.backgroundColorHover || data.defaultBackgroundColorHover"
+          [width]="item.width || data.defaultWidth" [height]="item.height || data.defaultHeight"></app-functional-label>
 
-          <!-- ✅ Sub Menu -->
-          @if (isItemExpanded(item) && item.children && isSidebarExpanded) {
-            <div class="sub-menu">
-              @for (child of item.children; track child.content) {
-                <app-functional-label
-                  class="sidebar-item sub-item"
-                  routerLinkActive="active"
-                  #subRla="routerLinkActive"
-                  [isActive]="activeItem === child || subRla.isActive"
-                  [isSidebarExpanded]="isSidebarExpanded"
-                  [iconLeft]="child.iconLeft"
-                  [content]="child.content"
-                  [routerLink]="child.url"
-                  [colorIconLeft]="isSidebarExpanded ? (child.colorIconLeftExpanded || data.defaultColorIconLeftExpanded || child.colorIconLeft || data.defaultColorIconLeft) : (child.colorIconLeft || data.defaultColorIconLeft)"
-                  [colorIconRight]="isSidebarExpanded ? (child.colorIconRightExpanded || data.defaultColorIconRightExpanded || child.colorIconRight) : child.colorIconRight"
-                  [colorContent]="isSidebarExpanded ? (child.colorContentExpanded || data.defaultColorContentExpanded || child.colorContent || data.defaultColorContent) : (child.colorContent || data.defaultColorContent)"
-                  [colorContentHover]="child.colorContentHover || data.defaultColorContentHover"
-                  [backgroundColor]="isSidebarExpanded ? (child.backgroundColorExpanded || data.defaultBackgroundColorExpanded || child.backgroundColor || data.defaultBackgroundColor) : (child.backgroundColor || data.defaultBackgroundColor)"
-                  [borderRadius]="child.borderRadius || data.defaultBorderRadius"
-                  [colorIconLeftHover]="child.colorIconLeftHover || data.defaultColorIconLeftHover"
-                  [disabled]="!!child.disabled"
-                  [disabledColorIconLeft]="data.disabledColorIconLeft"
-                  [disabledColorContent]="data.disabledColorContent"
-                  [disabledBackgroundColor]="data.disabledBackgroundColor"
-                  [activeBackgroundColor]="data.activeBackgroundColor"
-                  [activeColorContent]="data.activeColorContent"
-                  [activeColorIconLeft]="data.activeColorIconLeft"
-                  [backgroundColorHover]="child.backgroundColorHover || data.defaultBackgroundColorHover"
-                  (clicked)="onMenuItemClick(child, $event)"
-                  [width]="child.width || data.defaultWidth"
-                  [height]="child.height || data.defaultHeight"
-                ></app-functional-label>
-              }
-            </div>
+        <!-- ✅ Sub Menu -->
+        @if (isItemExpanded(item) && item.children && isSidebarExpanded) {
+        <div class="sub-menu">
+          @for (child of item.children; track child.content) {
+          <app-functional-label class="sidebar-item sub-item" routerLinkActive="active" #subRla="routerLinkActive"
+            [isActive]="activeItem === child || subRla.isActive" [isSidebarExpanded]="isSidebarExpanded"
+            [iconLeft]="child.iconLeft" [content]="child.content" [routerLink]="child.url"
+            [colorIconLeft]="isSidebarExpanded ? (child.colorIconLeftExpanded || data.defaultColorIconLeftExpanded || child.colorIconLeft || data.defaultColorIconLeft) : (child.colorIconLeft || data.defaultColorIconLeft)"
+            [colorIconRight]="isSidebarExpanded ? (child.colorIconRightExpanded || data.defaultColorIconRightExpanded || child.colorIconRight) : child.colorIconRight"
+            [colorContent]="isSidebarExpanded ? (child.colorContentExpanded || data.defaultColorContentExpanded || child.colorContent || data.defaultColorContent) : (child.colorContent || data.defaultColorContent)"
+            [colorContentHover]="child.colorContentHover || data.defaultColorContentHover"
+            [backgroundColor]="isSidebarExpanded ? (child.backgroundColorExpanded || data.defaultBackgroundColorExpanded || child.backgroundColor || data.defaultBackgroundColor) : (child.backgroundColor || data.defaultBackgroundColor)"
+            [borderRadius]="child.borderRadius || data.defaultBorderRadius"
+            [colorIconLeftHover]="child.colorIconLeftHover || data.defaultColorIconLeftHover"
+            [disabled]="!!child.disabled" [disabledColorIconLeft]="data.disabledColorIconLeft"
+            [disabledColorContent]="data.disabledColorContent" [disabledBackgroundColor]="data.disabledBackgroundColor"
+            [activeBackgroundColor]="data.activeBackgroundColor" [activeColorContent]="data.activeColorContent"
+            [activeColorIconLeft]="data.activeColorIconLeft"
+            [backgroundColorHover]="child.backgroundColorHover || data.defaultBackgroundColorHover"
+            (clicked)="onMenuItemClick(child, $event)" [width]="child.width || data.defaultWidth"
+            [height]="child.height || data.defaultHeight"></app-functional-label>
           }
         </div>
+        }
+      </div>
       }
     </aside>
 
     <!--Toggle button - chỉ hiện khi KHÔNG expanded -->
     @if (!isSidebarExpanded) {
-      <app-button-container
-        class="sidebar-toggle-button"
-        [leftIconData]="toggleButtonIconData"
-        [backgroundColor]="data.toggleButtonBackgroundColor || 'transparent'"
-        [color]="'var(--neutral-color-10)'"
-        [borderRadius]="'8px'"
-        [size]="'sm'"
-        [width]="'36px'"
-        [height]="'36px'"
-        (buttonClick)="toggleSidebar()"
-      ></app-button-container>
+    <app-button-container class="sidebar-toggle-button" [leftIconData]="toggleButtonIconData"
+      [backgroundColor]="data.toggleButtonBackgroundColor || 'transparent'" [color]="'var(--neutral-color-10)'"
+      [borderRadius]="'8px'" [size]="'sm'" [width]="'36px'" [height]="'36px'"
+      (buttonClick)="toggleSidebar()"></app-button-container>
     }
 
     <!--Close button - chỉ hiện khi expanded -->
     @if (isSidebarExpanded) {
-      <app-button-container
-        class="sidebar-close-button"
-        [leftIconData]="closeButtonIconData"
-        [backgroundColor]="
+    <app-button-container class="sidebar-close-button" [leftIconData]="closeButtonIconData" [backgroundColor]="
           data.closeButtonBackgroundColor || 'var(--brand-400)'
-        "
-        [color]="data.toggleButtonIconColor || 'var(--neutral-500)'"
-        [borderRadius]="'8px'"
-        [size]="'sm'"
-        (buttonClick)="toggleSidebar()"
-        [width]="'36px'"
-        [height]="'36px'"
-        [marginRight]="data.closeButtonMarginRight || '24px'"
-        [marginLeft]="data.closeButtonMarginLeft || 'auto'"
-      ></app-button-container>
+        " [color]="data.toggleButtonIconColor || 'var(--neutral-500)'" [borderRadius]="'8px'" [size]="'sm'"
+      (buttonClick)="toggleSidebar()" [width]="'36px'" [height]="'36px'"
+      [marginRight]="data.closeButtonMarginRight || '24px'"
+      [marginLeft]="data.closeButtonMarginLeft || 'auto'"></app-button-container>
     }
   </div>
 </div>
