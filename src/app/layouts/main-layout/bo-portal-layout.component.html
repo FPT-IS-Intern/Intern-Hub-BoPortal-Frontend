@@ -8,26 +8,17 @@
   </div>
 
   <div class="main-layout">
-    <app-header-component [data]="headerData"></app-header-component>
 
     <div class="layout-body">
-      <div
-        class="layout-body-sidebar"
-        [class.mobile-open]="isMobileSidebarOpen"
-        [class.expanded]="isSidebarExpanded"
-      >
-        <app-sidebar
-          [data]="sidebarData"
-          [isSidebarExpanded]="isSidebarExpanded"
-          (sidebarToggled)="onSidebarToggle($event)"
-          [toggleButtonIconData]="toggleButtonIconConfig"
-          [closeButtonIconData]="closeButtonIconConfig"
-        ></app-sidebar>
+      <div class="layout-body-sidebar" [class.mobile-open]="isMobileSidebarOpen" [class.expanded]="isSidebarExpanded">
+        <app-sidebar [data]="sidebarData" [isSidebarExpanded]="isSidebarExpanded"
+          (sidebarToggled)="onSidebarToggle($event)" [toggleButtonIconData]="toggleButtonIconConfig"
+          [closeButtonIconData]="closeButtonIconConfig"></app-sidebar>
       </div>
 
       <!-- Mobile Sidebar Overlay -->
       @if (isMobileSidebarOpen) {
-        <div class="sidebar-overlay" (click)="closeMobileSidebar()" onkeypress=""></div>
+      <div class="sidebar-overlay" (click)="closeMobileSidebar()" onkeypress=""></div>
       }
 
       <!-- Content - Scrollable -->

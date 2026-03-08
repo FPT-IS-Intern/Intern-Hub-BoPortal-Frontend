@@ -9,7 +9,7 @@ import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
 @Component({
   selector: 'app-bo-portal-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent],
   templateUrl: './bo-portal-layout.component.html',
   styleUrls: ['./bo-portal-layout.component.scss'],
 })

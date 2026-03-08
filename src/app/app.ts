@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { DynamicDsService } from 'dynamic-ds';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import {
@@ -9,10 +9,13 @@ import {
   notifyTokenRefreshed,
 } from '@goat-bravos/shared-lib-client';
 
+import { HeaderComponent, HeaderData } from './components/header/header.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, HeaderComponent],
   templateUrl: './app.html',
 })
 export class App implements OnInit, OnDestroy {
@@ -20,8 +23,26 @@ export class App implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
+  // Thêm trạng thái Header cho toàn ứng dụng
+  isLoginRoute = false;
+  headerData: HeaderData = {
+    logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
+    userName: 'Diddy',
+    email: 'diddy@fpt.com',
+    role: 'SUPPER ADMIN',
+    notificationsCount: 5,
+  };
+
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
+
+  constructor() {
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+        this.isLoginRoute = event.urlAfterRedirects.includes('/login');
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();

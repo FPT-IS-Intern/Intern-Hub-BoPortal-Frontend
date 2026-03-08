@@ -26,6 +26,8 @@ export class HeaderComponent {
     notificationsCount: 0,
   };
 
+  @Input() showControls: boolean = true;
+
   @Input() paddingHeader: string = '12px 20px 12px 16px';
 
   constructor() { }

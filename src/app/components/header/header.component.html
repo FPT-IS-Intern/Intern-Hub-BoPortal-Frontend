@@ -1,8 +1,9 @@
-<header class="app-header" [style.padding]="paddingHeader">
+<header class="app-header" [style.padding]="paddingHeader" [class.header-minimal]="!showControls">
   <div class="header-left">
     <img class="logo" [src]="data.logo || 'assets/FPT-IS-Logo.png'" alt="Logo" />
   </div>
 
+  @if(showControls) {
   <div class="header-right">
     <div class="icon-group">
       <div class="icon-box">
@@ -16,4 +17,5 @@
 
     <app-user-profile-dropdown [data]="data" (logout)="logout()"></app-user-profile-dropdown>
   </div>
+  }
 </header>

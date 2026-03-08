@@ -2,6 +2,16 @@ import { PermissionRow } from '../../models/permission.model';
 
 export const MOCK_PERMISSIONS: PermissionRow[] = [
     {
+        function: 'Ma trận phân quyền',
+        create: true,
+        view: true,
+        update: true,
+        delete: true,
+        approve: false,
+        approver: false,
+        crudTask: false,
+    },
+    {
         function: 'Cấu hình hệ thống',
         create: true,
         view: true,
