@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotificationRecord } from '../notification-bell.component';
+import { NotificationRecord } from '../../../core/mock-data/notifications.mock';
 
 @Component({
     selector: 'app-notification-table',
