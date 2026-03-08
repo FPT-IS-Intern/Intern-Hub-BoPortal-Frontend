@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, finalize } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LogoutRequest } from '../models/auth.model';
+import { LogoutRequest, LoginRequest, LoginResponse } from '../models/auth.model';
 import { ResponseApi, StorageUtil } from '@goat-bravos/shared-lib-client';
 import { getBaseUrl } from '../core/config/app-config';
 
@@ -9,7 +9,19 @@ import { getBaseUrl } from '../core/config/app-config';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: HttpClient) { }
+
+  login(data: LoginRequest): Observable<ResponseApi<LoginResponse>> {
+    const headers = new HttpHeaders({
+      'X-Device-ID': this.getDeviceId(),
+    });
+
+    return this.httpClient.post<ResponseApi<LoginResponse>>(
+      `${getBaseUrl()}/auth/login`,
+      data,
+      { headers },
+    );
+  }
 
   logout(data: LogoutRequest): Observable<ResponseApi<void>> {
     const headers = new HttpHeaders({
