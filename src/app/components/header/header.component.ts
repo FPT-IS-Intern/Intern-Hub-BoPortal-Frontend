@@ -1,5 +1,6 @@
 import { Component, Input, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { UserProfileDropdownComponent } from './user-profile-dropdown/user-profile-dropdown.component';
 
 export interface HeaderData {
   logo?: string;
@@ -13,7 +14,7 @@ export interface HeaderData {
 @Component({
   selector: 'app-header-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UserProfileDropdownComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
@@ -26,24 +27,23 @@ export class HeaderComponent {
 
   @Input() paddingHeader: string = '12px 20px 12px 16px';
 
-  isDropdownOpen = false;
+  isNotificationsOpen = false;
 
   constructor(private eRef: ElementRef) { }
 
-  toggleDropdown(event: Event): void {
+  toggleNotifications(event: Event): void {
     event.stopPropagation();
-    this.isDropdownOpen = !this.isDropdownOpen;
+    this.isNotificationsOpen = !this.isNotificationsOpen;
   }
 
   @HostListener('document:click', ['$event'])
   clickout(event: Event): void {
     if (!this.eRef.nativeElement.contains(event.target)) {
-      this.isDropdownOpen = false;
+      this.isNotificationsOpen = false;
     }
   }
 
   logout(): void {
-    console.log('Logging out...');
-    this.isDropdownOpen = false;
+    console.log('Logging out from Header...');
   }
 }
