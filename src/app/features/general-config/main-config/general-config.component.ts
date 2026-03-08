@@ -2,10 +2,6 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { GeneralInfoComponent } from '../general-info/general-info.component';
 import { SystemFormatComponent } from '../system-format/system-format.component';
 import { TimeConfigComponent } from '../time-config/time-config.component';
@@ -19,9 +15,6 @@ import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-p
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    NzBreadCrumbModule,
-    NzButtonModule,
-    NzIconModule,
     GeneralInfoComponent,
     SystemFormatComponent,
     TimeConfigComponent,
@@ -38,7 +31,6 @@ export class GeneralConfigComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly configService: GeneralConfigService,
-    private readonly message: NzMessageService
   ) {
     this.form = this.fb.group({
       appName: ['', []],
@@ -62,7 +54,7 @@ export class GeneralConfigComponent implements OnInit {
       },
       error: (err) => {
         console.error('Fetch config error:', err);
-        this.message.error('Không thể tải cấu hình hệ thống');
+        alert('Không thể tải cấu hình hệ thống');
       },
     });
   }
@@ -76,12 +68,12 @@ export class GeneralConfigComponent implements OnInit {
   protected handleConfirmSave(): void {
     this.configService.updateConfig(this.form.value).subscribe({
       next: () => {
-        this.message.success('Cập nhật cấu hình thành công');
+        alert('Cập nhật cấu hình thành công');
         this.isConfirmVisible = false;
       },
       error: (err) => {
         console.error('Update config error:', err);
-        this.message.error('Cập nhật cấu hình thất bại');
+        alert('Cập nhật cấu hình thất bại');
         this.isConfirmVisible = false;
       },
     });
