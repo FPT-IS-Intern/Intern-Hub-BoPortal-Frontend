@@ -111,7 +111,7 @@ $radius: 28px;
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--app-overlay);
   z-index: 999;
 }
 
@@ -195,3 +195,4 @@ $radius: 28px;
     display: none !important;
   }
 }
+

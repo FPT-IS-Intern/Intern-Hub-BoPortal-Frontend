@@ -1,12 +1,12 @@
 .config-card {
-    background: #fff;
+    background: var(--app-color-white);
     border-radius: 20px;
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    border: 1px solid rgba(225, 131, 8, 0.08);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--app-color-primary-alpha-8);
+    box-shadow: 0 1px 3px var(--app-shadow-sm);
 }
 
 .config-card-full {
@@ -19,7 +19,7 @@
     font-weight: 700;
     line-height: 28px;
     letter-spacing: -0.5px;
-    color: #f5a84a;
+    color: var(--app-color-primary-soft);
 }
 
 .field-row {
@@ -36,11 +36,12 @@
 .field-unit {
     font-size: 14px;
     font-weight: 500;
-    color: #2a3034;
+    color: var(--app-color-text-main);
     white-space: nowrap;
 }
 
 :deep(.ant-input) {
     border-radius: 6px !important;
-    border-color: rgba(13, 46, 67, 0.24) !important;
+    border-color: var(--app-color-input-border-alpha) !important;
 }
+

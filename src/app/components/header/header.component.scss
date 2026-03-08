@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  background-color: transparent;
+  background-color: var(--app-color-layout-bg);
 
   .header-left {
     display: flex;
@@ -49,19 +49,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--neutral-color-10, #ffffff);
-        border: 1px solid var(--neutral-color-100, #e5e7eb);
+        background-color: var(--neutral-color-10, var(--app-color-white));
+        border: 1px solid var(--neutral-color-100, var(--app-color-border));
         border-radius: 8px;
         cursor: pointer;
-        color: var(--neutral-color-600, #4b5563);
+        color: var(--neutral-color-600, var(--app-color-text-600));
         transition: all 0.2s ease;
 
         &:hover {
-          background-color: var(--neutral-color-50, #f9fafb);
-          color: var(--brand-600, #e18308);
-          border-color: var(--brand-200, #fde68a);
+          background-color: var(--neutral-color-50, var(--app-color-surface-soft));
+          color: var(--brand-600, var(--app-color-primary));
+          border-color: var(--brand-200, var(--app-color-brand-200));
           transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 2px 4px var(--app-shadow-md);
         }
       }
     }
@@ -79,3 +79,6 @@
     transform: translateY(0);
   }
 }
+
+
+

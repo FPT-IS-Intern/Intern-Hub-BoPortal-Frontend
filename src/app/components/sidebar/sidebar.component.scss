@@ -91,7 +91,7 @@
 
   &:hover,
   &.active {
-    background-color: rgba(233, 237, 241, 0.285) !important;
+    background-color: var(--app-color-border-soft-alpha) !important;
   }
 }
 

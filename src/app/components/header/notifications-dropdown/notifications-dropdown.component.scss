@@ -7,20 +7,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--neutral-color-10, #ffffff);
-        border: 1px solid var(--neutral-color-100, #e5e7eb);
+        background-color: var(--neutral-color-10, var(--app-color-white));
+        border: 1px solid var(--neutral-color-100, var(--app-color-border));
         border-radius: 8px;
         cursor: pointer;
-        color: var(--neutral-color-600, #4b5563);
+        color: var(--neutral-color-600, var(--app-color-text-600));
         transition: all 0.2s ease;
 
         &:hover,
         &.active {
-            background-color: var(--neutral-color-50, #f9fafb);
-            color: var(--brand-600, #e18308);
-            border-color: var(--brand-200, #fde68a);
+            background-color: var(--neutral-color-50, var(--app-color-surface-soft));
+            color: var(--brand-600, var(--app-color-primary));
+            border-color: var(--brand-200, var(--app-color-brand-200));
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px var(--app-shadow-md);
         }
 
         .badge-container {
@@ -35,7 +35,7 @@
                 right: -2px;
                 width: 8px;
                 height: 8px;
-                background-color: #ef4444;
+                background-color: var(--app-color-danger);
                 border-radius: 50%;
                 border: 2px solid white;
             }
@@ -49,9 +49,9 @@
         width: 400px;
         min-height: 500px;
         background-color: white;
-        border: 1px solid var(--neutral-color-100, #e5e7eb);
+        border: 1px solid var(--neutral-color-100, var(--app-color-border));
         border-radius: 16px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 10px 40px var(--app-shadow-xl);
         z-index: 1000;
         padding: 20px;
         display: flex;
@@ -78,8 +78,8 @@
                     font-weight: 600;
                     cursor: pointer;
                     transition: all 0.2s;
-                    background-color: #f3f4f6;
-                    color: #6b7280;
+                    background-color: var(--app-color-surface-soft-2);
+                    color: var(--app-color-text-500);
 
                     .tab-icon {
                         width: 16px;
@@ -87,21 +87,21 @@
                     }
 
                     &.active {
-                        background-color: #e18308;
+                        background-color: var(--app-color-primary);
                         color: white;
                     }
 
                     &:hover:not(.active) {
-                        background-color: #e5e7eb;
-                        color: #111827;
+                        background-color: var(--app-color-border);
+                        color: var(--app-color-text-900);
                     }
                 }
             }
 
             .read-all-btn {
                 background: transparent;
-                border: 1px solid #e18308;
-                color: #e18308;
+                border: 1px solid var(--app-color-primary);
+                color: var(--app-color-primary);
                 padding: 8px 16px;
                 border-radius: 12px;
                 font-size: 14px;
@@ -110,7 +110,7 @@
                 transition: all 0.2s;
 
                 &:hover {
-                    background-color: #fff7ed;
+                    background-color: var(--app-color-surface-warm);
                 }
             }
         }
@@ -133,7 +133,7 @@
                         width: 80px;
                         height: 80px;
                         border-radius: 50%;
-                        background-color: #fff7ed;
+                        background-color: var(--app-color-surface-warm);
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -142,21 +142,21 @@
                         .orange-dot {
                             width: 12px;
                             height: 12px;
-                            background-color: #e18308;
+                            background-color: var(--app-color-primary);
                             border-radius: 50%;
-                            box-shadow: 0 0 0 8px rgba(225, 131, 8, 0.1);
+                            box-shadow: 0 0 0 8px var(--app-color-primary-alpha-10);
                         }
                     }
 
                     .empty-title {
                         font-size: 18px;
                         font-weight: 700;
-                        color: #111827;
+                        color: var(--app-color-text-900);
                     }
 
                     .empty-subtitle {
                         font-size: 14px;
-                        color: #6b7280;
+                        color: var(--app-color-text-500);
                         max-width: 240px;
                     }
                 }
@@ -176,3 +176,5 @@
         transform: translateY(0);
     }
 }
+
+

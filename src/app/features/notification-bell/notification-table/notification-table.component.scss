@@ -5,14 +5,14 @@
 
     th,
     td {
-        border-bottom: 1px solid rgba(2, 48, 94, 0.09);
+        border-bottom: 1px solid var(--app-color-border-alpha-soft-2);
         padding: 12px;
         vertical-align: middle;
     }
 
     th {
-        background: #ee8e1b;
-        color: #e9edf1;
+        background: var(--app-color-primary-300);
+        color: var(--app-color-border-soft);
         font-weight: 500;
         font-size: 12px;
         line-height: 16px;
@@ -37,8 +37,8 @@
     }
 
     td {
-        background: #fff;
-        color: #2a3034;
+        background: var(--app-color-white);
+        color: var(--app-color-text-main);
     }
 }
 
@@ -50,23 +50,25 @@
     height: 28px;
     padding: 0;
     border-radius: 6px;
-    border: 1px solid #e18308;
+    border: 1px solid var(--app-color-primary);
     background: transparent;
-    color: #e18308;
+    color: var(--app-color-primary);
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-        background: #fff7ed;
-        border-color: #c36f06;
-        color: #c36f06;
+        background: var(--app-color-surface-warm);
+        border-color: var(--app-color-primary-hover);
+        color: var(--app-color-primary-hover);
     }
 
     &:active {
-        background: #ffedd5;
+        background: var(--app-color-surface-warm-150);
     }
 
     svg {
         display: block;
     }
 }
+
+

@@ -8,7 +8,7 @@
   gap: 24px;
   padding: 24px;
   min-height: 100%;
-  background: linear-gradient(180deg, #fffbf7 0%, #fff7ed 100%);
+  background: linear-gradient(180deg, var(--app-color-surface-warm-200) 0%, var(--app-color-surface-warm) 100%);
 }
 
 .page-header {
@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #505a5f;
+  color: var(--app-color-text-muted);
   font-size: 12px;
   font-weight: 500;
 
@@ -36,7 +36,7 @@
     }
 
     &:not(.active):hover {
-      color: var(--brand-600, #e18308);
+      color: var(--brand-600, var(--app-color-primary));
     }
   }
 
@@ -48,7 +48,7 @@
   }
 
   .breadcrumb-separator {
-    color: rgba(80, 90, 95, 0.45);
+    color: var(--app-color-text-muted-alpha);
     user-select: none;
   }
 }
@@ -59,7 +59,7 @@
   font-weight: 600;
   line-height: 32px;
   letter-spacing: -0.5px;
-  color: var(--brand-700, #c36f06);
+  color: var(--brand-700, var(--app-color-primary-hover));
 }
 
 .content-grid {
@@ -85,9 +85,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--brand-600, #e18308);
-  border: 1px solid var(--brand-600, #e18308);
-  color: #fff;
+  background: var(--brand-600, var(--app-color-primary));
+  border: 1px solid var(--brand-600, var(--app-color-primary));
+  color: var(--app-color-white);
   font-weight: 500;
   padding: 0 24px;
   height: 44px;
@@ -96,8 +96,8 @@
   transition: all 0.2s;
 
   &:hover {
-    background: var(--brand-700, #c36f06);
-    border-color: var(--brand-700, #c36f06);
+    background: var(--brand-700, var(--app-color-primary-hover));
+    border-color: var(--brand-700, var(--app-color-primary-hover));
   }
 
   &:active {
@@ -110,3 +110,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+

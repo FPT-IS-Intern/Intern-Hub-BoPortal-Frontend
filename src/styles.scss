@@ -1,10 +1,9 @@
 // src/styles.scss
 @use 'dynamic-ds/src/lib/styles/system-design';
-// Import fonts
 @use './styles/fonts';
 @use './styles/custom-icons';
+@use './styles/tokens';
 
-// Apply Inter font globally
 :root {
   font-family:
     'Inter',
@@ -17,7 +16,6 @@
     'calt' 1;
 }
 
-// Nếu browser hỗ trợ variable fonts
 @supports (font-variation-settings: normal) {
   :root {
     font-family:
@@ -26,13 +24,6 @@
       BlinkMacSystemFont,
       'Segoe UI',
       sans-serif;
-    --z-layout: 100;
-    --z-header: 100;
-    --z-sidebar: 100;
-
-    /* Overlay & Modal dùng chung */
-    --z-overlay: 1000;
-    --z-modal: 1100;
   }
 }
 
@@ -50,7 +41,7 @@ body {
   overflow-y: auto;
   font-family: inherit;
   min-height: 100vh;
-  background-color: #FCECCD;
+  background-color: var(--app-color-layout-bg);
 }
 
 app-root {

@@ -4,7 +4,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(99, 107, 116, 0.6);
+    background-color: var(--app-overlay-muted);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,7 +17,7 @@
     border-radius: 12px;
     width: 100%;
     max-width: 520px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px var(--app-shadow-lg);
     display: flex;
     flex-direction: column;
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -29,21 +29,21 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--app-color-border-muted);
 }
 
 .modal-title {
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--app-color-text-main-3);
 }
 
 .modal-close-btn {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: #6b7280;
+    color: var(--app-color-text-500);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -52,8 +52,8 @@
     transition: all 0.2s;
 
     &:hover {
-        background: #f3f4f6;
-        color: #111827;
+        background: var(--app-color-surface-soft-2);
+        color: var(--app-color-text-900);
     }
 }
 
@@ -62,7 +62,7 @@
     max-height: 70vh;
     overflow-y: auto;
     font-size: 14px;
-    color: #374151;
+    color: var(--app-color-text-700);
 }
 
 .modal-footer {
@@ -70,7 +70,7 @@
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--app-color-border-muted);
 }
 
 %btn-base {
@@ -85,29 +85,29 @@
 .btn-cancel {
     @extend %btn-base;
     background: white;
-    border: 1px solid #f97316;
-    color: #f97316;
+    border: 1px solid var(--app-color-warning);
+    color: var(--app-color-warning);
 
     &:hover {
-        background: #fff7ed;
+        background: var(--app-color-surface-warm);
     }
 }
 
 .btn-save {
     @extend %btn-base;
     padding: 8px 24px;
-    background: #f97316;
-    border: 1px solid #f97316;
+    background: var(--app-color-warning);
+    border: 1px solid var(--app-color-warning);
     color: white;
 
     &:hover {
-        background: #ea580c;
-        border-color: #ea580c;
+        background: var(--app-color-warning-dark);
+        border-color: var(--app-color-warning-dark);
     }
 
     &:disabled {
-        background: #fdbf9c;
-        border-color: #fdbf9c;
+        background: var(--app-color-warning-soft);
+        border-color: var(--app-color-warning-soft);
         cursor: not-allowed;
         opacity: 0.8;
     }
@@ -134,3 +134,5 @@
         transform: translateY(0) scale(1);
     }
 }
+
+

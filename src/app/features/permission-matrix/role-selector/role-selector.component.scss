@@ -19,11 +19,13 @@
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background: #ee8e1b !important;
-    border-color: #ee8e1b !important;
+    background: var(--app-color-primary-300) !important;
+    border-color: var(--app-color-primary-300) !important;
 
     &:hover {
-        background: #c36f06 !important;
-        border-color: #c36f06 !important;
+        background: var(--app-color-primary-hover) !important;
+        border-color: var(--app-color-primary-hover) !important;
     }
 }
+
+

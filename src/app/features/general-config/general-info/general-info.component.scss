@@ -1,12 +1,12 @@
 .config-card {
-  background: #fff;
+  background: var(--app-color-white);
   border-radius: 20px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  border: 1px solid rgba(225, 131, 8, 0.08);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--app-color-primary-alpha-8);
+  box-shadow: 0 1px 3px var(--app-shadow-sm);
 }
 
 .card-title {
@@ -15,7 +15,7 @@
   font-weight: 700;
   line-height: 28px;
   letter-spacing: -0.5px;
-  color: #f5a84a;
+  color: var(--app-color-primary-soft);
 }
 
 .card-fields {
@@ -41,29 +41,29 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: #2a3034;
+  color: var(--app-color-text-main);
 }
 
 .field-input {
   width: 100%;
   height: 36px;
   padding: 0 12px;
-  border: 1px solid rgba(13, 46, 67, 0.24);
+  border: 1px solid var(--app-color-input-border-alpha);
   border-radius: 6px;
   font-size: 14px;
-  color: #2a3034;
-  background-color: #fff;
+  color: var(--app-color-text-main);
+  background-color: var(--app-color-white);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
 
   &:focus {
-    border-color: #e18308;
-    box-shadow: 0 0 0 2px rgba(225, 131, 8, 0.1);
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 2px var(--app-color-primary-alpha-10);
   }
 
   &::placeholder {
-    color: rgba(42, 48, 52, 0.45);
+    color: var(--app-color-placeholder-alpha);
   }
 }
 
@@ -79,7 +79,7 @@
   flex-shrink: 0;
   border-radius: 6px;
   overflow: hidden;
-  border: 1px solid rgba(13, 46, 67, 0.12);
+  border: 1px solid var(--app-color-input-border-alpha-12);
 }
 
 .logo-img {
@@ -94,13 +94,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  background: var(--app-color-surface-muted);
 }
 
 .logo-placeholder-text {
   font-size: 12px;
   font-weight: 600;
-  color: #505a5f;
+  color: var(--app-color-text-muted);
 }
 
 .upload-actions {
@@ -116,17 +116,17 @@
   height: 24px;
   padding: 0 8px;
   font-size: 12px;
-  border: 1px solid #e18308;
+  border: 1px solid var(--app-color-primary);
   border-radius: 4px;
-  color: #e18308;
-  background: #fff;
+  color: var(--app-color-primary);
+  background: var(--app-color-white);
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    border-color: #c36f06;
-    color: #c36f06;
-    background: #fff7ed;
+    border-color: var(--app-color-primary-hover);
+    color: var(--app-color-primary-hover);
+    background: var(--app-color-surface-warm);
   }
 }
 
@@ -138,7 +138,7 @@
 
 .file-name {
   font-size: 14px;
-  color: #262d34;
+  color: var(--app-color-text-main-2);
 }
 
 .remove-btn {
@@ -150,13 +150,15 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #7a869a;
+  color: var(--app-color-text-subtle-2);
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.2s;
 
   &:hover {
-    color: #ef4444;
-    background: #fef2f2;
+    color: var(--app-color-danger);
+    background: var(--app-color-surface-rose-100);
   }
 }
+
+

@@ -7,13 +7,13 @@
     .label-text {
         font-size: 14px;
         font-weight: 500;
-        color: #2A3034;
+        color: var(--app-color-text-main);
         display: flex;
         align-items: center;
         gap: 4px;
 
         .required-mark {
-            color: #d32f2f !important;
+            color: var(--app-color-danger-dark) !important;
         }
     }
 
@@ -27,19 +27,19 @@
             height: 36px;
             padding: 8px 16px;
             padding-right: 48px; // Space for icon
-            border: 1px solid #E9EDF1;
+            border: 1px solid var(--app-color-border-soft);
             border-radius: 8px;
             font-size: 14px;
             outline: none;
             transition: all 0.3s ease;
 
             &:focus {
-                border-color: #E18308;
-                box-shadow: 0 0 0 2px rgba(225, 131, 8, 0.1);
+                border-color: var(--app-color-primary);
+                box-shadow: 0 0 0 2px var(--app-color-primary-alpha-10);
             }
 
             &::placeholder {
-                color: #828F96;
+                color: var(--app-color-text-subtle);
             }
         }
 
@@ -50,7 +50,7 @@
             width: 48px;
             border: none;
             background: transparent;
-            color: #828F96;
+            color: var(--app-color-text-subtle);
             cursor: pointer;
             display: flex;
             justify-content: center;
@@ -58,7 +58,7 @@
             font-size: 18px;
 
             &:hover {
-                color: #2A3034;
+                color: var(--app-color-text-main);
             }
 
             .input-icon-img {
@@ -69,3 +69,4 @@
         }
     }
 }
+

@@ -8,7 +8,7 @@
   gap: 16px;
   padding: 24px;
   min-height: 100%;
-  background: linear-gradient(180deg, #fffbf7 0%, #fff7ed 100%);
+  background: linear-gradient(180deg, var(--app-color-surface-warm-200) 0%, var(--app-color-surface-warm) 100%);
 }
 
 .page-header {
@@ -19,17 +19,17 @@
 
 .breadcrumb {
   :deep(.ant-breadcrumb-link) {
-    color: #505a5f;
+    color: var(--app-color-text-muted);
     font-size: 12px;
     font-weight: 500;
   }
 
   :deep(a) {
-    color: #505a5f;
+    color: var(--app-color-text-muted);
     text-decoration: none;
 
     &:hover {
-      color: var(--brand-600, #e18308);
+      color: var(--brand-600, var(--app-color-primary));
     }
   }
 }
@@ -40,7 +40,7 @@
   font-weight: 600;
   line-height: 32px;
   letter-spacing: -0.5px;
-  color: var(--brand-700, #c36f06);
+  color: var(--brand-700, var(--app-color-primary-hover));
 }
 
 .actions {
@@ -71,17 +71,19 @@
 }
 
 .apply-btn {
-  background: #e18308 !important;
-  border-color: #e18308 !important;
-  color: #fff !important;
+  background: var(--app-color-primary) !important;
+  border-color: var(--app-color-primary) !important;
+  color: var(--app-color-white) !important;
   font-weight: 500;
   padding: 0 12px;
   height: 44px;
   border-radius: 8px;
 
   &:hover {
-    background: #c36f06 !important;
-    border-color: #c36f06 !important;
-    color: #fff !important;
+    background: var(--app-color-primary-hover) !important;
+    border-color: var(--app-color-primary-hover) !important;
+    color: var(--app-color-white) !important;
   }
 }
+
+

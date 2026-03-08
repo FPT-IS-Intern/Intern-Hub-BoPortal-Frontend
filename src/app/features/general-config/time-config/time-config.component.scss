@@ -1,12 +1,12 @@
 .config-card {
-    background: #fff;
+    background: var(--app-color-white);
     border-radius: 20px;
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    border: 1px solid rgba(225, 131, 8, 0.08);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--app-color-primary-alpha-8);
+    box-shadow: 0 1px 3px var(--app-shadow-sm);
 }
 
 .config-card-right {
@@ -19,7 +19,7 @@
     font-weight: 700;
     line-height: 28px;
     letter-spacing: -0.5px;
-    color: #f5a84a;
+    color: var(--app-color-primary-soft);
 }
 
 .time-fields {
@@ -33,3 +33,4 @@
         gap: 4px;
     }
 }
+

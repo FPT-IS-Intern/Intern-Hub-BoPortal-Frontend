@@ -1,6 +1,6 @@
-$red-50: #FEEEED;
-$red-200: #F2685B;
-$red-700: #5F0500;
+$red-50: var(--app-color-danger-50);
+$red-200: var(--app-color-danger-100);
+$red-700: var(--app-color-danger-900);
 
 .error-container {
   display: flex;
@@ -33,3 +33,4 @@ $red-700: #5F0500;
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+

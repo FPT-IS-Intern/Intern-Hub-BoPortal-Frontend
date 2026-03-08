@@ -6,17 +6,17 @@
         align-items: center;
         gap: 10px;
         padding: 6px 14px 6px 6px;
-        background-color: var(--neutral-color-10, #ffffff);
-        border: 1px solid var(--neutral-color-100, #e5e7eb);
+        background-color: var(--neutral-color-10, var(--app-color-white));
+        border: 1px solid var(--neutral-color-100, var(--app-color-border));
         border-radius: 20px;
         cursor: pointer;
         transition: all 0.2s ease;
 
         &:hover,
         &.active {
-            background-color: var(--neutral-color-50, #f9fafb);
-            border-color: var(--brand-200, #fde68a);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            background-color: var(--neutral-color-50, var(--app-color-surface-soft));
+            border-color: var(--brand-200, var(--app-color-brand-200));
+            box-shadow: 0 2px 4px var(--app-shadow-md);
 
             .down-icon-svg {
                 color: var(--brand-600);
@@ -27,7 +27,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: var(--brand-500, #e18308);
+            background-color: var(--brand-500, var(--app-color-primary));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -43,14 +43,14 @@
         .user-name {
             font-size: 14px;
             font-weight: 600;
-            color: var(--neutral-color-900, #111827);
+            color: var(--neutral-color-900, var(--app-color-text-900));
             white-space: nowrap;
         }
 
         .down-icon-svg {
             width: 14px;
             height: 14px;
-            color: var(--neutral-color-400, #9ca3af);
+            color: var(--neutral-color-400, var(--app-color-text-400));
             transition: all 0.2s ease;
 
             &.rotate {
@@ -65,15 +65,15 @@
         right: 0;
         width: 280px;
         background-color: white;
-        border: 1px solid var(--neutral-color-100, #e5e7eb);
+        border: 1px solid var(--neutral-color-100, var(--app-color-border));
         border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 25px var(--app-shadow-lg);
         z-index: 1000;
         padding: 12px;
         animation: slideIn 0.2s ease-out;
 
         .dropdown-user-info {
-            background-color: #fffaf2;
+            background-color: var(--app-color-surface-amber-50);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 8px;
@@ -89,19 +89,19 @@
                 .full-name {
                     font-size: 18px;
                     font-weight: 700;
-                    color: #1a1a1a;
+                    color: var(--app-color-text-950);
                 }
 
                 .user-email {
                     font-size: 14px;
-                    color: #666;
+                    color: var(--app-color-text-666);
                 }
             }
 
             .role-badge {
                 display: inline-flex;
                 align-self: flex-start;
-                background-color: #e18308;
+                background-color: var(--app-color-primary);
                 color: white;
                 padding: 6px 16px;
                 border-radius: 8px;
@@ -115,7 +115,7 @@
         .dropdown-item {
             padding: 12px;
             font-size: 15px;
-            color: #374151;
+            color: var(--app-color-text-700);
             border-radius: 10px;
             cursor: pointer;
             display: flex;
@@ -124,11 +124,11 @@
             transition: all 0.15s ease;
 
             &:hover {
-                background-color: #f9fafb;
-                color: var(--brand-600, #e18308);
+                background-color: var(--app-color-surface-soft);
+                color: var(--brand-600, var(--app-color-primary));
 
                 .item-icon {
-                    color: var(--brand-600, #e18308);
+                    color: var(--brand-600, var(--app-color-primary));
                 }
             }
 
@@ -136,7 +136,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #9ca3af;
+                color: var(--app-color-text-400);
                 width: 20px;
             }
 
@@ -145,22 +145,22 @@
             }
 
             &.danger {
-                color: #e11d48;
+                color: var(--app-color-danger-600);
                 margin-top: 4px;
 
                 .item-label {
-                    color: #e11d48;
+                    color: var(--app-color-danger-600);
                 }
 
                 &:hover {
-                    background-color: #fff1f2;
+                    background-color: var(--app-color-surface-rose-50);
                 }
             }
         }
 
         .dropdown-divider {
             height: 1px;
-            background-color: #f3f4f6;
+            background-color: var(--app-color-surface-soft-2);
             margin: 8px 0;
         }
     }
@@ -177,3 +177,5 @@
         transform: translateY(0);
     }
 }
+
+

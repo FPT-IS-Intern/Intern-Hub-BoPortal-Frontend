@@ -1,9 +1,9 @@
 .matrix-wrapper {
     overflow-x: auto;
     border-radius: 12px;
-    border: 1px solid rgba(10, 47, 77, 0.14);
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--app-color-border-alpha-soft);
+    background: var(--app-color-white);
+    box-shadow: 0 1px 3px var(--app-shadow-sm);
 }
 
 .permission-table {
@@ -13,15 +13,15 @@
 
     th,
     td {
-        border-bottom: 1px solid rgba(2, 48, 94, 0.09);
+        border-bottom: 1px solid var(--app-color-border-alpha-soft-2);
         padding: 12px;
         text-align: center;
         vertical-align: middle;
     }
 
     th {
-        background: #ee8e1b;
-        color: #e9edf1;
+        background: var(--app-color-primary-300);
+        color: var(--app-color-border-soft);
         font-weight: 500;
         font-size: 12px;
         line-height: 16px;
@@ -38,17 +38,17 @@
     }
 
     .cell-function {
-        background: #fed8b3;
-        color: #2a3034;
+        background: var(--app-color-warning-soft-2);
+        color: var(--app-color-text-main);
         font-weight: 500;
     }
 
     .row-alt .cell-function {
-        background: #fff;
+        background: var(--app-color-white);
     }
 
     .cell-checkbox {
-        background: #fff;
+        background: var(--app-color-white);
 
         label {
             margin: 0;
@@ -56,25 +56,27 @@
     }
 
     .row-alt .cell-checkbox {
-        background: #fafafa;
+        background: var(--app-color-surface-neutral-25);
     }
 }
 
 ::ng-deep .ant-checkbox-checked .ant-checkbox-inner {
-    background-color: #E18308 !important;
-    border-color: #E18308 !important;
+    background-color: var(--app-color-primary) !important;
+    border-color: var(--app-color-primary) !important;
 }
 
 ::ng-deep .ant-checkbox-checked .ant-checkbox-inner::after {
-    border-color: #fff !important;
+    border-color: var(--app-color-white) !important;
 }
 
 ::ng-deep .ant-checkbox-wrapper:hover .ant-checkbox-inner,
 ::ng-deep .ant-checkbox:hover .ant-checkbox-inner,
 ::ng-deep .ant-checkbox-input:focus+.ant-checkbox-inner {
-    border-color: #E18308 !important;
+    border-color: var(--app-color-primary) !important;
 }
 
 ::ng-deep .ant-checkbox-checked::after {
-    border: 1px solid #E18308 !important;
+    border: 1px solid var(--app-color-primary) !important;
 }
+
+

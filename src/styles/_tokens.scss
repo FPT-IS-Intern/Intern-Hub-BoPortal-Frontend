@@ -1,0 +1,84 @@
+:root {
+  /* Brand */
+  --app-color-primary: rgb(225, 131, 8);
+  --app-color-primary-hover: rgb(195, 111, 6);
+  --app-color-primary-soft: rgb(245, 168, 74);
+  --app-color-primary-300: rgb(238, 142, 27);
+  --app-color-brand-200: rgb(253, 230, 138);
+  --app-color-primary-500-alpha: rgba(225, 131, 8, 0.5);
+
+  /* Surface */
+  --app-color-layout-bg: rgb(252, 236, 205);
+  --app-color-white: rgb(255, 255, 255);
+  --app-color-white-alpha-80: rgba(255, 255, 255, 0.8);
+  --app-color-surface-muted: rgb(245, 245, 245);
+  --app-color-surface-soft: rgb(249, 250, 251);
+  --app-color-surface-soft-2: rgb(243, 244, 246);
+  --app-color-surface-warm: rgb(255, 247, 237);
+  --app-color-surface-warm-100: rgb(255, 243, 224);
+  --app-color-surface-warm-150: rgb(255, 237, 213);
+  --app-color-surface-warm-200: rgb(255, 251, 247);
+  --app-color-surface-rose-50: rgb(255, 241, 242);
+  --app-color-surface-rose-100: rgb(254, 242, 242);
+  --app-color-surface-amber-50: rgb(255, 250, 242);
+  --app-color-surface-neutral-25: rgb(250, 250, 250);
+
+  /* Text */
+  --app-color-text-main: rgb(42, 48, 52);
+  --app-color-text-main-2: rgb(38, 45, 52);
+  --app-color-text-main-3: rgb(31, 41, 55);
+  --app-color-text-subtle: rgb(130, 143, 150);
+  --app-color-text-subtle-2: rgb(122, 134, 154);
+  --app-color-text-muted: rgb(80, 90, 95);
+  --app-color-text-muted-alpha: rgba(80, 90, 95, 0.45);
+  --app-color-text-900: rgb(17, 24, 39);
+  --app-color-text-950: rgb(26, 26, 26);
+  --app-color-text-700: rgb(55, 65, 81);
+  --app-color-text-600: rgb(75, 85, 99);
+  --app-color-text-500: rgb(107, 114, 128);
+  --app-color-text-400: rgb(156, 163, 175);
+  --app-color-text-666: rgb(102, 102, 102);
+
+  /* Border */
+  --app-color-border: rgb(229, 231, 235);
+  --app-color-border-300: rgb(209, 213, 219);
+  --app-color-border-soft: rgb(233, 237, 241);
+  --app-color-border-muted: rgb(240, 240, 240);
+  --app-color-input-border-alpha: rgba(13, 46, 67, 0.24);
+  --app-color-input-border-alpha-12: rgba(13, 46, 67, 0.12);
+  --app-color-border-alpha-soft: rgba(10, 47, 77, 0.14);
+  --app-color-border-alpha-soft-2: rgba(2, 48, 94, 0.09);
+  --app-color-border-soft-alpha: rgba(233, 237, 241, 0.285);
+  --app-color-placeholder-alpha: rgba(42, 48, 52, 0.45);
+
+  /* Semantic */
+  --app-color-danger: rgb(239, 68, 68);
+  --app-color-danger-dark: rgb(211, 47, 47);
+  --app-color-danger-600: rgb(225, 29, 72);
+  --app-color-danger-100: rgb(242, 104, 91);
+  --app-color-danger-50: rgb(254, 238, 237);
+  --app-color-danger-900: rgb(95, 5, 0);
+  --app-color-warning: rgb(249, 115, 22);
+  --app-color-warning-hover: rgb(245, 124, 0);
+  --app-color-warning-dark: rgb(234, 88, 12);
+  --app-color-warning-soft: rgb(253, 191, 156);
+  --app-color-warning-soft-2: rgb(254, 216, 179);
+
+  /* Alpha / Shadow */
+  --app-color-primary-alpha-8: rgba(225, 131, 8, 0.08);
+  --app-color-primary-alpha-10: rgba(225, 131, 8, 0.1);
+  --app-color-primary-glow: rgba(255, 200, 127, 0.67);
+  --app-shadow-sm: rgba(0, 0, 0, 0.04);
+  --app-shadow-md: rgba(0, 0, 0, 0.05);
+  --app-shadow-lg: rgba(0, 0, 0, 0.1);
+  --app-shadow-xl: rgba(0, 0, 0, 0.12);
+  --app-overlay: rgba(0, 0, 0, 0.5);
+  --app-overlay-muted: rgba(99, 107, 116, 0.6);
+
+  /* Layer */
+  --z-layout: 100;
+  --z-header: 100;
+  --z-sidebar: 100;
+  --z-overlay: 1000;
+  --z-modal: 1100;
+}
