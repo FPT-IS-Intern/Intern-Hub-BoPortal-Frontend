@@ -2,10 +2,11 @@
     <h2 class="card-title">Định dạng hệ thống</h2>
     <div class="field-group">
         <label class="field-label">Ngôn ngữ</label>
-        <nz-select formControlName="language" nzPlaceHolder="Chọn ngôn ngữ" nzAllowClear class="field-select">
+        <select formControlName="language" class="field-select">
+            <option value="" disabled selected>Chọn ngôn ngữ</option>
             @for (opt of languageOptions; track opt.value) {
-            <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+            <option [value]="opt.value">{{ opt.label }}</option>
             }
-        </nz-select>
+        </select>
     </div>
 </section>

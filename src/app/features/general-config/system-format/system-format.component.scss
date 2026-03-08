@@ -35,9 +35,20 @@
 
 .field-select {
     width: 100%;
-}
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid rgba(13, 46, 67, 0.24);
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2a3034;
+    background-color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    appearance: auto;
 
-:deep(.ant-select-selector) {
-    border-radius: 6px !important;
-    border-color: rgba(13, 46, 67, 0.24) !important;
+    &:focus {
+        border-color: #e18308;
+        box-shadow: 0 0 0 2px rgba(225, 131, 8, 0.1);
+    }
 }

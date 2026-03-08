@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @Component({
     selector: 'app-system-format',
@@ -9,7 +8,6 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        NzSelectModule,
     ],
     templateUrl: './system-format.component.html',
     styleUrl: './system-format.component.scss',
