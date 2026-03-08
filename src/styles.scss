@@ -47,17 +47,14 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
   font-family: inherit;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  min-height: 100vh;
   background-color: #FCECCD;
 }
 
 app-root {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  display: block;
+  min-height: 100vh;
   background-color: inherit;
 }
