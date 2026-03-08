@@ -6,6 +6,8 @@ export interface HeaderData {
   userName?: string;
   userAvatar?: string;
   notificationsCount?: number;
+  email?: string;
+  role?: string;
 }
 
 @Component({

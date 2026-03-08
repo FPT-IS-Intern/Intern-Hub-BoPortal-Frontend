@@ -22,6 +22,10 @@ export class BoPortalLayoutComponent {
 
   headerData: HeaderData = {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
+    userName: 'Huỳnh Đức Phú 23',
+    email: 'phuhd5@fpt.com',
+    role: 'FULLSTACK DEVELOPER',
+    notificationsCount: 5,
   };
 
   sidebarData: SidebarData = {
