@@ -1,0 +1,21 @@
+<div class="shared-input-container">
+    @if (headerInput) {
+    <label class="label-text">
+        {{ headerInput }}
+        @if (required) {
+        <span class="required-mark">*</span>
+        }
+    </label>
+    }
+
+    <div class="input-wrapper">
+        <input [type]="typeInput" [placeholder]="placeholder" [required]="required" [ngModel]="value"
+            (ngModelChange)="onValueChange($event)" class="custom-input" />
+
+        @if (icon) {
+        <button type="button" class="icon-button" (click)="onIconClick()">
+            <i [class]="icon"></i>
+        </button>
+        }
+    </div>
+</div>

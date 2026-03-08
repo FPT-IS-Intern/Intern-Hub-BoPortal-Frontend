@@ -67,7 +67,8 @@ $disabled-text: #828F96;
             cursor: pointer;
 
 
-            &:hover:not(:disabled) {
+
+            &:ver:not(:disabled) {
                 background: $orange-hover;
                 transition: all 0.3s;
                 // transform: translateY(-1px);
@@ -86,6 +87,7 @@ $disabled-text: #828F96;
                 gap: 0.5rem;
             }
         }
+
     }
 
     .footer {
