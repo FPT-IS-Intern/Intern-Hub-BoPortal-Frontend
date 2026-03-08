@@ -3,18 +3,15 @@
     <div class="time-fields">
         <div class="field-group">
             <label class="field-label">Thời gian làm việc</label>
-            <nz-time-picker formControlName="workingTime" nzFormat="HH:mm:ss" nzPlaceHolder="hh:mm:ss"
-                class="field-time-picker"></nz-time-picker>
+            <input type="time" formControlName="workingTime" step="1" class="field-time-picker" />
         </div>
         <div class="field-group">
             <label class="field-label">Thời gian tan ca</label>
-            <nz-time-picker formControlName="shiftEndTime" nzFormat="HH:mm:ss" nzPlaceHolder="hh:mm:ss"
-                class="field-time-picker"></nz-time-picker>
+            <input type="time" formControlName="shiftEndTime" step="1" class="field-time-picker" />
         </div>
         <div class="field-group">
             <label class="field-label">Checkout tự động</label>
-            <nz-time-picker formControlName="autoCheckout" nzFormat="HH:mm:ss" nzPlaceHolder="hh:mm:ss"
-                class="field-time-picker"></nz-time-picker>
+            <input type="time" formControlName="autoCheckout" step="1" class="field-time-picker" />
         </div>
     </div>
 </section>

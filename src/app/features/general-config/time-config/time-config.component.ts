@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 
 @Component({
     selector: 'app-time-config',
@@ -9,7 +8,6 @@ import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        NzTimePickerModule,
     ],
     templateUrl: './time-config.component.html',
     styleUrl: './time-config.component.scss',
