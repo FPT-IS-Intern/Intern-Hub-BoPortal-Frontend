@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { NotificationTableComponent } from './notification-table/notification-table.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
 import { ModalPopup } from '../../components/modal-popup/modal-popup';
+import { ConfirmPopup } from '../../components/confirm-popup/confirm-popup';
 
 export interface NotificationRecord {
   id: string;
@@ -68,6 +69,7 @@ function createMockNotifications(total: number): NotificationRecord[] {
     NotificationTableComponent,
     NotificationPaginationComponent,
     ModalPopup,
+    ConfirmPopup,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
@@ -88,6 +90,9 @@ export class NotificationBellComponent {
   protected isModalVisible = false;
   protected selectedRecord: NotificationRecord | null = null;
   protected editContent = '';
+
+  // State cho Confirm Popup
+  protected isConfirmVisible = false;
 
   protected get displayRange(): string {
     if (this.total === 0) {
@@ -141,6 +146,15 @@ export class NotificationBellComponent {
   }
 
   protected onSubmit(): void {
-    console.log('Apply notification config');
+    this.isConfirmVisible = true;
+  }
+
+  protected handleConfirmSave(): void {
+    console.log('Confirmed Save. Calling API...');
+    this.isConfirmVisible = false;
+  }
+
+  protected handleConfirmCancel(): void {
+    this.isConfirmVisible = false;
   }
 }

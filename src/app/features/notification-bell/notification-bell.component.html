@@ -53,4 +53,9 @@
     </div>
     }
   </app-modal-popup>
+
+  <!-- Reusable Confirm Popup -->
+  <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại" message="Bạn có muốn lưu các thay đổi ?"
+    cancelText="Không" confirmText="Có" (confirm)="handleConfirmSave()"
+    (cancel)="handleConfirmCancel()"></app-confirm-popup>
 </div>
