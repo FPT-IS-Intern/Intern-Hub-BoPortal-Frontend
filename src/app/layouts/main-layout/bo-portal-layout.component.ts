@@ -75,44 +75,24 @@ export class BoPortalLayoutComponent {
     // =========================
     menuItems: [
       {
-        iconLeft: SIDEBAR_ICONS.HOME,
-        content: 'Tổng quan',
-        url: '/dashboard',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.FEEDBACK,
-        content: 'Người dùng',
-        url: '/users',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.TRAINING,
-        content: 'Đào tạo',
-        url: '/training',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.PROJECTS,
-        content: 'Báo cáo',
-        url: '/reports',
-      },
-      {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Cấu hình chung',
-        url: '/settings/general',
+        url: '/general',
       },
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Bảo mật',
-        url: '/settings/security',
+        url: '/security',
       },
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Ma trận phân quyền',
-        url: '/settings/permissions',
+        url: '/permissions',
       },
       {
         iconLeft: SIDEBAR_ICONS.NEWS,
         content: 'Chuông thông báo',
-        url: '/settings/notifications/bell',
+        url: '/notifications/bell',
       },
     ],
   };
