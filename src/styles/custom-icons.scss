@@ -36,3 +36,23 @@
 .custom-icon-arrow-right {
   @include custom-icon-file('../assets/icons/arrow-right.svg', 1rem);
 }
+
+.custom-icon-grid {
+  @include custom-icon-file('../assets/icons/grid-01.svg', 1rem);
+}
+
+.custom-icon-eye-off {
+  @include custom-icon-file('../assets/icons/eye-off.svg', 1rem);
+}
+
+.custom-icon-search {
+  @include custom-icon-file('../assets/icons/search.svg', 1.25rem);
+}
+
+.custom-icon-message {
+  @include custom-icon-file('../assets/icons/message.svg', 1.25rem);
+}
+
+.custom-icon-bell {
+  @include custom-icon-file('../assets/icons/bell-01.svg', 1.25rem);
+}

@@ -69,6 +69,9 @@
                 gap: 8px;
 
                 .tab {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
                     padding: 8px 16px;
                     border-radius: 12px;
                     font-size: 14px;
@@ -78,6 +81,11 @@
                     background-color: #f3f4f6;
                     color: #6b7280;
 
+                    .tab-icon {
+                        width: 16px;
+                        height: 16px;
+                    }
+
                     &.active {
                         background-color: #e18308;
                         color: white;
@@ -85,6 +93,7 @@
 
                     &:hover:not(.active) {
                         background-color: #e5e7eb;
+                        color: #111827;
                     }
                 }
             }

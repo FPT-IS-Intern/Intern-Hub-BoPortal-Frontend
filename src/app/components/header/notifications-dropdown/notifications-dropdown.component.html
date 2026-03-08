@@ -1,11 +1,7 @@
 <div class="icon-box-container">
     <div class="icon-box" (click)="toggleNotifications($event)" [class.active]="isNotificationsOpen">
         <div class="badge-container">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
-                stroke-linecap="round" stroke-linejoin="round" class="vanilla-icon">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
+            <span class="custom-icon-bell vanilla-icon"></span>
             <span class="custom-badge" *ngIf="count > 0"></span>
         </div>
     </div>
@@ -14,8 +10,14 @@
     <div class="custom-notifications-menu" *ngIf="isNotificationsOpen">
         <div class="notifications-header">
             <div class="tabs">
-                <div class="tab active">Tất cả</div>
-                <div class="tab">Chưa đọc</div>
+                <div class="tab active">
+                    <span class="custom-icon-grid tab-icon"></span>
+                    Tất cả
+                </div>
+                <div class="tab">
+                    <span class="custom-icon-eye-off tab-icon"></span>
+                    Chưa đọc
+                </div>
             </div>
             <button class="read-all-btn">Đọc hết</button>
         </div>
