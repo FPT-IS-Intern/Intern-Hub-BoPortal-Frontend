@@ -10,6 +10,7 @@ import { SecurityConfigService } from '../../services/security-config.service';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
+import { ConfirmPopup } from '../../components/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-security-config',
@@ -24,6 +25,7 @@ import { SessionSecurityComponent } from './session-security/session-security.co
     PasswordPolicyComponent,
     AccountSecurityComponent,
     SessionSecurityComponent,
+    ConfirmPopup,
   ],
   templateUrl: './security-config.component.html',
   styleUrl: './security-config.component.scss',
@@ -31,6 +33,7 @@ import { SessionSecurityComponent } from './session-security/session-security.co
 })
 export class SecurityConfigComponent implements OnInit {
   protected readonly form: FormGroup;
+  protected isConfirmVisible = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -70,15 +73,25 @@ export class SecurityConfigComponent implements OnInit {
 
   protected onSubmit(): void {
     if (this.form.valid) {
-      this.configService.updateConfig(this.form.value).subscribe({
-        next: () => {
-          this.message.success('Cập nhật cấu hình bảo mật thành công');
-        },
-        error: (err) => {
-          console.error('Update security config error:', err);
-          this.message.error('Cập nhật cấu hình bảo mật thất bại');
-        },
-      });
+      this.isConfirmVisible = true;
     }
+  }
+
+  protected handleConfirmSave(): void {
+    this.configService.updateConfig(this.form.value).subscribe({
+      next: () => {
+        this.message.success('Cập nhật cấu hình bảo mật thành công');
+        this.isConfirmVisible = false;
+      },
+      error: (err) => {
+        console.error('Update security config error:', err);
+        this.message.error('Cập nhật cấu hình bảo mật thất bại');
+        this.isConfirmVisible = false;
+      },
+    });
+  }
+
+  protected handleConfirmCancel(): void {
+    this.isConfirmVisible = false;
   }
 }

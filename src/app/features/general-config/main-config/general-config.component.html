@@ -33,4 +33,8 @@
       Áp dụng
     </button>
   </div>
+
+  <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
+    message="Bạn có muốn lưu các thay đổi cấu hình chung?" cancelText="Không" confirmText="Có"
+    (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
 </div>

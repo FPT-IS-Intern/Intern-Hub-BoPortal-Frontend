@@ -10,6 +10,7 @@ import { GeneralInfoComponent } from '../general-info/general-info.component';
 import { SystemFormatComponent } from '../system-format/system-format.component';
 import { TimeConfigComponent } from '../time-config/time-config.component';
 import { GeneralConfigService } from '../../../services/general-config.service';
+import { ConfirmPopup } from '../../../components/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-general-config',
@@ -24,6 +25,7 @@ import { GeneralConfigService } from '../../../services/general-config.service';
     GeneralInfoComponent,
     SystemFormatComponent,
     TimeConfigComponent,
+    ConfirmPopup,
   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss',
@@ -31,6 +33,7 @@ import { GeneralConfigService } from '../../../services/general-config.service';
 })
 export class GeneralConfigComponent implements OnInit {
   protected readonly form: FormGroup;
+  protected isConfirmVisible = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -66,15 +69,25 @@ export class GeneralConfigComponent implements OnInit {
 
   protected onSubmit(): void {
     if (this.form.valid) {
-      this.configService.updateConfig(this.form.value).subscribe({
-        next: () => {
-          this.message.success('Cập nhật cấu hình thành công');
-        },
-        error: (err) => {
-          console.error('Update config error:', err);
-          this.message.error('Cập nhật cấu hình thất bại');
-        },
-      });
+      this.isConfirmVisible = true;
     }
+  }
+
+  protected handleConfirmSave(): void {
+    this.configService.updateConfig(this.form.value).subscribe({
+      next: () => {
+        this.message.success('Cập nhật cấu hình thành công');
+        this.isConfirmVisible = false;
+      },
+      error: (err) => {
+        console.error('Update config error:', err);
+        this.message.error('Cập nhật cấu hình thất bại');
+        this.isConfirmVisible = false;
+      },
+    });
+  }
+
+  protected handleConfirmCancel(): void {
+    this.isConfirmVisible = false;
   }
 }

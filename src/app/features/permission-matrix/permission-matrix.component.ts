@@ -11,6 +11,7 @@ import { PermissionService } from '../../services/permission.service';
 import { PermissionRow } from '../../models/permission.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
+import { ConfirmPopup } from '../../components/confirm-popup/confirm-popup';
 
 const PERMISSION_COLUMNS = [
   { key: 'create', label: 'Tạo' },
@@ -34,6 +35,7 @@ const PERMISSION_COLUMNS = [
     NzIconModule,
     RoleSelectorComponent,
     PermissionTableComponent,
+    ConfirmPopup,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',
@@ -52,6 +54,7 @@ export class PermissionMatrixComponent implements OnInit {
   protected selectedRole: string | null = 'admin';
   protected permissionRows: PermissionRow[] = [];
   protected isLoading = false;
+  protected isConfirmVisible = false;
 
   ngOnInit(): void {
     this.loadPermissions();
@@ -102,6 +105,14 @@ export class PermissionMatrixComponent implements OnInit {
       this.message.warning('Vui lòng chọn vai trò');
       return;
     }
+    this.isConfirmVisible = true;
+  }
+
+  protected handleConfirmSave(): void {
+    if (!this.selectedRole) {
+      this.isConfirmVisible = false;
+      return;
+    }
 
     this.isLoading = true;
     this.cdr.markForCheck();
@@ -115,11 +126,19 @@ export class PermissionMatrixComponent implements OnInit {
       .subscribe({
         next: () => {
           this.message.success('Cập nhật phân quyền thành công');
+          this.isConfirmVisible = false;
+          this.cdr.markForCheck();
         },
         error: (err) => {
           console.error('Update permissions error:', err);
           this.message.error('Cập nhật phân quyền thất bại');
+          this.isConfirmVisible = false;
+          this.cdr.markForCheck();
         },
       });
+  }
+
+  protected handleConfirmCancel(): void {
+    this.isConfirmVisible = false;
   }
 }
