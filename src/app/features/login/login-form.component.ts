@@ -44,13 +44,13 @@ export class LoginFormComponent {
                 password: this.password()
             }));
 
-            if (res.status) {
-                this.error.set(res.status.message || 'Sai mật khẩu hoặc tên đăng nhập');
-            } else if (res.data) {
+            if (res.data && res.status?.code === '200') {
                 this.tokenService.saveTokens(res.data.accessToken, res.data.refreshToken);
                 this.router.navigate(['/general']);
+            } else if (res.status?.message) {
+                this.error.set(res.status.message);
             } else {
-                this.error.set('Không nhận được thông tin xác thực');
+                this.error.set('Sai mật khẩu hoặc tên đăng nhập');
             }
         } catch (err) {
             this.error.set('Lỗi kết nối server');
