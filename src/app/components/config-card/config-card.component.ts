@@ -16,5 +16,6 @@ export class ConfigCardComponent {
     @Input({ required: true }) controlName!: string;
     @Input() type: 'number' | 'select' = 'number';
     @Input() unit?: string;
+    @Input() textAlign: 'left' | 'center' | 'right' = 'left';
     @Input() options: { label: string; value: any }[] = [];
 }

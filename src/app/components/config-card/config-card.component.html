@@ -2,9 +2,9 @@
     <h2 class="card-title">{{ title }}</h2>
     <div class="field-row">
         @if (type === 'number') {
-        <input type="number" [formControlName]="controlName" class="field-input" />
+        <input type="number" [formControlName]="controlName" class="field-input" [style.textAlign]="textAlign" />
         } @else if (type === 'select') {
-        <select [formControlName]="controlName" class="field-select">
+        <select [formControlName]="controlName" class="field-select" [style.textAlign]="textAlign">
             <option value="" disabled selected>Chọn</option>
             @for (opt of options; track opt.value) {
             <option [value]="opt.value">{{ opt.label }}</option>
