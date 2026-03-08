@@ -5,8 +5,15 @@ import { PermissionMatrixComponent } from './features/permission-matrix/permissi
 import { NotificationBellComponent } from './features/notification-bell/notification-bell.component';
 import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
+import { LoginFormComponent } from './features/login/login-form.component';
+import { authGuard } from './core/guards/auth.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 export const routes: Routes = [
+  {
+    path: 'login',
+    component: LoginFormComponent,
+  },
   {
     path: '',
     redirectTo: 'general',
@@ -15,6 +22,7 @@ export const routes: Routes = [
   {
     path: '',
     component: BoPortalLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'general',
@@ -27,6 +35,7 @@ export const routes: Routes = [
       {
         path: 'permissions',
         component: PermissionMatrixComponent,
+        canActivate: [permissionGuard('Ma trận phân quyền')],
       },
       {
         path: 'notifications',

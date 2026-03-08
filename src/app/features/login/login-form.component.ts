@@ -1,9 +1,11 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
+import { LoginRequest, LoginResponse } from '../../models/auth.model';
+import { TokenStorageService } from '../../services/token-storage.service';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
 import { InputTextComponent } from "@goat-bravos/intern-hub-layout";
 
@@ -12,10 +14,13 @@ import { InputTextComponent } from "@goat-bravos/intern-hub-layout";
     standalone: true,
     imports: [CommonModule, RouterLink, ErrorMessageComponent, InputTextComponent],
     templateUrl: './login-form.component.html',
-    styleUrls: ['./login-form.component.scss']
+    styleUrls: ['./login-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginFormComponent {
     private authService = inject(AuthService);
+    private tokenService = inject(TokenStorageService);
+    private router = inject(Router);
 
     // State quản lý bằng signals
     username = signal('');
@@ -41,7 +46,10 @@ export class LoginFormComponent {
 
             if (res.status) {
                 this.error.set(res.status.message || 'Sai mật khẩu hoặc tên đăng nhập');
-            } else if (!res.data) {
+            } else if (res.data) {
+                this.tokenService.saveTokens(res.data.accessToken, res.data.refreshToken);
+                this.router.navigate(['/general']);
+            } else {
                 this.error.set('Không nhận được thông tin xác thực');
             }
         } catch (err) {
@@ -52,6 +60,6 @@ export class LoginFormComponent {
     }
 
     togglePassword() {
-        this.showPassword.update(v => !v);
+        this.showPassword.update((v: boolean) => !v);
     }
 }

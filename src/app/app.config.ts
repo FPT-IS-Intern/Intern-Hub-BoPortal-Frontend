@@ -6,32 +6,22 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
-import { HttpInterceptorFn, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor, configureAuthInterceptor } from '@goat-bravos/shared-lib-client';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
 import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
 import localeVi from '@angular/common/locales/vi';
 
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 registerLocaleData(localeVi);
-
-/**
- * Cấu hình danh sách path KHÔNG gắn Bearer token.
- * Tất cả path được quản lý tập trung tại đây.
- */
-configureAuthInterceptor({
-  excludedPaths: [
-    '/auth/refresh',
-  ],
-});
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor as unknown as HttpInterceptorFn])),
+    provideHttpClient(withInterceptors([authInterceptor])),
     { provide: NZ_I18N, useValue: vi_VN },
     { provide: LOCALE_ID, useValue: 'vi' },
     {
