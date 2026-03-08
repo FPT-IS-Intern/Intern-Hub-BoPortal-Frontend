@@ -30,4 +30,27 @@
       Áp dụng
     </button>
   </div>
+
+  <!-- Reusable Modal Popup -->
+  <app-modal-popup [(isVisible)]="isModalVisible" title="Chỉnh sửa nội dung" cancelText="Cancel" saveText="Lưu"
+    (save)="handleModalSave()" (cancel)="handleModalCancel()">
+    @if (selectedRecord) {
+    <div style="margin-bottom: 16px;">
+      <span style="font-weight: 600; color: #374151;">Mã thông báo:</span>
+      <span style="margin-left: 8px;">{{ selectedRecord.code }}</span>
+    </div>
+
+    <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Nội dung</div>
+    <div style="position: relative;">
+      <textarea [(ngModel)]="editContent"
+        style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; resize: vertical; outline: none; transition: border-color 0.2s;"
+        (focus)="onTextareaFocus($event)" maxlength="255">
+        </textarea>
+      <!-- Bộ đếm ký tự -->
+      <div style="position: absolute; right: 12px; bottom: 12px; font-size: 12px; color: #9ca3af;">
+        {{ editContent.length }}/255
+      </div>
+    </div>
+    }
+  </app-modal-popup>
 </div>

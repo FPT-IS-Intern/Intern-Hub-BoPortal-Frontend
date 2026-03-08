@@ -7,6 +7,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule } from '@angular/forms';
 import { NotificationTableComponent } from './notification-table/notification-table.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
+import { ModalPopup } from '../../components/modal-popup/modal-popup';
 
 export interface NotificationRecord {
   id: string;
@@ -66,6 +67,7 @@ function createMockNotifications(total: number): NotificationRecord[] {
     NzIconModule,
     NotificationTableComponent,
     NotificationPaginationComponent,
+    ModalPopup,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
@@ -82,6 +84,11 @@ export class NotificationBellComponent {
     return this.allNotifications.slice(startIndex, startIndex + this.pageSize);
   }
 
+  // State cho Modal Popup
+  protected isModalVisible = false;
+  protected selectedRecord: NotificationRecord | null = null;
+  protected editContent = '';
+
   protected get displayRange(): string {
     if (this.total === 0) {
       return '0-0';
@@ -93,7 +100,31 @@ export class NotificationBellComponent {
   }
 
   protected onEdit(record: NotificationRecord): void {
-    console.log('Edit:', record);
+    this.selectedRecord = { ...record };
+    this.editContent = record.content;
+    this.isModalVisible = true;
+  }
+
+  protected handleModalSave(): void {
+    if (this.selectedRecord) {
+      // Cập nhật lại list gốc (trong thực tế sẽ gọi API lưu)
+      const index = this.allNotifications.findIndex((n) => n.id === this.selectedRecord?.id);
+      if (index !== -1) {
+        this.allNotifications[index].content = this.editContent;
+      }
+      this.isModalVisible = false;
+      this.selectedRecord = null;
+    }
+  }
+
+  protected handleModalCancel(): void {
+    this.isModalVisible = false;
+    this.selectedRecord = null;
+  }
+
+  protected onTextareaFocus(event: FocusEvent): void {
+    const el = event.target as HTMLTextAreaElement;
+    el.style.borderColor = '#f97316';
   }
 
   protected onApproveAll(): void {
