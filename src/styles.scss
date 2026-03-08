@@ -51,4 +51,13 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: #FCECCD;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background-color: inherit;
 }
