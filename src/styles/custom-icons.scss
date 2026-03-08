@@ -70,3 +70,7 @@
 .custom-icon-users {
   @include custom-icon-file('/assets/icons/users-check.svg', 1.25rem);
 }
+
+.custom-icon-refresh {
+  @include custom-icon-file('/assets/icons/refresh-ccw.svg', 1.25rem);
+}
