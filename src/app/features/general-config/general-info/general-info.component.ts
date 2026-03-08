@@ -1,9 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-general-info',
@@ -11,9 +8,6 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NzInputModule,
-    NzButtonModule,
-    NzIconModule,
   ],
   templateUrl: './general-info.component.html',
   styleUrl: './general-info.component.scss',

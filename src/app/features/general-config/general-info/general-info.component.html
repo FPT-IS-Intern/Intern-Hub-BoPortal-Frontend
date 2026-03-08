@@ -3,60 +3,43 @@
   <div class="card-fields">
     <div class="field-group">
       <label class="field-label">Tên ứng dụng</label>
-      <input
-        nz-input
-        formControlName="appName"
-        placeholder="Điền tên ứng dụng..."
-        class="field-input"
-      />
+      <input formControlName="appName" placeholder="Điền tên ứng dụng..." class="field-input" />
     </div>
     <div class="field-group upload-group">
       <label class="field-label">Logo</label>
       <div class="logo-upload-area">
         <div class="logo-preview">
           @if (logoFile(); as file) {
-            <img
-              [src]="file.url"
-              alt="Logo"
-              class="logo-img"
-            />
+          <img [src]="file.url" alt="Logo" class="logo-img" />
           } @else {
-            <div class="logo-placeholder">
-              <span class="logo-placeholder-text">FPT IS</span>
-            </div>
+          <div class="logo-placeholder">
+            <span class="logo-placeholder-text">FPT IS</span>
+          </div>
           }
         </div>
         <div class="upload-actions">
-          <button
-            nz-button
-            nzType="default"
-            nzSize="small"
-            class="upload-btn"
-            type="button"
-            (click)="fileInput.click()"
-          >
-            <span nz-icon nzType="upload" nzTheme="outline"></span>
+          <button class="upload-btn" type="button" (click)="fileInput.click()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
             Tải file lên
           </button>
-          <input
-            #fileInput
-            type="file"
-            accept="image/*"
-            hidden
-            (change)="onFileSelect($event)"
-          />
+          <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelect($event)" />
           @if (logoFile(); as file) {
-            <div class="file-info">
-              <span class="file-name">{{ file.name }}</span>
-              <button
-                type="button"
-                class="remove-btn"
-                (click)="removeLogo(); $event.stopPropagation()"
-                aria-label="Xóa file"
-              >
-                <span nz-icon nzType="close" nzTheme="outline"></span>
-              </button>
-            </div>
+          <div class="file-info">
+            <span class="file-name">{{ file.name }}</span>
+            <button type="button" class="remove-btn" (click)="removeLogo(); $event.stopPropagation()"
+              aria-label="Xóa file">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
           }
         </div>
       </div>
