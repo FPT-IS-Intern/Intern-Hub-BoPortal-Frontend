@@ -7,10 +7,11 @@
                 <app-shared-input-text headerInput="Tên đăng nhập" placeholder="Nhập tên đăng nhập" [required]="true"
                     [value]="username()" (valueChange)="username.set($event)"></app-shared-input-text>
 
-                <app-shared-input-text headerInput="Mật khẩu" placeholder="Nhập mật khẩu"
+                <app-shared-input-text headerInput="Mật khẩu" placeholder="Nhập mật khẩu" [required]="true"
                     [typeInput]="showPassword() ? 'text' : 'password'"
-                    [icon]="showPassword() ? 'dsi-eye-off-line' : 'dsi-eye-line'" (iconClick)="togglePassword()"
-                    [value]="password()" (valueChange)="password.set($event)"></app-shared-input-text>
+                    [icon]="showPassword() ? 'assets/icons/eye-off.svg' : 'assets/icons/eye.svg'"
+                    (iconClick)="togglePassword()" [value]="password()"
+                    (valueChange)="password.set($event)"></app-shared-input-text>
             </div>
 
             @if (error()) {

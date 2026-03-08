@@ -14,7 +14,11 @@
 
         @if (icon) {
         <button type="button" class="icon-button" (click)="onIconClick()">
+            @if (icon.includes('.')) {
+            <img [src]="icon" alt="icon" class="input-icon-img" />
+            } @else {
             <i [class]="icon"></i>
+            }
         </button>
         }
     </div>
