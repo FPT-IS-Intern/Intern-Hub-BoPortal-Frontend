@@ -11,7 +11,12 @@ export interface LoginRequest {
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
+  user?: {
+    id: string;
+    username: string;
+    fullName: string;
+    role: string;
+  };
   tokenType?: string;
   expiresIn?: number;
 }
-
