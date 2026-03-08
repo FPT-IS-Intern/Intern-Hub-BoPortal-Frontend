@@ -3,56 +3,70 @@
   width: $size !important;
   height: $size !important;
   background-color: currentColor !important;
-  -webkit-mask: url($path) center/contain no-repeat !important;
-  mask: url($path) center/contain no-repeat !important;
+  -webkit-mask: url($path) no-repeat center !important;
+  mask: url($path) no-repeat center !important;
+  -webkit-mask-size: contain !important;
+  mask-size: contain !important;
   vertical-align: middle;
   flex-shrink: 0;
 }
 
 .custom-icon-home {
-  @include custom-icon-file('../assets/icons/home.svg');
+  @include custom-icon-file('/assets/icons/home.svg');
 }
 
 .custom-icon-feedback {
-  @include custom-icon-file('../assets/icons/feedback.svg');
+  @include custom-icon-file('/assets/icons/feedback.svg');
 }
 
 .custom-icon-training {
-  @include custom-icon-file('../assets/icons/training.svg');
+  @include custom-icon-file('/assets/icons/training.svg');
 }
 
 .custom-icon-projects {
-  @include custom-icon-file('../assets/icons/projects.svg');
+  @include custom-icon-file('/assets/icons/projects.svg');
 }
 
 .custom-icon-news {
-  @include custom-icon-file('../assets/icons/news.svg');
+  @include custom-icon-file('/assets/icons/news.svg');
 }
 
 .custom-icon-arrow-left {
-  @include custom-icon-file('../assets/icons/arrow-left.svg', 1rem);
+  @include custom-icon-file('/assets/icons/arrow-left.svg', 1rem);
 }
 
 .custom-icon-arrow-right {
-  @include custom-icon-file('../assets/icons/arrow-right.svg', 1rem);
+  @include custom-icon-file('/assets/icons/arrow-right.svg', 1rem);
 }
 
 .custom-icon-grid {
-  @include custom-icon-file('../assets/icons/grid-01.svg', 1rem);
+  @include custom-icon-file('/assets/icons/grid-01.svg', 1rem);
 }
 
 .custom-icon-eye-off {
-  @include custom-icon-file('../assets/icons/eye-off.svg', 1rem);
+  @include custom-icon-file('/assets/icons/eye-off.svg', 1rem);
 }
 
 .custom-icon-search {
-  @include custom-icon-file('../assets/icons/search.svg', 1.25rem);
+  @include custom-icon-file('/assets/icons/search.svg', 1.25rem);
 }
 
 .custom-icon-message {
-  @include custom-icon-file('../assets/icons/message.svg', 1.25rem);
+  @include custom-icon-file('/assets/icons/message.svg', 1.25rem);
 }
 
 .custom-icon-bell {
-  @include custom-icon-file('../assets/icons/bell-01.svg', 1.25rem);
+  @include custom-icon-file('/assets/icons/bell-01.svg', 1.25rem);
+}
+
+.custom-icon-settings {
+  @include custom-icon-file('/assets/icons/settings-01.svg', 1.25rem);
+}
+
+.custom-icon-lock {
+  @include custom-icon-file('/assets/icons/lock-01.svg', 1.25rem);
+}
+
+.custom-icon-users {
+  @include custom-icon-file('/assets/icons/users-check.svg', 1.25rem);
 }

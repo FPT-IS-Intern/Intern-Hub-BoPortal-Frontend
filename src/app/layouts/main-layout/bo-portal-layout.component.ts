@@ -79,22 +79,22 @@ export class BoPortalLayoutComponent {
     // =========================
     menuItems: [
       {
-        iconLeft: SIDEBAR_ICONS.NEWS,
+        iconLeft: SIDEBAR_ICONS.SETTINGS,
         content: 'Cấu hình chung',
         url: '/general',
       },
       {
-        iconLeft: SIDEBAR_ICONS.NEWS,
+        iconLeft: SIDEBAR_ICONS.LOCK,
         content: 'Bảo mật',
         url: '/security',
       },
       {
-        iconLeft: SIDEBAR_ICONS.NEWS,
+        iconLeft: SIDEBAR_ICONS.USERS,
         content: 'Ma trận phân quyền',
         url: '/permissions',
       },
       {
-        iconLeft: SIDEBAR_ICONS.NEWS,
+        iconLeft: SIDEBAR_ICONS.BELL,
         content: 'Chuông thông báo',
         url: '/notifications',
       },

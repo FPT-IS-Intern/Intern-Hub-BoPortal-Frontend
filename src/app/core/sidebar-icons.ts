@@ -36,4 +36,24 @@ export const SIDEBAR_ICONS = {
     width: '16px',
     height: '16px',
   },
+  SETTINGS: {
+    icon: 'custom-icon-settings',
+    width: '20px',
+    height: '20px',
+  },
+  LOCK: {
+    icon: 'custom-icon-lock',
+    width: '20px',
+    height: '20px',
+  },
+  USERS: {
+    icon: 'custom-icon-users',
+    width: '20px',
+    height: '20px',
+  },
+  BELL: {
+    icon: 'custom-icon-bell',
+    width: '20px',
+    height: '20px',
+  },
 } satisfies Record<string, IconData>;
