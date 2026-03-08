@@ -36,6 +36,8 @@
     outline: none;
     transition: all 0.2s ease;
     box-sizing: border-box;
+    position: relative;
+    z-index: 2;
 
     &:hover {
         border-color: rgba(225, 131, 8, 0.5);
@@ -53,5 +55,37 @@
     &::-webkit-calendar-picker-indicator {
         cursor: pointer;
         filter: invert(48%) sepia(91%) saturate(2250%) hue-rotate(10deg) brightness(98%) contrast(96%);
+        position: relative;
+        z-index: 3;
     }
+
+    // Hide native placeholder when empty and not focused
+    &:not(.has-value):not(:focus) {
+        color: transparent;
+
+        &::-webkit-datetime-edit-text,
+        &::-webkit-datetime-edit-hour-field,
+        &::-webkit-datetime-edit-minute-field,
+        &::-webkit-datetime-edit-second-field,
+        &::-webkit-datetime-edit-ampm-field {
+            color: transparent;
+        }
+    }
+}
+
+.placeholder-overlay {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: rgba(42, 48, 52, 0.45);
+    pointer-events: none;
+    user-select: none;
+    z-index: 3;
+}
+
+.custom-input:focus+.placeholder-overlay,
+.custom-input.has-value+.placeholder-overlay {
+    display: none;
 }

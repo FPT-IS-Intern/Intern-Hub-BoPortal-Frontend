@@ -9,7 +9,10 @@
     }
 
     <div class="input-wrapper">
-        <input type="time" [formControlName]="controlName" [placeholder]="placeholder" [required]="required" step="1"
-            class="custom-input" />
+        <input type="time" [formControlName]="controlName" [required]="required" step="1" class="custom-input"
+            [class.has-value]="form.get(controlName)?.value" />
+        @if (placeholder && !form.get(controlName)?.value) {
+        <span class="placeholder-overlay">{{ placeholder }}</span>
+        }
     </div>
 </div>
