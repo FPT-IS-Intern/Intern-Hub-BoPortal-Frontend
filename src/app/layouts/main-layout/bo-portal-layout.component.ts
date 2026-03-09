@@ -139,14 +139,26 @@ export class BoPortalLayoutComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      const res = await firstValueFrom(this.authService.me());
-      if (res.data) {
-        const user = res.data;
-        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : 'USER';
+      const res: any = await firstValueFrom(this.authService.me());
+      console.log('User profile response:', res);
+
+      let user: any = null;
+      if (res.data && res.data.user) {
+        user = res.data.user;
+      } else if (res.data) {
+        user = res.data;
+      } else if (res.user) {
+        user = res.user;
+      } else {
+        user = res;
+      }
+
+      if (user && user.username) {
+        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : (user.role || 'USER');
 
         this.headerData = {
           ...this.headerData,
-          userName: user.displayName || user.username,
+          userName: user.displayName || user.fullName || user.username || 'User',
           email: user.username,
           role: roleStr,
         };
