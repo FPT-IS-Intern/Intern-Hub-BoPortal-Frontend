@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
-import { LoginRequest, LoginResponse } from '../../models/auth.model';
+import { LoginRequest } from '../../models/auth.model';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
 import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
@@ -63,3 +63,4 @@ export class LoginFormComponent {
         this.showPassword.update((v: boolean) => !v);
     }
 }
+

@@ -1,22 +1,28 @@
 export interface LogoutRequest {
-  accessToken: string;
   refreshToken: string;
 }
 
 export interface LoginRequest {
   username: string;
-  password?: string;
+  password: string;
+  deviceId?: string;
+}
+
+export interface BoAdminProfile {
+  id: string;
+  username: string;
+  displayName?: string;
+  fullName?: string;
+  roles?: string[];
+  role?: string;
+  permissions?: string[];
 }
 
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  user?: {
-    id: string;
-    username: string;
-    fullName: string;
-    role: string;
-  };
   tokenType?: string;
   expiresIn?: number;
+  refreshExpiresIn?: number;
+  user?: BoAdminProfile;
 }
