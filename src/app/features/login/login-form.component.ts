@@ -8,6 +8,7 @@ import { LoginRequest } from '../../models/auth.model';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
 import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
+import { resolveApiErrorMessage, resolveBusinessMessage } from '../../core/errors/api-error-message.util';
 
 @Component({
     selector: 'app-login-form',
@@ -22,14 +23,12 @@ export class LoginFormComponent {
     private tokenService = inject(TokenStorageService);
     private router = inject(Router);
 
-    // State quản lý bằng signals
     username = signal('');
     password = signal('');
     error = signal<string | null>(null);
     isLoading = signal(false);
     showPassword = signal(false);
 
-    // Logic kiểm tra nút bấm
     checkInputRequired = computed(() => this.username().trim() === '' || this.password().trim() === '');
 
     async handleSubmit() {
@@ -39,21 +38,20 @@ export class LoginFormComponent {
         this.isLoading.set(true);
 
         try {
-            const res = await firstValueFrom(this.authService.login({
+            const request: LoginRequest = {
                 username: this.username(),
-                password: this.password()
-            }));
+                password: this.password(),
+            };
+            const res = await firstValueFrom(this.authService.login(request));
 
             if (res.data && res.status?.code === '200') {
                 this.tokenService.saveTokens(res.data.accessToken, res.data.refreshToken);
                 this.router.navigate(['/general']);
-            } else if (res.status?.message) {
-                this.error.set(res.status.message);
             } else {
-                this.error.set('Sai mật khẩu hoặc tên đăng nhập');
+                this.error.set(resolveBusinessMessage(res.status?.code, res.status?.message));
             }
         } catch (err) {
-            this.error.set('Lỗi kết nối server');
+            this.error.set(resolveApiErrorMessage(err));
         } finally {
             this.isLoading.set(false);
         }
@@ -63,4 +61,3 @@ export class LoginFormComponent {
         this.showPassword.update((v: boolean) => !v);
     }
 }
-
