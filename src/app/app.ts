@@ -11,6 +11,7 @@ import {
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -24,12 +25,13 @@ export class App implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
 
   isLoginRoute = false;
+
   headerData: HeaderData = {
-    logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
-    userName: 'Diddy',
-    email: 'diddy@fpt.com',
-    role: 'SUPPER ADMIN',
-    notificationsCount: 5,
+    logo: 'assets/FPT-IS-Logo.png',
+    userName: '',
+    email: '',
+    role: '',
+    notificationsCount: 0,
   };
 
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
@@ -39,8 +41,41 @@ export class App implements OnInit, OnDestroy {
     this.router.events.pipe(takeUntilDestroyed()).subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
         this.isLoginRoute = event.urlAfterRedirects.includes('/login');
+        // Fetch user info when navigating to a non-login route if not already loaded
+        if (!this.isLoginRoute && StorageUtil.getAccessToken()) {
+          this.fetchUserProfile();
+        }
       }
     });
+  }
+
+  async fetchUserProfile() {
+    try {
+      const res: any = await firstValueFrom(this.authService.me());
+      let user: any = null;
+      if (res.data && res.data.user) {
+        user = res.data.user;
+      } else if (res.data) {
+        user = res.data;
+      } else if (res.user) {
+        user = res.user;
+      } else {
+        user = res;
+      }
+
+      if (user && user.username) {
+        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : (user.role || 'USER');
+
+        this.headerData = {
+          ...this.headerData,
+          userName: user.displayName || user.fullName || user.username || 'User',
+          email: user.username,
+          role: roleStr,
+        };
+      }
+    } catch (e) {
+      console.error('Failed to load user profile in layout:', e);
+    }
   }
 
   ngOnInit(): void {

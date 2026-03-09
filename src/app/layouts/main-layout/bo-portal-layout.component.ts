@@ -1,12 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
-import { HeaderComponent, HeaderData } from '../../components/header/header.component';
+import { HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-bo-portal-layout',
@@ -15,8 +13,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './bo-portal-layout.component.html',
   styleUrls: ['./bo-portal-layout.component.scss'],
 })
-export class BoPortalLayoutComponent implements OnInit {
-  private authService = inject(AuthService);
+export class BoPortalLayoutComponent {
   // Mobile sidebar state
   isMobileSidebarOpen = false;
 
@@ -136,36 +133,4 @@ export class BoPortalLayoutComponent implements OnInit {
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
   }
-
-  async ngOnInit(): Promise<void> {
-    try {
-      const res: any = await firstValueFrom(this.authService.me());
-      console.log('User profile response:', res);
-
-      let user: any = null;
-      if (res.data && res.data.user) {
-        user = res.data.user;
-      } else if (res.data) {
-        user = res.data;
-      } else if (res.user) {
-        user = res.user;
-      } else {
-        user = res;
-      }
-
-      if (user && user.username) {
-        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : (user.role || 'USER');
-
-        this.headerData = {
-          ...this.headerData,
-          userName: user.displayName || user.fullName || user.username || 'User',
-          email: user.username,
-          role: roleStr,
-        };
-      }
-    } catch (e) {
-      console.error('Failed to load user profile in layout:', e);
-    }
-  }
 }
-
