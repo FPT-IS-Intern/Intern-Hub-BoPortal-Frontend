@@ -1,4 +1,5 @@
 export interface PermissionRow {
+    resourceId?: number;
     function: string;
     create: boolean;
     view: boolean;
@@ -7,7 +8,7 @@ export interface PermissionRow {
     approve: boolean;
     approver: boolean;
     crudTask: boolean;
-    [key: string]: string | boolean; // Allow string indexing for easier binding
+    [key: string]: string | boolean | number | undefined;
 }
 
 export interface PermissionMatrixResponse {

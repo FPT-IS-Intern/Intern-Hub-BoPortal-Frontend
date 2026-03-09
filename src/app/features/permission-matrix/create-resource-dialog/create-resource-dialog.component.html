@@ -1,0 +1,14 @@
+<app-modal-popup [isVisible]="isVisible" (isVisibleChange)="onVisibilityChange($event)" title="Tạo tài nguyên mới"
+  saveText="Tạo" cancelText="Hủy" [okDisabled]="!isValid" (save)="onSave()">
+  <div class="dialog-form">
+    <app-shared-input-text headerInput="Tên tài nguyên" placeholder="Nhập tên tài nguyên" [required]="true"
+      [value]="name" (valueChange)="name = $event">
+    </app-shared-input-text>
+    <app-shared-input-text headerInput="Mã tài nguyên" placeholder="Nhập mã tài nguyên" [required]="true"
+      [value]="code" (valueChange)="code = $event">
+    </app-shared-input-text>
+    <app-shared-input-text headerInput="Mô tả" placeholder="Nhập mô tả" [value]="description"
+      (valueChange)="description = $event">
+    </app-shared-input-text>
+  </div>
+</app-modal-popup>

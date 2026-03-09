@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { AuthzRole } from '../../../models/authz.model';
 
 @Component({
     selector: 'app-role-selector',
@@ -13,12 +14,12 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     styleUrl: './role-selector.component.scss',
 })
 export class RoleSelectorComponent {
-    @Input() roles: { label: string; value: string }[] = [];
-    @Input() selectedRole: string | null = null;
-    @Output() roleChange = new EventEmitter<string | null>();
+    @Input() roles: AuthzRole[] = [];
+    @Input() selectedRole: number | null = null;
+    @Output() roleChange = new EventEmitter<number | null>();
     @Output() refresh = new EventEmitter<void>();
 
-    onRoleChange(value: string | null): void {
+    onRoleChange(value: number | null): void {
         this.roleChange.emit(value);
     }
 
