@@ -22,7 +22,7 @@ export interface HeaderData {
 export class HeaderComponent {
   @Input() data: HeaderData = {
     logo: 'assets/FPT-IS-Logo.png',
-    userName: 'Huynh Duc Ph...',
+    userName: '',
     notificationsCount: 0,
   };
 

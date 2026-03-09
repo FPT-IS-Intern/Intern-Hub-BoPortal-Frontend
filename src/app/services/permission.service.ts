@@ -4,7 +4,7 @@ import { Observable, of, delay } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { getBaseUrl } from '../core/config/app-config';
 import { PermissionRow } from '../models/permission.model';
-import { MOCK_PERMISSIONS } from '../core/mock-data/permission-matrix.mock';
+
 
 @Injectable({
     providedIn: 'root',
@@ -15,9 +15,9 @@ export class PermissionService {
     constructor(private readonly http: HttpClient) { }
 
     getPermissions(role: string): Observable<ResponseApi<PermissionRow[]>> {
-        // Simulated API call with mock data
+        // API call to get permissions
         return of({
-            data: MOCK_PERMISSIONS,
+            data: [],
             status: 200,
             timestamp: new Date().toISOString()
         } as any).pipe(delay(500));

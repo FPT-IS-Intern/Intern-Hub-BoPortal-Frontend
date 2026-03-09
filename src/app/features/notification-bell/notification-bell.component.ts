@@ -10,8 +10,7 @@ import { NotificationPaginationComponent } from './notification-pagination/notif
 import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
-import { NotificationRecord, createMockNotifications } from '../../core/mock-data/notifications.mock';
-
+import { NotificationRecord } from '../../models/notification.model';
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
@@ -33,7 +32,7 @@ import { NotificationRecord, createMockNotifications } from '../../core/mock-dat
 export class NotificationBellComponent {
   protected pageIndex = 1;
   protected pageSize = 10;
-  protected readonly allNotifications: NotificationRecord[] = createMockNotifications(200);
+  protected readonly allNotifications: NotificationRecord[] = [];
   protected total = this.allNotifications.length;
   protected pageSizeOptions = [10, 20, 50];
 

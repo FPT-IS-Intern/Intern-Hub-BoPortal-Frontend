@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { HeaderComponent, HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-bo-portal-layout',
@@ -13,7 +15,8 @@ import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
   templateUrl: './bo-portal-layout.component.html',
   styleUrls: ['./bo-portal-layout.component.scss'],
 })
-export class BoPortalLayoutComponent {
+export class BoPortalLayoutComponent implements OnInit {
+  private authService = inject(AuthService);
   // Mobile sidebar state
   isMobileSidebarOpen = false;
 
@@ -22,10 +25,10 @@ export class BoPortalLayoutComponent {
 
   headerData: HeaderData = {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
-    userName: 'Diddy',
-    email: 'diddy@fpt.com',
-    role: 'SUPPER ADMIN',
-    notificationsCount: 5,
+    userName: '',
+    email: '',
+    role: '',
+    notificationsCount: 0,
   };
 
   sidebarData: SidebarData = {
@@ -133,4 +136,24 @@ export class BoPortalLayoutComponent {
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
   }
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const res = await firstValueFrom(this.authService.me());
+      if (res.data) {
+        const user = res.data;
+        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : 'USER';
+
+        this.headerData = {
+          ...this.headerData,
+          userName: user.displayName || user.username,
+          email: user.username,
+          role: roleStr,
+        };
+      }
+    } catch (e) {
+      console.error('Failed to load user profile in layout:', e);
+    }
+  }
 }
+
