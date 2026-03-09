@@ -23,7 +23,6 @@ export class App implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
-  // Thêm trạng thái Header cho toàn ứng dụng
   isLoginRoute = false;
   headerData: HeaderData = {
     logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
@@ -56,6 +55,19 @@ export class App implements OnInit, OnDestroy {
     window.removeEventListener('FORCE_LOGOUT', this.onForceLogout);
   }
 
+  handleLogout(): void {
+    const refreshToken = StorageUtil.getRefreshToken();
+    if (!refreshToken) {
+      this.handleForceLogout();
+      return;
+    }
+
+    this.authService.logout({ refreshToken }).subscribe({
+      next: () => this.handleForceLogout(),
+      error: () => this.handleForceLogout(),
+    });
+  }
+
   private handleAuthTokenExpired(): void {
     const refreshToken = StorageUtil.getRefreshToken();
     if (!refreshToken) {
@@ -85,6 +97,6 @@ export class App implements OnInit, OnDestroy {
   private handleForceLogout(): void {
     cancelTokenRefresh();
     StorageUtil.clearAll();
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/login']);
   }
 }

@@ -1,2 +1,6 @@
-<app-header-component [data]="headerData" [showControls]="!isLoginRoute"></app-header-component>
+<app-header-component
+  [data]="headerData"
+  [showControls]="!isLoginRoute"
+  (logoutRequested)="handleLogout()">
+</app-header-component>
 <router-outlet></router-outlet>
