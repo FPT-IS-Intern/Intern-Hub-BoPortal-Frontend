@@ -44,7 +44,7 @@ export class LoginFormComponent {
             };
             const res = await firstValueFrom(this.authService.login(request));
 
-            if (res.data && res.status?.code === '200') {
+            if (res.data && (res.status?.code === '200' || res.status?.code === '0000')) {
                 this.tokenService.saveTokens(res.data.accessToken, res.data.refreshToken);
                 this.router.navigate(['/general']);
             } else {
