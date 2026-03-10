@@ -7,10 +7,11 @@ export const authGuard: CanActivateFn = (route, state) => {
     const tokenService = inject(TokenStorageService);
 
     if (tokenService.isAuthenticated()) {
+        console.log('authGuard: Authenticated. Access granted.');
         return true;
     }
 
-    // Chuyển hướng về login nếu chưa đăng nhập
+    console.warn('authGuard: Not authenticated. Redirecting to /login...');
     router.navigate(['/login']);
     return false;
 };
