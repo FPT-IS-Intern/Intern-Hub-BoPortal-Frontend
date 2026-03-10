@@ -7,7 +7,7 @@ import { environment } from './environments/environment';
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 (globalThis as any).__env = {
-  apiUrl: isLocal ? 'http://localhost:8386' : 'https://internhub-v2.bbtech.io.vn/api',
+  apiUrl: isLocal ? 'http://localhost:8386' : 'https://admin-internhub-v2.bbtech.io.vn',
   storageFileBaseUrl: (environment as any).storageFileBaseUrl,
 };
 
