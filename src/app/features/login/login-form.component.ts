@@ -45,8 +45,12 @@ export class LoginFormComponent {
             const res = await firstValueFrom(this.authService.login(request));
 
             if (res.data && (res.status?.code === '200' || res.status?.code === '0000')) {
+                console.log('Login successful. Saving tokens...');
                 this.tokenService.saveTokens(res.data.accessToken, res.data.refreshToken);
-                this.router.navigate(['/general']);
+
+                // Skip /me and general-config calls on login success as requested
+                console.log('Login successful. Navigate directly to main layout.');
+                this.router.navigate(['/main']);
             } else {
                 this.error.set(resolveBusinessMessage(res.status?.code, res.status?.message));
             }

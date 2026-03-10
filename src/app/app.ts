@@ -7,11 +7,11 @@ import {
   StorageUtil,
   cancelTokenRefresh,
   notifyTokenRefreshed,
-} from '@goat-bravos/shared-lib-client';
+} from './core/utils/storage.util';
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { firstValueFrom } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { firstValueFrom, filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -41,29 +41,13 @@ export class App implements OnInit, OnDestroy {
     this.router.events.pipe(takeUntilDestroyed()).subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
         this.isLoginRoute = event.urlAfterRedirects.includes('/login');
-        // Fetch user info when navigating to a non-login route if not already loaded
-        if (!this.isLoginRoute && StorageUtil.getAccessToken()) {
-          this.fetchUserProfile();
-        }
       }
     });
-  }
 
-  async fetchUserProfile() {
-    try {
-      const res: any = await firstValueFrom(this.authService.me());
-      let user: any = null;
-      if (res.data && res.data.user) {
-        user = res.data.user;
-      } else if (res.data) {
-        user = res.data;
-      } else if (res.user) {
-        user = res.user;
-      } else {
-        user = res;
-      }
-
-      if (user && user.username) {
+    // React to user profile changes
+    toObservable(this.authService.userProfile)
+      .pipe(takeUntilDestroyed(), filter(Boolean))
+      .subscribe((user: any) => {
         const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : (user.role || 'USER');
 
         this.headerData = {
@@ -72,18 +56,20 @@ export class App implements OnInit, OnDestroy {
           email: user.username,
           role: roleStr,
         };
-      }
-    } catch (e) {
-      console.error('Failed to load user profile in layout:', e);
-    }
+      });
   }
 
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
 
+    // Do not auto-fetch /me and /general-config on startup to honor the no-call-on-login request
+    // (lazy loaded by each feature as needed)
+
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.addEventListener('FORCE_LOGOUT', this.onForceLogout);
   }
+
+  // fetchUserProfile is now replaced by service signal observation
 
   ngOnDestroy(): void {
     window.removeEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);

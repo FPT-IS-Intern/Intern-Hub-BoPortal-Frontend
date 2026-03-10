@@ -22,8 +22,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
                 // Xử lý khi token hết hạn hoặc không hợp lệ
+                // Không tự động chuyển về /login, chỉ báo lỗi để UI quyết định.
                 tokenService.clearTokens();
-                router.navigate(['/login']);
+                console.warn('authInterceptor: 401 nhận được, giữ trên trang hiện tại.');
             }
             return throwError(() => error);
         })
