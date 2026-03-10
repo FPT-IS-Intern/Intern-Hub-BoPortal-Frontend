@@ -40,7 +40,6 @@ export const routes: Routes = [
       {
         path: 'permissions',
         component: PermissionMatrixComponent,
-        canActivate: [permissionGuard('Ma trận phân quyền')],
       },
       {
         path: 'notifications',
