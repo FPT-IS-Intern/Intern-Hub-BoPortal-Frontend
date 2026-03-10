@@ -1,5 +1,5 @@
 export interface PermissionRow {
-    resourceId?: number;
+    resourceId?: string;
     function: string;
     create: boolean;
     view: boolean;

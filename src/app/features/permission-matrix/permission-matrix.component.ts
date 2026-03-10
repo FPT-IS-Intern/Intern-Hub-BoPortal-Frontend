@@ -9,10 +9,9 @@ import { RoleSelectorComponent } from './role-selector/role-selector.component';
 import { PermissionTableComponent } from './permission-table/permission-table.component';
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
-import { PermissionService } from '../../services/permission.service';
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
-import { AuthzRole, ResourcePermission } from '../../models/authz.model';
+import { AuthzRole, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
@@ -45,14 +44,13 @@ const PERMISSION_COLUMNS = [
   styleUrl: './permission-matrix.component.scss',
 })
 export class PermissionMatrixComponent implements OnInit {
-  private readonly permissionService = inject(PermissionService);
   private readonly authzService = inject(AuthzService);
   private readonly message = inject(NzMessageService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected roles: AuthzRole[] = [];
-  protected selectedRoleId: number | null = null;
+  protected selectedRoleId: string | null = null;
   protected permissionRows: PermissionRow[] = [];
   protected isLoading = false;
   protected isConfirmVisible = false;
@@ -82,7 +80,7 @@ export class PermissionMatrixComponent implements OnInit {
     });
   }
 
-  protected onRoleChange(roleId: number | null): void {
+  protected onRoleChange(roleId: string | null): void {
     this.selectedRoleId = roleId;
     if (roleId != null) {
       this.loadPermissions();
@@ -103,9 +101,8 @@ export class PermissionMatrixComponent implements OnInit {
     this.isLoading = true;
     this.cdr.markForCheck();
 
-    // TODO: Replace with real GET permissions-by-role API when available
-    this.permissionService
-      .getPermissions(String(this.selectedRoleId))
+    this.authzService
+      .getRolePermissions(this.selectedRoleId)
       .pipe(finalize(() => {
         this.isLoading = false;
         this.cdr.markForCheck();
@@ -113,7 +110,7 @@ export class PermissionMatrixComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res.data) {
-            this.permissionRows = res.data;
+            this.permissionRows = this.mapRolePermissionsToRows(res.data);
             this.cdr.markForCheck();
           }
         },
@@ -122,6 +119,23 @@ export class PermissionMatrixComponent implements OnInit {
           this.message.error('Không thể tải dữ liệu phân quyền');
         },
       });
+  }
+
+  private mapRolePermissionsToRows(permissions: AuthzRolePermission[]): PermissionRow[] {
+    return permissions.map((p) => {
+      const actions = p.permissions ?? [];
+      return {
+        resourceId: p.resource.id,
+        function: p.resource.id,
+        create: actions.includes('create'),
+        view: actions.includes('view'),
+        update: actions.includes('update'),
+        delete: actions.includes('delete'),
+        approve: actions.includes('approve'),
+        approver: false,
+        crudTask: false,
+      };
+    });
   }
 
   protected onSubmit(): void {
@@ -170,6 +184,7 @@ export class PermissionMatrixComponent implements OnInit {
         next: () => {
           this.message.success('Cập nhật phân quyền thành công');
           this.isConfirmVisible = false;
+          this.loadPermissions();
           this.cdr.markForCheck();
         },
         error: (err) => {

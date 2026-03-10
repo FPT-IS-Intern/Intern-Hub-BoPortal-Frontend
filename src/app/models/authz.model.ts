@@ -1,23 +1,28 @@
 export interface AuthzRole {
-  id: number;
+  id: string;
   name: string;
   description: string;
   status: string;
 }
 
 export interface AuthzResource {
-  id: number;
+  id: string;
   name: string;
   code: string;
   description: string;
-  categoryId: number;
+  categoryId: string;
 }
 
 export interface ResourcePermission {
-  id: number;
+  id: string;
   permissions: number[];
 }
 
 export interface UpdateRolePermissionsRequest {
   resources: ResourcePermission[];
+}
+
+export interface AuthzRolePermission {
+  resource: { id: string };
+  permissions: string[];
 }

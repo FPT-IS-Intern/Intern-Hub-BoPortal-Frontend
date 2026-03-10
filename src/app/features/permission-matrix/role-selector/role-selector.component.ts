@@ -15,11 +15,11 @@ import { AuthzRole } from '../../../models/authz.model';
 })
 export class RoleSelectorComponent {
     @Input() roles: AuthzRole[] = [];
-    @Input() selectedRole: number | null = null;
-    @Output() roleChange = new EventEmitter<number | null>();
+    @Input() selectedRole: string | null = null;
+    @Output() roleChange = new EventEmitter<string | null>();
     @Output() refresh = new EventEmitter<void>();
 
-    onRoleChange(value: number | null): void {
+    onRoleChange(value: string | null): void {
         this.roleChange.emit(value);
     }
 
