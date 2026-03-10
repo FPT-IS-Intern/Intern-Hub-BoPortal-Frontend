@@ -4,8 +4,10 @@ import { appConfig } from './app/app.config';
 import { environment } from './environments/environment';
 
 // Trigger deploy
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
 (globalThis as any).__env = {
-  apiUrl: environment.apiUrl,
+  apiUrl: isLocal ? 'http://localhost:8386' : 'https://internhub-v2.bbtech.io.vn/api',
   storageFileBaseUrl: (environment as any).storageFileBaseUrl,
 };
 
