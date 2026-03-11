@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { getBaseUrl } from '../core/config/app-config';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../models/authz.model';
-import { PermissionRow } from '../models/permission.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthzService {
@@ -30,8 +29,8 @@ export class AuthzService {
     );
   }
 
-  getResources(roleId: string): Observable<ResponseApi<PermissionRow[]>> {
-    return this.http.get<ResponseApi<PermissionRow[]>>(`${this.baseUrl}/roles/${roleId}/resource`);
+  getAllResources(): Observable<ResponseApi<AuthzResource[]>> {
+    return this.http.get<ResponseApi<AuthzResource[]>>(`${this.baseUrl}/resources`);
   }
 
   getRolePermissions(roleId: string): Observable<ResponseApi<AuthzRolePermission[]>> {

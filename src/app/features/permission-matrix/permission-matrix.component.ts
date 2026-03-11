@@ -11,7 +11,7 @@ import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dial
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
-import { AuthzRole, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
+import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
@@ -50,6 +50,7 @@ export class PermissionMatrixComponent implements OnInit {
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected roles: AuthzRole[] = [];
+  protected allResources: AuthzResource[] = [];
   protected selectedRoleId: string | null = null;
   protected permissionRows: PermissionRow[] = [];
   protected isLoading = false;
@@ -58,7 +59,24 @@ export class PermissionMatrixComponent implements OnInit {
   protected isCreateResourceVisible = false;
 
   ngOnInit(): void {
+    this.loadResources();
     this.loadRoles();
+  }
+
+  protected loadResources(): void {
+    this.authzService.getAllResources().subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.allResources = res.data;
+          this.buildPermissionRows();
+          this.cdr.markForCheck();
+        }
+      },
+      error: (err) => {
+        console.error('Load resources error:', err);
+        this.message.error('Không thể tải danh sách tài nguyên');
+      },
+    });
   }
 
   protected loadRoles(): void {
@@ -85,14 +103,17 @@ export class PermissionMatrixComponent implements OnInit {
     if (roleId != null) {
       this.loadPermissions();
     } else {
-      this.permissionRows = [];
+      this.buildPermissionRows();
       this.cdr.markForCheck();
     }
   }
 
   protected onRefresh(): void {
+    this.loadResources();
     this.loadRoles();
-    this.loadPermissions();
+    if (this.selectedRoleId != null) {
+      this.loadPermissions();
+    }
   }
 
   protected loadPermissions(): void {
@@ -110,7 +131,7 @@ export class PermissionMatrixComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res.data) {
-            this.permissionRows = this.mapRolePermissionsToRows(res.data);
+            this.buildPermissionRows(res.data);
             this.cdr.markForCheck();
           }
         },
@@ -121,17 +142,22 @@ export class PermissionMatrixComponent implements OnInit {
       });
   }
 
-  private mapRolePermissionsToRows(permissions: AuthzRolePermission[]): PermissionRow[] {
-    return permissions.map((p) => {
-      const actions = p.permissions ?? [];
+  private buildPermissionRows(rolePermissions: AuthzRolePermission[] = []): void {
+    const permMap = new Map<string, string[]>();
+    for (const p of rolePermissions) {
+      permMap.set(String(p.resource.id), p.permissions ?? []);
+    }
+
+    this.permissionRows = this.allResources.map((resource) => {
+      const actions = permMap.get(String(resource.id)) ?? [];
       return {
-        resourceId: p.resource.id,
-        function: p.resource.id,
+        resourceId: resource.id,
+        function: resource.name,
         create: actions.includes('create'),
-        view: actions.includes('view'),
+        view: actions.includes('read'),
         update: actions.includes('update'),
         delete: actions.includes('delete'),
-        approve: actions.includes('approve'),
+        approve: actions.includes('review'),
         approver: false,
         crudTask: false,
       };
@@ -220,21 +246,9 @@ export class PermissionMatrixComponent implements OnInit {
       next: (res) => {
         this.message.success('Tạo tài nguyên thành công');
         this.isCreateResourceVisible = false;
-        if (res.data) {
-          this.permissionRows = [
-            ...this.permissionRows,
-            {
-              resourceId: res.data.id,
-              function: res.data.name,
-              create: false,
-              view: false,
-              update: false,
-              delete: false,
-              approve: false,
-              approver: false,
-              crudTask: false,
-            },
-          ];
+        this.loadResources();
+        if (this.selectedRoleId != null) {
+          this.loadPermissions();
         }
         this.cdr.markForCheck();
       },
