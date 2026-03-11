@@ -70,6 +70,7 @@ export class PermissionMatrixComponent implements OnInit {
           this.allResources = res.data;
           this.buildPermissionRows();
           this.cdr.markForCheck();
+          console.log("All Resources:", res.data);
         }
       },
       error: (err) => {
