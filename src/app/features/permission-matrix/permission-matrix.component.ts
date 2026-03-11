@@ -150,6 +150,7 @@ export class PermissionMatrixComponent implements OnInit {
 
     this.permissionRows = this.allResources.map((resource) => {
       const actions = permMap.get(String(resource.id)) ?? [];
+      console.log("ResourceId:", resource.id, "Actions:", actions, "Name:", resource.name);
       return {
         resourceId: resource.id,
         function: resource.name,
