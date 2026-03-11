@@ -83,27 +83,5 @@
 
     }
 
-    .footer {
-        margin-top: 8px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        font-size: 12px;
 
-        .link {
-            color: var(--app-color-primary-hover);
-            text-decoration: none;
-            font-weight: 500;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-
-        .register-text {
-            margin: 0 !important;
-            color: var(--app-color-text-666);
-        }
-    }
 }
