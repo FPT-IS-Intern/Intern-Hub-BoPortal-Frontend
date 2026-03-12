@@ -3,6 +3,7 @@ import { DynamicDsService } from 'dynamic-ds';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
+import { GeneralConfigService } from './services/general-config.service';
 import {
   StorageUtil,
   cancelTokenRefresh,
@@ -22,12 +23,15 @@ export class App implements OnInit, OnDestroy {
   private readonly themeService = inject(DynamicDsService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly configService = inject(GeneralConfigService);
 
   isLoginRoute = false;
 
   headerData = computed<HeaderData>(() => {
     const user = this.authService.userProfile();
-    const logo = 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg';
+    const config = this.configService.configSignal();
+    const defaultLogo = 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg';
+    const logo = config?.logoUrl || defaultLogo;
 
     if (!user) {
       return {
@@ -67,9 +71,10 @@ export class App implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
 
-    // Fetch /me if already logged in to populate header
+    // Fetch /me and system config if already logged in to populate header
     if (StorageUtil.getAccessToken()) {
       this.authService.me().subscribe();
+      this.configService.getConfig().subscribe();
     }
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
