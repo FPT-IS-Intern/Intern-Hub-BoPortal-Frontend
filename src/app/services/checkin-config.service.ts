@@ -18,6 +18,27 @@ export class CheckinConfigService {
     return this.http.get<CheckinConfigResponse>(`${this.baseUrl}/branches/with-checkin-rules`);
   }
 
+  // --- Branches CRUD ---
+  getBranches(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/branches`);
+  }
+
+  getBranchById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/branches/${id}`);
+  }
+
+  createBranch(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/branches`, data);
+  }
+
+  updateBranch(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/branches/${id}`, data);
+  }
+
+  deleteBranch(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/branches/${id}`);
+  }
+
   // --- IP Ranges ---
   createIPRange(data: Partial<IPRange>): Observable<any> {
     return this.http.post(`${this.baseUrl}/allowed-ip-ranges`, data);
