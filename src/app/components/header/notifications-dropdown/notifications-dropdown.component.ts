@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, ElementRef } from '@angular/core';
+import { Component, Input, HostListener, ElementRef, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
     styleUrls: ['./notifications-dropdown.component.scss'],
 })
 export class NotificationsDropdownComponent {
-    @Input() count: number = 0;
+    count = input(0);
 
     isNotificationsOpen = false;
 

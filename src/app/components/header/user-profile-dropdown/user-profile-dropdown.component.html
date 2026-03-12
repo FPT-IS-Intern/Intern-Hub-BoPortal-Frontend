@@ -7,7 +7,7 @@
                 <circle cx="12" cy="7" r="4"></circle>
             </svg>
         </div>
-        <span class="user-name">{{ data.displayName || data.userName }}</span>
+        <span class="user-name">{{ data().displayName || data().userName }}</span>
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
             stroke-linecap="round" stroke-linejoin="round" class="down-icon-svg" [class.rotate]="isDropdownOpen">
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -18,11 +18,11 @@
     <div class="custom-dropdown-menu" *ngIf="isDropdownOpen">
         <div class="dropdown-user-info">
             <div class="user-details">
-                <span class="full-name">{{ data.displayName }}</span>
-                <span class="user-email">{{ data.userName }}</span>
+                <span class="full-name">{{ data().displayName }}</span>
+                <span class="user-email">{{ data().userName }}</span>
             </div>
-            <div class="roles-container" *ngIf="data.roles && data.roles.length > 0">
-                <div class="role-badge" *ngFor="let role of data.roles">
+            <div class="roles-container" *ngIf="data().roles && (data().roles?.length ?? 0) > 0">
+                <div class="role-badge" *ngFor="let role of data().roles">
                     {{ role.replace('ROLE_', '').replace('_', ' ') }}
                 </div>
             </div>

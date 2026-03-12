@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderData } from '../header.component';
 
@@ -10,7 +10,7 @@ import { HeaderData } from '../header.component';
     styleUrls: ['./user-profile-dropdown.component.scss'],
 })
 export class UserProfileDropdownComponent {
-    @Input() data!: HeaderData;
+    data = input.required<HeaderData>();
     @Output() logout = new EventEmitter<void>();
 
     isDropdownOpen = false;

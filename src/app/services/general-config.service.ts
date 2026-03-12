@@ -9,7 +9,7 @@ import { GeneralConfig } from '../models/general-config.model';
     providedIn: 'root',
 })
 export class GeneralConfigService {
-    private readonly baseUrl = `${getBaseUrl()}/general-config`;
+    private readonly baseUrl = `${getBaseUrl()}/bo-portal/system-config`;
     private _config = signal<GeneralConfig | null>(null);
 
     constructor(private readonly http: HttpClient) { }

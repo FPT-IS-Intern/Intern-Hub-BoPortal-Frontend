@@ -2,7 +2,7 @@
     <div class="icon-box" (click)="toggleNotifications($event)" [class.active]="isNotificationsOpen">
         <div class="badge-container">
             <span class="custom-icon-bell vanilla-icon"></span>
-            <span class="custom-badge" *ngIf="count > 0"></span>
+            <span class="custom-badge" *ngIf="count() > 0"></span>
         </div>
     </div>
 

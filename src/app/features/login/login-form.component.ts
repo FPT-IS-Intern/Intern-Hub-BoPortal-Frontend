@@ -1,6 +1,6 @@
 import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
@@ -13,7 +13,7 @@ import { resolveApiErrorMessage, resolveBusinessMessage } from '../../core/error
 @Component({
     selector: 'app-login-form',
     standalone: true,
-    imports: [CommonModule, RouterLink, ErrorMessageComponent, SharedInputTextComponent],
+    imports: [CommonModule, ErrorMessageComponent, SharedInputTextComponent],
     templateUrl: './login-form.component.html',
     styleUrls: ['./login-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

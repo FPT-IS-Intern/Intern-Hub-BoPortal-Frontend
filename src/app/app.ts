@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, computed } from '@angular/core';
 import { DynamicDsService } from 'dynamic-ds';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -10,8 +10,7 @@ import {
 } from './core/utils/storage.util';
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { firstValueFrom, filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -26,13 +25,33 @@ export class App implements OnInit, OnDestroy {
 
   isLoginRoute = false;
 
-  headerData: HeaderData = {
-    logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
-    userName: '',
-    email: '',
-    role: '',
-    notificationsCount: 0,
-  };
+  headerData = computed<HeaderData>(() => {
+    const user = this.authService.userProfile();
+    const logo = 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg';
+
+    if (!user) {
+      return {
+        logo,
+        userName: '',
+        notificationsCount: 0,
+      };
+    }
+
+    const roleStr = user.roles && user.roles.length > 0
+      ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ')
+      : (user.role || 'USER');
+
+    return {
+      logo,
+      displayName: user.displayName || user.fullName || user.username || 'User',
+      userName: user.username || '',
+      email: user.username,
+      role: roleStr,
+      roles: user.roles || [],
+      permissions: user.permissions || [],
+      notificationsCount: 0,
+    };
+  });
 
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
@@ -43,23 +62,6 @@ export class App implements OnInit, OnDestroy {
         this.isLoginRoute = event.urlAfterRedirects.includes('/login');
       }
     });
-
-    // React to user profile changes
-    toObservable(this.authService.userProfile)
-      .pipe(takeUntilDestroyed(), filter(Boolean))
-      .subscribe((user: any) => {
-        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : (user.role || 'USER');
-
-        this.headerData = {
-          ...this.headerData,
-          displayName: user.displayName || 'Super Admin',
-          userName: user.username || '',
-          email: user.username,
-          role: roleStr,
-          roles: user.roles || [],
-          permissions: user.permissions || [],
-        };
-      });
   }
 
   ngOnInit(): void {

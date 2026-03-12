@@ -34,10 +34,11 @@ export class GeneralConfigComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       appName: ['', []],
-      language: [null as string | null, []],
-      workingTime: [null as Date | null, []],
-      shiftEndTime: [null as Date | null, []],
-      autoCheckout: [null as Date | null, []],
+      logoUrl: [null as string | null, []],
+      defaultLanguage: [null as string | null, []],
+      workStartTime: [null as string | null, []],
+      workEndTime: [null as string | null, []],
+      autoCheckoutTime: [null as string | null, []],
     });
   }
 
