@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -31,6 +31,7 @@ export class GeneralConfigComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly configService: GeneralConfigService,
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
       appName: ['', []],
@@ -51,6 +52,7 @@ export class GeneralConfigComponent implements OnInit {
       next: (res) => {
         if (res.data) {
           this.form.patchValue(res.data);
+          this.cdr.markForCheck();
         }
       },
       error: (err) => {

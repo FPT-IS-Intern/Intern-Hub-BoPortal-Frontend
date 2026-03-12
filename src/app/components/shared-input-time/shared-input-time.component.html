@@ -1,18 +1,18 @@
-<div class="shared-input-container" [formGroup]="form">
-    @if (label) {
+<div class="shared-input-container" [formGroup]="form()">
+    @if (label()) {
     <label class="label-text">
-        {{ label }}
-        @if (required) {
+        {{ label() }}
+        @if (required()) {
         <span class="required-mark">*</span>
         }
     </label>
     }
 
     <div class="input-wrapper">
-        <input type="time" [formControlName]="controlName" [required]="required" step="1" class="custom-input"
-            [class.has-value]="form.get(controlName)?.value" />
-        @if (placeholder && !form.get(controlName)?.value) {
-        <span class="placeholder-overlay">{{ placeholder }}</span>
+        <input type="time" [formControlName]="controlName()" [required]="required()" step="1" class="custom-input"
+            [class.has-value]="value()" />
+        @if (placeholder() && !value()) {
+        <span class="placeholder-overlay">{{ placeholder() }}</span>
         }
     </div>
 </div>

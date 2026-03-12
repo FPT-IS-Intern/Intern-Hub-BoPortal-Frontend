@@ -1,6 +1,8 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { switchMap, startWith, of } from 'rxjs';
 
 @Component({
     selector: 'app-shared-input-time',
@@ -11,9 +13,18 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SharedInputTimeComponent {
-    @Input({ required: true }) form!: FormGroup;
-    @Input({ required: true }) controlName!: string;
-    @Input() label?: string;
-    @Input() placeholder?: string;
-    @Input() required = false;
+    form = input.required<FormGroup>();
+    controlName = input.required<string>();
+    label = input<string>();
+    placeholder = input<string>();
+    required = input(false);
+
+    protected readonly value = toSignal(
+        toObservable(this.controlName).pipe(
+            switchMap(name => {
+                const control = this.form().get(name);
+                return control ? control.valueChanges.pipe(startWith(control.value)) : of(null);
+            })
+        )
+    );
 }
