@@ -5,15 +5,18 @@ import { HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { IconData } from '@goat-bravos/intern-hub-layout';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
+import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
+import { BreadcrumbService } from '../../services/breadcrumb.service';
 
 @Component({
   selector: 'app-bo-portal-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, BreadcrumbComponent],
   templateUrl: './bo-portal-layout.component.html',
   styleUrls: ['./bo-portal-layout.component.scss'],
 })
 export class BoPortalLayoutComponent {
+  protected readonly breadcrumbService = inject(BreadcrumbService);
   // Mobile sidebar state
   isMobileSidebarOpen = false;
 
