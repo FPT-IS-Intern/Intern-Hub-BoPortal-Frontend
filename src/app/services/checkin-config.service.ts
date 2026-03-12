@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { getBaseUrl } from '../core/config/app-config';
 import { CheckinConfigResponse, IPRange, AttendanceLocation } from '../models/checkin-config.model';
 
 @Injectable({
@@ -9,13 +9,13 @@ import { CheckinConfigResponse, IPRange, AttendanceLocation } from '../models/ch
 })
 export class CheckinConfigService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/bo-portal`;
+  private readonly baseUrl = `${getBaseUrl()}/bo-portal`;
 
   /**
    * Fetch all branches with their nested check-in configurations
    */
   getCheckinConfigs(): Observable<CheckinConfigResponse> {
-    return this.http.get<CheckinConfigResponse>(`${environment.apiUrl}/branches/with-checkin-rules`);
+    return this.http.get<CheckinConfigResponse>(`${this.baseUrl}/branches/with-checkin-rules`);
   }
 
   // CRUD for IP Ranges

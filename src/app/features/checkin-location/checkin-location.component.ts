@@ -2,7 +2,6 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -15,20 +14,25 @@ import { ToastService } from '../../services/toast.service';
 import { BranchCheckinConfig, IPRange, AttendanceLocation } from '../../models/checkin-config.model';
 import { UpsertLocationDialogComponent } from './dialogs/upsert-location-dialog.component';
 import { UpsertIPRangeDialogComponent } from './dialogs/upsert-ip-range-dialog.component';
+import { BranchSidebarComponent } from './components/branch-sidebar/branch-sidebar.component';
+import { LocationTabComponent } from './components/location-tab/location-tab.component';
+import { IpTabComponent } from './components/ip-tab/ip-tab.component';
 
 @Component({
   selector: 'app-checkin-location',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
+    CommonModule,
+    RouterModule,
     FormsModule,
-    NzTabsModule,
+    NoDataComponent,
     NzInputModule,
     NzIconModule,
     NzButtonModule,
     NzModalModule,
-    NoDataComponent
+    BranchSidebarComponent,
+    LocationTabComponent,
+    IpTabComponent
   ],
   templateUrl: './checkin-location.component.html',
   styleUrl: './checkin-location.component.scss'
@@ -44,18 +48,7 @@ export class CheckinLocationComponent implements OnInit {
   protected readonly selectedBranch = signal<BranchCheckinConfig | null>(null);
   protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
-  protected readonly searchQuery = signal('');
   protected activeTabIndex = 0;
-
-  // Computed
-  protected readonly filteredBranches = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    if (!query) return this.branches();
-    return this.branches().filter(b => 
-      b.name.toLowerCase().includes(query) || 
-      b.description?.toLowerCase().includes(query)
-    );
-  });
 
   ngOnInit(): void {
     this.breadcrumbService.setBreadcrumbs([
