@@ -74,6 +74,9 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   protected handleConfirmSave(): void {
+    this.isConfirmVisible = false;
+    this.cdr.markForCheck();
+
     let updateObs: Observable<any>;
 
     if (this.selectedLogoFile) {
@@ -92,14 +95,14 @@ export class GeneralConfigComponent implements OnInit {
     updateObs.subscribe({
       next: () => {
         this.toastService.success('Cập nhật cấu hình thành công', 'Hệ thống');
-        this.isConfirmVisible = false;
         this.selectedLogoFile = null;
         this.configService.getConfig().subscribe(); // Refresh cache
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Update config error:', err);
         this.toastService.error('Cập nhật cấu hình thất bại', 'Lỗi');
-        this.isConfirmVisible = false;
+        this.cdr.markForCheck();
       },
     });
   }
