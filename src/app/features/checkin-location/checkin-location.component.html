@@ -1,0 +1,186 @@
+<div class="page-body">
+  <header class="page-header">
+    <h1 class="page-title">Cấu hình Check-in</h1>
+  </header>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <span nz-icon nzType="loading" class="main-loader"></span>
+    </div>
+  } @else if (isError()) {
+    <app-no-data 
+      title="Không thể tải dữ liệu" 
+      message="Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.">
+      <span icon class="custom-icon-error" style="width: 64px; height: 64px; opacity: 0.2;"></span>
+      <button action class="retry-btn" (click)="fetchConfigs()">Thử lại</button>
+    </app-no-data>
+  } @else {
+    <div class="master-detail-container">
+      <!-- Master: Branch List -->
+      <aside class="master-panel">
+        <div class="search-box">
+          <nz-input-group [nzPrefix]="prefixIcon">
+            <input type="text" nz-input placeholder="Tìm chi nhánh..." [(ngModel)]="searchQuery" />
+          </nz-input-group>
+          <ng-template #prefixIcon><span nz-icon nzType="search"></span></ng-template>
+        </div>
+
+        <div class="branch-list">
+          @for (branch of filteredBranches(); track branch.id) {
+            <div class="branch-item" [class.active]="selectedBranch()?.id === branch.id" (click)="selectBranch(branch)">
+              <div class="branch-icon">
+                <span icon class="custom-icon-box-iso"></span>
+              </div>
+              <div class="branch-info">
+                <div class="branch-name">{{ branch.name }}</div>
+                <div class="branch-status" [class.inactive]="!branch.isActive">
+                  {{ branch.isActive ? 'Hoạt động' : 'Tạm dừng' }}
+                </div>
+              </div>
+              <span nz-icon nzType="chevron-right" class="arrow-icon"></span>
+            </div>
+          } @empty {
+            <div class="empty-list">Không tìm thấy chi nhánh</div>
+          }
+        </div>
+      </aside>
+
+      <!-- Detail: Config Tabs -->
+      <main class="detail-panel">
+        @if (selectedBranch(); as branch) {
+          <div class="detail-header">
+            <div class="title-group">
+              <h2 class="detail-title">{{ branch.name }}</h2>
+              <p class="detail-desc">{{ branch.description }}</p>
+            </div>
+            <div class="status-badge" [class.inactive]="!branch.isActive">
+              {{ branch.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động' }}
+            </div>
+          </div>
+
+          <nz-tabset nzLinkRouter [nzSelectedIndex]="activeTabIndex" (nzSelectedIndexChange)="onTabChange($event)">
+            <!-- Tab 1: Attendance Locations -->
+            <nz-tab nzTitle="Vị trí Check-in">
+              <div class="tab-content">
+                <div class="action-bar">
+                  <h3>Danh sách tọa độ cho phép</h3>
+                  <button class="add-btn" (click)="openLocationModal()">
+                    <span nz-icon nzType="plus"></span> Thêm vị trí
+                  </button>
+                </div>
+
+                <div class="table-container">
+                  <table class="premium-table">
+                    <thead>
+                      <tr>
+                        <th>Tên vị trí</th>
+                        <th>Tọa độ (Lat/Long)</th>
+                        <th>Bán kính (m)</th>
+                        <th>Trạng thái</th>
+                        <th class="col-actions">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (loc of branch.attendanceLocations; track loc.id) {
+                        <tr>
+                          <td class="font-semibold">{{ loc.name }}</td>
+                          <td>{{ loc.latitude }}, {{ loc.longitude }}</td>
+                          <td>{{ loc.radiusMeters }}m</td>
+                          <td>
+                            <span class="badge" [class.badge-success]="loc.isActive" [class.badge-error]="!loc.isActive">
+                              {{ loc.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                          </td>
+                          <td class="col-actions">
+                            <button class="icon-btn edit" title="Sửa" (click)="openLocationModal(loc)">
+                              <span icon class="custom-icon-edit"></span>
+                            </button>
+                            <button class="icon-btn delete" title="Xóa" (click)="confirmDeleteLocation(loc)">
+                              <span icon class="custom-icon-close"></span>
+                            </button>
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="5">
+                            <app-no-data title="Chưa có tọa độ" message="Vui lòng thêm các điểm check-in cho chi nhánh này.">
+                              <span icon class="custom-icon-globe" style="width: 48px; height: 48px; opacity: 0.1;"></span>
+                            </app-no-data>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </nz-tab>
+
+            <!-- Tab 2: IP Ranges -->
+            <nz-tab nzTitle="Dải IP Wifi">
+              <div class="tab-content">
+                <div class="action-bar">
+                  <h3>Cấu hình IP văn phòng</h3>
+                  <button class="add-btn" (click)="openIPModal()">
+                    <span nz-icon nzType="plus"></span> Thêm dải IP
+                  </button>
+                </div>
+
+                <div class="table-container">
+                  <table class="premium-table">
+                    <thead>
+                      <tr>
+                        <th>Tên gợi nhớ</th>
+                        <th>Dải IP Prefix</th>
+                        <th>Mô tả</th>
+                        <th>Trạng thái</th>
+                        <th class="col-actions">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (ip of branch.allowedIpRanges; track ip.id) {
+                        <tr>
+                          <td class="font-semibold">{{ ip.name }}</td>
+                          <td><code class="ip-code">{{ ip.ipPrefix }}</code></td>
+                          <td class="text-muted">{{ ip.description }}</td>
+                          <td>
+                            <span class="badge" [class.badge-success]="ip.isActive" [class.badge-error]="!ip.isActive">
+                              {{ ip.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                          </td>
+                          <td class="col-actions">
+                            <button class="icon-btn edit" title="Sửa" (click)="openIPModal(ip)">
+                              <span icon class="custom-icon-edit"></span>
+                            </button>
+                            <button class="icon-btn delete" title="Xóa" (click)="confirmDeleteIP(ip)">
+                              <span icon class="custom-icon-close"></span>
+                            </button>
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="5">
+                            <app-no-data title="Chưa có dải IP" message="Cho phép check-in qua WiFi bằng cách thêm dải IP văn phòng.">
+                              <span icon class="custom-icon-settings" style="width: 48px; height: 48px; opacity: 0.1;"></span>
+                            </app-no-data>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </nz-tab>
+          </nz-tabset>
+        } @else {
+          <div class="no-selection">
+            <app-no-data 
+              title="Chưa chọn chi nhánh" 
+              message="Vui lòng chọn một chi nhánh từ danh sách bên trái để quản lý cấu hình check-in.">
+              <span icon class="custom-icon-box-iso" style="width: 80px; height: 80px; opacity: 0.1;"></span>
+            </app-no-data>
+          </div>
+        }
+      </main>
+    </div>
+  }
+</div>
