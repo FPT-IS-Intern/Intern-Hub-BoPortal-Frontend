@@ -11,56 +11,7 @@
   background: linear-gradient(180deg, var(--app-color-surface-warm-200) 0%, var(--app-color-surface-warm) 100%);
 }
 
-.page-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--app-color-text-muted);
-  font-size: 12px;
-  font-weight: 500;
-
-  .breadcrumb-item {
-    display: flex;
-    align-items: center;
-    color: inherit;
-    text-decoration: none;
-
-    &.active {
-      font-weight: 600;
-    }
-
-    &:not(.active):hover {
-      color: var(--brand-600, var(--app-color-primary));
-    }
-  }
-
-  .home-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s;
-  }
-
-  .breadcrumb-separator {
-    color: var(--app-color-text-muted-alpha);
-    user-select: none;
-  }
-}
-
-.page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 32px;
-  letter-spacing: -0.5px;
-  color: var(--brand-700, var(--app-color-primary-hover));
-}
 
 .content-grid {
   display: grid;

@@ -11,37 +11,7 @@
   background: linear-gradient(180deg, var(--app-color-surface-warm-200) 0%, var(--app-color-surface-warm) 100%);
 }
 
-.page-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 
-.breadcrumb {
-  :deep(.ant-breadcrumb-link) {
-    color: var(--app-color-text-muted);
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  :deep(a) {
-    color: var(--app-color-text-muted);
-    text-decoration: none;
-
-    &:hover {
-      color: var(--brand-600, var(--app-color-primary));
-    }
-  }
-}
-
-.page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 32px;
-  letter-spacing: -0.5px;
-  color: var(--brand-700, var(--app-color-primary-hover));
-}
 
 .content-wrapper {
   display: flex;
