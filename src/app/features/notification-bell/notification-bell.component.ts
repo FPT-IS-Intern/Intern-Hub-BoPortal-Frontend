@@ -9,7 +9,6 @@ import { NotificationTableComponent } from './notification-table/notification-ta
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
 import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
-import { NoDataComponent } from '../../components/no-data/no-data.component';
 
 import { NotificationRecord } from '../../models/notification.model';
 @Component({
@@ -26,7 +25,6 @@ import { NotificationRecord } from '../../models/notification.model';
     NotificationPaginationComponent,
     ModalPopup,
     ConfirmPopup,
-    NoDataComponent,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',

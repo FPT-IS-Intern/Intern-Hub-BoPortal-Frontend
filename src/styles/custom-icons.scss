@@ -74,3 +74,19 @@
 .custom-icon-refresh {
   @include custom-icon-file('/assets/icons/refresh-ccw.svg', 1.25rem);
 }
+
+.custom-icon-globe {
+  @include custom-icon-file('/assets/icons/line-globe.svg', 1.25rem);
+}
+
+.custom-icon-edit {
+  @include custom-icon-file('/assets/icons/edit-01.svg', 1rem);
+}
+
+.custom-icon-info {
+  @include custom-icon-file('/assets/icons/info-circle.svg', 1rem);
+}
+
+.custom-icon-chevron-down {
+  @include custom-icon-file('/assets/icons/chevron-down.svg', 1rem);
+}

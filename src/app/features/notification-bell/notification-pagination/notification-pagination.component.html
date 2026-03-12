@@ -3,11 +3,7 @@
         <span class="page-range">
             Hiển thị {{ displayRange }}
             <span class="info-icon" title="Thông tin hiển thị">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
+                <span class="custom-icon-info"></span>
             </span>
         </span>
     </div>
@@ -19,9 +15,7 @@
 
         <div class="pagination-center">
             <button class="nav-btn" [disabled]="pageIndex <= 1" (click)="prevPage()">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
+                <span class="custom-icon-arrow-left"></span>
             </button>
 
             <div class="page-numbers">
@@ -37,9 +31,7 @@
             </div>
 
             <button class="nav-btn" [disabled]="pageIndex >= totalPages" (click)="nextPage()">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
+                <span class="custom-icon-arrow-right"></span>
             </button>
 
             <span class="total-text">Tổng {{ total }}</span>
@@ -53,9 +45,7 @@
                     }
                 </select>
                 <span class="select-arrow">
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
+                    <span class="custom-icon-chevron-down"></span>
                 </span>
             </div>
         </div>

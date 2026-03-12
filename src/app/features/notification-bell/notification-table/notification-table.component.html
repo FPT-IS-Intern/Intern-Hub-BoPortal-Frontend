@@ -13,25 +13,17 @@
             <td class="col-content">{{ record.content }}</td>
             <td class="col-action">
                 <button class="custom-edit-btn" (click)="onEdit(record)" title="Chỉnh sửa">
-                    <!-- Inline SVG for Edit Icon -->
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg>
+                    <span class="custom-icon-edit"></span>
                 </button>
             </td>
         </tr>
         } @empty {
-            <tr>
-                <td colspan="3" style="padding: 0;">
-                    <app-no-data 
-                        [fullHeight]="false" 
-                        title="Trống rỗng" 
-                        message="Hiện tại không có thông báo nào.">
-                    </app-no-data>
-                </td>
-            </tr>
+        <tr>
+            <td colspan="3" style="padding: 0;">
+                <app-no-data [fullHeight]="false" title="Trống" message="Hiện tại không có thông báo nào.">
+                </app-no-data>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
