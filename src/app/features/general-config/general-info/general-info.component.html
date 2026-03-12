@@ -11,7 +11,7 @@
         <div class="logo-preview">
           @if (logoFile(); as file) {
           <img [src]="file.url" alt="Logo" class="logo-img" />
-          } @else if (form.get('logoUrl')?.value; as url) {
+          } @else if (form().get('logoUrl')?.value; as url) {
           <img [src]="url" alt="Logo" class="logo-img" />
           } @else {
           <div class="logo-placeholder">
