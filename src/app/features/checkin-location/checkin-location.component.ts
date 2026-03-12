@@ -64,10 +64,18 @@ export class CheckinLocationComponent implements OnInit {
 
     this.checkinService.getCheckinConfigs().subscribe({
       next: (res) => {
-        this.branches.set(res.data || []);
-        if (res.data && res.data.length > 0 && !this.selectedBranch()) {
-          this.selectedBranch.set(res.data[0]);
+        const freshData = res.data || [];
+        this.branches.set(freshData);
+
+        // Always re-sync selectedBranch with fresh data so UI reflects updates
+        if (freshData.length > 0) {
+          const currentId = this.selectedBranch()?.id;
+          const refreshed = currentId
+            ? freshData.find(b => b.id === currentId) ?? freshData[0]
+            : freshData[0];
+          this.selectedBranch.set(refreshed);
         }
+
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -102,9 +110,15 @@ export class CheckinLocationComponent implements OnInit {
 
     modalRef.afterClose.subscribe(result => {
       if (result) {
-        this.checkinService.upsertLocation(branch.id, result).subscribe({
+        const isEdit = !!result.id;
+        const payload = { ...result, branchId: branch.id };
+        const request$ = isEdit
+          ? this.checkinService.updateLocation(result.id, payload)
+          : this.checkinService.createLocation(payload);
+
+        request$.subscribe({
           next: () => {
-            this.toast.success(location ? 'Cập nhật vị trí thành công' : 'Thêm vị trí mới thành công');
+            this.toast.success(isEdit ? 'Cập nhật vị trí thành công' : 'Thêm vị trí mới thành công');
             this.fetchConfigs();
           },
           error: () => this.toast.error('Có lỗi xảy ra khi lưu vị trí')
@@ -145,9 +159,15 @@ export class CheckinLocationComponent implements OnInit {
 
     modalRef.afterClose.subscribe(result => {
       if (result) {
-        this.checkinService.upsertIPRange(branch.id, result).subscribe({
+        const isEdit = !!result.id;
+        const payload = { ...result, branchId: branch.id };
+        const request$ = isEdit
+          ? this.checkinService.updateIPRange(result.id, payload)
+          : this.checkinService.createIPRange(payload);
+
+        request$.subscribe({
           next: () => {
-            this.toast.success(range ? 'Cập nhật dải IP thành công' : 'Thêm dải IP mới thành công');
+            this.toast.success(isEdit ? 'Cập nhật dải IP thành công' : 'Thêm dải IP mới thành công');
             this.fetchConfigs();
           },
           error: () => this.toast.error('Có lỗi xảy ra khi lưu dải IP')

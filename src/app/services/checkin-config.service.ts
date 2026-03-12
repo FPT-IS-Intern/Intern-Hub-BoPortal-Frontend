@@ -18,18 +18,26 @@ export class CheckinConfigService {
     return this.http.get<CheckinConfigResponse>(`${this.baseUrl}/branches/with-checkin-rules`);
   }
 
-  // CRUD for IP Ranges
-  upsertIPRange(branchId: string, range: Partial<IPRange>): Observable<any> {
-    return this.http.post(`${this.baseUrl}/allowed-ip-ranges`, { ...range, branchId });
+  // --- IP Ranges ---
+  createIPRange(data: Partial<IPRange>): Observable<any> {
+    return this.http.post(`${this.baseUrl}/allowed-ip-ranges`, data);
+  }
+
+  updateIPRange(id: string, data: Partial<IPRange>): Observable<any> {
+    return this.http.put(`${this.baseUrl}/allowed-ip-ranges/${id}`, data);
   }
 
   deleteIPRange(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/allowed-ip-ranges/${id}`);
   }
 
-  // CRUD for Locations
-  upsertLocation(branchId: string, location: Partial<AttendanceLocation>): Observable<any> {
-    return this.http.post(`${this.baseUrl}/attendance-locations`, { ...location, branchId });
+  // --- Attendance Locations ---
+  createLocation(data: Partial<AttendanceLocation>): Observable<any> {
+    return this.http.post(`${this.baseUrl}/attendance-locations`, data);
+  }
+
+  updateLocation(id: string, data: Partial<AttendanceLocation>): Observable<any> {
+    return this.http.put(`${this.baseUrl}/attendance-locations/${id}`, data);
   }
 
   deleteLocation(id: string): Observable<any> {
