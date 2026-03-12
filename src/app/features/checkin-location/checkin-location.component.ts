@@ -106,7 +106,7 @@ export class CheckinLocationComponent implements OnInit {
       nzContent: UpsertLocationDialogComponent,
       nzData: location,
       nzFooter: null,
-      nzWidth: 500
+      nzWidth: 900
     });
 
     modalRef.afterClose.subscribe(result => {

@@ -1,72 +1,22 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AttendanceLocation } from '../../../models/checkin-config.model';
+
+declare const google: any;
 
 @Component({
   selector: 'app-upsert-location-dialog',
   standalone: true,
   imports: [
     CommonModule, 
-    ReactiveFormsModule, 
-    NzFormModule, 
-    NzInputModule, 
-    NzInputNumberModule,
-    NzSwitchModule,
-    NzButtonModule
+    ReactiveFormsModule,
+    NzIconModule
   ],
-  template: `
-    <form nz-form [formGroup]="form" nzLayout="vertical">
-      <nz-form-item>
-        <nz-form-label nzRequired>Tên vị trí</nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập tên vị trí">
-          <input nz-input formControlName="name" placeholder="Ví dụ: Văn phòng đại diện" />
-        </nz-form-control>
-      </nz-form-item>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <nz-form-item>
-          <nz-form-label nzRequired>Vĩ độ (Latitude)</nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng nhập vĩ độ">
-            <nz-input-number formControlName="latitude" [nzMin]="-90" [nzMax]="90" style="width: 100%"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label nzRequired>Kinh độ (Longitude)</nz-form-label>
-          <nz-form-control nzErrorTip="Vui lòng nhập kinh độ">
-            <nz-input-number formControlName="longitude" [nzMin]="-180" [nzMax]="180" style="width: 100%"></nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-
-      <nz-form-item>
-        <nz-form-label nzRequired>Bán kính cho phép (Meters)</nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập bán kính">
-          <nz-input-number formControlName="radiusMeters" [nzMin]="1" style="width: 100%"></nz-input-number>
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label>Trạng thái hoạt động</nz-form-label>
-        <nz-form-control>
-          <nz-switch formControlName="isActive"></nz-switch>
-          <span style="margin-left: 8px;">{{ form.get('isActive')?.value ? 'Đang bật' : 'Đang tắt' }}</span>
-        </nz-form-control>
-      </nz-form-item>
-
-      <div class="modal-footer" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 8px;">
-        <button nz-button nzType="default" (click)="cancel()">Hủy</button>
-        <button nz-button nzType="primary" [disabled]="form.invalid" (click)="submit()">Lưu lại</button>
-      </div>
-    </form>
-  `
+  templateUrl: './upsert-location-dialog.component.html',
+  styleUrl: './upsert-location-dialog.component.scss'
 })
 export class UpsertLocationDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -74,6 +24,9 @@ export class UpsertLocationDialogComponent implements OnInit {
   readonly data = inject<AttendanceLocation>(NZ_MODAL_DATA, { optional: true });
 
   protected form!: FormGroup;
+  private map: any;
+  private marker: any;
+  private radiusCircle: any;
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -84,15 +37,98 @@ export class UpsertLocationDialogComponent implements OnInit {
       radiusMeters: [this.data?.radiusMeters || 100, [Validators.required]],
       isActive: [this.data ? this.data.isActive : true]
     });
+
+    // Load Map after a short delay to ensure container is ready
+    setTimeout(() => this.initMap(), 100);
+
+    // Watch for coordinate changes to update map
+    this.form.get('latitude')?.valueChanges.subscribe(val => this.updateMarkerFromForm());
+    this.form.get('longitude')?.valueChanges.subscribe(val => this.updateMarkerFromForm());
+    this.form.get('radiusMeters')?.valueChanges.subscribe(val => this.updateRadiusCircle());
+  }
+
+  private initMap(): void {
+    const lat = this.form.get('latitude')?.value || 21.0285; // Default Hanoi
+    const lng = this.form.get('longitude')?.value || 105.8542;
+    const center = { lat, lng };
+
+    const mapElement = document.getElementById('google-map');
+    if (!mapElement) return;
+
+    this.map = new google.maps.Map(mapElement, {
+      center: center,
+      zoom: 15,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false
+    });
+
+    this.marker = new google.maps.Marker({
+      position: center,
+      map: this.map,
+      draggable: true,
+      animation: google.maps.Animation.DROP
+    });
+
+    this.radiusCircle = new google.maps.Circle({
+      strokeColor: '#E18308',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#E18308',
+      fillOpacity: 0.15,
+      map: this.map,
+      center: center,
+      radius: this.form.get('radiusMeters')?.value || 100
+    });
+
+    // Map Events
+    this.map.addListener('click', (event: any) => {
+      this.updatePosition(event.latLng);
+    });
+
+    this.marker.addListener('dragend', (event: any) => {
+      this.updatePosition(event.latLng);
+    });
+  }
+
+  private updatePosition(latLng: any): void {
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+
+    this.form.patchValue({
+      latitude: parseFloat(lat.toFixed(6)),
+      longitude: parseFloat(lng.toFixed(6))
+    }, { emitEvent: false });
+
+    this.marker.setPosition(latLng);
+    this.radiusCircle.setCenter(latLng);
+  }
+
+  private updateMarkerFromForm(): void {
+    const lat = this.form.get('latitude')?.value;
+    const lng = this.form.get('longitude')?.value;
+    if (lat && lng && this.marker) {
+      const latLng = new google.maps.LatLng(lat, lng);
+      this.marker.setPosition(latLng);
+      this.radiusCircle.setCenter(latLng);
+      this.map.panTo(latLng);
+    }
+  }
+
+  private updateRadiusCircle(): void {
+    const radius = this.form.get('radiusMeters')?.value;
+    if (radius && this.radiusCircle) {
+      this.radiusCircle.setRadius(radius);
+    }
   }
 
   submit(): void {
-    if (this.form.valid) {
+    if ((this as any).form.valid) {
       this.modalRef.close(this.form.value);
     }
   }
 
   cancel(): void {
-    this.modalRef.destroy();
+    (this as any).modalRef.destroy();
   }
 }
