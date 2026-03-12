@@ -6,7 +6,9 @@ import { GeneralInfoComponent } from '../general-info/general-info.component';
 import { SystemFormatComponent } from '../system-format/system-format.component';
 import { TimeConfigComponent } from '../time-config/time-config.component';
 import { GeneralConfigService } from '../../../services/general-config.service';
+import { UploadService } from '../../../services/upload.service';
 import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
+import { switchMap, of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-general-config',
@@ -27,10 +29,12 @@ import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-p
 export class GeneralConfigComponent implements OnInit {
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
+  private selectedLogoFile: File | null = null;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly configService: GeneralConfigService,
+    private readonly uploadService: UploadService,
     private readonly cdr: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
@@ -68,10 +72,27 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   protected handleConfirmSave(): void {
-    this.configService.updateConfig(this.form.value).subscribe({
+    let updateObs: Observable<any>;
+
+    if (this.selectedLogoFile) {
+      updateObs = this.uploadService.upload(this.selectedLogoFile).pipe(
+        switchMap(res => {
+          if (res.data) {
+            this.form.patchValue({ logoUrl: res.data });
+          }
+          return this.configService.updateConfig(this.form.value);
+        })
+      );
+    } else {
+      updateObs = this.configService.updateConfig(this.form.value);
+    }
+
+    updateObs.subscribe({
       next: () => {
         alert('Cập nhật cấu hình thành công');
         this.isConfirmVisible = false;
+        this.selectedLogoFile = null;
+        this.configService.getConfig().subscribe(); // Refresh cache
       },
       error: (err) => {
         console.error('Update config error:', err);
@@ -79,6 +100,10 @@ export class GeneralConfigComponent implements OnInit {
         this.isConfirmVisible = false;
       },
     });
+  }
+
+  protected onLogoFileChange(file: File | null): void {
+    this.selectedLogoFile = file;
   }
 
   protected handleConfirmCancel(): void {

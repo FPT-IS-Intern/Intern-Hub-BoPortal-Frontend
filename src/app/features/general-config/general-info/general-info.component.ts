@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
@@ -17,6 +17,7 @@ import { startWith, map, switchMap, of } from 'rxjs';
 })
 export class GeneralInfoComponent {
   form = input.required<FormGroup>();
+  fileChange = output<File | null>();
 
   protected readonly logoUrl = toSignal(
     toObservable(this.form).pipe(
@@ -34,11 +35,13 @@ export class GeneralInfoComponent {
     if (file) {
       const url = URL.createObjectURL(file);
       this.logoFile.set({ name: file.name, url });
+      this.fileChange.emit(file);
     }
     input.value = '';
   }
 
   protected removeLogo(): void {
     this.logoFile.set(null);
+    this.fileChange.emit(null);
   }
 }

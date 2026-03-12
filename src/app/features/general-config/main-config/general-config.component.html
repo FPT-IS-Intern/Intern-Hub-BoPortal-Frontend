@@ -21,7 +21,7 @@
   <div class="content-grid">
     <div class="content-left">
       <!-- Card 1: Danh sách thành viên -->
-      <app-general-info [form]="form"></app-general-info>
+      <app-general-info [form]="form" (fileChange)="onLogoFileChange($event)"></app-general-info>
 
       <!-- Card 2: Định dạng hệ thống -->
       <app-system-format [form]="form"></app-system-format>
