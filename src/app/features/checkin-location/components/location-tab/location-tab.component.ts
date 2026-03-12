@@ -1,13 +1,15 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NoDataComponent } from '../../../../components/no-data/no-data.component';
+import { SharedSearchComponent } from '../../../../components/shared-search/shared-search.component';
 import { AttendanceLocation } from '../../../../models/checkin-config.model';
 
 @Component({
   selector: 'app-location-tab',
   standalone: true,
-  imports: [CommonModule, NzIconModule, NoDataComponent],
+  imports: [CommonModule, FormsModule, NzIconModule, NoDataComponent, SharedSearchComponent],
   templateUrl: './location-tab.component.html',
   styleUrl: './location-tab.component.scss'
 })
@@ -16,4 +18,16 @@ export class LocationTabComponent {
   @Output() addLocation = new EventEmitter<void>();
   @Output() editLocation = new EventEmitter<AttendanceLocation>();
   @Output() deleteLocation = new EventEmitter<AttendanceLocation>();
+
+  searchTerm = signal('');
+
+  filteredLocations = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) return this.locations;
+    return this.locations.filter(loc =>
+      loc.name.toLowerCase().includes(term) ||
+      loc.latitude.toString().includes(term) ||
+      loc.longitude.toString().includes(term)
+    );
+  });
 }

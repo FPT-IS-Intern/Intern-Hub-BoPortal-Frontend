@@ -1,8 +1,12 @@
 <div class="action-bar">
   <h3>Danh sách tọa độ cho phép</h3>
-  <button class="add-btn" (click)="addLocation.emit()">
-    <span nz-icon nzType="plus"></span> Thêm vị trí
-  </button>
+  <div class="search-actions">
+    <app-shared-search [value]="searchTerm()" (valueChange)="searchTerm.set($event)"
+      placeholder="Tìm kiếm vị trí, tọa độ..."></app-shared-search>
+    <button class="add-btn" (click)="addLocation.emit()">
+      <span nz-icon nzType="plus"></span> Thêm vị trí
+    </button>
+  </div>
 </div>
 
 <div class="table-container">
@@ -17,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (loc of locations; track loc.id) {
+      @for (loc of filteredLocations(); track loc.id) {
       <tr>
         <td class="font-semibold">{{ loc.name }}</td>
         <td>{{ loc.latitude }}, {{ loc.longitude }}</td>

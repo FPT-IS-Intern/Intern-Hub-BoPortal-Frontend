@@ -19,6 +19,13 @@
   }
 }
 
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
 .add-btn {
   display: inline-flex;
   align-items: center;

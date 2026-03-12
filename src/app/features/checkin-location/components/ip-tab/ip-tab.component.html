@@ -1,8 +1,12 @@
 <div class="action-bar">
   <h3>Cấu hình IP văn phòng</h3>
-  <button class="add-btn" (click)="addIP.emit()">
-    <span nz-icon nzType="plus"></span> Thêm dải IP
-  </button>
+  <div class="search-actions">
+    <app-shared-search [value]="searchTerm()" (valueChange)="searchTerm.set($event)"
+      placeholder="Tìm kiếm tên dải IP..."></app-shared-search>
+    <button class="add-btn" (click)="addIP.emit()">
+      <span nz-icon nzType="plus"></span> Thêm dải IP
+    </button>
+  </div>
 </div>
 
 <div class="table-container">
@@ -17,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (ip of ipRanges; track ip.id) {
+      @for (ip of filteredIpRanges(); track ip.id) {
         <tr>
           <td class="font-semibold">{{ ip.name }}</td>
           <td><code class="ip-code">{{ ip.ipPrefix }}</code></td>
