@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { SharedInputTimeComponent } from '../../../components/shared-input-time/shared-input-time.component';
@@ -16,5 +16,5 @@ import { SharedInputTimeComponent } from '../../../components/shared-input-time/
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeConfigComponent {
-    @Input({ required: true }) form!: FormGroup;
+    form = input.required<FormGroup>();
 }

@@ -1,11 +1,11 @@
-<section class="config-card config-card-right" [formGroup]="form">
+<section class="config-card config-card-right" [formGroup]="form()">
     <h2 class="card-title">Thời gian ghi nhận</h2>
     <div class="time-fields">
-        <app-shared-input-time label="Thời gian làm việc" [form]="form" controlName="workStartTime"
+        <app-shared-input-time label="Thời gian làm việc" [form]="form()" controlName="workStartTime"
             placeholder="hh:mm:ss"></app-shared-input-time>
-        <app-shared-input-time label="Thời gian tan ca" [form]="form" controlName="workEndTime"
+        <app-shared-input-time label="Thời gian tan ca" [form]="form()" controlName="workEndTime"
             placeholder="hh:mm:ss"></app-shared-input-time>
-        <app-shared-input-time label="Checkout tự động" [form]="form" controlName="autoCheckoutTime"
+        <app-shared-input-time label="Checkout tự động" [form]="form()" controlName="autoCheckoutTime"
             placeholder="hh:mm:ss"></app-shared-input-time>
     </div>
 </section>

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 
@@ -14,7 +14,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeneralInfoComponent {
-  @Input({ required: true }) form!: FormGroup;
+  form = input.required<FormGroup>();
 
   protected readonly logoFile = signal<{ name: string; url?: string } | null>(null);
 

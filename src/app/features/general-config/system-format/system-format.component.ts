@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 
@@ -14,10 +14,10 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SystemFormatComponent {
-    @Input({ required: true }) form!: FormGroup;
+    form = input.required<FormGroup>();
 
     protected readonly languageOptions = [
-        { label: 'Tiếng Việt', value: 'vi' },
-        { label: 'English', value: 'en' },
+        { label: 'Tiếng Việt', value: 'vi-VN' },
+        { label: 'English', value: 'en-US' },
     ];
 }
