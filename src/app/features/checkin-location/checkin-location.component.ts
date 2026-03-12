@@ -203,7 +203,7 @@ export class CheckinLocationComponent implements OnInit {
       nzContent: BranchManagementDialogComponent,
       nzData: { branches: this.branches() },
       nzFooter: null,
-      nzWidth: 600
+      nzWidth: 800
     });
 
     modalRef.afterClose.subscribe(result => {

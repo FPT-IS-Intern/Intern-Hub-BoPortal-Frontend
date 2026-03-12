@@ -1,0 +1,115 @@
+<div class="dialog-content">
+  <!-- State: LIST -->
+  @if (viewState === 'list') {
+  <div class="actions-header">
+    <div class="search-wrapper">
+      <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" placeholder="Tìm chi nhánh..."
+        variant="filled" width="100%">
+      </app-shared-search>
+    </div>
+    <button type="button" class="custom-btn btn-primary add-btn" (click)="goToUpsert()">
+      <span nz-icon nzType="plus"></span> Thêm mới
+    </button>
+  </div>
+
+  <div class="custom-table-wrapper" [class.has-scroll]="scrollConfig()">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th style="width: 60%">Tên chi nhánh</th>
+          <th style="width: 20%">Trạng thái</th>
+          <th style="width: 20%; text-align: center;">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody [style.max-height]="scrollConfig() ? '350px' : 'auto'">
+        @for (data of filteredBranches(); track data.id) {
+        <tr>
+          <td style="width: 60%">
+            <div class="branch-cell">
+              <span class="branch-name">{{ data.name }}</span>
+              @if (data.description) {
+              <span class="branch-desc">{{ data.description }}</span>
+              }
+            </div>
+          </td>
+          <td style="width: 20%">
+            <span class="status-badge" [class.active]="data.isActive">
+              <span class="dot"></span>
+              {{ data.isActive ? 'Hoạt động' : 'Tạm dừng' }}
+            </span>
+          </td>
+          <td style="width: 20%">
+            <div class="actions-cell">
+              <button class="action-icon-btn edit" (click)="goToUpsert(data)" title="Sửa">
+                <span icon class="custom-icon-edit"></span>
+              </button>
+              <button class="action-icon-btn delete" (click)="onDelete(data)" title="Xóa">
+                <span icon class="custom-icon-close"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="3" class="empty-cell">Không tìm thấy chi nhánh nào</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  <!-- State: UPSERT -->
+  @if (viewState === 'upsert') {
+  <div class="upsert-header">
+    <button class="back-link" (click)="viewState = 'list'">
+      <span nz-icon nzType="arrow-left"></span> Quay lại
+    </button>
+    <span class="upsert-title">{{ editingBranch ? 'Chỉnh sửa chi nhánh' : 'Thêm chi nhánh mới' }}</span>
+  </div>
+
+  <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="custom-form">
+    <div class="form-group">
+      <label class="form-label required">Tên chi nhánh</label>
+      <div class="input-wrapper">
+        <input type="text" formControlName="name" placeholder="VD: Chi nhánh Hà Nội" class="custom-input"
+          [class.has-error]="branchForm.get('name')?.invalid && branchForm.get('name')?.touched" />
+        @if (branchForm.get('name')?.invalid && branchForm.get('name')?.touched) {
+        <span class="error-tip">Vui lòng nhập tên chi nhánh</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mô tả</label>
+      <div class="input-wrapper">
+        <textarea formControlName="description" rows="3" placeholder="Ghi chú thêm về chi nhánh này..."
+          class="custom-input"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Trạng thái hoạt động</label>
+      <div class="switch-row">
+        <label class="custom-switch">
+          <input type="checkbox" formControlName="isActive" />
+          <span class="slider"></span>
+        </label>
+        <span class="status-text" [class.active]="branchForm.get('isActive')?.value">
+          {{ branchForm.get('isActive')?.value ? 'Đang hoạt động' : 'Tạm dừng' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">Hủy bỏ</button>
+      <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="branchForm.invalid || isSaving">
+        @if (isSaving) {
+        <span nz-icon nzType="loading" class="mr-2"></span>
+        }
+        {{ editingBranch ? 'Cập nhật thay đổi' : 'Tạo chi nhánh' }}
+      </button>
+    </div>
+  </form>
+  }
+</div>

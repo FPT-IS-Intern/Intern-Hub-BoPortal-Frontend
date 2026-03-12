@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -11,6 +11,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { BranchCheckinConfig } from '../../../models/checkin-config.model';
 import { CheckinConfigService } from '../../../services/checkin-config.service';
 import { ToastService } from '../../../services/toast.service';
+import { SharedSearchComponent } from '../../../components/shared-search/shared-search.component';
 
 @Component({
   selector: 'app-branch-management-dialog',
@@ -21,118 +22,11 @@ import { ToastService } from '../../../services/toast.service';
     ReactiveFormsModule,
     NzModalModule, 
     NzIconModule, 
-    NzButtonModule, 
-    NzTableModule,
-    NzFormModule,
-    NzInputModule,
-    NzSwitchModule
+    NzButtonModule,
+    SharedSearchComponent
   ],
-  template: `
-    <div class="dialog-content">
-      <!-- State: LIST -->
-      @if (viewState === 'list') {
-        <div class="actions-header">
-          <button nz-button nzType="primary" (click)="goToUpsert()">
-            <span nz-icon nzType="plus"></span> Thêm chi nhánh mới
-          </button>
-        </div>
-
-        <nz-table #branchTable [nzData]="branches" [nzSize]="'middle'" [nzPageSize]="5">
-          <thead>
-            <tr>
-              <th>Tên chi nhánh</th>
-              <th>Trạng thái</th>
-              <th class="actions-col">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (data of branchTable.data; track data.id) {
-              <tr>
-                <td>{{ data.name }}</td>
-                <td>
-                  <span class="badge" [class.badge-success]="data.isActive" [class.badge-error]="!data.isActive">
-                    {{ data.isActive ? 'Active' : 'Inactive' }}
-                  </span>
-                </td>
-                <td class="actions-col">
-                  <button class="icon-btn edit" (click)="goToUpsert(data)" title="Sửa">
-                    <span icon class="custom-icon-edit"></span>
-                  </button>
-                  <button class="icon-btn delete" (click)="onDelete(data)" title="Xóa">
-                    <span icon class="custom-icon-close"></span>
-                  </button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </nz-table>
-      }
-
-      <!-- State: UPSERT -->
-      @if (viewState === 'upsert') {
-        <form nz-form [formGroup]="branchForm" (ngSubmit)="onSubmit()" nzLayout="vertical">
-          <nz-form-item>
-            <nz-form-label nzRequired>Tên chi nhánh</nz-form-label>
-            <nz-form-control nzErrorTip="Vui lòng nhập tên chi nhánh">
-              <input nz-input formControlName="name" placeholder="VD: Chi nhánh Hà Nội" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>Mô tả</nz-form-label>
-            <nz-form-control>
-              <textarea nz-input formControlName="description" rows="3" placeholder="Ghi chú thêm..."></textarea>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>Trạng thái hoạt động</nz-form-label>
-            <nz-form-control>
-              <nz-switch formControlName="isActive"></nz-switch>
-              <span class="ml-2">{{ branchForm.get('isActive')?.value ? 'Đang hoạt động' : 'Tạm dừng' }}</span>
-            </nz-form-control>
-          </nz-form-item>
-
-          <div class="form-actions">
-            <button nz-button type="button" (click)="viewState = 'list'">Hủy</button>
-            <button nz-button nzType="primary" [nzLoading]="isSaving" [disabled]="branchForm.invalid">
-              Lưu chi nhánh
-            </button>
-          </div>
-        </form>
-      }
-    </div>
-  `,
-  styles: [`
-    .dialog-content { padding: 8px 0; }
-    .actions-header { margin-bottom: 16px; display: flex; justify-content: flex-end; }
-    .actions-col { width: 100px; text-align: center; display: flex; gap: 8px; justify-content: center; }
-    
-    .icon-btn {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      border: none;
-      background: var(--app-color-surface-warm-100);
-      cursor: pointer;
-      transition: all 0.2s;
-      [icon] { font-size: 14px; color: var(--app-color-text-muted); }
-      &.edit:hover { background: #eff6ff; [icon] { color: #3b82f6; } }
-      &.delete:hover { background: #fef2f2; [icon] { color: #ef4444; } }
-    }
-
-    .badge {
-      display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;
-      &-success { background: #ecfdf5; color: #10b981; }
-      &-error { background: #fef2f2; color: #ef4444; }
-    }
-
-    .form-actions { margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px; }
-    .ml-2 { margin-left: 8px; }
-  `]
+  templateUrl: './branch-management-dialog.component.html',
+  styleUrl: './branch-management-dialog.component.scss'
 })
 export class BranchManagementDialogComponent implements OnInit {
   private readonly modalRef = inject(NzModalRef);
@@ -140,8 +34,24 @@ export class BranchManagementDialogComponent implements OnInit {
   private readonly checkinService = inject(CheckinConfigService);
   private readonly toast = inject(ToastService);
   private readonly fb = inject(FormBuilder);
+  readonly modalData = inject<{ branches: BranchCheckinConfig[] }>(NZ_MODAL_DATA, { optional: true });
   
-  branches: BranchCheckinConfig[] = [];
+  protected readonly branches = signal<BranchCheckinConfig[]>([]);
+  protected readonly searchQuery = signal('');
+  
+  protected readonly filteredBranches = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    if (!query) return this.branches();
+    return this.branches().filter(b => 
+      b.name.toLowerCase().includes(query) || 
+      (b.description?.toLowerCase().includes(query))
+    );
+  });
+
+  protected readonly scrollConfig = computed(() => {
+    return this.filteredBranches().length > 6 ? { y: '350px' } : null;
+  });
+
   viewState: 'list' | 'upsert' = 'list';
   isSaving = false;
   editingBranch: BranchCheckinConfig | null = null;
@@ -153,7 +63,13 @@ export class BranchManagementDialogComponent implements OnInit {
   });
 
   ngOnInit() {
-    // Initial data is passed via nzData, we might want to refresh from API if needed
+    if (this.modalData?.branches) {
+      this.branches.set([...this.modalData.branches]);
+    }
+  }
+
+  onSearch(value: string) {
+    this.searchQuery.set(value);
   }
 
   goToUpsert(branch?: BranchCheckinConfig) {
