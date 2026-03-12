@@ -15,11 +15,7 @@ export class CheckinConfigService {
    * Fetch all branches with their nested check-in configurations
    */
   getCheckinConfigs(): Observable<CheckinConfigResponse> {
-    // The user provided two specific endpoints but also a combined data structure.
-    // Based on the user's latest data structure, it seems they want a grouped view.
-    // I'll assume there's an endpoint that returns this nested structure or I'll implement 
-    // it to fetch from multiple if needed. For now, following the specific grouped data provided.
-    return this.http.get<CheckinConfigResponse>(`${this.baseUrl}/checkin-configs`);
+    return this.http.get<CheckinConfigResponse>(`${environment.apiUrl}/branches/with-checkin-rules`);
   }
 
   // CRUD for IP Ranges
