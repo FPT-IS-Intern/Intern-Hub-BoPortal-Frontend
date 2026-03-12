@@ -5,25 +5,42 @@
   </header>
 
   <!-- Main content -->
-  <div class="content-grid">
-    <div class="content-left">
-      <!-- Card 1: Danh sách thành viên -->
-      <app-general-info [form]="form" (fileChange)="onLogoFileChange($event)"></app-general-info>
+  @if (isLoading()) {
+    <div class="loading-container" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+       <span nz-icon nzType="loading" style="font-size: 32px; color: var(--app-color-primary);"></span>
+    </div>
+  } @else if (isError()) {
+    <div class="error-container" style="padding: 48px 0;">
+      <app-no-data 
+        title="Không tìm thấy cấu hình" 
+        message="Đã xảy ra lỗi khi tải cấu hình hệ thống hoặc cấu hình hiện không tồn tại.">
+        <span icon class="custom-icon-settings" style="width: 64px; height: 64px; opacity: 0.2;"></span>
+        <button action class="apply-btn" style="margin-top: 16px;" (click)="ngOnInit()">
+          Thử lại
+        </button>
+      </app-no-data>
+    </div>
+  } @else {
+    <div class="content-grid">
+      <div class="content-left">
+        <!-- Card 1: Danh sách thành viên -->
+        <app-general-info [form]="form" (fileChange)="onLogoFileChange($event)"></app-general-info>
 
-      <!-- Card 2: Định dạng hệ thống -->
-      <app-system-format [form]="form"></app-system-format>
+        <!-- Card 2: Định dạng hệ thống -->
+        <app-system-format [form]="form"></app-system-format>
+      </div>
+
+      <!-- Card 3: Thời gian ghi nhận -->
+      <app-time-config [form]="form"></app-time-config>
     </div>
 
-    <!-- Card 3: Thời gian ghi nhận -->
-    <app-time-config [form]="form"></app-time-config>
-  </div>
-
-  <!-- Apply button -->
-  <div class="actions">
-    <button class="apply-btn" type="button" (click)="onSubmit()">
-      Áp dụng
-    </button>
-  </div>
+    <!-- Apply button -->
+    <div class="actions">
+      <button class="apply-btn" type="button" (click)="onSubmit()">
+        Áp dụng
+      </button>
+    </div>
+  }
 
   <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
     message="Bạn có muốn lưu các thay đổi cấu hình chung?" cancelText="Không" confirmText="Có"

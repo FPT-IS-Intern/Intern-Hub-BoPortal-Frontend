@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -10,6 +10,7 @@ import { GeneralConfigService } from '../../../services/general-config.service';
 import { UploadService } from '../../../services/upload.service';
 import { ToastService } from '../../../services/toast.service';
 import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
+import { NoDataComponent } from '../../../components/no-data/no-data.component';
 import { BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { switchMap, of, Observable } from 'rxjs';
 
@@ -24,6 +25,7 @@ import { switchMap, of, Observable } from 'rxjs';
     SystemFormatComponent,
     TimeConfigComponent,
     ConfirmPopup,
+    NoDataComponent,
   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss',
@@ -34,6 +36,9 @@ export class GeneralConfigComponent implements OnInit {
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
   private selectedLogoFile: File | null = null;
+  
+  protected readonly isLoading = signal(false);
+  protected readonly isError = signal(false);
 
   constructor(
     private readonly fb: FormBuilder,
@@ -62,15 +67,25 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   private fetchConfig(): void {
+    this.isLoading.set(true);
+    this.isError.set(false);
+    
     this.configService.getConfig().subscribe({
       next: (res) => {
         if (res.data) {
           this.form.patchValue(res.data);
-          this.cdr.markForCheck();
+          this.isError.set(false);
+        } else {
+          this.isError.set(true);
         }
+        this.isLoading.set(false);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Fetch config error:', err);
+        this.isError.set(true);
+        this.isLoading.set(false);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -89,7 +104,7 @@ export class GeneralConfigComponent implements OnInit {
 
     if (this.selectedLogoFile) {
       updateObs = this.uploadService.upload(this.selectedLogoFile).pipe(
-        switchMap(res => {
+        switchMap((res: any) => {
           if (res.data) {
             this.form.patchValue({ logoUrl: res.data });
           }

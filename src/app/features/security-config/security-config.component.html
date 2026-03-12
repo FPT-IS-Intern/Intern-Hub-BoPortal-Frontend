@@ -5,23 +5,40 @@
   </header>
 
   <!-- Main content -->
-  <div class="content-wrapper">
-    <!-- Row 1: Password Policy -->
-    <app-password-policy [form]="form"></app-password-policy>
+  @if (isLoading()) {
+    <div class="loading-container" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
+       <span nz-icon nzType="loading" style="font-size: 32px; color: var(--app-color-primary);"></span>
+    </div>
+  } @else if (isError()) {
+    <div class="error-container" style="padding: 48px 0;">
+      <app-no-data 
+        title="Không tìm thấy cấu hình bảo mật" 
+        message="Đã xảy ra lỗi khi tải cấu hình bảo mật hoặc cấu hình hiện không tồn tại.">
+        <span icon class="custom-icon-lock" style="width: 64px; height: 64px; opacity: 0.2;"></span>
+        <button action nz-button nzType="primary" style="margin-top: 16px;" (click)="ngOnInit()">
+          Thử lại
+        </button>
+      </app-no-data>
+    </div>
+  } @else {
+    <div class="content-wrapper">
+      <!-- Row 1: Password Policy -->
+      <app-password-policy [form]="form"></app-password-policy>
 
-    <!-- Row 2: Session Security -->
-    <app-session-security [form]="form"></app-session-security>
+      <!-- Row 2: Session Security -->
+      <app-session-security [form]="form"></app-session-security>
 
-    <!-- Row 3: Account Security -->
-    <app-account-security [form]="form"></app-account-security>
-  </div>
+      <!-- Row 3: Account Security -->
+      <app-account-security [form]="form"></app-account-security>
+    </div>
 
-  <!-- Apply button -->
-  <div class="actions">
-    <button nz-button nzType="primary" nzSize="large" class="apply-btn" (click)="onSubmit()">
-      Áp dụng
-    </button>
-  </div>
+    <!-- Apply button -->
+    <div class="actions">
+      <button nz-button nzType="primary" nzSize="large" class="apply-btn" (click)="onSubmit()">
+        Áp dụng
+      </button>
+    </div>
+  }
 
   <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
     message="Bạn có muốn lưu các thay đổi cấu hình bảo mật?" cancelText="Không" confirmText="Có"

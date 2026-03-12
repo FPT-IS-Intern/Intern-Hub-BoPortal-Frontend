@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -9,6 +9,7 @@ import { PasswordPolicyComponent } from './password-policy/password-policy.compo
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { finalize } from 'rxjs';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 
@@ -23,6 +24,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb
     AccountSecurityComponent,
     SessionSecurityComponent,
     ConfirmPopup,
+    NoDataComponent,
   ],
   templateUrl: './security-config.component.html',
   styleUrl: './security-config.component.scss',
@@ -32,6 +34,9 @@ export class SecurityConfigComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
+
+  protected readonly isLoading = signal(false);
+  protected readonly isError = signal(false);
 
   constructor(
     private readonly fb: FormBuilder,
@@ -62,16 +67,26 @@ export class SecurityConfigComponent implements OnInit {
   }
 
   private fetchConfig(): void {
+    this.isLoading.set(true);
+    this.isError.set(false);
+
     this.configService.getConfig().subscribe({
       next: (res) => {
         if (res.data) {
           this.form.patchValue(res.data);
-          this.cdr.markForCheck();
+          this.isError.set(false);
+        } else {
+          this.isError.set(true);
         }
+        this.isLoading.set(false);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Fetch security config error:', err);
         this.toastService.error('Không thể tải cấu hình bảo mật');
+        this.isError.set(true);
+        this.isLoading.set(false);
+        this.cdr.markForCheck();
       },
     });
   }
