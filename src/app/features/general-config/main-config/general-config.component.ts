@@ -7,6 +7,7 @@ import { SystemFormatComponent } from '../system-format/system-format.component'
 import { TimeConfigComponent } from '../time-config/time-config.component';
 import { GeneralConfigService } from '../../../services/general-config.service';
 import { UploadService } from '../../../services/upload.service';
+import { ToastService } from '../../../services/toast.service';
 import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
 import { switchMap, of, Observable } from 'rxjs';
 
@@ -35,6 +36,7 @@ export class GeneralConfigComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly configService: GeneralConfigService,
     private readonly uploadService: UploadService,
+    private readonly toastService: ToastService,
     private readonly cdr: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
@@ -89,14 +91,14 @@ export class GeneralConfigComponent implements OnInit {
 
     updateObs.subscribe({
       next: () => {
-        alert('Cập nhật cấu hình thành công');
+        this.toastService.success('Cập nhật cấu hình thành công', 'Hệ thống');
         this.isConfirmVisible = false;
         this.selectedLogoFile = null;
         this.configService.getConfig().subscribe(); // Refresh cache
       },
       error: (err) => {
         console.error('Update config error:', err);
-        alert('Cập nhật cấu hình thất bại');
+        this.toastService.error('Cập nhật cấu hình thất bại', 'Lỗi');
         this.isConfirmVisible = false;
       },
     });

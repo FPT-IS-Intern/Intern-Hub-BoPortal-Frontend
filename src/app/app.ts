@@ -11,12 +11,13 @@ import {
 } from './core/utils/storage.util';
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
+import { ToastContainer } from './components/toast-container/toast-container';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, HeaderComponent],
+  imports: [RouterOutlet, CommonModule, HeaderComponent, ToastContainer],
   templateUrl: './app.html',
 })
 export class App implements OnInit, OnDestroy {
