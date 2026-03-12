@@ -1,7 +1,7 @@
 @mixin custom-icon-file($path, $size: 1.25rem) {
   display: inline-block !important;
-  width: $size !important;
-  height: $size !important;
+  width: $size;
+  height: $size;
   background-color: currentColor !important;
   -webkit-mask: url($path) no-repeat center !important;
   mask: url($path) no-repeat center !important;
@@ -117,4 +117,8 @@
 
 .custom-icon-upload {
   @include custom-icon-file('/assets/icons/upload.svg', 1.1rem);
+}
+
+.custom-icon-box-iso {
+  @include custom-icon-file('/assets/icons/box-iso.svg', 1.25rem);
 }

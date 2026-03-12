@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
       <div class="no-data-content">
         <div class="no-data-icon-wrapper">
           <ng-content select="[icon]">
-            <span class="custom-icon-grid" style="width: 64px; height: 64px; opacity: 0.2;"></span>
+            <span class="custom-icon-box-iso" [style.width]="iconSize()" [style.height]="iconSize()"></span>
           </ng-content>
         </div>
         <h3 class="no-data-title">{{ title() }}</h3>
@@ -48,11 +48,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       justify-content: center;
       color: var(--app-color-primary-alpha-20, rgba(0, 0, 0, 0.2));
-      
-      .default-icon {
-        opacity: 0.5;
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
-      }
+      opacity: 0.5;
     }
 
     .no-data-title {
@@ -107,10 +103,11 @@ import { CommonModule } from '@angular/common';
 })
 export class NoDataComponent {
   title = input<string>('Không có dữ liệu');
-  message = input<string>('Hiện tại không có thông tin nào để hiển thị.');
+  message = input<string>('Hiện tại không có thông cá nào để hiển thị.');
+  iconSize = input<string>('64px');
   fullHeight = input<boolean>(true);
   showAction = input<boolean>(false);
-  actionText = input<string>('Thủ lại');
-  
+  actionText = input<string>('Thử lại');
+
   actionClicked = output<void>();
 }
