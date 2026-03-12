@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AttendanceLocation } from '../../../models/checkin-config.model';
+import { environment } from '../../../../environments/environment';
 
 declare const google: any;
 
@@ -38,8 +39,13 @@ export class UpsertLocationDialogComponent implements OnInit {
       isActive: [this.data ? this.data.isActive : true]
     });
 
-    // Load Map after a short delay to ensure container is ready
-    setTimeout(() => this.initMap(), 100);
+    // Load Maps API and then init map
+    this.loadGoogleMapsScript().then(() => {
+      // Small delay to ensure container is ready
+      setTimeout(() => this.initMap(), 100);
+    }).catch(err => {
+      console.error('Failed to load Google Maps:', err);
+    });
 
     // Watch for coordinate changes to update map
     this.form.get('latitude')?.valueChanges.subscribe(val => this.updateMarkerFromForm());
@@ -47,7 +53,27 @@ export class UpsertLocationDialogComponent implements OnInit {
     this.form.get('radiusMeters')?.valueChanges.subscribe(val => this.updateRadiusCircle());
   }
 
+  private loadGoogleMapsScript(): Promise<void> {
+    if (typeof google !== 'undefined' && google.maps) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = (err) => reject(err);
+      document.head.appendChild(script);
+    });
+  }
+
   private initMap(): void {
+    if (typeof google === 'undefined' || !google.maps) {
+      return;
+    }
+
     const lat = this.form.get('latitude')?.value || 21.0285; // Default Hanoi
     const lng = this.form.get('longitude')?.value || 105.8542;
     const center = { lat, lng };
