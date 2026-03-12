@@ -4,6 +4,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SecurityConfigService } from '../../services/security-config.service';
 import { ToastService } from '../../services/toast.service';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
@@ -16,9 +19,9 @@ import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popu
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
+    NzBreadCrumbModule,
+    NzButtonModule,
+    NzIconModule,
     PasswordPolicyComponent,
     AccountSecurityComponent,
     SessionSecurityComponent,
