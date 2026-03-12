@@ -1,0 +1,50 @@
+<div class="action-bar">
+  <h3>Danh sách tọa độ cho phép</h3>
+  <button class="add-btn" (click)="addLocation.emit()">
+    <span nz-icon nzType="plus"></span> Thêm vị trí
+  </button>
+</div>
+
+<div class="table-container">
+  <table class="premium-table">
+    <thead>
+      <tr>
+        <th>Tên vị trí</th>
+        <th>Tọa độ (Lat/Long)</th>
+        <th>Bán kính (m)</th>
+        <th>Trạng thái</th>
+        <th class="col-actions">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (loc of locations; track loc.id) {
+        <tr>
+          <td class="font-semibold">{{ loc.name }}</td>
+          <td>{{ loc.latitude }}, {{ loc.longitude }}</td>
+          <td>{{ loc.radiusMeters }}m</td>
+          <td>
+            <span class="badge" [class.badge-success]="loc.isActive" [class.badge-error]="!loc.isActive">
+              {{ loc.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td class="col-actions">
+            <button class="icon-btn edit" title="Sửa" (click)="editLocation.emit(loc)">
+              <span icon class="custom-icon-edit"></span>
+            </button>
+            <button class="icon-btn delete" title="Xóa" (click)="deleteLocation.emit(loc)">
+              <span icon class="custom-icon-close"></span>
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5">
+            <app-no-data title="Chưa có tọa độ" message="Vui lòng thêm các điểm check-in cho chi nhánh này.">
+              <span icon class="custom-icon-globe" style="width: 48px; height: 48px; opacity: 0.1;"></span>
+            </app-no-data>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,27 @@
+<aside class="master-panel">
+  <div class="search-box">
+    <nz-input-group [nzPrefix]="prefixIcon">
+      <input type="text" nz-input placeholder="Tìm chi nhánh..." [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)" />
+    </nz-input-group>
+    <ng-template #prefixIcon><span nz-icon nzType="search"></span></ng-template>
+  </div>
+
+  <div class="branch-list">
+    @for (branch of filteredBranches(); track branch.id) {
+      <div class="branch-item" [class.active]="selectedBranchId === branch.id" (click)="onSelect(branch)">
+        <div class="branch-icon">
+          <span icon class="custom-icon-box-iso"></span>
+        </div>
+        <div class="branch-info">
+          <div class="branch-name">{{ branch.name }}</div>
+          <div class="branch-status" [class.inactive]="!branch.isActive">
+            {{ branch.isActive ? 'Hoạt động' : 'Tạm dừng' }}
+          </div>
+        </div>
+        <span nz-icon nzType="chevron-right" class="arrow-icon"></span>
+      </div>
+    } @empty {
+      <div class="empty-list">Không tìm thấy chi nhánh</div>
+    }
+  </div>
+</aside>
