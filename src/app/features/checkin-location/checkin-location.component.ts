@@ -1,17 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
+import { BreadcrumbService } from '../../services/breadcrumb.service';
 
 @Component({
   selector: 'app-checkin-location',
   standalone: true,
-  imports: [CommonModule, RouterModule, NoDataComponent, BreadcrumbComponent],
+  imports: [CommonModule, RouterModule, NoDataComponent],
   template: `
     <div class="page-body">
       <header class="page-header">
-        <app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
         <h1 class="page-title">Địa điểm checkin</h1>
       </header>
 
@@ -48,9 +47,13 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb
     }
   `]
 })
-export class CheckinLocationComponent {
-  protected readonly breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-    { label: 'Địa điểm checkin', active: true }
-  ];
+export class CheckinLocationComponent implements OnInit {
+  private readonly breadcrumbService = inject(BreadcrumbService);
+
+  ngOnInit(): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label: 'Địa điểm checkin', active: true }
+    ]);
+  }
 }

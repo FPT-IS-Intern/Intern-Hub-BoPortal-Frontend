@@ -10,6 +10,7 @@ import { PermissionTableComponent } from './permission-table/permission-table.co
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
@@ -41,7 +42,6 @@ const PERMISSION_COLUMNS = [
     CreateRoleDialogComponent,
     CreateResourceDialogComponent,
     ConfirmPopup,
-    BreadcrumbComponent,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',
@@ -50,12 +50,7 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly authzService = inject(AuthzService);
   private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
-
-  protected readonly breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-    { label: 'Cấu Hình Hệ Thống' },
-    { label: 'Ma Trận Phân Quyền', active: true }
-  ];
+  private readonly breadcrumbService = inject(BreadcrumbService);
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected roles: AuthzRole[] = [];
@@ -68,6 +63,11 @@ export class PermissionMatrixComponent implements OnInit {
   protected isCreateResourceVisible = false;
 
   ngOnInit(): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label: 'Cấu Hình Hệ Thống' },
+      { label: 'Ma Trận Phân Quyền', active: true }
+    ]);
     this.loadResources();
     this.loadRoles();
   }

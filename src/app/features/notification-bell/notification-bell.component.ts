@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -31,12 +32,17 @@ import { NotificationRecord } from '../../models/notification.model';
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
 })
-export class NotificationBellComponent {
-  protected readonly breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-    { label: 'Cấu Hình Hệ Thống' },
-    { label: 'Chuông Thông Báo', active: true }
-  ];
+export class NotificationBellComponent implements OnInit {
+  private readonly breadcrumbService = inject(BreadcrumbService);
+
+  ngOnInit(): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label: 'Cấu Hình Hệ Thống' },
+      { label: 'Chuông Thông Báo', active: true }
+    ]);
+  }
+
   protected pageIndex = 1;
   protected pageSize = 10;
   protected readonly allNotifications: NotificationRecord[] = [];
