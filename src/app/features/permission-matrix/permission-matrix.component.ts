@@ -41,7 +41,6 @@ const PERMISSION_COLUMNS = [
     CreateRoleDialogComponent,
     CreateResourceDialogComponent,
     ConfirmPopup,
-    NoDataComponent,
     BreadcrumbComponent,
   ],
   templateUrl: './permission-matrix.component.html',
@@ -51,7 +50,7 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly authzService = inject(AuthzService);
   private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
-  
+
   protected readonly breadcrumbs: BreadcrumbItem[] = [
     { label: 'Home', icon: 'custom-icon-home', url: '/main' },
     { label: 'Cấu Hình Hệ Thống' },

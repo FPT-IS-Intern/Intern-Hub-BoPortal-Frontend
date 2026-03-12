@@ -2,11 +2,12 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NoDataComponent } from '../../../components/no-data/no-data.component';
 
 @Component({
     selector: 'app-permission-table',
     standalone: true,
-    imports: [CommonModule, FormsModule, NzCheckboxModule],
+    imports: [CommonModule, FormsModule, NzCheckboxModule, NoDataComponent],
     templateUrl: './permission-table.component.html',
     styleUrl: './permission-table.component.scss',
 })
