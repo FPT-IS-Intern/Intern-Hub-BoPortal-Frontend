@@ -78,7 +78,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "port": 4011
+            "port": 4200
           }
         },
         "test": {

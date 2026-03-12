@@ -52,7 +52,7 @@ export class App implements OnInit, OnDestroy {
 
         this.headerData = {
           ...this.headerData,
-          displayName: user.displayName || user.fullName || user.username || 'User',
+          displayName: user.displayName || 'Super Admin',
           userName: user.username || '',
           email: user.username,
           role: roleStr,

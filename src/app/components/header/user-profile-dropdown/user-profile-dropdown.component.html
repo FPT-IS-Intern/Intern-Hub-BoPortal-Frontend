@@ -19,7 +19,7 @@
         <div class="dropdown-user-info">
             <div class="user-details">
                 <span class="full-name">{{ data.displayName }}</span>
-                <span class="user-email">@{{ data.userName }}</span>
+                <span class="user-email">{{ data.userName }}</span>
             </div>
             <div class="roles-container" *ngIf="data.roles && data.roles.length > 0">
                 <div class="role-badge" *ngFor="let role of data.roles">
