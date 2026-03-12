@@ -12,7 +12,7 @@ import { CreateResourceDialogComponent } from './create-resource-dialog/create-r
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import { ToastService } from '../../services/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
@@ -45,7 +45,7 @@ const PERMISSION_COLUMNS = [
 })
 export class PermissionMatrixComponent implements OnInit {
   private readonly authzService = inject(AuthzService);
-  private readonly message = inject(NzMessageService);
+  private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
@@ -75,7 +75,7 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Load resources error:', err);
-        this.message.error('Không thể tải danh sách tài nguyên');
+        this.toastService.error('Không thể tải danh sách tài nguyên');
       },
     });
   }
@@ -94,7 +94,7 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Load roles error:', err);
-        this.message.error('Không thể tải danh sách vai trò');
+        this.toastService.error('Không thể tải danh sách vai trò');
       },
     });
   }
@@ -138,7 +138,7 @@ export class PermissionMatrixComponent implements OnInit {
         },
         error: (err) => {
           console.error('Load permissions error:', err);
-          this.message.error('Không thể tải dữ liệu phân quyền');
+          this.toastService.error('Không thể tải dữ liệu phân quyền');
         },
       });
   }
@@ -168,7 +168,7 @@ export class PermissionMatrixComponent implements OnInit {
 
   protected onSubmit(): void {
     if (this.selectedRoleId == null) {
-      this.message.warning('Vui lòng chọn vai trò');
+      this.toastService.warning('Vui lòng chọn vai trò');
       return;
     }
     this.isConfirmVisible = true;
@@ -194,11 +194,13 @@ export class PermissionMatrixComponent implements OnInit {
       }));
 
     if (resources.length === 0) {
-      this.message.warning('Không có tài nguyên nào có ID để cập nhật quyền');
+      this.toastService.warning('Không có tài nguyên nào có ID để cập nhật quyền');
       this.isConfirmVisible = false;
+      this.cdr.markForCheck();
       return;
     }
 
+    this.isConfirmVisible = false;
     this.isLoading = true;
     this.cdr.markForCheck();
 
@@ -210,15 +212,13 @@ export class PermissionMatrixComponent implements OnInit {
       }))
       .subscribe({
         next: () => {
-          this.message.success('Cập nhật phân quyền thành công');
-          this.isConfirmVisible = false;
+          this.toastService.success('Cập nhật phân quyền thành công');
           this.loadPermissions();
           this.cdr.markForCheck();
         },
         error: (err) => {
           console.error('Update permissions error:', err);
-          this.message.error('Cập nhật phân quyền thất bại');
-          this.isConfirmVisible = false;
+          this.toastService.error('Cập nhật phân quyền thất bại');
           this.cdr.markForCheck();
         },
       });
@@ -231,14 +231,15 @@ export class PermissionMatrixComponent implements OnInit {
   protected onCreateRole(event: { name: string; description: string }): void {
     this.authzService.createRole(event.name, event.description).subscribe({
       next: () => {
-        this.message.success('Tạo vai trò thành công');
+        this.toastService.success('Tạo vai trò thành công');
         this.isCreateRoleVisible = false;
         this.loadRoles();
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Create role error:', err);
-        this.message.error('Tạo vai trò thất bại');
+        this.toastService.error('Tạo vai trò thất bại');
+        this.cdr.markForCheck();
       },
     });
   }
@@ -246,7 +247,7 @@ export class PermissionMatrixComponent implements OnInit {
   protected onCreateResource(event: { name: string; code: string; description: string }): void {
     this.authzService.createResource(event.name, event.code, event.description).subscribe({
       next: (res) => {
-        this.message.success('Tạo tài nguyên thành công');
+        this.toastService.success('Tạo tài nguyên thành công');
         this.isCreateResourceVisible = false;
         this.loadResources();
         if (this.selectedRoleId != null) {
@@ -256,7 +257,8 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Create resource error:', err);
-        this.message.error('Tạo tài nguyên thất bại');
+        this.toastService.error('Tạo tài nguyên thất bại');
+        this.cdr.markForCheck();
       },
     });
   }
