@@ -19,9 +19,11 @@
     <app-notification-table [data]="listOfData" (edit)="onEdit($event)"></app-notification-table>
 
     <!-- Custom Pagination -->
-    <app-notification-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total"
-      [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange" (pageIndexChange)="onPageIndexChange($event)"
-      (pageSizeChange)="onPageSizeChange($event)" (approveAll)="onApproveAll()"></app-notification-pagination>
+    @if (total > 0) {
+      <app-notification-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total"
+        [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange" (pageIndexChange)="onPageIndexChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)" (approveAll)="onApproveAll()"></app-notification-pagination>
+    }
   </div>
 
   <!-- Apply button -->
