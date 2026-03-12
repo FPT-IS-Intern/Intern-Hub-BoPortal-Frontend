@@ -25,7 +25,6 @@ export interface HeaderData {
 export class HeaderComponent {
   data = input.required<HeaderData>();
   showControls = input(true);
-  paddingHeader = input('12px 20px 12px 16px');
 
   @Output() logoutRequested = new EventEmitter<void>();
 

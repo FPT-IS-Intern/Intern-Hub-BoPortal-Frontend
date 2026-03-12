@@ -1,9 +1,8 @@
-import { Component, inject, OnInit, OnDestroy, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { DynamicDsService } from 'dynamic-ds';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
-import { GeneralConfigService } from './services/general-config.service';
 import {
   StorageUtil,
   cancelTokenRefresh,
@@ -12,7 +11,8 @@ import {
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
 import { ToastContainer } from './components/toast-container/toast-container';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { firstValueFrom, filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -24,39 +24,16 @@ export class App implements OnInit, OnDestroy {
   private readonly themeService = inject(DynamicDsService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
-  private readonly configService = inject(GeneralConfigService);
 
   isLoginRoute = false;
 
-  headerData = computed<HeaderData>(() => {
-    const user = this.authService.userProfile();
-    const config = this.configService.configSignal();
-    const defaultLogo = 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg';
-    const logo = config?.logoUrl || defaultLogo;
-
-    if (!user) {
-      return {
-        logo,
-        userName: '',
-        notificationsCount: 0,
-      };
-    }
-
-    const roleStr = user.roles && user.roles.length > 0
-      ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ')
-      : (user.role || 'USER');
-
-    return {
-      logo,
-      displayName: user.displayName || user.fullName || user.username || 'User',
-      userName: user.username || '',
-      email: user.username,
-      role: roleStr,
-      roles: user.roles || [],
-      permissions: user.permissions || [],
-      notificationsCount: 0,
-    };
-  });
+  headerData: HeaderData = {
+    logo: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/uploads/a6e2169c-ca10-4b05-ba05-1ec636734f9a.svg',
+    userName: '',
+    email: '',
+    role: '',
+    notificationsCount: 0,
+  };
 
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
@@ -67,15 +44,31 @@ export class App implements OnInit, OnDestroy {
         this.isLoginRoute = event.urlAfterRedirects.includes('/login');
       }
     });
+
+    // React to user profile changes
+    toObservable(this.authService.userProfile)
+      .pipe(takeUntilDestroyed(), filter(Boolean))
+      .subscribe((user: any) => {
+        const roleStr = user.roles && user.roles.length > 0 ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ') : (user.role || 'USER');
+
+        this.headerData = {
+          ...this.headerData,
+          displayName: user.displayName || user.fullName || user.username || 'User',
+          userName: user.username || '',
+          email: user.username,
+          role: roleStr,
+          roles: user.roles || [],
+          permissions: user.permissions || [],
+        };
+      });
   }
 
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
 
-    // Fetch /me and system config if already logged in to populate header
+    // Fetch /me if already logged in to populate header
     if (StorageUtil.getAccessToken()) {
       this.authService.me().subscribe();
-      this.configService.getConfig().subscribe();
     }
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);

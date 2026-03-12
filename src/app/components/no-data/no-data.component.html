@@ -2,7 +2,7 @@
     <div class="no-data-content">
         <div class="no-data-icon-wrapper">
             <ng-content select="[icon]">
-                <span class="custom-icon-box-iso" [style.width]="iconSize()" [style.height]="iconSize()"></span>
+                <span class="custom-icon-box-iso fallback-icon"></span>
             </ng-content>
         </div>
         <h3 class="no-data-title">{{ title() }}</h3>

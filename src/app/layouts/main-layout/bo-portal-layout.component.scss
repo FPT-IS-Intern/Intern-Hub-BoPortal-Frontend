@@ -1,15 +1,16 @@
 :host {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 76px);
   width: 100%;
+  margin-top: 12px;
 }
 
 $radius: 28px;
 
 .web-container {
   width: 100%;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 76px);
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -41,7 +42,7 @@ $radius: 28px;
   width: 59px;
   transition: width 0.3s ease;
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 76px);
   z-index: 20;
 
   &.expanded {
@@ -50,7 +51,7 @@ $radius: 28px;
 
   app-sidebar {
     position: fixed;
-    top: 64px;
+    top: 76px;
     bottom: 12px;
     left: 20px;
     display: block;
@@ -101,6 +102,10 @@ $radius: 28px;
     scrollbar-width: thin;
     scrollbar-color: var(--neutral-300) transparent;
   }
+}
+
+.breadcrumb-container {
+  margin-bottom: 24px;
 }
 
 .content-wrapper {

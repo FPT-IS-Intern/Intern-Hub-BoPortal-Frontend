@@ -112,3 +112,9 @@
   &.edit:hover { color: var(--app-color-primary); }
   &.delete:hover { color: #ef4444; }
 }
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.1;
+}

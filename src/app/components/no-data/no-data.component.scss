@@ -23,6 +23,11 @@
     justify-content: center;
     color: var(--app-color-primary-alpha-20, rgba(0, 0, 0, 0.2));
     opacity: 0.5;
+
+    .fallback-icon {
+        width: 64px;
+        height: 64px;
+    }
 }
 
 .no-data-title {

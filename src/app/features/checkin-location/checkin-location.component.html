@@ -9,7 +9,7 @@
   </div>
   } @else if (isError()) {
   <app-no-data title="Không thể tải dữ liệu" message="Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.">
-    <span icon class="custom-icon-error" style="width: 64px; height: 64px; opacity: 0.2;"></span>
+    <span icon class="custom-icon-error error-icon"></span>
     <button action class="retry-btn" (click)="fetchConfigs()">Thử lại</button>
   </app-no-data>
   } @else {
@@ -68,7 +68,7 @@
         <div class="no-selection">
           <app-no-data title="Chưa chọn chi nhánh"
             message="Vui lòng chọn một chi nhánh từ danh sách bên trái để quản lý cấu hình check-in.">
-            <span icon class="custom-icon-box-iso" style="width: 80px; height: 80px; opacity: 0.1;"></span>
+            <span icon class="custom-icon-box-iso selection-icon"></span>
           </app-no-data>
         </div>
       }
