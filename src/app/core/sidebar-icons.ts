@@ -56,4 +56,9 @@ export const SIDEBAR_ICONS = {
     width: '20px',
     height: '20px',
   },
+  GLOBE: {
+    icon: 'custom-icon-globe',
+    width: '20px',
+    height: '20px',
+  },
 } satisfies Record<string, IconData>;

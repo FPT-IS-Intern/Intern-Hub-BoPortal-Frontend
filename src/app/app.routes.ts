@@ -46,6 +46,10 @@ export const routes: Routes = [
         component: NotificationBellComponent,
       },
       {
+        path: 'checkin',
+        loadComponent: () => import('./features/checkin-location/checkin-location.component').then(m => m.CheckinLocationComponent),
+      },
+      {
         path: '404',
         component: Error404LayoutComponent,
       },

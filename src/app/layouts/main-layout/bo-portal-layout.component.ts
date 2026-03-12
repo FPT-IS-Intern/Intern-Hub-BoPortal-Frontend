@@ -98,6 +98,11 @@ export class BoPortalLayoutComponent {
         content: 'Chuông thông báo',
         url: '/notifications',
       },
+      {
+        iconLeft: SIDEBAR_ICONS.GLOBE,
+        content: 'Địa điểm checkin',
+        url: '/checkin',
+      },
     ],
   };
 
