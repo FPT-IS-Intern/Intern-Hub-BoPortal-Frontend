@@ -16,6 +16,7 @@ export class BranchSidebarComponent {
   @Input() branches: BranchCheckinConfig[] = [];
   @Input() selectedBranchId: string | undefined;
   @Output() selectBranch = new EventEmitter<BranchCheckinConfig>();
+  @Output() manageBranches = new EventEmitter<void>();
 
   protected readonly searchQuery = signal('');
 

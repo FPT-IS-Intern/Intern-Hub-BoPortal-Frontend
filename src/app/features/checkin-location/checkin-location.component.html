@@ -16,7 +16,8 @@
     <app-branch-sidebar 
       [branches]="branches()" 
       [selectedBranchId]="selectedBranch()?.id"
-      (selectBranch)="selectBranch($event)">
+      (selectBranch)="selectBranch($event)"
+      (manageBranches)="onManageBranches()">
     </app-branch-sidebar>
 
     <!-- Detail: Config Tabs -->

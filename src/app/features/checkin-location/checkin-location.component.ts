@@ -14,6 +14,7 @@ import { ToastService } from '../../services/toast.service';
 import { BranchCheckinConfig, IPRange, AttendanceLocation } from '../../models/checkin-config.model';
 import { UpsertLocationDialogComponent } from './dialogs/upsert-location-dialog.component';
 import { UpsertIPRangeDialogComponent } from './dialogs/upsert-ip-range-dialog.component';
+import { BranchManagementDialogComponent } from './dialogs/branch-management-dialog.component';
 import { BranchSidebarComponent } from './components/branch-sidebar/branch-sidebar.component';
 import { LocationTabComponent } from './components/location-tab/location-tab.component';
 import { IpTabComponent } from './components/ip-tab/ip-tab.component';
@@ -191,6 +192,22 @@ export class CheckinLocationComponent implements OnInit {
           error: () => this.toast.error('Không thể xóa dải IP này')
         });
       }
+    });
+  }
+
+  // --- Branch Management ---
+
+  protected onManageBranches(): void {
+    const modalRef = this.modal.create({
+      nzTitle: 'Quản lý chi nhánh',
+      nzContent: BranchManagementDialogComponent,
+      nzData: { branches: this.branches() },
+      nzFooter: null,
+      nzWidth: 600
+    });
+
+    modalRef.afterClose.subscribe(() => {
+      // Refresh if needed
     });
   }
 }

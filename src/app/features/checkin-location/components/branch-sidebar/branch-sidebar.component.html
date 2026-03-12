@@ -1,7 +1,10 @@
 <aside class="master-panel">
   <div class="search-box">
-    <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" 
-      placeholder="Tìm chi nhánh..." width="100%" variant="filled"></app-shared-search>
+    <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" placeholder="Tìm chi nhánh..."
+      variant="filled"></app-shared-search>
+    <button class="manage-btn" (click)="manageBranches.emit()" title="Quản lý chi nhánh">
+      <span nz-icon nzType="setting"></span>
+    </button>
   </div>
 
   <div class="branch-list">
@@ -16,6 +19,7 @@
             {{ branch.isActive ? 'Hoạt động' : 'Tạm dừng' }}
           </div>
         </div>
+
         <span nz-icon nzType="chevron-right" class="arrow-icon"></span>
       </div>
     } @empty {
