@@ -1,0 +1,16 @@
+<div class="no-data-container" [class.full-height]="fullHeight()">
+    <div class="no-data-content">
+        <div class="no-data-icon-wrapper">
+            <ng-content select="[icon]">
+                <span class="custom-icon-box-iso" [style.width]="iconSize()" [style.height]="iconSize()"></span>
+            </ng-content>
+        </div>
+        <h3 class="no-data-title">{{ title() }}</h3>
+        <p class="no-data-message">{{ message() }}</p>
+        <div class="no-data-actions" *ngIf="showAction()">
+            <button (click)="actionClicked.emit()" class="action-btn">
+                {{ actionText() }}
+            </button>
+        </div>
+    </div>
+</div>
