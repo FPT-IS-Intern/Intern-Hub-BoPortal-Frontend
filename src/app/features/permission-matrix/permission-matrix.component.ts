@@ -9,6 +9,7 @@ import { RoleSelectorComponent } from './role-selector/role-selector.component';
 import { PermissionTableComponent } from './permission-table/permission-table.component';
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
@@ -39,6 +40,7 @@ const PERMISSION_COLUMNS = [
     CreateRoleDialogComponent,
     CreateResourceDialogComponent,
     ConfirmPopup,
+    NoDataComponent,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',

@@ -28,8 +28,18 @@
   </div>
 
   <!-- Permission matrix table -->
-  <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
-    (permissionChange)="permissionRows = $event"></app-permission-table>
+  <div class="table-container">
+    @if (permissionRows.length > 0) {
+      <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
+        (permissionChange)="permissionRows = $event"></app-permission-table>
+    } @else {
+      <app-no-data 
+        title="Không có tài nguyên" 
+        message="Vui lòng thêm tài nguyên hoặc chọn vai trò khác để xem ma trận phân quyền.">
+        <span icon class="custom-icon-users" style="width: 64px; height: 64px; opacity: 0.2;"></span>
+      </app-no-data>
+    }
+  </div>
 
   <!-- Apply button -->
   <div class="actions">
