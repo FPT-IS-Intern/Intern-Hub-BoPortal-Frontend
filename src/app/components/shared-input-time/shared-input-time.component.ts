@@ -20,9 +20,9 @@ export class SharedInputTimeComponent {
     required = input(false);
 
     protected readonly value = toSignal(
-        toObservable(this.controlName).pipe(
-            switchMap(name => {
-                const control = this.form().get(name);
+        toObservable(computed(() => ({ form: this.form(), name: this.controlName() }))).pipe(
+            switchMap(({ form, name }) => {
+                const control = form.get(name);
                 return control ? control.valueChanges.pipe(startWith(control.value)) : of(null);
             })
         )

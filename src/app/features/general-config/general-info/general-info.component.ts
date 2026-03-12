@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { startWith, map } from 'rxjs';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { startWith, map, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-general-info',
@@ -19,8 +19,11 @@ export class GeneralInfoComponent {
   form = input.required<FormGroup>();
 
   protected readonly logoUrl = toSignal(
-    this.form().get('logoUrl')!.valueChanges.pipe(
-      startWith(this.form().get('logoUrl')?.value),
+    toObservable(this.form).pipe(
+      switchMap(form => {
+        const control = form.get('logoUrl');
+        return control ? control.valueChanges.pipe(startWith(control.value)) : of(null);
+      })
     )
   );
   protected readonly logoFile = signal<{ name: string; url?: string } | null>(null);
