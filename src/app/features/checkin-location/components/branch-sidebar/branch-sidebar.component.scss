@@ -55,8 +55,8 @@
   &:hover { background: var(--app-color-surface-warm-100); }
 
   &.active {
-    background: var(--app-color-primary-100, #f0f7ff);
-    border-color: var(--app-color-primary-200, #bae0ff);
+    background: rgba(225, 131, 8, 0.07);
+    border-color: rgba(225, 131, 8, 0.2);
     .branch-icon { background: var(--app-color-primary); color: white; }
     .branch-name { color: var(--app-color-primary); font-weight: 600; }
     .arrow-icon { color: var(--app-color-primary); opacity: 1; transform: translateX(0); }

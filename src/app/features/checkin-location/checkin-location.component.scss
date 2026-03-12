@@ -5,7 +5,7 @@
   padding: 24px;
   height: 100vh;
   box-sizing: border-box;
-  background: var(--app-color-surface-warm-200);
+  background: var(--app-color-layout-bg);
 }
 
 .page-header {
@@ -45,7 +45,7 @@
   flex: 1;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06), 0 4px 24px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -116,12 +116,22 @@
   position: relative;
   transition: all 0.2s;
 
-  &:hover { color: var(--app-color-primary); }
+  &:hover {
+    color: var(--app-color-primary);
+  }
+
   &.active {
     color: var(--app-color-primary);
+
     &::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-      background: var(--app-color-primary); border-radius: 2px 2px 0 0;
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--app-color-primary);
+      border-radius: 2px 2px 0 0;
     }
   }
 }

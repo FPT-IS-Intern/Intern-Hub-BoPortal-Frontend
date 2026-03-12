@@ -27,38 +27,40 @@
 
 .no-data-title {
     font-size: 18px;
-    font-weight: 600;
-    color: var(--app-color-text-main, #1e293b);
+    font-weight: 700;
+    color: var(--app-color-text-main);
     margin-bottom: 8px;
+    letter-spacing: -0.01em;
 }
 
 .no-data-message {
     font-size: 14px;
-    color: var(--app-color-text-muted, #64748b);
+    color: var(--app-color-text-muted);
     line-height: 1.6;
     margin-bottom: 24px;
 }
 
 .action-btn {
     padding: 10px 24px;
-    background: var(--app-color-primary, #2563eb);
+    background: var(--app-color-primary);
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(225, 131, 8, 0.2);
 
     &:hover {
-        background: var(--app-color-primary-dark, #1d4ed8);
+        background: var(--app-color-primary-hover);
         transform: translateY(-1px);
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 6px 16px rgba(225, 131, 8, 0.3);
     }
 
     &:active {
         transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(225, 131, 8, 0.2);
     }
 }
 
