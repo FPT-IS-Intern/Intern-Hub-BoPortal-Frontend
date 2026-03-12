@@ -1,0 +1,25 @@
+<nav class="breadcrumb">
+    @for (item of items(); track item.label; let last = $last) {
+        <div class="breadcrumb-item-wrapper">
+            @if (item.icon) {
+                <a [routerLink]="item.url || '/'" class="breadcrumb-item home-link" [class.active]="item.active">
+                    <span [class]="item.icon" style="width: 14px; height: 14px;"></span>
+                </a>
+            } @else {
+                @if (item.url && !item.active) {
+                    <a [routerLink]="item.url" class="breadcrumb-item">
+                        {{ item.label }}
+                    </a>
+                } @else {
+                    <span class="breadcrumb-item" [class.active]="item.active">
+                        {{ item.label }}
+                    </span>
+                }
+            }
+            
+            @if (!last) {
+                <span class="breadcrumb-separator">/</span>
+            }
+        </div>
+    }
+</nav>

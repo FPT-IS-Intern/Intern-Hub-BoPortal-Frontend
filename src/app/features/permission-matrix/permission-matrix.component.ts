@@ -10,6 +10,7 @@ import { PermissionTableComponent } from './permission-table/permission-table.co
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
@@ -41,6 +42,7 @@ const PERMISSION_COLUMNS = [
     CreateResourceDialogComponent,
     ConfirmPopup,
     NoDataComponent,
+    BreadcrumbComponent,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',
@@ -49,6 +51,12 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly authzService = inject(AuthzService);
   private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
+  
+  protected readonly breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+    { label: 'Cấu Hình Hệ Thống' },
+    { label: 'Ma Trận Phân Quyền', active: true }
+  ];
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected roles: AuthzRole[] = [];

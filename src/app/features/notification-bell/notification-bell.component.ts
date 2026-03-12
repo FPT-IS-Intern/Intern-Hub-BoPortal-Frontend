@@ -10,6 +10,8 @@ import { NotificationPaginationComponent } from './notification-pagination/notif
 import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
+import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
+
 import { NotificationRecord } from '../../models/notification.model';
 @Component({
   selector: 'app-notification-bell',
@@ -18,18 +20,23 @@ import { NotificationRecord } from '../../models/notification.model';
     CommonModule,
     RouterModule,
     FormsModule,
-    NzBreadCrumbModule,
     NzButtonModule,
     NzIconModule,
     NotificationTableComponent,
     NotificationPaginationComponent,
     ModalPopup,
     ConfirmPopup,
+    BreadcrumbComponent,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
 })
 export class NotificationBellComponent {
+  protected readonly breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+    { label: 'Cấu Hình Hệ Thống' },
+    { label: 'Chuông Thông Báo', active: true }
+  ];
   protected pageIndex = 1;
   protected pageSize = 10;
   protected readonly allNotifications: NotificationRecord[] = [];

@@ -9,6 +9,7 @@ import { GeneralConfigService } from '../../../services/general-config.service';
 import { UploadService } from '../../../services/upload.service';
 import { ToastService } from '../../../services/toast.service';
 import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
+import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { switchMap, of, Observable } from 'rxjs';
 
 @Component({
@@ -22,12 +23,18 @@ import { switchMap, of, Observable } from 'rxjs';
     SystemFormatComponent,
     TimeConfigComponent,
     ConfirmPopup,
+    BreadcrumbComponent,
   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeneralConfigComponent implements OnInit {
+  protected readonly breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+    { label: 'Cấu Hình Hệ Thống' },
+    { label: 'Cấu Hình Chung', active: true }
+  ];
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
   private selectedLogoFile: File | null = null;

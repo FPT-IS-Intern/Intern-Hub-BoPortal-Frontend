@@ -4,13 +4,12 @@ import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SecurityConfigService } from '../../services/security-config.service';
 import { ToastService } from '../../services/toast.service';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
+import { finalize } from 'rxjs';
+import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-security-config',
@@ -19,19 +18,22 @@ import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popu
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    NzBreadCrumbModule,
-    NzButtonModule,
-    NzIconModule,
     PasswordPolicyComponent,
     AccountSecurityComponent,
     SessionSecurityComponent,
     ConfirmPopup,
+    BreadcrumbComponent,
   ],
   templateUrl: './security-config.component.html',
   styleUrl: './security-config.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecurityConfigComponent implements OnInit {
+  protected readonly breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+    { label: 'Cấu Hình Hệ Thống' },
+    { label: 'Bảo Mật', active: true }
+  ];
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
 

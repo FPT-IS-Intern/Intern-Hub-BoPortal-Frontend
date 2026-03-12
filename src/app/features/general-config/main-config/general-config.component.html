@@ -1,15 +1,7 @@
 <div class="page-body" [formGroup]="form">
   <!-- Page header -->
   <header class="page-header">
-    <nav class="breadcrumb">
-      <a routerLink="/dashboard" class="breadcrumb-item home-link">
-        <span class="custom-icon-home" style="width: 14px; height: 14px;"></span>
-      </a>
-      <span class="breadcrumb-separator">/</span>
-      <span class="breadcrumb-item">Cấu Hình Hệ Thống</span>
-      <span class="breadcrumb-separator">/</span>
-      <span class="breadcrumb-item active">Cấu Hình Chung</span>
-    </nav>
+    <app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
     <h1 class="page-title">Cấu Hình Chung</h1>
   </header>
 

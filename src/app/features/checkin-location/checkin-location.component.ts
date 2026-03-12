@@ -1,21 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-checkin-location',
   standalone: true,
-  imports: [CommonModule, NoDataComponent],
+  imports: [CommonModule, RouterModule, NoDataComponent, BreadcrumbComponent],
   template: `
     <div class="page-body">
       <header class="page-header">
-        <nav class="breadcrumb">
-          <a routerLink="/dashboard" class="breadcrumb-item home-link">
-             <span class="custom-icon-home" style="width: 14px; height: 14px;"></span>
-          </a>
-          <span class="breadcrumb-separator">/</span>
-          <span class="breadcrumb-item active">Địa điểm checkin</span>
-        </nav>
+        <app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
         <h1 class="page-title">Địa điểm checkin</h1>
       </header>
 
@@ -34,23 +30,15 @@ import { NoDataComponent } from '../../components/no-data/no-data.component';
     }
     .page-header {
       margin-bottom: 32px;
-    }
-    .breadcrumb {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
-      margin-bottom: 12px;
-      font-size: 14px;
-      color: var(--app-color-text-muted, #64748b);
-    }
-    .breadcrumb-item.active {
-      color: var(--app-color-primary, #2563eb);
-      font-weight: 500;
     }
     .page-title {
       font-size: 24px;
       font-weight: 700;
       color: var(--app-color-text-main, #1e293b);
+      margin: 0;
     }
     .content-wrapper {
       background: white;
@@ -60,4 +48,9 @@ import { NoDataComponent } from '../../components/no-data/no-data.component';
     }
   `]
 })
-export class CheckinLocationComponent {}
+export class CheckinLocationComponent {
+  protected readonly breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+    { label: 'Địa điểm checkin', active: true }
+  ];
+}

@@ -1,16 +1,7 @@
 <div class="page-body">
   <!-- Page header -->
   <header class="page-header">
-    <nz-breadcrumb class="breadcrumb">
-      <nz-breadcrumb-item>
-        <a routerLink="/dashboard">
-          <span nz-icon nzType="home" nzTheme="outline"></span>
-        </a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Cấu Hình Hệ Thống</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Thông báo</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Chuông thông báo</nz-breadcrumb-item>
-    </nz-breadcrumb>
+    <app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
     <h1 class="page-title">Chuông thông báo</h1>
   </header>
 

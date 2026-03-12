@@ -1,15 +1,7 @@
 <div class="page-body">
   <!-- Page header -->
   <header class="page-header">
-    <nz-breadcrumb class="breadcrumb">
-      <nz-breadcrumb-item>
-        <a routerLink="/dashboard">
-          <span nz-icon nzType="home" nzTheme="outline"></span>
-        </a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>Cấu Hình Hệ Thống</nz-breadcrumb-item>
-      <nz-breadcrumb-item>Ma Trận Phân Quyền</nz-breadcrumb-item>
-    </nz-breadcrumb>
+    <app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
     <h1 class="page-title">Ma Trận Phân Quyền</h1>
   </header>
 
@@ -30,14 +22,13 @@
   <!-- Permission matrix table -->
   <div class="table-container">
     @if (permissionRows.length > 0) {
-      <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
-        (permissionChange)="permissionRows = $event"></app-permission-table>
+    <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
+      (permissionChange)="permissionRows = $event"></app-permission-table>
     } @else {
-      <app-no-data 
-        title="Không có tài nguyên" 
-        message="Vui lòng thêm tài nguyên hoặc chọn vai trò khác để xem ma trận phân quyền.">
-        <span icon class="custom-icon-users" style="width: 64px; height: 64px; opacity: 0.2;"></span>
-      </app-no-data>
+    <app-no-data title="Không có tài nguyên"
+      message="Vui lòng thêm tài nguyên hoặc chọn vai trò khác để xem ma trận phân quyền.">
+      <span icon class="custom-icon-users" style="width: 64px; height: 64px;"></span>
+    </app-no-data>
     }
   </div>
 
@@ -54,8 +45,7 @@
     (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
 
   <!-- Create role dialog -->
-  <app-create-role-dialog [(isVisible)]="isCreateRoleVisible"
-    (save)="onCreateRole($event)"></app-create-role-dialog>
+  <app-create-role-dialog [(isVisible)]="isCreateRoleVisible" (save)="onCreateRole($event)"></app-create-role-dialog>
 
   <!-- Create resource dialog -->
   <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
