@@ -72,5 +72,51 @@
     color: var(--app-color-white) !important;
   }
 }
+.field-item {
+  margin-bottom: 16px;
+}
 
+.field-label {
+  font-weight: 600;
+  color: var(--app-color-text-700, #374151);
+}
 
+.field-value {
+  margin-left: 8px;
+  color: var(--app-color-text-main);
+}
+
+.field-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--app-color-text-700, #374151);
+}
+
+.textarea-container {
+  position: relative;
+}
+
+.custom-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid var(--app-color-border-300, #d1d5db);
+  border-radius: 6px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  background: var(--app-color-white);
+  color: var(--app-color-text-main);
+
+  &:focus {
+    border-color: var(--app-color-primary);
+  }
+}
+
+.char-counter {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  font-size: 12px;
+  color: var(--app-color-text-400, #9ca3af);
+}

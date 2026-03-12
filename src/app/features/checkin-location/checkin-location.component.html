@@ -37,26 +37,26 @@
         <div class="custom-tabs">
           <div class="tab-header">
             <div class="tab-nav">
-              <button class="tab-btn" [class.active]="activeTabIndex === 0" (click)="onTabChange(0)">
+              <button class="tab-btn" [class.active]="activeTabIndex() === 0" (click)="onTabChange(0)">
                 Vị trí Check-in
               </button>
-              <button class="tab-btn" [class.active]="activeTabIndex === 1" (click)="onTabChange(1)">
+              <button class="tab-btn" [class.active]="activeTabIndex() === 1" (click)="onTabChange(1)">
                 Dải IP Wifi
               </button>
             </div>
           </div>
 
           <div class="tab-content">
-            @if (activeTabIndex === 0) {
+            @if (activeTabIndex() === 0) {
               <app-location-tab 
-                [locations]="branch.attendanceLocations"
+                [locations]="branch.attendanceLocations || []"
                 (addLocation)="openLocationModal()"
                 (editLocation)="openLocationModal($event)"
                 (deleteLocation)="confirmDeleteLocation($event)">
               </app-location-tab>
             } @else {
               <app-ip-tab 
-                [ipRanges]="branch.allowedIpRanges"
+                [ipRanges]="branch.allowedIpRanges || []"
                 (addIP)="openIPModal()"
                 (editIP)="openIPModal($event)"
                 (deleteIP)="confirmDeleteIP($event)">

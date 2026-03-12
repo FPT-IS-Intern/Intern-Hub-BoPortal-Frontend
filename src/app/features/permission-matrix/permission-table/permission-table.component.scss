@@ -78,5 +78,7 @@
 ::ng-deep .ant-checkbox-checked::after {
     border: 1px solid var(--app-color-primary) !important;
 }
-
-
+.permission-users-icon {
+    width: 64px;
+    height: 64px;
+}

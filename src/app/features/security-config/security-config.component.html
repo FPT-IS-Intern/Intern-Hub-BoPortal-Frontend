@@ -6,16 +6,16 @@
 
   <!-- Main content -->
   @if (isLoading()) {
-    <div class="loading-container" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
-       <span nz-icon nzType="loading" style="font-size: 32px; color: var(--app-color-primary);"></span>
+    <div class="loading-container central-loader">
+       <span nz-icon nzType="loading" class="spinner-icon"></span>
     </div>
   } @else if (isError()) {
-    <div class="error-container" style="padding: 48px 0;">
+    <div class="error-container error-view">
       <app-no-data 
         title="Không tìm thấy cấu hình bảo mật" 
         message="Đã xảy ra lỗi khi tải cấu hình bảo mật hoặc cấu hình hiện không tồn tại.">
-        <span icon class="custom-icon-lock" style="width: 64px; height: 64px; opacity: 0.2;"></span>
-        <button action nz-button nzType="primary" style="margin-top: 16px;" (click)="ngOnInit()">
+        <span icon class="custom-icon-lock security-lock-icon"></span>
+        <button action nz-button nzType="primary" class="retry-btn-sec" (click)="ngOnInit()">
           Thử lại
         </button>
       </app-no-data>

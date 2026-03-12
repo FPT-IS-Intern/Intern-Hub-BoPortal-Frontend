@@ -4,6 +4,7 @@ import { SecurityConfigComponent } from './features/security-config/security-con
 import { PermissionMatrixComponent } from './features/permission-matrix/permission-matrix.component';
 import { NotificationBellComponent } from './features/notification-bell/notification-bell.component';
 import { BoPortalPageComponent } from './features/bo-portal-page/bo-portal-page.component';
+import { CheckinLocationComponent } from './features/checkin-location/checkin-location.component';
 import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
 import { LoginFormComponent } from './features/login/login-form.component';
@@ -44,6 +45,10 @@ export const routes: Routes = [
       {
         path: 'notifications',
         component: NotificationBellComponent,
+      },
+      {
+        path: 'checkin',
+        component: CheckinLocationComponent,
       },
       {
         path: '404',

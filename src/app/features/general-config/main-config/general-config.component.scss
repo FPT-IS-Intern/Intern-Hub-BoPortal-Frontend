@@ -110,5 +110,28 @@
     grid-template-columns: 1fr;
   }
 }
+.central-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
 
+.spinner {
+  font-size: 32px;
+  color: var(--app-color-primary);
+}
 
+.error-view {
+  padding: 48px 0;
+}
+
+.settings-icon-error {
+  width: 64px;
+  height: 64px;
+  opacity: 0.2;
+}
+
+.retry-btn {
+  margin-top: 16px;
+}

@@ -71,5 +71,28 @@
     color: var(--app-color-white) !important;
   }
 }
+.central-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
 
+.spinner-icon {
+  font-size: 32px;
+  color: var(--app-color-primary);
+}
 
+.error-view {
+  padding: 48px 0;
+}
+
+.security-lock-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.2;
+}
+
+.retry-btn-sec {
+  margin-top: 16px;
+}

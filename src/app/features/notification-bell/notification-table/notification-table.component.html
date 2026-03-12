@@ -19,7 +19,7 @@
         </tr>
         } @empty {
         <tr>
-            <td colspan="3" style="padding: 0;">
+            <td [attr.colspan]="3" class="empty-row-cell">
                 <app-no-data [fullHeight]="false" title="Trống" message="Hiện tại không có thông báo nào.">
                 </app-no-data>
             </td>

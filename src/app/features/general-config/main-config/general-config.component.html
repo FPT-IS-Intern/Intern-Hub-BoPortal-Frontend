@@ -6,16 +6,16 @@
 
   <!-- Main content -->
   @if (isLoading()) {
-    <div class="loading-container" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
-       <span nz-icon nzType="loading" style="font-size: 32px; color: var(--app-color-primary);"></span>
+    <div class="central-loading">
+       <span nz-icon nzType="loading" class="spinner"></span>
     </div>
   } @else if (isError()) {
-    <div class="error-container" style="padding: 48px 0;">
+    <div class="error-view">
       <app-no-data 
         title="Không tìm thấy cấu hình" 
         message="Đã xảy ra lỗi khi tải cấu hình hệ thống hoặc cấu hình hiện không tồn tại.">
-        <span icon class="custom-icon-settings" style="width: 64px; height: 64px; opacity: 0.2;"></span>
-        <button action class="apply-btn" style="margin-top: 16px;" (click)="ngOnInit()">
+        <span icon class="custom-icon-settings settings-icon-error"></span>
+        <button action class="apply-btn retry-btn" (click)="ngOnInit()">
           Thử lại
         </button>
       </app-no-data>

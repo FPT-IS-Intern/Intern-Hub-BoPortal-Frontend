@@ -21,16 +21,16 @@
         </div>
         <div class="upload-actions">
           <button class="upload-btn" type="button" (click)="fileInput.click()">
-            <span class="custom-icon-upload" style="width: 14px; height: 14px;"></span>
+            <span class="custom-icon-upload upload-icon-sm"></span>
             Tải file lên
           </button>
           <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelect($event)" />
           @if (logoFile(); as file) {
           <div class="file-info">
             <span class="file-name">{{ file.name }}</span>
-            <button type="button" class="remove-btn" (click)="removeLogo(); $event.stopPropagation()"
+              <button type="button" class="remove-btn" (click)="removeLogo(); $event.stopPropagation()"
               aria-label="Xóa file">
-              <span class="custom-icon-close" style="width: 12px; height: 12px;"></span>
+              <span class="custom-icon-close remove-icon-xs"></span>
             </button>
           </div>
           }

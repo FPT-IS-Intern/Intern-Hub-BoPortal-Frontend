@@ -48,7 +48,7 @@ export class CheckinLocationComponent implements OnInit {
   protected readonly selectedBranch = signal<BranchCheckinConfig | null>(null);
   protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
-  protected activeTabIndex = 0;
+  protected readonly activeTabIndex = signal(0);
 
   ngOnInit(): void {
     this.breadcrumbService.setBreadcrumbs([
@@ -91,7 +91,7 @@ export class CheckinLocationComponent implements OnInit {
   }
 
   protected onTabChange(index: number): void {
-    this.activeTabIndex = index;
+    this.activeTabIndex.set(index);
   }
 
   // --- CRUD Implementation ---
