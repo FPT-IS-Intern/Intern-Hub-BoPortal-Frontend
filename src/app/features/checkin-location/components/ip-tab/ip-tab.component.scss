@@ -69,11 +69,29 @@
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    &:empty, &:has(tr:only-child .empty-row) {
+      justify-content: center;
+    }
   }
 
   tr {
     display: flex;
     width: 100%;
+
+    &.empty-row {
+      flex: 1;
+      height: 100%;
+      
+      td {
+        flex: 1;
+        justify-content: center;
+        padding: 48px;
+        border-bottom: none;
+      }
+    }
   }
 
   th, td {
