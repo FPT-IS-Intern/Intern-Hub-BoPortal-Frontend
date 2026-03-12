@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { ConfigCardComponent } from '../../../components/config-card/config-card.component';
@@ -12,9 +12,9 @@ import { ConfigCardComponent } from '../../../components/config-card/config-card
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSecurityComponent {
-    @Input({ required: true }) form!: FormGroup;
+    form = input.required<FormGroup>();
 
-    protected readonly allowSpaceOptions = [
+    protected readonly allowWhitespaceOptions = [
         { label: 'Có', value: true },
         { label: 'Không', value: false },
     ];

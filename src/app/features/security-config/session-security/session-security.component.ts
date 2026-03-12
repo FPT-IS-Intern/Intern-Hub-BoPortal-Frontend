@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { ConfigCardComponent } from '../../../components/config-card/config-card.component';
@@ -12,5 +12,5 @@ import { ConfigCardComponent } from '../../../components/config-card/config-card
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionSecurityComponent {
-    @Input({ required: true }) form!: FormGroup;
+    form = input.required<FormGroup>();
 }

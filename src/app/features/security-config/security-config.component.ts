@@ -1,12 +1,9 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { SecurityConfigService } from '../../services/security-config.service';
+import { ToastService } from '../../services/toast.service';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
@@ -19,9 +16,9 @@ import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popu
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    NzBreadCrumbModule,
-    NzButtonModule,
-    NzIconModule,
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
     PasswordPolicyComponent,
     AccountSecurityComponent,
     SessionSecurityComponent,
@@ -38,18 +35,19 @@ export class SecurityConfigComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly configService: SecurityConfigService,
-    private readonly message: NzMessageService
+    private readonly toastService: ToastService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.form = this.fb.group({
-      minLength: [8, []],
-      maxLength: [1, []],
-      uppercaseCount: [1, []],
-      digitCount: [1, []],
-      expirationDays: [90, []],
-      specialCharCount: [8, []],
-      autoLogoutMinutes: [3, []],
-      maxLoginAttempts: [8, []],
-      allowSpace: [false, []],
+      minPasswordLength: [8, []],
+      maxPasswordLength: [16, []],
+      minUppercaseChars: [1, []],
+      minSpecialChars: [1, []],
+      minNumericChars: [1, []],
+      passwordExpiryDays: [90, []],
+      allowWhitespace: [false, []],
+      autoLogoutMinutes: [30, []],
+      maxLoginAttempts: [5, []],
     });
   }
 
@@ -62,11 +60,12 @@ export class SecurityConfigComponent implements OnInit {
       next: (res) => {
         if (res.data) {
           this.form.patchValue(res.data);
+          this.cdr.markForCheck();
         }
       },
       error: (err) => {
         console.error('Fetch security config error:', err);
-        this.message.error('Không thể tải cấu hình bảo mật');
+        this.toastService.error('Không thể tải cấu hình bảo mật');
       },
     });
   }
@@ -78,15 +77,18 @@ export class SecurityConfigComponent implements OnInit {
   }
 
   protected handleConfirmSave(): void {
+    this.isConfirmVisible = false;
+    this.cdr.markForCheck();
+
     this.configService.updateConfig(this.form.value).subscribe({
       next: () => {
-        this.message.success('Cập nhật cấu hình bảo mật thành công');
-        this.isConfirmVisible = false;
+        this.toastService.success('Cập nhật cấu hình bảo mật thành công');
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Update security config error:', err);
-        this.message.error('Cập nhật cấu hình bảo mật thất bại');
-        this.isConfirmVisible = false;
+        this.toastService.error('Cập nhật cấu hình bảo mật thất bại');
+        this.cdr.markForCheck();
       },
     });
   }

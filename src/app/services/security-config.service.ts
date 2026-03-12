@@ -9,7 +9,7 @@ import { SecurityConfig } from '../models/security-config.model';
     providedIn: 'root',
 })
 export class SecurityConfigService {
-    private readonly baseUrl = `${getBaseUrl()}/security-config`;
+    private readonly baseUrl = `${getBaseUrl()}/bo-portal/security-config`;
 
     constructor(private readonly http: HttpClient) { }
 
@@ -18,6 +18,6 @@ export class SecurityConfigService {
     }
 
     updateConfig(config: SecurityConfig): Observable<ResponseApi<void>> {
-        return this.http.post<ResponseApi<void>>(this.baseUrl, config);
+        return this.http.put<ResponseApi<void>>(this.baseUrl, config);
     }
 }
