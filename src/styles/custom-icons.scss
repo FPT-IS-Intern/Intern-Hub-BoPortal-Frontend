@@ -90,3 +90,31 @@
 .custom-icon-chevron-down {
   @include custom-icon-file('/assets/icons/chevron-down.svg', 1rem);
 }
+
+.custom-icon-success {
+  @include custom-icon-file('/assets/icons/check-circle.svg', 1.25rem);
+}
+
+.custom-icon-error {
+  @include custom-icon-file('/assets/icons/x-circle.svg', 1.25rem);
+}
+
+.custom-icon-warning {
+  @include custom-icon-file('/assets/icons/alert-triangle.svg', 1.25rem);
+}
+
+.custom-icon-close {
+  @include custom-icon-file('/assets/icons/x.svg', 1.25rem);
+}
+
+.custom-icon-save {
+  @include custom-icon-file('/assets/icons/save.svg', 1rem);
+}
+
+.custom-icon-user {
+  @include custom-icon-file('/assets/icons/user.svg', 1.25rem);
+}
+
+.custom-icon-upload {
+  @include custom-icon-file('/assets/icons/upload.svg', 1.1rem);
+}
