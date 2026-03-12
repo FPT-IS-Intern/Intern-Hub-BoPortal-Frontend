@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { BreadcrumbService } from '../../../services/breadcrumb.service';
 import { GeneralInfoComponent } from '../general-info/general-info.component';
 import { SystemFormatComponent } from '../system-format/system-format.component';
 import { TimeConfigComponent } from '../time-config/time-config.component';
@@ -9,7 +10,7 @@ import { GeneralConfigService } from '../../../services/general-config.service';
 import { UploadService } from '../../../services/upload.service';
 import { ToastService } from '../../../services/toast.service';
 import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
+import { BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
 import { switchMap, of, Observable } from 'rxjs';
 
 @Component({
@@ -23,18 +24,13 @@ import { switchMap, of, Observable } from 'rxjs';
     SystemFormatComponent,
     TimeConfigComponent,
     ConfirmPopup,
-    BreadcrumbComponent,
   ],
   templateUrl: './general-config.component.html',
   styleUrl: './general-config.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GeneralConfigComponent implements OnInit {
-  protected readonly breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-    { label: 'Cấu Hình Hệ Thống' },
-    { label: 'Cấu Hình Chung', active: true }
-  ];
+  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
   private selectedLogoFile: File | null = null;
@@ -57,6 +53,11 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label: 'Cấu Hình Hệ Thống' },
+      { label: 'Cấu Hình Chung', active: true }
+    ]);
     this.fetchConfig();
   }
 

@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { SecurityConfigService } from '../../services/security-config.service';
 import { ToastService } from '../../services/toast.service';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
@@ -22,18 +23,13 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb
     AccountSecurityComponent,
     SessionSecurityComponent,
     ConfirmPopup,
-    BreadcrumbComponent,
   ],
   templateUrl: './security-config.component.html',
   styleUrl: './security-config.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecurityConfigComponent implements OnInit {
-  protected readonly breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-    { label: 'Cấu Hình Hệ Thống' },
-    { label: 'Bảo Mật', active: true }
-  ];
+  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
 
@@ -57,6 +53,11 @@ export class SecurityConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label: 'Cấu Hình Hệ Thống' },
+      { label: 'Bảo Mật', active: true }
+    ]);
     this.fetchConfig();
   }
 
