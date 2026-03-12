@@ -62,9 +62,6 @@
   <!-- State: UPSERT -->
   @if (viewState === 'upsert') {
   <div class="upsert-header">
-    <button class="back-link" (click)="viewState = 'list'">
-      <span nz-icon nzType="arrow-left"></span> Quay lại
-    </button>
     <span class="upsert-title">{{ editingBranch ? 'Chỉnh sửa chi nhánh' : 'Thêm chi nhánh mới' }}</span>
   </div>
 
@@ -102,7 +99,7 @@
     </div>
 
     <div class="form-footer">
-      <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">Hủy bỏ</button>
+      <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">Trở lại</button>
       <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="branchForm.invalid || isSaving">
         @if (isSaving) {
         <span nz-icon nzType="loading" class="mr-2"></span>
