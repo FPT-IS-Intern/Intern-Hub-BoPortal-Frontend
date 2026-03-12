@@ -15,6 +15,7 @@ export class SharedSearchComponent {
   @Input() value = '';
   @Input() placeholder = 'Tìm kiếm...';
   @Input() width = '280px';
+  @Input() variant: 'outline' | 'filled' = 'outline';
 
   @Output() valueChange = new EventEmitter<string>();
 

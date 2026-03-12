@@ -28,8 +28,18 @@
     opacity: 0.6;
   }
 
+  &.filled {
+    background: var(--app-color-surface-warm-100);
+    border-color: transparent;
+
+    &:focus {
+      background: white;
+      border-color: var(--app-color-primary);
+    }
+  }
+
   &:focus {
     border-color: var(--app-color-primary);
-    box-shadow: 0 0 0 3px var(--app-color-primary-alpha-8, rgba(0, 0, 0, 0.08));
+    box-shadow: 0 0 0 3px var(--app-color-primary-alpha-8, rgba(var(--app-color-primary-rgb, 0, 0, 0), 0.08));
   }
 }
