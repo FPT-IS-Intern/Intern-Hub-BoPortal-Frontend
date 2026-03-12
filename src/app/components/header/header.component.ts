@@ -6,10 +6,13 @@ import { NotificationsDropdownComponent } from './notifications-dropdown/notific
 export interface HeaderData {
   logo?: string;
   userName?: string;
+  displayName?: string;
   userAvatar?: string;
   notificationsCount?: number;
   email?: string;
   role?: string;
+  roles?: string[];
+  permissions?: string[];
 }
 
 @Component({

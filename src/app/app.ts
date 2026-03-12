@@ -52,9 +52,12 @@ export class App implements OnInit, OnDestroy {
 
         this.headerData = {
           ...this.headerData,
-          userName: user.displayName || user.fullName || user.username || 'User',
+          displayName: user.displayName || user.fullName || user.username || 'User',
+          userName: user.username || '',
           email: user.username,
           role: roleStr,
+          roles: user.roles || [],
+          permissions: user.permissions || [],
         };
       });
   }
@@ -62,8 +65,10 @@ export class App implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.themeService.initializeTheme().subscribe();
 
-    // Do not auto-fetch /me and /general-config on startup to honor the no-call-on-login request
-    // (lazy loaded by each feature as needed)
+    // Fetch /me if already logged in to populate header
+    if (StorageUtil.getAccessToken()) {
+      this.authService.me().subscribe();
+    }
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.addEventListener('FORCE_LOGOUT', this.onForceLogout);

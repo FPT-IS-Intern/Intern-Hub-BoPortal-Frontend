@@ -101,14 +101,21 @@
             .role-badge {
                 display: inline-flex;
                 align-self: flex-start;
-                background-color: var(--app-color-primary);
+                background: linear-gradient(135deg, var(--app-color-primary) 0%, var(--brand-600) 100%);
                 color: white;
-                padding: 6px 16px;
-                border-radius: 8px;
-                font-size: 13px;
+                padding: 4px 12px;
+                border-radius: 6px;
+                font-size: 11px;
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .roles-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
             }
         }
 

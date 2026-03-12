@@ -48,6 +48,10 @@ export class LoginFormComponent {
                 console.log('Login successful. Saving tokens...');
                 this.tokenService.saveTokens(res.data.accessToken, res.data.refreshToken);
 
+                if (res.data.user) {
+                    this.authService.userProfile.set(res.data.user);
+                }
+
                 // Skip /me and general-config calls on login success as requested
                 console.log('Login successful. Navigate directly to main layout.');
                 this.router.navigate(['/main']);
