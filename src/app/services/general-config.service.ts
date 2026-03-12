@@ -30,7 +30,7 @@ export class GeneralConfigService {
     }
 
     updateConfig(config: GeneralConfig): Observable<ResponseApi<void>> {
-        return this.http.post<ResponseApi<void>>(this.baseUrl, config).pipe(
+        return this.http.put<ResponseApi<void>>(this.baseUrl, config).pipe(
             tap(() => this._config.set(null)) // Clear cache on update
         );
     }
