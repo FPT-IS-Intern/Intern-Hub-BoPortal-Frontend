@@ -1,9 +1,9 @@
 <aside class="master-panel">
   <div class="search-box">
     <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" placeholder="Tìm chi nhánh..."
-      variant="filled"></app-shared-search>
+      variant="filled" width="100%"></app-shared-search>
     <button class="manage-btn" (click)="manageBranches.emit()" title="Quản lý chi nhánh">
-      <span nz-icon nzType="setting"></span>
+      <span icon class="custom-icon-users-edit"></span>
     </button>
   </div>
 

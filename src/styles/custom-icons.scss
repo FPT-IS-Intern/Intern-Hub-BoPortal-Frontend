@@ -122,3 +122,7 @@
 .custom-icon-box-iso {
   @include custom-icon-file('/assets/icons/box-iso.svg', 1.25rem);
 }
+
+.custom-icon-users-edit {
+  @include custom-icon-file('/assets/icons/users-edit.svg', 1.25rem);
+}
