@@ -206,8 +206,10 @@ export class CheckinLocationComponent implements OnInit {
       nzWidth: 600
     });
 
-    modalRef.afterClose.subscribe(() => {
-      // Refresh if needed
+    modalRef.afterClose.subscribe(result => {
+      if (result) {
+        this.fetchConfigs();
+      }
     });
   }
 }
