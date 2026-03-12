@@ -1,9 +1,7 @@
 <aside class="master-panel">
   <div class="search-box">
-    <nz-input-group [nzPrefix]="prefixIcon">
-      <input type="text" nz-input placeholder="Tìm chi nhánh..." [ngModel]="searchQuery()" (ngModelChange)="onSearch($event)" />
-    </nz-input-group>
-    <ng-template #prefixIcon><span nz-icon nzType="search"></span></ng-template>
+    <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" 
+      placeholder="Tìm chi nhánh..." width="100%" variant="filled"></app-shared-search>
   </div>
 
   <div class="branch-list">
