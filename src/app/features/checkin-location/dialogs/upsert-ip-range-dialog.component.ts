@@ -11,8 +11,7 @@ import { IPRange } from '../../../models/checkin-config.model';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    NzIconModule
+    ReactiveFormsModule
   ],
   templateUrl: './upsert-ip-range-dialog.component.html',
   styleUrls: ['./upsert-ip-range-dialog.component.scss']
