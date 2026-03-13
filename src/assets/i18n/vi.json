@@ -1,0 +1,35 @@
+﻿{
+  "error": {
+    "invalid_request": "Yêu cầu không hợp lệ",
+    "not_found": "Không tìm thấy dữ liệu",
+    "request_timeout": "Hết thời gian xử lý, vui lòng thử lại",
+    "invalid_signature": "Chữ ký không hợp lệ",
+    "external_service_response_error": "Lỗi khi gọi dịch vụ bên ngoài",
+    "service_unavailable": "Dịch vụ tạm thời không khả dụng",
+    "gateway_timeout": "Gateway timeout, vui lòng thử lại",
+    "system": "Hệ thống đang bận, vui lòng thử lại",
+    "branch": {
+      "duplicate_name": "Tên chi nhánh đã tồn tại"
+    },
+    "rbac": {
+      "role_code_duplicate": "Mã vai trò đã tồn tại",
+      "permission_code_duplicate": "Mã quyền đã tồn tại",
+      "user_role_duplicate": "Người dùng đã có vai trò này",
+      "role_permission_duplicate": "Vai trò đã có quyền này"
+    },
+    "auth": {
+      "invalid_credential": "Sai tài khoản hoặc mật khẩu",
+      "account_inactive": "Tài khoản chưa kích hoạt",
+      "account_locked": "Tài khoản bị khóa tạm thời",
+      "refresh_token_not_found": "Không tìm thấy refresh token",
+      "refresh_token_invalid": "Refresh token đã hết hạn hoặc bị thu hồi",
+      "token_device_mismatch": "Thiết bị không khớp",
+      "refresh_token_user_mismatch": "Refresh token không khớp người dùng",
+      "user_not_found": "Không tìm thấy người dùng",
+      "missing_access_token": "Thiếu access token",
+      "token_process_failed": "Không thể xử lý token",
+      "username_duplicate": "Tên đăng nhập đã tồn tại",
+      "refresh_token_duplicate": "Refresh token đã tồn tại"
+    }
+  }
+}

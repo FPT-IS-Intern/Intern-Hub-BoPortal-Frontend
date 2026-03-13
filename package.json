@@ -33,6 +33,8 @@
     "@angular/router": "21.1.0",
     "@goat-bravos/intern-hub-layout": "^4.0.3",
     "@goat-bravos/shared-lib-client": "^1.0.1",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "dynamic-ds": "1.0.12",
     "ng-zorro-antd": "^21.1.0",
     "rxjs": "~7.8.0",

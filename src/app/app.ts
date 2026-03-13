@@ -2,6 +2,7 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { DynamicDsService } from 'dynamic-ds';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './services/auth.service';
 import {
   StorageUtil,
@@ -24,6 +25,7 @@ export class App implements OnInit, OnDestroy {
   private readonly themeService = inject(DynamicDsService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly translate = inject(TranslateService);
 
   isLoginRoute = false;
 
@@ -64,6 +66,8 @@ export class App implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.translate.setDefaultLang('vi');
+    this.translate.use('vi');
     this.themeService.initializeTheme().subscribe();
 
     // Fetch /me if already logged in to populate header

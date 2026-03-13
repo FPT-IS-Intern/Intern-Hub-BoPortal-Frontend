@@ -10,9 +10,12 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
 import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
 import localeVi from '@angular/common/locales/vi';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { apiErrorInterceptor } from './core/interceptors/api-error.interceptor';
 
 registerLocaleData(localeVi);
 
@@ -21,7 +24,16 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, apiErrorInterceptor])),
+    provideTranslateService({
+      lang: 'vi',
+      fallbackLang: 'vi',
+    }),
+    ...provideTranslateHttpLoader({
+      prefix: './assets/i18n/',
+      suffix: '.json',
+      useHttpBackend: true,
+    }),
     { provide: NZ_I18N, useValue: vi_VN },
     { provide: LOCALE_ID, useValue: 'vi' },
     {
