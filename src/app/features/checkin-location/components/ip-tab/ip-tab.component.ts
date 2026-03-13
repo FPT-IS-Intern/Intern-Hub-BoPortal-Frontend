@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Output, EventEmitter, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './ip-tab.component.scss'
 })
 export class IpTabComponent {
-  @Input() ipRanges: IPRange[] = [];
+  ipRanges = input<IPRange[]>([]);
   @Output() addIP = new EventEmitter<void>();
   @Output() editIP = new EventEmitter<IPRange>();
   @Output() deleteIP = new EventEmitter<IPRange>();
@@ -24,8 +24,9 @@ export class IpTabComponent {
 
   filteredIpRanges = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
-    if (!term) return this.ipRanges;
-    return this.ipRanges.filter(range =>
+    const ipRanges = this.ipRanges();
+    if (!term) return ipRanges;
+    return ipRanges.filter(range =>
       range.name.toLowerCase().includes(term) ||
       range.ipPrefix.toLowerCase().includes(term) ||
       (range.description && range.description.toLowerCase().includes(term))

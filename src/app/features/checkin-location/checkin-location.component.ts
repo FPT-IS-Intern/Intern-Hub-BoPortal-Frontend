@@ -94,7 +94,9 @@ export class CheckinLocationComponent implements OnInit {
   }
 
   protected selectBranch(branch: BranchCheckinConfig): void {
-    this.selectedBranch.set(branch);
+    // Create a new reference so dependent views update reliably
+    this.selectedBranch.set({ ...branch });
+    this.activeTabIndex.set(0);
   }
 
   protected onTabChange(index: number): void {

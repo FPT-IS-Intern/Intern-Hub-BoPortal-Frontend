@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Output, EventEmitter, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './location-tab.component.scss'
 })
 export class LocationTabComponent {
-  @Input() locations: AttendanceLocation[] = [];
+  locations = input<AttendanceLocation[]>([]);
   @Output() addLocation = new EventEmitter<void>();
   @Output() editLocation = new EventEmitter<AttendanceLocation>();
   @Output() deleteLocation = new EventEmitter<AttendanceLocation>();
@@ -24,8 +24,9 @@ export class LocationTabComponent {
 
   filteredLocations = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
-    if (!term) return this.locations;
-    return this.locations.filter(loc =>
+    const locations = this.locations();
+    if (!term) return locations;
+    return locations.filter(loc =>
       loc.name.toLowerCase().includes(term) ||
       loc.latitude.toString().includes(term) ||
       loc.longitude.toString().includes(term)
