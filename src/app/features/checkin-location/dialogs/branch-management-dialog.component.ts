@@ -12,6 +12,7 @@ import { BranchCheckinConfig } from '../../../models/checkin-config.model';
 import { CheckinConfigService } from '../../../services/checkin-config.service';
 import { ToastService } from '../../../services/toast.service';
 import { SharedSearchComponent } from '../../../components/shared-search/shared-search.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-branch-management-dialog',
@@ -23,7 +24,8 @@ import { SharedSearchComponent } from '../../../components/shared-search/shared-
     NzModalModule, 
     NzIconModule, 
     NzButtonModule,
-    SharedSearchComponent
+    SharedSearchComponent,
+    TranslateModule
   ],
   templateUrl: './branch-management-dialog.component.html',
   styleUrl: './branch-management-dialog.component.scss'
@@ -33,6 +35,7 @@ export class BranchManagementDialogComponent implements OnInit {
   private readonly modalService = inject(NzModalService);
   private readonly checkinService = inject(CheckinConfigService);
   private readonly toast = inject(ToastService);
+  private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
   readonly modalData = inject<{ branches: BranchCheckinConfig[] }>(NZ_MODAL_DATA, { optional: true });
   
@@ -99,12 +102,16 @@ export class BranchManagementDialogComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
-        this.toast.success(this.editingBranch ? 'Cập nhật chi nhánh thành công' : 'Thêm chi nhánh thành công');
+        this.toast.success(
+          this.editingBranch
+            ? this.translate.instant('checkin.branchDialog.toast.updateSuccess')
+            : this.translate.instant('checkin.branchDialog.toast.createSuccess')
+        );
         this.isSaving = false;
         this.modalRef.close(true); // Close with success to trigger refresh
       },
       error: () => {
-        this.toast.error('Có lỗi xảy ra khi lưu chi nhánh');
+        this.toast.error(this.translate.instant('checkin.branchDialog.toast.saveError'));
         this.isSaving = false;
       }
     });
@@ -112,17 +119,17 @@ export class BranchManagementDialogComponent implements OnInit {
 
   onDelete(branch: BranchCheckinConfig) {
     this.modalService.confirm({
-      nzTitle: 'Xóa chi nhánh?',
-      nzContent: `Bạn có chắc chắn muốn xóa chi nhánh <b>${branch.name}</b>? Toàn bộ cấu hình check-in của chi nhánh này sẽ bị mất.`,
-      nzOkText: 'Xóa',
+      nzTitle: this.translate.instant('checkin.branchDialog.confirmDelete.title'),
+      nzContent: this.translate.instant('checkin.branchDialog.confirmDelete.message', { name: branch.name }),
+      nzOkText: this.translate.instant('checkin.common.actions.delete'),
       nzOkDanger: true,
       nzOnOk: () => {
         this.checkinService.deleteBranch(branch.id).subscribe({
           next: () => {
-            this.toast.success('Đã xóa chi nhánh');
+            this.toast.success(this.translate.instant('checkin.branchDialog.toast.deleteSuccess'));
             this.modalRef.close(true);
           },
-          error: () => this.toast.error('Không thể xóa chi nhánh này')
+          error: () => this.toast.error(this.translate.instant('checkin.branchDialog.toast.deleteError'))
         });
       }
     });

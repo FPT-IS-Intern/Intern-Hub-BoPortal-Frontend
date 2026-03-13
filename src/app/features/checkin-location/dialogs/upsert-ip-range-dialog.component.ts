@@ -5,13 +5,15 @@ import { HttpClient } from '@angular/common/http';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { IPRange } from '../../../models/checkin-config.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-upsert-ip-range-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   templateUrl: './upsert-ip-range-dialog.component.html',
   styleUrls: ['./upsert-ip-range-dialog.component.scss']
@@ -20,6 +22,7 @@ export class UpsertIPRangeDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly modalRef = inject(NzModalRef);
   private readonly http = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
   readonly data = inject<IPRange>(NZ_MODAL_DATA, { optional: true });
 
   protected form!: FormGroup;
@@ -66,7 +69,7 @@ export class UpsertIPRangeDialogComponent implements OnInit {
               error: (err) => {
                 console.error('Tất cả API lấy IP đều bị mạng Cty chặn.', err);
                 // Báo lỗi cho người dùng biết
-                alert('Mạng công ty (Firewall) đang chặn các trang cấp IP. Bạn vui lòng nhập tay nhé!');
+                alert(this.translate.instant('checkin.ipDialog.alerts.ipBlocked'));
                 this.isFetchingIP = false;
               }
             });

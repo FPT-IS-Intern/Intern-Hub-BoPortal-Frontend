@@ -6,6 +6,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
@@ -31,6 +33,7 @@ import { IpTabComponent } from './components/ip-tab/ip-tab.component';
     NzIconModule,
     NzButtonModule,
     NzModalModule,
+    TranslateModule,
     BranchSidebarComponent,
     LocationTabComponent,
     IpTabComponent
@@ -43,6 +46,7 @@ export class CheckinLocationComponent implements OnInit {
   private readonly checkinService = inject(CheckinConfigService);
   private readonly modal = inject(NzModalService);
   private readonly toast = inject(ToastService);
+  private readonly translate = inject(TranslateService);
 
   // State Signals
   protected readonly branches = signal<BranchCheckinConfig[]>([]);
@@ -52,10 +56,10 @@ export class CheckinLocationComponent implements OnInit {
   protected readonly activeTabIndex = signal(0);
 
   ngOnInit(): void {
-    this.breadcrumbService.setBreadcrumbs([
-      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-      { label: 'Địa điểm checkin', active: true }
-    ]);
+    this.updateBreadcrumbs();
+    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.updateBreadcrumbs();
+    });
     this.fetchConfigs();
   }
 
@@ -102,7 +106,9 @@ export class CheckinLocationComponent implements OnInit {
     if (!branch) return;
 
     const modalRef = this.modal.create({
-      nzTitle: location ? 'Chỉnh sửa vị trí check-in' : 'Thêm vị trí check-in mới',
+      nzTitle: location
+        ? this.translate.instant('checkin.locationDialog.title.edit')
+        : this.translate.instant('checkin.locationDialog.title.create'),
       nzContent: UpsertLocationDialogComponent,
       nzData: location,
       nzFooter: null,
@@ -119,10 +125,14 @@ export class CheckinLocationComponent implements OnInit {
 
         request$.subscribe({
           next: () => {
-            this.toast.success(isEdit ? 'Cập nhật vị trí thành công' : 'Thêm vị trí mới thành công');
+            this.toast.success(
+              isEdit
+                ? this.translate.instant('checkin.location.toast.updateSuccess')
+                : this.translate.instant('checkin.location.toast.createSuccess')
+            );
             this.fetchConfigs();
           },
-          error: () => this.toast.error('Có lỗi xảy ra khi lưu vị trí')
+          error: () => this.toast.error(this.translate.instant('checkin.location.toast.saveError'))
         });
       }
     });
@@ -130,17 +140,17 @@ export class CheckinLocationComponent implements OnInit {
 
   protected confirmDeleteLocation(location: AttendanceLocation): void {
     this.modal.confirm({
-      nzTitle: 'Xóa vị trí check-in?',
-      nzContent: `Bạn có chắc chắn muốn xóa vị trí <b>${location.name}</b>?`,
-      nzOkText: 'Xóa',
+      nzTitle: this.translate.instant('checkin.location.confirmDelete.title'),
+      nzContent: this.translate.instant('checkin.location.confirmDelete.message', { name: location.name }),
+      nzOkText: this.translate.instant('checkin.common.actions.delete'),
       nzOkDanger: true,
       nzOnOk: () => {
         this.checkinService.deleteLocation(location.id).subscribe({
           next: () => {
-            this.toast.success('Đã xóa vị trí check-in');
+            this.toast.success(this.translate.instant('checkin.location.toast.deleteSuccess'));
             this.fetchConfigs();
           },
-          error: () => this.toast.error('Không thể xóa vị trí này')
+          error: () => this.toast.error(this.translate.instant('checkin.location.toast.deleteError'))
         });
       }
     });
@@ -151,7 +161,9 @@ export class CheckinLocationComponent implements OnInit {
     if (!branch) return;
 
     const modalRef = this.modal.create({
-      nzTitle: range ? 'Chỉnh sửa dải IP' : 'Thêm dải IP Wifi mới',
+      nzTitle: range
+        ? this.translate.instant('checkin.ipDialog.title.edit')
+        : this.translate.instant('checkin.ipDialog.title.create'),
       nzContent: UpsertIPRangeDialogComponent,
       nzData: range,
       nzFooter: null,
@@ -168,10 +180,14 @@ export class CheckinLocationComponent implements OnInit {
 
         request$.subscribe({
           next: () => {
-            this.toast.success(isEdit ? 'Cập nhật dải IP thành công' : 'Thêm dải IP mới thành công');
+            this.toast.success(
+              isEdit
+                ? this.translate.instant('checkin.ip.toast.updateSuccess')
+                : this.translate.instant('checkin.ip.toast.createSuccess')
+            );
             this.fetchConfigs();
           },
-          error: () => this.toast.error('Có lỗi xảy ra khi lưu dải IP')
+          error: () => this.toast.error(this.translate.instant('checkin.ip.toast.saveError'))
         });
       }
     });
@@ -179,17 +195,17 @@ export class CheckinLocationComponent implements OnInit {
 
   protected confirmDeleteIP(range: IPRange): void {
     this.modal.confirm({
-      nzTitle: 'Xóa dải IP?',
-      nzContent: `Bạn có chắc chắn muốn xóa dải IP <b>${range.name}</b>?`,
-      nzOkText: 'Xóa',
+      nzTitle: this.translate.instant('checkin.ip.confirmDelete.title'),
+      nzContent: this.translate.instant('checkin.ip.confirmDelete.message', { name: range.name }),
+      nzOkText: this.translate.instant('checkin.common.actions.delete'),
       nzOkDanger: true,
       nzOnOk: () => {
         this.checkinService.deleteIPRange(range.id).subscribe({
           next: () => {
-            this.toast.success('Đã xóa dải IP');
+            this.toast.success(this.translate.instant('checkin.ip.toast.deleteSuccess'));
             this.fetchConfigs();
           },
-          error: () => this.toast.error('Không thể xóa dải IP này')
+          error: () => this.toast.error(this.translate.instant('checkin.ip.toast.deleteError'))
         });
       }
     });
@@ -199,7 +215,7 @@ export class CheckinLocationComponent implements OnInit {
 
   protected onManageBranches(): void {
     const modalRef = this.modal.create({
-      nzTitle: 'Quản lý chi nhánh',
+      nzTitle: this.translate.instant('checkin.branchDialog.title'),
       nzContent: BranchManagementDialogComponent,
       nzData: { branches: this.branches() },
       nzFooter: null,
@@ -211,5 +227,12 @@ export class CheckinLocationComponent implements OnInit {
         this.fetchConfigs();
       }
     });
+  }
+
+  private updateBreadcrumbs(): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: this.translate.instant('checkin.breadcrumb.home'), icon: 'custom-icon-home', url: '/main' },
+      { label: this.translate.instant('checkin.breadcrumb.title'), active: true }
+    ]);
   }
 }

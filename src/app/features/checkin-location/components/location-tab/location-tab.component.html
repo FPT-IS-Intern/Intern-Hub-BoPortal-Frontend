@@ -1,10 +1,10 @@
 <div class="action-bar">
-  <h3>Danh sách tọa độ cho phép</h3>
+  <h3>{{ 'checkin.locationTab.title' | translate }}</h3>
   <div class="search-actions">
     <app-shared-search [value]="searchTerm()" (valueChange)="searchTerm.set($event)"
-      placeholder="Tìm kiếm vị trí, tọa độ..."></app-shared-search>
+      [placeholder]="'checkin.locationTab.searchPlaceholder' | translate"></app-shared-search>
     <button class="add-btn" (click)="addLocation.emit()">
-      <span nz-icon nzType="plus"></span> Thêm vị trí
+      <span nz-icon nzType="plus"></span> {{ 'checkin.locationTab.add' | translate }}
     </button>
   </div>
 </div>
@@ -13,11 +13,11 @@
   <table class="premium-table">
     <thead>
       <tr>
-        <th>Tên vị trí</th>
-        <th>Tọa độ (Lat/Long)</th>
-        <th>Bán kính (m)</th>
-        <th>Trạng thái</th>
-        <th class="col-actions">Thao tác</th>
+        <th>{{ 'checkin.locationTab.table.name' | translate }}</th>
+        <th>{{ 'checkin.locationTab.table.coordinates' | translate }}</th>
+        <th>{{ 'checkin.locationTab.table.radius' | translate }}</th>
+        <th>{{ 'checkin.locationTab.table.status' | translate }}</th>
+        <th class="col-actions">{{ 'checkin.locationTab.table.actions' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -28,14 +28,18 @@
         <td>{{ loc.radiusMeters }}m</td>
         <td>
           <span class="badge" [class.badge-success]="loc.isActive" [class.badge-error]="!loc.isActive">
-            {{ loc.isActive ? 'Active' : 'Inactive' }}
+            {{
+              loc.isActive
+                ? ('checkin.common.status.active' | translate)
+                : ('checkin.common.status.inactive' | translate)
+            }}
           </span>
         </td>
         <td class="col-actions">
-          <button class="icon-btn edit" title="Sửa" (click)="editLocation.emit(loc)">
+          <button class="icon-btn edit" [attr.title]="'checkin.common.actions.edit' | translate" (click)="editLocation.emit(loc)">
             <span icon class="custom-icon-edit"></span>
           </button>
-          <button class="icon-btn delete" title="Xóa" (click)="deleteLocation.emit(loc)">
+          <button class="icon-btn delete" [attr.title]="'checkin.common.actions.delete' | translate" (click)="deleteLocation.emit(loc)">
             <span icon class="custom-icon-close"></span>
           </button>
         </td>
@@ -43,7 +47,9 @@
       } @empty {
       <tr class="empty-row">
         <td colspan="5">
-          <app-no-data title="Chưa có tọa độ" message="Vui lòng thêm các điểm check-in cho chi nhánh này.">
+          <app-no-data
+            [title]="'checkin.locationTab.empty.title' | translate"
+            [message]="'checkin.locationTab.empty.message' | translate">
             <span icon class="custom-icon-globe empty-icon"></span>
           </app-no-data>
         </td>

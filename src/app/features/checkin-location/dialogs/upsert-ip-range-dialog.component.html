@@ -1,57 +1,74 @@
 <div class="dialog-content">
   <div class="form-section">
-    <h3 class="view-title">{{ data?.id ? 'Chỉnh sửa dải IP' : 'Thêm dải IP mới' }}</h3>
+    <h3 class="view-title">
+      {{ data?.id ? ('checkin.ipDialog.title.edit' | translate) : ('checkin.ipDialog.title.create' | translate) }}
+    </h3>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="custom-form">
       <div class="form-group">
-        <label class="form-label required">Tên dải IP</label>
+        <label class="form-label required">{{ 'checkin.ipDialog.form.name.label' | translate }}</label>
         <div class="input-wrapper">
-          <input type="text" formControlName="name" placeholder="Ví dụ: WiFi Tầng 4" class="custom-input"
+          <input type="text" formControlName="name"
+            [placeholder]="'checkin.ipDialog.form.name.placeholder' | translate"
+            class="custom-input"
             [class.has-error]="form.get('name')?.invalid && form.get('name')?.touched" />
           @if (form.get('name')?.invalid && form.get('name')?.touched) {
-          <span class="error-tip">Vui lòng nhập tên gợi nhớ</span>
+          <span class="error-tip">{{ 'checkin.ipDialog.form.name.error' | translate }}</span>
           }
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label required">Dải IP Prefix (Cổng chào/Gateway)</label>
+        <label class="form-label required">{{ 'checkin.ipDialog.form.ipPrefix.label' | translate }}</label>
         <div class="input-wrapper ip-input-wrapper">
-          <input type="text" formControlName="ipPrefix" placeholder="000.000.000.000" class="custom-input"
+          <input type="text" formControlName="ipPrefix"
+            [placeholder]="'checkin.ipDialog.form.ipPrefix.placeholder' | translate"
+            class="custom-input"
             [class.has-error]="form.get('ipPrefix')?.invalid && form.get('ipPrefix')?.touched" />
-          
-          <button type="button" class="fetch-ip-btn" (click)="fetchCurrentIP()" [disabled]="isFetchingIP" title="Lấy IP hiện tại của bạn">
-            {{ isFetchingIP ? 'Đang lấy...' : 'IP của tôi' }}
+
+          <button type="button" class="fetch-ip-btn" (click)="fetchCurrentIP()" [disabled]="isFetchingIP"
+            [attr.title]="'checkin.ipDialog.form.ipPrefix.fetchTitle' | translate">
+            {{ isFetchingIP ? ('checkin.ipDialog.form.ipPrefix.fetching' | translate) : ('checkin.ipDialog.form.ipPrefix.fetch' | translate) }}
           </button>
         </div>
         @if (form.get('ipPrefix')?.invalid && form.get('ipPrefix')?.touched) {
-          <span class="error-tip">Vui lòng nhập dải IP hợp lệ</span>
+          <span class="error-tip">{{ 'checkin.ipDialog.form.ipPrefix.error' | translate }}</span>
         }
       </div>
 
       <div class="form-group">
-        <label class="form-label">Mô tả</label>
+        <label class="form-label">{{ 'checkin.ipDialog.form.description.label' | translate }}</label>
         <div class="input-wrapper">
-          <textarea formControlName="description" rows="3" placeholder="Thông tin thêm về dải IP này..." class="custom-input textarea-input"></textarea>
+          <textarea formControlName="description" rows="3"
+            [placeholder]="'checkin.ipDialog.form.description.placeholder' | translate"
+            class="custom-input textarea-input"></textarea>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Trạng thái hoạt động</label>
+        <label class="form-label">{{ 'checkin.ipDialog.form.status.label' | translate }}</label>
         <div class="switch-row">
           <label class="custom-switch">
             <input type="checkbox" formControlName="isActive" />
             <span class="slider"></span>
           </label>
           <span class="status-text" [class.active]="form.get('isActive')?.value">
-            {{ form.get('isActive')?.value ? 'Đang bật' : 'Đang tắt' }}
+            {{
+              form.get('isActive')?.value
+                ? ('checkin.ipDialog.form.status.active' | translate)
+                : ('checkin.ipDialog.form.status.inactive' | translate)
+            }}
           </span>
         </div>
       </div>
 
       <div class="form-footer">
-        <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="cancel()">Hủy bỏ</button>
-        <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="form.invalid">Lưu cấu hình</button>
+        <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="cancel()">
+          {{ 'checkin.ipDialog.actions.cancel' | translate }}
+        </button>
+        <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="form.invalid">
+          {{ 'checkin.ipDialog.actions.save' | translate }}
+        </button>
       </div>
     </form>
   </div>

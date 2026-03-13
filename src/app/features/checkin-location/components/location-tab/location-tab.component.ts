@@ -5,11 +5,12 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NoDataComponent } from '../../../../components/no-data/no-data.component';
 import { SharedSearchComponent } from '../../../../components/shared-search/shared-search.component';
 import { AttendanceLocation } from '../../../../models/checkin-config.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzIconModule, NoDataComponent, SharedSearchComponent],
+  imports: [CommonModule, FormsModule, NzIconModule, NoDataComponent, SharedSearchComponent, TranslateModule],
   templateUrl: './location-tab.component.html',
   styleUrl: './location-tab.component.scss'
 })

@@ -2,34 +2,40 @@
   <div class="split-layout">
     <!-- Left Side: Form -->
     <div class="form-section">
-      <h3 class="view-title">{{ data ? 'Chỉnh sửa vị trí' : 'Thêm vị trí mới' }}</h3>
+      <h3 class="view-title">
+        {{ data ? ('checkin.locationDialog.title.edit' | translate) : ('checkin.locationDialog.title.create' | translate) }}
+      </h3>
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="custom-form">
         <div class="form-group">
-          <label class="form-label required">Tên vị trí</label>
+          <label class="form-label required">{{ 'checkin.locationDialog.form.name.label' | translate }}</label>
           <div class="input-wrapper">
-            <input type="text" formControlName="name" placeholder="Ví dụ: Văn phòng đại diện" class="custom-input"
+            <input type="text" formControlName="name"
+              [placeholder]="'checkin.locationDialog.form.name.placeholder' | translate"
+              class="custom-input"
               [class.has-error]="form.get('name')?.invalid && form.get('name')?.touched" />
             @if (form.get('name')?.invalid && form.get('name')?.touched) {
-            <span class="error-tip">Vui lòng nhập tên vị trí</span>
+            <span class="error-tip">{{ 'checkin.locationDialog.form.name.error' | translate }}</span>
             }
           </div>
         </div>
 
         <div class="coordinate-row">
           <div class="form-group">
-            <label class="form-label required">Vĩ độ (Lat)</label>
+            <label class="form-label required">{{ 'checkin.locationDialog.form.latitude.label' | translate }}</label>
             <div class="input-wrapper">
-              <input type="number" formControlName="latitude" step="0.000001" placeholder="0.000000"
+              <input type="number" formControlName="latitude" step="0.000001"
+                [placeholder]="'checkin.locationDialog.form.latitude.placeholder' | translate"
                 class="custom-input"
                 [class.has-error]="form.get('latitude')?.invalid && form.get('latitude')?.touched" />
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label required">Kinh độ (Lng)</label>
+            <label class="form-label required">{{ 'checkin.locationDialog.form.longitude.label' | translate }}</label>
             <div class="input-wrapper">
-              <input type="number" formControlName="longitude" step="0.000001" placeholder="0.000000"
+              <input type="number" formControlName="longitude" step="0.000001"
+                [placeholder]="'checkin.locationDialog.form.longitude.placeholder' | translate"
                 class="custom-input"
                 [class.has-error]="form.get('longitude')?.invalid && form.get('longitude')?.touched" />
             </div>
@@ -37,33 +43,41 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label required">Bán kính cho phép (Mét)</label>
+          <label class="form-label required">{{ 'checkin.locationDialog.form.radius.label' | translate }}</label>
           <div class="input-wrapper">
-            <input type="number" formControlName="radiusMeters" placeholder="100" class="custom-input"
+            <input type="number" formControlName="radiusMeters"
+              [placeholder]="'checkin.locationDialog.form.radius.placeholder' | translate"
+              class="custom-input"
               [class.has-error]="form.get('radiusMeters')?.invalid && form.get('radiusMeters')?.touched" />
             @if (form.get('radiusMeters')?.invalid && form.get('radiusMeters')?.touched) {
-            <span class="error-tip">Vui lòng nhập bán kính</span>
+            <span class="error-tip">{{ 'checkin.locationDialog.form.radius.error' | translate }}</span>
             }
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Trạng thái hoạt động</label>
+          <label class="form-label">{{ 'checkin.locationDialog.form.status.label' | translate }}</label>
           <div class="switch-row">
             <label class="custom-switch">
               <input type="checkbox" formControlName="isActive" />
               <span class="slider"></span>
             </label>
             <span class="status-text" [class.active]="form.get('isActive')?.value">
-              {{ form.get('isActive')?.value ? 'Đang bật' : 'Đang tắt' }}
+              {{
+                form.get('isActive')?.value
+                  ? ('checkin.locationDialog.form.status.active' | translate)
+                  : ('checkin.locationDialog.form.status.inactive' | translate)
+              }}
             </span>
           </div>
         </div>
 
         <div class="form-footer">
-          <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="cancel()">Hủy bỏ</button>
+          <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="cancel()">
+            {{ 'checkin.locationDialog.actions.cancel' | translate }}
+          </button>
           <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="form.invalid">
-            Lưu vị trí
+            {{ 'checkin.locationDialog.actions.save' | translate }}
           </button>
         </div>
       </form>
@@ -74,17 +88,17 @@
       <div class="map-container-wrapper">
         <div class="map-search-wrapper">
           <span nz-icon nzType="search" class="search-icon"></span>
-          <input #searchInput type="text" placeholder="Tìm kiếm địa điểm, địa chỉ..." class="map-search-input" />
+          <input #searchInput type="text" [placeholder]="'checkin.locationDialog.map.searchPlaceholder' | translate" class="map-search-input" />
         </div>
         <div id="google-map" class="map-canvas"></div>
         <button type="button" class="locate-me-btn" (click)="locateMe()" [disabled]="isLocating"
-          title="Xác định vị trí của tôi">
+          [attr.title]="'checkin.locationDialog.map.locateTitle' | translate">
           <span nz-icon [nzType]="isLocating ? 'loading' : 'aim'" nzTheme="outline"></span>
-          {{ isLocating ? 'Đang xác định...' : 'Vị trí của tôi' }}
+          {{ isLocating ? ('checkin.locationDialog.map.locating' | translate) : ('checkin.locationDialog.map.locate' | translate) }}
         </button>
         <div class="map-hint">
           <span nz-icon nzType="info-circle"></span>
-          Click vào bản đồ hoặc kéo thả ghim để chọn vị trí
+          {{ 'checkin.locationDialog.map.hint' | translate }}
         </div>
       </div>
     </div>

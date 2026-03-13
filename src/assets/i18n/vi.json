@@ -52,5 +52,235 @@
     "label": "Ngôn ngữ",
     "vi": "Tiếng Việt",
     "en": "English"
+  },
+  "checkin": {
+    "breadcrumb": {
+      "home": "Home",
+      "title": "Địa điểm checkin"
+    },
+    "common": {
+      "status": {
+        "active": "Đang hoạt động",
+        "inactive": "Tạm dừng"
+      },
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      }
+    },
+    "page": {
+      "error": {
+        "title": "Không thể tải dữ liệu",
+        "message": "Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.",
+        "retry": "Thử lại"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "inactive": "Ngừng hoạt động"
+      },
+      "noSelection": {
+        "title": "Chưa chọn chi nhánh",
+        "message": "Vui lòng chọn một chi nhánh từ danh sách bên trái để quản lý cấu hình check-in."
+      }
+    },
+    "tabs": {
+      "location": "Vị trí Check-in",
+      "ip": "Dải IP Wifi"
+    },
+    "sidebar": {
+      "searchPlaceholder": "Tìm chi nhánh...",
+      "manageTooltip": "Quản lý chi nhánh",
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Tạm dừng"
+      },
+      "empty": "Không tìm thấy chi nhánh"
+    },
+    "ipTab": {
+      "title": "Cấu hình IP văn phòng",
+      "searchPlaceholder": "Tìm kiếm tên dải IP...",
+      "add": "Thêm dải IP",
+      "table": {
+        "name": "Tên gọi nhớ",
+        "prefix": "Dải IP Prefix",
+        "description": "Mô tả",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "empty": {
+        "title": "Chưa có dải IP",
+        "message": "Cho phép check-in qua WiFi bằng cách thêm dải IP văn phòng."
+      }
+    },
+    "locationTab": {
+      "title": "Danh sách tọa độ cho phép",
+      "searchPlaceholder": "Tìm kiếm vị trí, tọa độ...",
+      "add": "Thêm vị trí",
+      "table": {
+        "name": "Tên vị trí",
+        "coordinates": "Tọa độ (Lat/Long)",
+        "radius": "Bán kính (m)",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "empty": {
+        "title": "Chưa có tọa độ",
+        "message": "Vui lòng thêm các điểm check-in cho chi nhánh này."
+      }
+    },
+    "branchDialog": {
+      "title": "Quản lý chi nhánh",
+      "searchPlaceholder": "Tìm chi nhánh...",
+      "table": {
+        "name": "Tên chi nhánh",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "add": "Thêm mới",
+        "back": "Trở lại",
+        "update": "Cập nhật thay đổi",
+        "create": "Tạo chi nhánh"
+      },
+      "empty": "Không tìm thấy chi nhánh nào",
+      "upsert": {
+        "editTitle": "Chỉnh sửa chi nhánh",
+        "createTitle": "Thêm chi nhánh mới"
+      },
+      "form": {
+        "name": {
+          "label": "Tên chi nhánh",
+          "placeholder": "VD: Chi nhánh Hà Nội",
+          "error": "Vui lòng nhập tên chi nhánh"
+        },
+        "description": {
+          "label": "Mô tả",
+          "placeholder": "Ghi chú thêm về chi nhánh này..."
+        },
+        "status": {
+          "label": "Trạng thái hoạt động"
+        }
+      },
+      "confirmDelete": {
+        "title": "Xóa chi nhánh?",
+        "message": "Bạn có chắc chắn muốn xóa chi nhánh <b>{{name}}</b>? Toàn bộ cấu hình check-in của chi nhánh này sẽ bị mất."
+      },
+      "toast": {
+        "createSuccess": "Thêm chi nhánh thành công",
+        "updateSuccess": "Cập nhật chi nhánh thành công",
+        "saveError": "Có lỗi xảy ra khi lưu chi nhánh",
+        "deleteSuccess": "Đã xóa chi nhánh",
+        "deleteError": "Không thể xóa chi nhánh này"
+      }
+    },
+    "locationDialog": {
+      "title": {
+        "edit": "Chỉnh sửa vị trí",
+        "create": "Thêm vị trí mới"
+      },
+      "form": {
+        "name": {
+          "label": "Tên vị trí",
+          "placeholder": "Ví dụ: Văn phòng đại diện",
+          "error": "Vui lòng nhập tên vị trí"
+        },
+        "latitude": {
+          "label": "Vĩ độ (Lat)",
+          "placeholder": "0.000000"
+        },
+        "longitude": {
+          "label": "Kinh độ (Lng)",
+          "placeholder": "0.000000"
+        },
+        "radius": {
+          "label": "Bán kính cho phép (Mét)",
+          "placeholder": "100",
+          "error": "Vui lòng nhập bán kính"
+        },
+        "status": {
+          "label": "Trạng thái hoạt động",
+          "active": "Đang bật",
+          "inactive": "Đang tắt"
+        }
+      },
+      "actions": {
+        "cancel": "Hủy bỏ",
+        "save": "Lưu vị trí"
+      },
+      "map": {
+        "searchPlaceholder": "Tìm kiếm địa điểm, địa chỉ...",
+        "locateTitle": "Xác định vị trí của tôi",
+        "locate": "Vị trí của tôi",
+        "locating": "Đang xác định...",
+        "hint": "Click vào bản đồ hoặc kéo thả ghim để chọn vị trí"
+      },
+      "alerts": {
+        "geoUnsupported": "Trình duyệt của bạn không hỗ trợ định vị vị trí.",
+        "geoFailed": "Không thể xác định vị trí. Vui lòng kiểm tra quyền truy cập vị trí."
+      }
+    },
+    "ipDialog": {
+      "title": {
+        "edit": "Chỉnh sửa dải IP",
+        "create": "Thêm dải IP mới"
+      },
+      "form": {
+        "name": {
+          "label": "Tên dải IP",
+          "placeholder": "Ví dụ: WiFi Tầng 4",
+          "error": "Vui lòng nhập tên gọi nhớ"
+        },
+        "ipPrefix": {
+          "label": "Dải IP Prefix (Cổng chào/Gateway)",
+          "placeholder": "000.000.000.000",
+          "error": "Vui lòng nhập dải IP hợp lệ",
+          "fetchTitle": "Lấy IP hiện tại của bạn",
+          "fetch": "IP của tôi",
+          "fetching": "Đang lấy..."
+        },
+        "description": {
+          "label": "Mô tả",
+          "placeholder": "Thông tin thêm về dải IP này..."
+        },
+        "status": {
+          "label": "Trạng thái hoạt động",
+          "active": "Đang bật",
+          "inactive": "Đang tắt"
+        }
+      },
+      "actions": {
+        "cancel": "Hủy bỏ",
+        "save": "Lưu cấu hình"
+      },
+      "alerts": {
+        "ipBlocked": "Mạng công ty (Firewall) đang chặn các trang cấp IP. Bạn vui lòng nhập tay nhé!"
+      }
+    },
+    "location": {
+      "toast": {
+        "createSuccess": "Thêm vị trí mới thành công",
+        "updateSuccess": "Cập nhật vị trí thành công",
+        "saveError": "Có lỗi xảy ra khi lưu vị trí",
+        "deleteSuccess": "Đã xóa vị trí check-in",
+        "deleteError": "Không thể xóa vị trí này"
+      },
+      "confirmDelete": {
+        "title": "Xóa vị trí check-in?",
+        "message": "Bạn có chắc chắn muốn xóa vị trí <b>{{name}}</b>?"
+      }
+    },
+    "ip": {
+      "toast": {
+        "createSuccess": "Thêm dải IP mới thành công",
+        "updateSuccess": "Cập nhật dải IP thành công",
+        "saveError": "Có lỗi xảy ra khi lưu dải IP",
+        "deleteSuccess": "Đã xóa dải IP",
+        "deleteError": "Không thể xóa dải IP này"
+      },
+      "confirmDelete": {
+        "title": "Xóa dải IP?",
+        "message": "Bạn có chắc chắn muốn xóa dải IP <b>{{name}}</b>?"
+      }
+    }
   }
 }

@@ -1,10 +1,10 @@
 <div class="action-bar">
-  <h3>Cấu hình IP văn phòng</h3>
+  <h3>{{ 'checkin.ipTab.title' | translate }}</h3>
   <div class="search-actions">
     <app-shared-search [value]="searchTerm()" (valueChange)="searchTerm.set($event)"
-      placeholder="Tìm kiếm tên dải IP..."></app-shared-search>
+      [placeholder]="'checkin.ipTab.searchPlaceholder' | translate"></app-shared-search>
     <button class="add-btn" (click)="addIP.emit()">
-      <span nz-icon nzType="plus"></span> Thêm dải IP
+      <span nz-icon nzType="plus"></span> {{ 'checkin.ipTab.add' | translate }}
     </button>
   </div>
 </div>
@@ -13,11 +13,11 @@
   <table class="premium-table">
     <thead>
       <tr>
-        <th>Tên gợi nhớ</th>
-        <th>Dải IP Prefix</th>
-        <th>Mô tả</th>
-        <th>Trạng thái</th>
-        <th class="col-actions">Thao tác</th>
+        <th>{{ 'checkin.ipTab.table.name' | translate }}</th>
+        <th>{{ 'checkin.ipTab.table.prefix' | translate }}</th>
+        <th>{{ 'checkin.ipTab.table.description' | translate }}</th>
+        <th>{{ 'checkin.ipTab.table.status' | translate }}</th>
+        <th class="col-actions">{{ 'checkin.ipTab.table.actions' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -28,14 +28,18 @@
         <td class="text-muted">{{ ip.description }}</td>
         <td>
           <span class="badge" [class.badge-success]="ip.isActive" [class.badge-error]="!ip.isActive">
-            {{ ip.isActive ? 'Active' : 'Inactive' }}
+            {{
+              ip.isActive
+                ? ('checkin.common.status.active' | translate)
+                : ('checkin.common.status.inactive' | translate)
+            }}
           </span>
         </td>
         <td class="col-actions">
-          <button class="icon-btn edit" title="Sửa" (click)="editIP.emit(ip)">
+          <button class="icon-btn edit" [attr.title]="'checkin.common.actions.edit' | translate" (click)="editIP.emit(ip)">
             <span icon class="custom-icon-edit"></span>
           </button>
-          <button class="icon-btn delete" title="Xóa" (click)="deleteIP.emit(ip)">
+          <button class="icon-btn delete" [attr.title]="'checkin.common.actions.delete' | translate" (click)="deleteIP.emit(ip)">
             <span icon class="custom-icon-close"></span>
           </button>
         </td>
@@ -43,7 +47,9 @@
       } @empty {
       <tr class="empty-row">
         <td colspan="5">
-          <app-no-data title="Chưa có dải IP" message="Cho phép check-in qua WiFi bằng cách thêm dải IP văn phòng.">
+          <app-no-data
+            [title]="'checkin.ipTab.empty.title' | translate"
+            [message]="'checkin.ipTab.empty.message' | translate">
             <span icon class="custom-icon-settings empty-icon"></span>
           </app-no-data>
         </td>

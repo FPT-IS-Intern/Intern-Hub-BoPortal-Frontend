@@ -3,12 +3,13 @@
   @if (viewState === 'list') {
   <div class="actions-header">
     <div class="search-wrapper">
-      <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" placeholder="Tìm chi nhánh..."
+      <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)"
+        [placeholder]="'checkin.branchDialog.searchPlaceholder' | translate"
         variant="filled" width="100%">
       </app-shared-search>
     </div>
     <button type="button" class="custom-btn btn-primary add-btn" (click)="goToUpsert()">
-      <span nz-icon nzType="plus"></span> Thêm mới
+      <span nz-icon nzType="plus"></span> {{ 'checkin.branchDialog.actions.add' | translate }}
     </button>
   </div>
 
@@ -16,9 +17,9 @@
     <table class="custom-table">
       <thead>
         <tr>
-          <th style="width: 60%">Tên chi nhánh</th>
-          <th style="width: 20%">Trạng thái</th>
-          <th style="width: 20%; text-align: center;">Thao tác</th>
+          <th style="width: 60%">{{ 'checkin.branchDialog.table.name' | translate }}</th>
+          <th style="width: 20%">{{ 'checkin.branchDialog.table.status' | translate }}</th>
+          <th style="width: 20%; text-align: center;">{{ 'checkin.branchDialog.table.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody [style.max-height]="scrollConfig() ? '350px' : 'auto'">
@@ -35,15 +36,19 @@
           <td style="width: 20%">
             <span class="status-badge" [class.active]="data.isActive">
               <span class="dot"></span>
-              {{ data.isActive ? 'Hoạt động' : 'Tạm dừng' }}
+              {{
+                data.isActive
+                  ? ('checkin.common.status.active' | translate)
+                  : ('checkin.common.status.inactive' | translate)
+              }}
             </span>
           </td>
           <td style="width: 20%">
             <div class="actions-cell">
-              <button class="action-icon-btn edit" (click)="goToUpsert(data)" title="Sửa">
+              <button class="action-icon-btn edit" (click)="goToUpsert(data)" [attr.title]="'checkin.common.actions.edit' | translate">
                 <span icon class="custom-icon-edit"></span>
               </button>
-              <button class="action-icon-btn delete" (click)="onDelete(data)" title="Xóa">
+              <button class="action-icon-btn delete" (click)="onDelete(data)" [attr.title]="'checkin.common.actions.delete' | translate">
                 <span icon class="custom-icon-close"></span>
               </button>
             </div>
@@ -51,7 +56,7 @@
         </tr>
         } @empty {
         <tr>
-          <td colspan="3" class="empty-cell">Không tìm thấy chi nhánh nào</td>
+          <td colspan="3" class="empty-cell">{{ 'checkin.branchDialog.empty' | translate }}</td>
         </tr>
         }
       </tbody>
@@ -62,49 +67,68 @@
   <!-- State: UPSERT -->
   @if (viewState === 'upsert') {
   <div class="upsert-header">
-    <span class="upsert-title">{{ editingBranch ? 'Chỉnh sửa chi nhánh' : 'Thêm chi nhánh mới' }}</span>
+    <span class="upsert-title">
+      {{
+        editingBranch
+          ? ('checkin.branchDialog.upsert.editTitle' | translate)
+          : ('checkin.branchDialog.upsert.createTitle' | translate)
+      }}
+    </span>
   </div>
 
   <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="custom-form">
     <div class="form-group">
-      <label class="form-label required">Tên chi nhánh</label>
+      <label class="form-label required">{{ 'checkin.branchDialog.form.name.label' | translate }}</label>
       <div class="input-wrapper">
-        <input type="text" formControlName="name" placeholder="VD: Chi nhánh Hà Nội" class="custom-input"
+        <input type="text" formControlName="name"
+          [placeholder]="'checkin.branchDialog.form.name.placeholder' | translate"
+          class="custom-input"
           [class.has-error]="branchForm.get('name')?.invalid && branchForm.get('name')?.touched" />
         @if (branchForm.get('name')?.invalid && branchForm.get('name')?.touched) {
-        <span class="error-tip">Vui lòng nhập tên chi nhánh</span>
+        <span class="error-tip">{{ 'checkin.branchDialog.form.name.error' | translate }}</span>
         }
       </div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Mô tả</label>
+      <label class="form-label">{{ 'checkin.branchDialog.form.description.label' | translate }}</label>
       <div class="input-wrapper">
-        <textarea formControlName="description" rows="3" placeholder="Ghi chú thêm về chi nhánh này..."
+        <textarea formControlName="description" rows="3"
+          [placeholder]="'checkin.branchDialog.form.description.placeholder' | translate"
           class="custom-input"></textarea>
       </div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Trạng thái hoạt động</label>
+      <label class="form-label">{{ 'checkin.branchDialog.form.status.label' | translate }}</label>
       <div class="switch-row">
         <label class="custom-switch">
           <input type="checkbox" formControlName="isActive" />
           <span class="slider"></span>
         </label>
         <span class="status-text" [class.active]="branchForm.get('isActive')?.value">
-          {{ branchForm.get('isActive')?.value ? 'Đang hoạt động' : 'Tạm dừng' }}
+          {{
+            branchForm.get('isActive')?.value
+              ? ('checkin.common.status.active' | translate)
+              : ('checkin.common.status.inactive' | translate)
+          }}
         </span>
       </div>
     </div>
 
     <div class="form-footer">
-      <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">Trở lại</button>
+      <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">
+        {{ 'checkin.branchDialog.actions.back' | translate }}
+      </button>
       <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="branchForm.invalid || isSaving">
         @if (isSaving) {
         <span nz-icon nzType="loading" class="mr-2"></span>
         }
-        {{ editingBranch ? 'Cập nhật thay đổi' : 'Tạo chi nhánh' }}
+        {{
+          editingBranch
+            ? ('checkin.branchDialog.actions.update' | translate)
+            : ('checkin.branchDialog.actions.create' | translate)
+        }}
       </button>
     </div>
   </form>

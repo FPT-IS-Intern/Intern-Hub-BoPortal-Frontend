@@ -6,9 +6,13 @@
     <span nz-icon nzType="loading" class="main-loader"></span>
   </div>
   } @else if (isError()) {
-  <app-no-data title="Không thể tải dữ liệu" message="Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.">
+  <app-no-data
+    [title]="'checkin.page.error.title' | translate"
+    [message]="'checkin.page.error.message' | translate">
     <span icon class="custom-icon-error error-icon"></span>
-    <button action class="retry-btn" (click)="fetchConfigs()">Thử lại</button>
+    <button action class="retry-btn" (click)="fetchConfigs()">
+      {{ 'checkin.page.error.retry' | translate }}
+    </button>
   </app-no-data>
   } @else {
   <div class="master-detail-container">
@@ -29,7 +33,11 @@
             <p class="detail-desc">{{ branch.description }}</p>
           </div>
           <div class="status-badge" [class.inactive]="!branch.isActive">
-            {{ branch.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động' }}
+            {{
+              branch.isActive
+                ? ('checkin.page.status.active' | translate)
+                : ('checkin.page.status.inactive' | translate)
+            }}
           </div>
         </div>
 
@@ -37,10 +45,10 @@
           <div class="tab-header">
             <div class="tab-nav">
               <button class="tab-btn" [class.active]="activeTabIndex() === 0" (click)="onTabChange(0)">
-                Vị trí Check-in
+                {{ 'checkin.tabs.location' | translate }}
               </button>
               <button class="tab-btn" [class.active]="activeTabIndex() === 1" (click)="onTabChange(1)">
-                Dải IP Wifi
+                {{ 'checkin.tabs.ip' | translate }}
               </button>
             </div>
           </div>
@@ -65,8 +73,9 @@
         </div>
       } @else {
         <div class="no-selection">
-          <app-no-data title="Chưa chọn chi nhánh"
-            message="Vui lòng chọn một chi nhánh từ danh sách bên trái để quản lý cấu hình check-in.">
+          <app-no-data
+            [title]="'checkin.page.noSelection.title' | translate"
+            [message]="'checkin.page.noSelection.message' | translate">
             <span icon class="custom-icon-box-iso selection-icon"></span>
           </app-no-data>
         </div>

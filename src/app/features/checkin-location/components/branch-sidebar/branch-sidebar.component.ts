@@ -2,13 +2,14 @@ import { Component, Input, Output, EventEmitter, signal, computed } from '@angul
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { SharedSearchComponent } from '../../../../components/shared-search/shared-search.component';
 import { BranchCheckinConfig } from '../../../../models/checkin-config.model';
 
 @Component({
   selector: 'app-branch-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzIconModule, SharedSearchComponent],
+  imports: [CommonModule, FormsModule, NzIconModule, TranslateModule, SharedSearchComponent],
   templateUrl: './branch-sidebar.component.html',
   styleUrl: './branch-sidebar.component.scss'
 })

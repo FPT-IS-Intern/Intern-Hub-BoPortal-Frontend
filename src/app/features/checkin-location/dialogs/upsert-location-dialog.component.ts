@@ -5,6 +5,7 @@ import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AttendanceLocation } from '../../../models/checkin-config.model';
 import { environment } from '../../../../environments/environment';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 declare const google: any;
 
@@ -14,7 +15,8 @@ declare const google: any;
   imports: [
     CommonModule, 
     ReactiveFormsModule,
-    NzIconModule
+    NzIconModule,
+    TranslateModule
   ],
   templateUrl: './upsert-location-dialog.component.html',
   styleUrl: './upsert-location-dialog.component.scss'
@@ -22,6 +24,7 @@ declare const google: any;
 export class UpsertLocationDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly modalRef = inject(NzModalRef);
+  private readonly translate = inject(TranslateService);
   readonly data = inject<AttendanceLocation>(NZ_MODAL_DATA, { optional: true });
 
   @ViewChild('searchInput') searchElementRef!: ElementRef;
@@ -195,7 +198,7 @@ export class UpsertLocationDialogComponent implements OnInit {
 
   locateMe(): void {
     if (!navigator.geolocation) {
-      alert('Trình duyệt của bạn không hỗ trợ định vị vị trí.');
+      alert(this.translate.instant('checkin.locationDialog.alerts.geoUnsupported'));
       return;
     }
     this.isLocating = true;
@@ -215,7 +218,7 @@ export class UpsertLocationDialogComponent implements OnInit {
       },
       (error) => {
         this.isLocating = false;
-        alert('Không thể xác định vị trí. Vui lòng kiểm tra quyền truy cập vị trí.');
+        alert(this.translate.instant('checkin.locationDialog.alerts.geoFailed'));
         console.error('Geolocation error:', error);
       },
       { enableHighAccuracy: true, timeout: 10000 }

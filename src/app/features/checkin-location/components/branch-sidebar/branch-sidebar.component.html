@@ -1,8 +1,9 @@
 <aside class="master-panel">
   <div class="search-box">
-    <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)" placeholder="Tìm chi nhánh..."
+    <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)"
+      [placeholder]="'checkin.sidebar.searchPlaceholder' | translate"
       variant="filled" width="100%"></app-shared-search>
-    <button class="manage-btn" (click)="manageBranches.emit()" title="Quản lý chi nhánh">
+    <button class="manage-btn" (click)="manageBranches.emit()" [attr.title]="'checkin.sidebar.manageTooltip' | translate">
       <span icon class="custom-icon-users-edit"></span>
     </button>
   </div>
@@ -16,14 +17,18 @@
         <div class="branch-info">
           <div class="branch-name">{{ branch.name }}</div>
           <div class="branch-status" [class.inactive]="!branch.isActive">
-            {{ branch.isActive ? 'Hoạt động' : 'Tạm dừng' }}
+            {{
+              branch.isActive
+                ? ('checkin.sidebar.status.active' | translate)
+                : ('checkin.sidebar.status.inactive' | translate)
+            }}
           </div>
         </div>
 
         <span nz-icon nzType="chevron-right" class="arrow-icon"></span>
       </div>
     } @empty {
-      <div class="empty-list">Không tìm thấy chi nhánh</div>
+      <div class="empty-list">{{ 'checkin.sidebar.empty' | translate }}</div>
     }
   </div>
 </aside>

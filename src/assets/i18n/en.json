@@ -52,5 +52,235 @@
     "label": "Language",
     "vi": "Vietnamese",
     "en": "English"
+  },
+  "checkin": {
+    "breadcrumb": {
+      "home": "Home",
+      "title": "Check-in locations"
+    },
+    "common": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "page": {
+      "error": {
+        "title": "Unable to load data",
+        "message": "An error occurred while loading branch configuration list.",
+        "retry": "Try again"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "noSelection": {
+        "title": "No branch selected",
+        "message": "Please select a branch from the left list to manage check-in configuration."
+      }
+    },
+    "tabs": {
+      "location": "Check-in locations",
+      "ip": "WiFi IP ranges"
+    },
+    "sidebar": {
+      "searchPlaceholder": "Search branches...",
+      "manageTooltip": "Manage branches",
+      "status": {
+        "active": "Active",
+        "inactive": "Paused"
+      },
+      "empty": "No branches found"
+    },
+    "ipTab": {
+      "title": "Office IP configuration",
+      "searchPlaceholder": "Search IP range name...",
+      "add": "Add IP range",
+      "table": {
+        "name": "Name",
+        "prefix": "IP Prefix",
+        "description": "Description",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No IP ranges",
+        "message": "Allow check-in via WiFi by adding office IP ranges."
+      }
+    },
+    "locationTab": {
+      "title": "Allowed locations",
+      "searchPlaceholder": "Search locations, coordinates...",
+      "add": "Add location",
+      "table": {
+        "name": "Location name",
+        "coordinates": "Coordinates (Lat/Long)",
+        "radius": "Radius (m)",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No locations",
+        "message": "Please add check-in points for this branch."
+      }
+    },
+    "branchDialog": {
+      "title": "Branch management",
+      "searchPlaceholder": "Search branches...",
+      "table": {
+        "name": "Branch name",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "add": "Add new",
+        "back": "Back",
+        "update": "Update changes",
+        "create": "Create branch"
+      },
+      "empty": "No branches found",
+      "upsert": {
+        "editTitle": "Edit branch",
+        "createTitle": "Add new branch"
+      },
+      "form": {
+        "name": {
+          "label": "Branch name",
+          "placeholder": "e.g. Hanoi branch",
+          "error": "Please enter branch name"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Additional notes about this branch..."
+        },
+        "status": {
+          "label": "Active status"
+        }
+      },
+      "confirmDelete": {
+        "title": "Delete branch?",
+        "message": "Are you sure you want to delete branch <b>{{name}}</b>? All check-in configuration for this branch will be removed."
+      },
+      "toast": {
+        "createSuccess": "Branch created successfully",
+        "updateSuccess": "Branch updated successfully",
+        "saveError": "An error occurred while saving branch",
+        "deleteSuccess": "Branch deleted",
+        "deleteError": "Unable to delete this branch"
+      }
+    },
+    "locationDialog": {
+      "title": {
+        "edit": "Edit location",
+        "create": "Add new location"
+      },
+      "form": {
+        "name": {
+          "label": "Location name",
+          "placeholder": "Example: Representative office",
+          "error": "Please enter location name"
+        },
+        "latitude": {
+          "label": "Latitude (Lat)",
+          "placeholder": "0.000000"
+        },
+        "longitude": {
+          "label": "Longitude (Lng)",
+          "placeholder": "0.000000"
+        },
+        "radius": {
+          "label": "Allowed radius (meters)",
+          "placeholder": "100",
+          "error": "Please enter radius"
+        },
+        "status": {
+          "label": "Active status",
+          "active": "Enabled",
+          "inactive": "Disabled"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save location"
+      },
+      "map": {
+        "searchPlaceholder": "Search place, address...",
+        "locateTitle": "Locate my position",
+        "locate": "My location",
+        "locating": "Locating...",
+        "hint": "Click on the map or drag the pin to select a location"
+      },
+      "alerts": {
+        "geoUnsupported": "Your browser does not support geolocation.",
+        "geoFailed": "Unable to determine location. Please check location permissions."
+      }
+    },
+    "ipDialog": {
+      "title": {
+        "edit": "Edit IP range",
+        "create": "Add new IP range"
+      },
+      "form": {
+        "name": {
+          "label": "IP range name",
+          "placeholder": "Example: WiFi Floor 4",
+          "error": "Please enter display name"
+        },
+        "ipPrefix": {
+          "label": "IP Prefix (Gateway)",
+          "placeholder": "000.000.000.000",
+          "error": "Please enter a valid IP range",
+          "fetchTitle": "Get your current IP",
+          "fetch": "My IP",
+          "fetching": "Fetching..."
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Additional info about this IP range..."
+        },
+        "status": {
+          "label": "Active status",
+          "active": "Enabled",
+          "inactive": "Disabled"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save configuration"
+      },
+      "alerts": {
+        "ipBlocked": "Company network (Firewall) is blocking IP provider sites. Please enter manually."
+      }
+    },
+    "location": {
+      "toast": {
+        "createSuccess": "Location created successfully",
+        "updateSuccess": "Location updated successfully",
+        "saveError": "An error occurred while saving location",
+        "deleteSuccess": "Check-in location deleted",
+        "deleteError": "Unable to delete this location"
+      },
+      "confirmDelete": {
+        "title": "Delete check-in location?",
+        "message": "Are you sure you want to delete location <b>{{name}}</b>?"
+      }
+    },
+    "ip": {
+      "toast": {
+        "createSuccess": "IP range created successfully",
+        "updateSuccess": "IP range updated successfully",
+        "saveError": "An error occurred while saving IP range",
+        "deleteSuccess": "IP range deleted",
+        "deleteError": "Unable to delete this IP range"
+      },
+      "confirmDelete": {
+        "title": "Delete IP range?",
+        "message": "Are you sure you want to delete IP range <b>{{name}}</b>?"
+      }
+    }
   }
 }
