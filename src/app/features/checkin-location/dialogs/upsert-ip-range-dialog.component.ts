@@ -2,10 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { IPRange } from '../../../models/checkin-config.model';
@@ -16,56 +12,10 @@ import { IPRange } from '../../../models/checkin-config.model';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NzFormModule,
-    NzInputModule,
-    NzSwitchModule,
-    NzButtonModule,
     NzIconModule
   ],
-  template: `
-    <form nz-form [formGroup]="form" nzLayout="vertical">
-      <nz-form-item>
-        <nz-form-label nzRequired>Tên dải IP</nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập tên gợi nhớ">
-          <input nz-input formControlName="name" placeholder="Ví dụ: WiFi Tầng 4" />
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzRequired>Dải IP Prefix (Cổng chào/Gateway)</nz-form-label>
-        <nz-form-control nzErrorTip="Vui lòng nhập dải IP (Ví dụ: 118.69.125.122)">
-          <nz-input-group [nzAddOnAfter]="autoFillTpl">
-            <input nz-input formControlName="ipPrefix" placeholder="000.000.000.000" />
-          </nz-input-group>
-          <ng-template #autoFillTpl>
-            <button nz-button nzType="text" type="button" (click)="fetchCurrentIP()" [nzLoading]="isFetchingIP" nzTooltipTitle="Lấy IP hiện tại của bạn">
-              <span nz-icon nzType="aim" nzTheme="outline"></span> IP của tôi
-            </button>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label>Mô tả</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="description" rows="3" placeholder="Thông tin thêm về dải IP này..."></textarea>
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label>Trạng thái hoạt động</nz-form-label>
-        <nz-form-control>
-          <nz-switch formControlName="isActive"></nz-switch>
-          <span style="margin-left: 8px;">{{ form.get('isActive')?.value ? 'Đang bật' : 'Đang tắt' }}</span>
-        </nz-form-control>
-      </nz-form-item>
-
-      <div class="modal-footer" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 8px;">
-        <button nz-button nzType="default" (click)="cancel()">Hủy</button>
-        <button nz-button nzType="primary" [disabled]="form.invalid" (click)="submit()">Lưu lại</button>
-      </div>
-    </form>
-  `
+  templateUrl: './upsert-ip-range-dialog.component.html',
+  styleUrls: ['./upsert-ip-range-dialog.component.scss']
 })
 export class UpsertIPRangeDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -93,7 +43,7 @@ export class UpsertIPRangeDialogComponent implements OnInit {
 
   fetchCurrentIP(): void {
     this.isFetchingIP = true;
-    
+
     // Thử API thứ 1 (ipify)
     this.http.get<{ ip: string }>('https://api.ipify.org?format=json').subscribe({
       next: (res) => {
