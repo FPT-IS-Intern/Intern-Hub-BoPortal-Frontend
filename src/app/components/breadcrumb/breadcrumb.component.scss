@@ -3,7 +3,7 @@
     align-items: center;
     gap: 8px;
     color: var(--app-color-text-muted, #64748b);
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 500;
 
     .breadcrumb-item-wrapper {
@@ -43,7 +43,7 @@
     .breadcrumb-separator {
         color: var(--app-color-text-muted-alpha, rgba(100, 116, 139, 0.4));
         user-select: none;
-        font-size: 14px;
-        margin: 0 2px;
+        font-size: 18px;
+        margin: 0 4px;
     }
 }

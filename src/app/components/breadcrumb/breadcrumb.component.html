@@ -3,7 +3,7 @@
         <div class="breadcrumb-item-wrapper">
             @if (item.icon) {
                 <a [routerLink]="item.url || '/'" class="breadcrumb-item home-link" [class.active]="item.active">
-                    <span [class]="item.icon" style="width: 14px; height: 14px;"></span>
+                    <span [class]="item.icon" style="width: 16px; height: 16px; font-size: 16px;"></span>
                 </a>
             } @else {
                 @if (item.url && !item.active) {
