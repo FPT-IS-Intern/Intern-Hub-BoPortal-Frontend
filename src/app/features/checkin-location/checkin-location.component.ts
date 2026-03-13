@@ -8,6 +8,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
 
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
@@ -47,6 +48,7 @@ export class CheckinLocationComponent implements OnInit {
   private readonly modal = inject(NzModalService);
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // State Signals
   protected readonly branches = signal<BranchCheckinConfig[]>([]);
@@ -57,7 +59,7 @@ export class CheckinLocationComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateBreadcrumbs();
-    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.translate.onLangChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.updateBreadcrumbs();
     });
     this.fetchConfigs();
