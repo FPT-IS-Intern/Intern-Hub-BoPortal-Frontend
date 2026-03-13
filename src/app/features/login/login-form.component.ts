@@ -2,6 +2,7 @@ import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@a
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../models/auth.model';
@@ -13,7 +14,7 @@ import { resolveApiErrorMessage, resolveBusinessMessage } from '../../core/error
 @Component({
     selector: 'app-login-form',
     standalone: true,
-    imports: [CommonModule, ErrorMessageComponent, SharedInputTextComponent],
+    imports: [CommonModule, ErrorMessageComponent, SharedInputTextComponent, TranslateModule],
     templateUrl: './login-form.component.html',
     styleUrls: ['./login-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,6 +23,7 @@ export class LoginFormComponent {
     private authService = inject(AuthService);
     private tokenService = inject(TokenStorageService);
     private router = inject(Router);
+    private translate = inject(TranslateService);
 
     username = signal('');
     password = signal('');
@@ -33,7 +35,7 @@ export class LoginFormComponent {
 
     async handleSubmit() {
         if (this.checkInputRequired()) {
-            this.error.set('Vui lòng nhập Tên đăng nhập và Mật khẩu.');
+            this.error.set(this.translate.instant('login.errors.required'));
             return;
         }
 

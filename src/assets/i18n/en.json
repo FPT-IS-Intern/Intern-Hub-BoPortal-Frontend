@@ -1,0 +1,51 @@
+{
+  "error": {
+    "invalid_request": "Invalid request",
+    "not_found": "Data not found",
+    "request_timeout": "Request timed out, please try again",
+    "invalid_signature": "Invalid signature",
+    "external_service_response_error": "Error calling external service",
+    "service_unavailable": "Service temporarily unavailable",
+    "gateway_timeout": "Gateway timeout, please try again",
+    "system": "System is busy, please try again",
+    "branch": {
+      "duplicate_name": "Branch name already exists"
+    },
+    "rbac": {
+      "role_code_duplicate": "Role code already exists",
+      "permission_code_duplicate": "Permission code already exists",
+      "user_role_duplicate": "User already has this role",
+      "role_permission_duplicate": "Role already has this permission"
+    },
+    "auth": {
+      "invalid_credential": "Invalid username or password",
+      "account_inactive": "Account not activated",
+      "account_locked": "Account temporarily locked",
+      "refresh_token_not_found": "Refresh token not found",
+      "refresh_token_invalid": "Refresh token expired or revoked",
+      "token_device_mismatch": "Device mismatch",
+      "refresh_token_user_mismatch": "Refresh token does not match user",
+      "user_not_found": "User not found",
+      "missing_access_token": "Missing access token",
+      "token_process_failed": "Failed to process token",
+      "username_duplicate": "Username already exists",
+      "refresh_token_duplicate": "Refresh token already exists"
+    }
+  },
+  "login": {
+    "title": "Sign in",
+    "username": {
+      "label": "Username",
+      "placeholder": "Enter username"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter password"
+    },
+    "button": "Sign in",
+    "loading": "Processing...",
+    "errors": {
+      "required": "Please enter username and password."
+    }
+  }
+}

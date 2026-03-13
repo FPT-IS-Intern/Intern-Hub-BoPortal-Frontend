@@ -31,5 +31,21 @@
       "username_duplicate": "Tên đăng nhập đã tồn tại",
       "refresh_token_duplicate": "Refresh token đã tồn tại"
     }
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "username": {
+      "label": "Tên đăng nhập",
+      "placeholder": "Nhập tên đăng nhập"
+    },
+    "password": {
+      "label": "Mật khẩu",
+      "placeholder": "Nhập mật khẩu"
+    },
+    "button": "Đăng nhập",
+    "loading": "Đang xử lý...",
+    "errors": {
+      "required": "Vui lòng nhập Tên đăng nhập và Mật khẩu."
+    }
   }
 }

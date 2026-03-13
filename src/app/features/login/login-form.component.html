@@ -1,16 +1,24 @@
 <div class="login-page">
     <div class="login-card">
-        <h1 class="title">Đăng nhập</h1>
+        <h1 class="title">{{ 'login.title' | translate }}</h1>
 
         <form (submit)="$event.preventDefault(); handleSubmit()" class="form-container">
             <div class="group-input">
-                <app-shared-input-text headerInput="Tên đăng nhập" placeholder="Nhập tên đăng nhập" [required]="true"
-                    [value]="username()" (valueChange)="username.set($event)"></app-shared-input-text>
+                <app-shared-input-text
+                    [headerInput]="'login.username.label' | translate"
+                    [placeholder]="'login.username.placeholder' | translate"
+                    [required]="true"
+                    [value]="username()"
+                    (valueChange)="username.set($event)"></app-shared-input-text>
 
-                <app-shared-input-text headerInput="Mật khẩu" placeholder="Nhập mật khẩu" [required]="true"
+                <app-shared-input-text
+                    [headerInput]="'login.password.label' | translate"
+                    [placeholder]="'login.password.placeholder' | translate"
+                    [required]="true"
                     [typeInput]="showPassword() ? 'text' : 'password'"
                     [icon]="showPassword() ? 'assets/icons/eye-off.svg' : 'assets/icons/eye.svg'"
-                    (iconClick)="togglePassword()" [value]="password()"
+                    (iconClick)="togglePassword()"
+                    [value]="password()"
                     (valueChange)="password.set($event)"></app-shared-input-text>
             </div>
 
@@ -25,10 +33,10 @@
                 @if (isLoading()) {
                 <span class="loading-state">
                     <i class="fas fa-spinner fa-spin"></i>
-                    Đang xử lý...
+                    {{ 'login.loading' | translate }}
                 </span>
                 } @else {
-                Đăng nhập
+                {{ 'login.button' | translate }}
                 }
             </button>
         </form>
