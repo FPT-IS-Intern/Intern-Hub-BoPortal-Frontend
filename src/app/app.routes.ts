@@ -17,7 +17,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'main',
+    redirectTo: 'general',
     pathMatch: 'full',
   },
   {

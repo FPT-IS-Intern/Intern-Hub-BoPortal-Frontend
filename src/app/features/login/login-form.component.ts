@@ -57,7 +57,7 @@ export class LoginFormComponent {
 
                 // Skip /me and general-config calls on login success as requested
                 console.log('Login successful. Navigate directly to main layout.');
-                this.router.navigate(['/main']);
+                this.router.navigate(['/general']);
             } else {
                 this.error.set(resolveBusinessMessage(res.status?.code, res.status?.message));
             }
