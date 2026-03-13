@@ -20,7 +20,7 @@
             </div>
             }
 
-            <button type="submit" class="btn-login" [disabled]="checkInputRequired() || isLoading()">
+            <button type="submit" class="btn-login" [disabled]="isLoading()">
 
                 @if (isLoading()) {
                 <span class="loading-state">

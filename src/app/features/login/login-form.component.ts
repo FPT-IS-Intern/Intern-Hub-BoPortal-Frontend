@@ -32,7 +32,10 @@ export class LoginFormComponent {
     checkInputRequired = computed(() => this.username().trim() === '' || this.password().trim() === '');
 
     async handleSubmit() {
-        if (this.checkInputRequired()) return;
+        if (this.checkInputRequired()) {
+            this.error.set('Vui lòng nhập Tên đăng nhập và Mật khẩu.');
+            return;
+        }
 
         this.error.set(null);
         this.isLoading.set(true);
