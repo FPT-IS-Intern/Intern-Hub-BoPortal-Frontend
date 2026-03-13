@@ -1,6 +1,7 @@
 import { Component, inject, signal, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type LanguageOption = {
   code: string;
@@ -26,6 +27,19 @@ export class LanguageSwitcherComponent {
 
   readonly currentLang = signal(this.translate.currentLang || this.translate.defaultLang || 'vi');
   isDropdownOpen = false;
+
+  constructor() {
+    const savedLang = localStorage.getItem('app_lang');
+    if (savedLang) {
+      this.currentLang.set(savedLang);
+    }
+
+    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe((event) => {
+      if (event?.lang) {
+        this.currentLang.set(event.lang);
+      }
+    });
+  }
 
   get currentOption(): LanguageOption {
     return this.options.find((opt) => opt.code === this.currentLang()) || this.options[0];
