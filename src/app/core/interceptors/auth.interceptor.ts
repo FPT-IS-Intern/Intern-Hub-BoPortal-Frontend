@@ -9,6 +9,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const router = inject(Router);
     const token = tokenService.getAccessToken();
 
+    // Bỏ qua việc gắn Token cho các API lấy IP bên ngoài (tránh lỗi CORS)
+    if (req.url.includes('ipify.org') || req.url.includes('jsonip.com') || req.url.includes('ipinfo.io')) {
+        return next(req);
+    }
+
     let authReq = req;
     if (token) {
         authReq = req.clone({
