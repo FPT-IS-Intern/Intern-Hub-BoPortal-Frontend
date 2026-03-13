@@ -50,3 +50,6 @@ docker-data/
 *.log
 # Native Federation (auto-generated)
 tsconfig.federation.json
+
+
+/docs

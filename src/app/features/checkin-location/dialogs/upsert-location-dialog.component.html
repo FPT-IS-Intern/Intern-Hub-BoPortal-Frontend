@@ -3,7 +3,7 @@
     <!-- Left Side: Form -->
     <div class="form-section">
       <h3 class="view-title">{{ data ? 'Chỉnh sửa vị trí' : 'Thêm vị trí mới' }}</h3>
-      
+
       <form [formGroup]="form" (ngSubmit)="submit()" class="custom-form">
         <div class="form-group">
           <label class="form-label required">Tên vị trí</label>
@@ -11,7 +11,7 @@
             <input type="text" formControlName="name" placeholder="Ví dụ: Văn phòng đại diện" class="custom-input"
               [class.has-error]="form.get('name')?.invalid && form.get('name')?.touched" />
             @if (form.get('name')?.invalid && form.get('name')?.touched) {
-              <span class="error-tip">Vui lòng nhập tên vị trí</span>
+            <span class="error-tip">Vui lòng nhập tên vị trí</span>
             }
           </div>
         </div>
@@ -20,7 +20,8 @@
           <div class="form-group">
             <label class="form-label required">Vĩ độ (Lat)</label>
             <div class="input-wrapper">
-              <input type="number" formControlName="latitude" step="0.000001" placeholder="0.000000" class="custom-input"
+              <input type="number" formControlName="latitude" step="0.000001" placeholder="0.000000"
+                class="custom-input"
                 [class.has-error]="form.get('latitude')?.invalid && form.get('latitude')?.touched" />
             </div>
           </div>
@@ -28,7 +29,8 @@
           <div class="form-group">
             <label class="form-label required">Kinh độ (Lng)</label>
             <div class="input-wrapper">
-              <input type="number" formControlName="longitude" step="0.000001" placeholder="0.000000" class="custom-input"
+              <input type="number" formControlName="longitude" step="0.000001" placeholder="0.000000"
+                class="custom-input"
                 [class.has-error]="form.get('longitude')?.invalid && form.get('longitude')?.touched" />
             </div>
           </div>
@@ -40,7 +42,7 @@
             <input type="number" formControlName="radiusMeters" placeholder="100" class="custom-input"
               [class.has-error]="form.get('radiusMeters')?.invalid && form.get('radiusMeters')?.touched" />
             @if (form.get('radiusMeters')?.invalid && form.get('radiusMeters')?.touched) {
-              <span class="error-tip">Vui lòng nhập bán kính</span>
+            <span class="error-tip">Vui lòng nhập bán kính</span>
             }
           </div>
         </div>
@@ -70,7 +72,16 @@
     <!-- Right Side: Map -->
     <div class="map-section">
       <div class="map-container-wrapper">
+        <div class="map-search-wrapper">
+          <span nz-icon nzType="search" class="search-icon"></span>
+          <input #searchInput type="text" placeholder="Tìm kiếm địa điểm, địa chỉ..." class="map-search-input" />
+        </div>
         <div id="google-map" class="map-canvas"></div>
+        <button type="button" class="locate-me-btn" (click)="locateMe()" [disabled]="isLocating"
+          title="Xác định vị trí của tôi">
+          <span nz-icon [nzType]="isLocating ? 'loading' : 'aim'" nzTheme="outline"></span>
+          {{ isLocating ? 'Đang xác định...' : 'Vị trí của tôi' }}
+        </button>
         <div class="map-hint">
           <span nz-icon nzType="info-circle"></span>
           Click vào bản đồ hoặc kéo thả ghim để chọn vị trí

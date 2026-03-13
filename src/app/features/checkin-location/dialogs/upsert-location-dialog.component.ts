@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
@@ -24,10 +24,13 @@ export class UpsertLocationDialogComponent implements OnInit {
   private readonly modalRef = inject(NzModalRef);
   readonly data = inject<AttendanceLocation>(NZ_MODAL_DATA, { optional: true });
 
+  @ViewChild('searchInput') searchElementRef!: ElementRef;
+
   protected form!: FormGroup;
   private map: any;
   private marker: any;
   private radiusCircle: any;
+  protected isLocating = false;
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -60,7 +63,7 @@ export class UpsertLocationDialogComponent implements OnInit {
 
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = () => resolve();
@@ -115,6 +118,48 @@ export class UpsertLocationDialogComponent implements OnInit {
     this.marker.addListener('dragend', (event: any) => {
       this.updatePosition(event.latLng);
     });
+
+    this.initAutocomplete();
+  }
+
+  private initAutocomplete(): void {
+    if (!this.searchElementRef) return;
+
+    const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+      fields: ['geometry', 'name', 'formatted_address'],
+      types: ['establishment', 'geocode']
+    });
+
+    autocomplete.bindTo('bounds', this.map);
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+
+      if (!place.geometry || !place.geometry.location) {
+        return; // User entered the name of a Place that was not suggested
+      }
+
+      // Update map center and zoom
+      if (place.geometry.viewport) {
+        this.map.fitBounds(place.geometry.viewport);
+      } else {
+        this.map.setCenter(place.geometry.location);
+        this.map.setZoom(17);
+      }
+
+      // Update form and marker
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      
+      this.form.patchValue({
+        name: place.name || this.form.get('name')?.value || '',
+        latitude: parseFloat(lat.toFixed(6)),
+        longitude: parseFloat(lng.toFixed(6))
+      }, { emitEvent: false });
+
+      this.marker.setPosition(place.geometry.location);
+      this.radiusCircle.setCenter(place.geometry.location);
+    });
   }
 
   private updatePosition(latLng: any): void {
@@ -146,6 +191,35 @@ export class UpsertLocationDialogComponent implements OnInit {
     if (radius && this.radiusCircle) {
       this.radiusCircle.setRadius(radius);
     }
+  }
+
+  locateMe(): void {
+    if (!navigator.geolocation) {
+      alert('Trình duyệt của bạn không hỗ trợ định vị vị trí.');
+      return;
+    }
+    this.isLocating = true;
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.isLocating = false;
+        const lat = parseFloat(position.coords.latitude.toFixed(6));
+        const lng = parseFloat(position.coords.longitude.toFixed(6));
+        this.form.patchValue({ latitude: lat, longitude: lng }, { emitEvent: false });
+        if (this.map && this.marker) {
+          const latLng = new google.maps.LatLng(lat, lng);
+          this.marker.setPosition(latLng);
+          this.radiusCircle.setCenter(latLng);
+          this.map.panTo(latLng);
+          this.map.setZoom(16);
+        }
+      },
+      (error) => {
+        this.isLocating = false;
+        alert('Không thể xác định vị trí. Vui lòng kiểm tra quyền truy cập vị trí.');
+        console.error('Geolocation error:', error);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   }
 
   submit(): void {
