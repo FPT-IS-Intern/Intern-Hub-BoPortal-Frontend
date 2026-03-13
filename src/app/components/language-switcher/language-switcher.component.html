@@ -1,0 +1,20 @@
+<div class="lang-switcher">
+  <button type="button" class="lang-trigger" (click)="toggleDropdown($event)" [class.active]="isDropdownOpen">
+    <img class="lang-flag" [src]="currentOption.icon" [alt]="currentOption.labelKey | translate" />
+    <span class="custom-icon-chevron-down" [class.rotate]="isDropdownOpen"></span>
+    <span class="sr-only">{{ 'language.label' | translate }}</span>
+  </button>
+
+  <div class="lang-menu" *ngIf="isDropdownOpen">
+    @for (lang of options; track lang.code) {
+      <button
+        type="button"
+        class="lang-item"
+        [class.active]="currentLang() === lang.code"
+        (click)="setLang(lang.code)">
+        <img class="lang-flag" [src]="lang.icon" [alt]="lang.labelKey | translate" />
+        <span class="lang-label">{{ lang.labelKey | translate }}</span>
+      </button>
+    }
+  </div>
+</div>

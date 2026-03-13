@@ -66,8 +66,10 @@ export class App implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const savedLang = localStorage.getItem('app_lang') || 'vi';
     this.translate.setDefaultLang('vi');
-    this.translate.use('vi');
+    this.translate.use(savedLang);
+    document.documentElement.lang = savedLang;
     this.themeService.initializeTheme().subscribe();
 
     // Fetch /me if already logged in to populate header

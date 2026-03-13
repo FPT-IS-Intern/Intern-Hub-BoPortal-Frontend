@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserProfileDropdownComponent } from './user-profile-dropdown/user-profile-dropdown.component';
 import { NotificationsDropdownComponent } from './notifications-dropdown/notifications-dropdown.component';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
 export interface HeaderData {
   logo?: string;
@@ -18,7 +19,7 @@ export interface HeaderData {
 @Component({
   selector: 'app-header-component',
   standalone: true,
-  imports: [CommonModule, UserProfileDropdownComponent, NotificationsDropdownComponent],
+  imports: [CommonModule, UserProfileDropdownComponent, NotificationsDropdownComponent, LanguageSwitcherComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })

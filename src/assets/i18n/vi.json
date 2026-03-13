@@ -47,5 +47,10 @@
     "errors": {
       "required": "Vui lòng nhập Tên đăng nhập và Mật khẩu."
     }
+  },
+  "language": {
+    "label": "Ngôn ngữ",
+    "vi": "Tiếng Việt",
+    "en": "English"
   }
 }

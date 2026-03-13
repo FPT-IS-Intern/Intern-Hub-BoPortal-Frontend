@@ -47,5 +47,10 @@
     "errors": {
       "required": "Please enter username and password."
     }
+  },
+  "language": {
+    "label": "Language",
+    "vi": "Vietnamese",
+    "en": "English"
   }
 }
