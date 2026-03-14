@@ -1,0 +1,249 @@
+.date-range-wrapper {
+  position: relative;
+  user-select: none;
+
+  .range-trigger {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 16px;
+    background: white;
+    border: 1px solid var(--app-color-border-alpha-soft-2, #e5e7eb);
+    border-radius: 10px;
+    cursor: pointer;
+    min-width: 240px;
+    gap: 10px;
+    transition: all 0.3s ease;
+
+    .left-icon {
+      color: var(--app-color-text-muted);
+      font-size: 16px;
+    }
+
+    .display-text {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--app-color-text-main);
+
+      &.placeholder {
+        color: var(--app-color-text-muted);
+        font-weight: 400;
+      }
+    }
+
+    .clear-btn {
+      color: var(--app-color-text-muted);
+      opacity: 0.5;
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+
+      &:hover {
+        opacity: 1;
+        background: var(--app-color-surface-warm-100);
+      }
+    }
+  }
+
+  &.open .range-trigger {
+    border-color: var(--app-color-primary);
+    box-shadow: 0 0 0 3px var(--app-color-primary-alpha-8);
+  }
+
+  .calendar-overlay {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--app-color-border-alpha-soft);
+    padding: 16px;
+    z-index: 1000;
+    animation: slideDown 0.2s ease;
+  }
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  .current-selection {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--app-color-text-main);
+
+    .view-toggle {
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+
+      &:hover {
+        background: var(--app-color-surface-warm-100);
+        color: var(--app-color-primary);
+      }
+    }
+
+    .separator {
+      opacity: 0.3;
+    }
+  }
+
+  .nav-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    color: var(--app-color-text-muted);
+    display: flex;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background: var(--app-color-surface-warm-100);
+      color: var(--app-color-primary);
+    }
+
+    &:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  animation: fadeIn 0.3s ease;
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 8px 0;
+  animation: fadeIn 0.3s ease;
+
+  &.years {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .selection-item {
+    padding: 12px 0;
+    text-align: center;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--app-color-text-main);
+
+    &:hover {
+      background: var(--app-color-surface-warm-100);
+      color: var(--app-color-primary);
+    }
+
+    &.active {
+      background: var(--app-color-primary);
+      color: white;
+      font-weight: 600;
+    }
+  }
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--app-color-text-muted);
+  padding: 8px 0;
+}
+
+.day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  position: relative;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--app-color-surface-warm-200);
+  }
+
+  &.muted {
+    color: var(--app-color-text-muted);
+    opacity: 0.4;
+  }
+
+  &.today {
+    color: var(--app-color-primary);
+    font-weight: 800;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--app-color-primary);
+    }
+  }
+
+  &.selected {
+    background: var(--app-color-primary) !important;
+    color: white !important;
+    border-radius: 8px;
+  }
+
+  &.in-range {
+    background: var(--app-color-primary-alpha-8);
+    border-radius: 0;
+    color: var(--app-color-primary);
+  }
+
+  &.range-start {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &.range-end {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
