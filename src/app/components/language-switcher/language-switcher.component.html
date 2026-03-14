@@ -11,9 +11,9 @@
         type="button"
         class="lang-item"
         [class.active]="currentLang() === lang.code"
-        (click)="setLang(lang.code)">
+        (click)="setLang(lang.code)"
+        [attr.title]="lang.labelKey | translate">
         <img class="lang-flag" [src]="lang.icon" [alt]="lang.labelKey | translate" />
-        <span class="lang-label">{{ lang.labelKey | translate }}</span>
       </button>
     }
   </div>

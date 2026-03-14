@@ -53,41 +53,49 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: 180px;
+  width: 72px;
   background-color: #ffffff;
   border: 1px solid var(--neutral-color-100, var(--app-color-border));
   border-radius: 12px;
   box-shadow: 0 10px 25px var(--app-shadow-lg);
   z-index: 1000;
-  padding: 8px;
+  padding: 6px;
   animation: slideIn 0.2s ease-out;
 }
 
 .lang-item {
   width: 100%;
-  padding: 10px;
+  height: 38px;
+  padding: 0;
   border-radius: 10px;
   border: none;
   background: transparent;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.15s ease;
   color: var(--app-color-text-700);
   font-size: 14px;
   font-weight: 600;
+  position: relative;
 }
 
-.lang-item:hover,
+.lang-item:hover {
+  background-color: var(--app-color-surface-warm-100);
+  color: var(--brand-600, var(--app-color-primary));
+}
+
 .lang-item.active {
   background-color: var(--app-color-surface-soft);
   color: var(--brand-600, var(--app-color-primary));
 }
 
-.lang-label {
-  white-space: nowrap;
+/* Ensure hover looks the same for both active and non-active items. */
+.lang-item.active:hover {
+  background-color: var(--app-color-surface-warm-100);
 }
+
 
 .sr-only {
   position: absolute;
