@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output, HostListener, ElementRef, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 export interface DropdownOption {
   label: string;
@@ -12,24 +13,61 @@ export interface DropdownOption {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './shared-dropdown.component.html',
-  styleUrl: './shared-dropdown.component.scss'
+  styleUrl: './shared-dropdown.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SharedDropdownComponent),
+      multi: true
+    }
+  ]
 })
-export class SharedDropdownComponent {
-  private elementRef = inject(ElementRef);
+export class SharedDropdownComponent implements ControlValueAccessor {
 
   @Input() options: DropdownOption[] = [];
-  @Input() value: any = null;
-  @Input() placeholder: string = 'Select option';
+  @Input() placeholder: string = 'Chọn một mục';
   @Input() icon: string = '';
-  @Input() width: string = '200px';
+  @Input() width: string = '100%';
 
   @Output() valueChange = new EventEmitter<any>();
 
   protected isOpen = false;
+  protected internalValue: any = null;
+
+  // ControlValueAccessor methods
+  onChange: any = () => {};
+  onTouched: any = () => {};
+
+  @Input() set value(val: any) {
+    this.internalValue = val;
+  }
+  get value(): any {
+    return this.internalValue;
+  }
+
+  writeValue(value: any): void {
+    this.internalValue = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    // Implement if needed
+  }
 
   protected get selectedLabel(): string {
-    const selected = this.options.find(opt => opt.value === this.value);
+    const selected = this.options.find(opt => opt.value === this.internalValue);
     return selected ? selected.label : this.placeholder;
+  }
+
+  protected get selectedOption() {
+    return this.options.find(opt => opt.value === this.internalValue);
   }
 
   protected toggle(): void {
@@ -37,14 +75,17 @@ export class SharedDropdownComponent {
   }
 
   protected selectOption(opt: DropdownOption): void {
-    this.value = opt.value;
-    this.valueChange.emit(this.value);
+    this.internalValue = opt.value;
     this.isOpen = false;
+    this.valueChange.emit(this.internalValue);
+    this.onChange(this.internalValue);
+    this.onTouched();
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
+  onClickOutside(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container')) {
       this.isOpen = false;
     }
   }
