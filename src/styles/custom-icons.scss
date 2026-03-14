@@ -126,3 +126,11 @@
 .custom-icon-users-edit {
   @include custom-icon-file('/assets/icons/users-edit.svg', 1.25rem);
 }
+
+.custom-icon-line-calendar {
+  @include custom-icon-file('/assets/icons/line-calendar.svg', 1.25rem);
+}
+
+.custom-icon-filter-lines {
+  @include custom-icon-file('/assets/icons/filter-lines.svg', 1.25rem);
+}
