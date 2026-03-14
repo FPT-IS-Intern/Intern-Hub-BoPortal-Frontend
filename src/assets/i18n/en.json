@@ -18,18 +18,18 @@
       "role_permission_duplicate": "Role already has this permission"
     },
     "auth": {
-      "invalid_credential": "Invalid username or password",
-      "account_inactive": "Account not activated",
-      "account_locked": "Account temporarily locked",
-      "refresh_token_not_found": "Refresh token not found",
-      "refresh_token_invalid": "Refresh token expired or revoked",
-      "token_device_mismatch": "Device mismatch",
-      "refresh_token_user_mismatch": "Refresh token does not match user",
-      "user_not_found": "User not found",
-      "missing_access_token": "Missing access token",
-      "token_process_failed": "Failed to process token",
+      "invalid_credential": "Incorrect username or password",
+      "account_inactive": "Your account is not activated. Please contact an administrator",
+      "account_locked": "Your account is temporarily locked. Please try again later or contact an administrator",
+      "refresh_token_not_found": "Your session has expired. Please sign in again",
+      "refresh_token_invalid": "Your session is invalid or has expired. Please sign in again",
+      "token_device_mismatch": "Your account is signed in on another device. Please sign in again",
+      "refresh_token_user_mismatch": "Your session is invalid. Please sign in again",
+      "user_not_found": "Account not found. Please check your sign-in details",
+      "missing_access_token": "Your session has expired. Please sign in again",
+      "token_process_failed": "Authentication failed. Please sign in again",
       "username_duplicate": "Username already exists",
-      "refresh_token_duplicate": "Refresh token already exists"
+      "refresh_token_duplicate": "A session already exists. Please sign in again"
     }
   },
   "login": {

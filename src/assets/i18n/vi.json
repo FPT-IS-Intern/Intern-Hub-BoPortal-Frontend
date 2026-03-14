@@ -18,18 +18,18 @@
       "role_permission_duplicate": "Vai trò đã có quyền này"
     },
     "auth": {
-      "invalid_credential": "Sai tài khoản hoặc mật khẩu",
-      "account_inactive": "Tài khoản chưa kích hoạt",
-      "account_locked": "Tài khoản bị khóa tạm thời",
-      "refresh_token_not_found": "Không tìm thấy refresh token",
-      "refresh_token_invalid": "Refresh token đã hết hạn hoặc bị thu hồi",
-      "token_device_mismatch": "Thiết bị không khớp",
-      "refresh_token_user_mismatch": "Refresh token không khớp người dùng",
-      "user_not_found": "Không tìm thấy người dùng",
-      "missing_access_token": "Thiếu access token",
-      "token_process_failed": "Không thể xử lý token",
+      "invalid_credential": "Tên đăng nhập hoặc mật khẩu không đúng",
+      "account_inactive": "Tài khoản chưa được kích hoạt. Vui lòng liên hệ quản trị viên",
+      "account_locked": "Tài khoản tạm thời bị khóa. Vui lòng thử lại sau hoặc liên hệ quản trị viên",
+      "refresh_token_not_found": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại",
+      "refresh_token_invalid": "Phiên đăng nhập không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại",
+      "token_device_mismatch": "Tài khoản đang đăng nhập trên thiết bị khác. Vui lòng đăng nhập lại",
+      "refresh_token_user_mismatch": "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại",
+      "user_not_found": "Không tìm thấy tài khoản. Vui lòng kiểm tra lại thông tin đăng nhập",
+      "missing_access_token": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại",
+      "token_process_failed": "Có lỗi khi xác thực. Vui lòng đăng nhập lại",
       "username_duplicate": "Tên đăng nhập đã tồn tại",
-      "refresh_token_duplicate": "Refresh token đã tồn tại"
+      "refresh_token_duplicate": "Phiên đăng nhập đã tồn tại. Vui lòng đăng nhập lại"
     }
   },
   "login": {
