@@ -24,7 +24,7 @@
     .col-audience { width: 150px; }
     .col-status { width: 150px; text-align: center; }
     .col-created { width: 180px; }
-    .col-action { width: 180px; text-align: center; }
+    .col-action { width: 180px; text-align: left; }
 
     td {
         background: var(--app-color-white);
@@ -62,7 +62,7 @@
 
 .action-buttons {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
 }
 
@@ -79,7 +79,10 @@
     cursor: pointer;
     transition: all 0.2s ease;
 
-    span { font-size: 16px; }
+    span { 
+        width: 1.1rem !important;
+        height: 1.1rem !important;
+    }
 
     &.view-btn { color: #6366f1; border-color: #e0e7ff; &:hover { background: #e0e7ff; } }
     &.edit-btn { color: var(--app-color-primary); border-color: var(--app-color-primary-200); &:hover { background: var(--app-color-primary-100); } }
