@@ -18,6 +18,10 @@ import { NotificationRecord } from '../../models/notification.model';
 import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
 import { SharedDateRangeComponent, DateRange } from '../../components/shared-date-range/shared-date-range.component';
 import { SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { NOTIFICATION_MOCKS, NOTIFICATION_STATUS_OPTIONS } from '../../core/mocks/notification.mock';
+import { signal } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notification-bell',
@@ -37,6 +41,8 @@ import { SharedDropdownComponent } from '../../components/shared-dropdown/shared
     SharedSearchComponent,
     SharedDateRangeComponent,
     SharedDropdownComponent,
+    NoDataComponent,
+    TranslateModule,
     ModalPopup,
     ConfirmPopup,
   ],
@@ -47,13 +53,8 @@ export class NotificationBellComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly message = inject(NzMessageService);
 
-  // Status options for Custom Dropdown
-  protected statusOptions = [
-    { label: 'Tất cả trạng thái', value: null },
-    { label: 'Đã gửi', value: 'Sent' },
-    { label: 'Nháp', value: 'Draft' },
-    { label: 'Đã lên lịch', value: 'Scheduled' }
-  ];
+  // Status options from Centralized Mocks
+  protected statusOptions = NOTIFICATION_STATUS_OPTIONS;
 
   ngOnInit(): void {
     this.breadcrumbService.setBreadcrumbs([
@@ -73,12 +74,11 @@ export class NotificationBellComponent implements OnInit {
   protected statusFilter: string | null = null;
   protected dateRange: DateRange = { from: null, to: null };
 
-  protected readonly allNotifications: NotificationRecord[] = [
-    { id: 1, title: 'Thông báo bảo trì hệ thống', content: 'Hệ thống sẽ bảo trì vào lúc 24h ngày 15/03/2026', audience: 'All', status: 'Sent', type: 'System', createdAt: '2026-03-14T10:00:00Z', sentAt: '2026-03-14T10:00:00Z' },
-    { id: 2, title: 'Khuyến mãi tháng 3', content: 'Nhận ngay voucher 50% cho các dịch vụ mới', audience: 'Group', status: 'Draft', type: 'Promotion', createdAt: '2026-03-14T11:30:00Z' },
-    { id: 3, title: 'Cảnh báo đăng nhập lạ', content: 'Phát hiện đăng nhập từ khu vực bất thường', audience: 'Specific', status: 'Scheduled', type: 'Warning', createdAt: '2026-03-14T14:45:00Z', scheduleTime: '2026-03-15T08:00:00Z' },
-    { id: 4, title: 'Cập nhật chính sách bảo mật', content: 'Chúng tôi vừa cập nhật một số điều khoản mới', audience: 'All', status: 'Sent', type: 'System', createdAt: '2026-03-12T09:00:00Z', sentAt: '2026-03-12T09:05:00Z' },
-  ];
+  // New states for better UX
+  protected readonly isLoading = signal(false);
+  protected readonly isError = signal(false);
+
+  protected readonly allNotifications: NotificationRecord[] = [...NOTIFICATION_MOCKS];
 
   protected setStatusFilter(value: string | null): void {
     this.statusFilter = value;
@@ -89,7 +89,7 @@ export class NotificationBellComponent implements OnInit {
     return this.allNotifications.filter(item => {
       const matchSearch = item.title.toLowerCase().includes(this.searchText.toLowerCase());
       const matchStatus = this.statusFilter ? item.status === this.statusFilter : true;
-      
+
       let matchDate = true;
       const createdDate = item.createdAt.split('T')[0]; // Get YYYY-MM-DD
       if (this.dateRange.from && createdDate < this.dateRange.from) matchDate = false;
@@ -118,7 +118,7 @@ export class NotificationBellComponent implements OnInit {
   protected isConfirmVisible = false;
   protected confirmTitle = '';
   protected confirmMessage = '';
-  protected confirmAction: () => void = () => {};
+  protected confirmAction: () => void = () => { };
 
   protected get displayRange(): string {
     if (this.total === 0) return '0-0';

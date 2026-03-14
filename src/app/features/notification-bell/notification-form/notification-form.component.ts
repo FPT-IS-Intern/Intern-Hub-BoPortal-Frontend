@@ -9,8 +9,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
-
 import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
+import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../../core/mocks/notification.mock';
 
 @Component({
   selector: 'app-notification-form',
@@ -40,17 +40,8 @@ export class NotificationFormComponent implements OnInit {
   validateForm!: FormGroup;
   isScheduled = false;
 
-  protected typeOptions = [
-    { label: 'Hệ thống', value: 'System' },
-    { label: 'Khuyến mãi', value: 'Promotion' },
-    { label: 'Cảnh báo', value: 'Warning' }
-  ];
-
-  protected audienceOptions = [
-    { label: 'Tất cả người dùng', value: 'All' },
-    { label: 'Nhóm người dùng', value: 'Group' },
-    { label: 'Người dùng cụ thể', value: 'Specific' }
-  ];
+  protected typeOptions = NOTIFICATION_TYPE_OPTIONS;
+  protected audienceOptions = NOTIFICATION_AUDIENCE_OPTIONS;
 
   constructor(private fb: FormBuilder) {}
 
