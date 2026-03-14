@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -13,6 +14,8 @@ export interface Toast {
   providedIn: 'root',
 })
 export class ToastService {
+  constructor(private readonly translate: TranslateService) {}
+
   private toasts = signal<Toast[]>([]);
   private nextId = 0;
   private recentAt = new Map<string, number>();
@@ -48,6 +51,21 @@ export class ToastService {
     }, 4000); // Auto remove after 4s
   }
 
+  /**
+   * i18n-friendly API: pass translation keys (and optional params) instead of raw strings.
+   * Use this in components to avoid sprinkling `translate.instant(...)` everywhere.
+   */
+  showKey(
+    messageKey: string,
+    type: ToastType = 'success',
+    titleKey?: string,
+    options?: { messageParams?: Record<string, unknown>; titleParams?: Record<string, unknown> }
+  ) {
+    const message = this.translate.instant(messageKey, options?.messageParams);
+    const title = titleKey ? this.translate.instant(titleKey, options?.titleParams) : undefined;
+    this.show(message, type, title);
+  }
+
   success(message: string, title?: string) {
     this.show(message, 'success', title);
   }
@@ -62,6 +80,38 @@ export class ToastService {
 
   info(message: string, title?: string) {
     this.show(message, 'info', title);
+  }
+
+  successKey(
+    messageKey: string,
+    titleKey?: string,
+    options?: { messageParams?: Record<string, unknown>; titleParams?: Record<string, unknown> }
+  ) {
+    this.showKey(messageKey, 'success', titleKey, options);
+  }
+
+  errorKey(
+    messageKey: string,
+    titleKey?: string,
+    options?: { messageParams?: Record<string, unknown>; titleParams?: Record<string, unknown> }
+  ) {
+    this.showKey(messageKey, 'error', titleKey, options);
+  }
+
+  warningKey(
+    messageKey: string,
+    titleKey?: string,
+    options?: { messageParams?: Record<string, unknown>; titleParams?: Record<string, unknown> }
+  ) {
+    this.showKey(messageKey, 'warning', titleKey, options);
+  }
+
+  infoKey(
+    messageKey: string,
+    titleKey?: string,
+    options?: { messageParams?: Record<string, unknown>; titleParams?: Record<string, unknown> }
+  ) {
+    this.showKey(messageKey, 'info', titleKey, options);
   }
 
   remove(id: number) {

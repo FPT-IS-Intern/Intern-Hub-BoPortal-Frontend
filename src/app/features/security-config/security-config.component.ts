@@ -102,7 +102,7 @@ export class SecurityConfigComponent implements OnInit {
 
     this.configService.updateConfig(this.form.value).subscribe({
       next: () => {
-        this.toastService.success('Cập nhật cấu hình bảo mật thành công');
+        this.toastService.successKey('toast.security.updateSuccess', 'toast.system');
         this.cdr.markForCheck();
       },
       error: (err) => {

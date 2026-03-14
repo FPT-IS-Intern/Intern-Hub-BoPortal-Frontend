@@ -234,7 +234,7 @@ export class PermissionMatrixComponent implements OnInit {
 
   protected onSubmit(): void {
     if (this.selectedRoleId == null) {
-      this.toastService.warning('Vui lòng chọn vai trò');
+      this.toastService.warningKey('toast.rbac.selectRoleRequired', 'toast.system');
       return;
     }
     this.isConfirmVisible = true;
@@ -260,7 +260,7 @@ export class PermissionMatrixComponent implements OnInit {
       }));
 
     if (resources.length === 0) {
-      this.toastService.warning('Không có tài nguyên nào có ID để cập nhật quyền');
+      this.toastService.warningKey('toast.rbac.noResourceToUpdate', 'toast.system');
       this.isConfirmVisible = false;
       this.cdr.markForCheck();
       return;
@@ -278,7 +278,7 @@ export class PermissionMatrixComponent implements OnInit {
       }))
       .subscribe({
         next: () => {
-          this.toastService.success('Cập nhật phân quyền thành công');
+          this.toastService.successKey('toast.rbac.updatePermissionsSuccess', 'toast.system');
           this.loadPermissions();
           this.cdr.markForCheck();
         },
@@ -296,7 +296,7 @@ export class PermissionMatrixComponent implements OnInit {
   protected onCreateRole(event: { name: string; description: string }): void {
     this.authzService.createRole(event.name, event.description).subscribe({
       next: () => {
-        this.toastService.success('Tạo vai trò thành công');
+        this.toastService.successKey('toast.rbac.createRoleSuccess', 'toast.system');
         this.isCreateRoleVisible = false;
         this.loadRoles();
         this.cdr.markForCheck();
@@ -311,7 +311,7 @@ export class PermissionMatrixComponent implements OnInit {
   protected onCreateResource(event: { name: string; code: string; description: string }): void {
     this.authzService.createResource(event.name, event.code, event.description).subscribe({
       next: (res) => {
-        this.toastService.success('Tạo tài nguyên thành công');
+        this.toastService.successKey('toast.rbac.createResourceSuccess', 'toast.system');
         this.isCreateResourceVisible = false;
         this.loadResources();
         if (this.selectedRoleId != null) {

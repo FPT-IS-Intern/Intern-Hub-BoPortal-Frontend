@@ -117,7 +117,7 @@ export class GeneralConfigComponent implements OnInit {
 
     updateObs.subscribe({
       next: () => {
-        this.toastService.success('Cập nhật cấu hình thành công', 'Hệ thống');
+        this.toastService.successKey('toast.config.updateSuccess', 'toast.system');
         this.selectedLogoFile = null;
         this.configService.getConfig().subscribe(); // Refresh cache
         this.cdr.markForCheck();

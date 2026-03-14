@@ -53,6 +53,22 @@
     "vi": "Vietnamese",
     "en": "English"
   },
+  "toast": {
+    "system": "System",
+    "config": {
+      "updateSuccess": "Configuration updated successfully"
+    },
+    "security": {
+      "updateSuccess": "Security configuration updated successfully"
+    },
+    "rbac": {
+      "selectRoleRequired": "Please select a role",
+      "noResourceToUpdate": "No resources with IDs to update permissions",
+      "updatePermissionsSuccess": "Permissions updated successfully",
+      "createRoleSuccess": "Role created successfully",
+      "createResourceSuccess": "Resource created successfully"
+    }
+  },
   "checkin": {
     "breadcrumb": {
       "home": "Home",

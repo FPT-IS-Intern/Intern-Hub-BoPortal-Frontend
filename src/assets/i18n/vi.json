@@ -53,6 +53,22 @@
     "vi": "Tiếng Việt",
     "en": "English"
   },
+  "toast": {
+    "system": "Hệ thống",
+    "config": {
+      "updateSuccess": "Cập nhật cấu hình thành công"
+    },
+    "security": {
+      "updateSuccess": "Cập nhật cấu hình bảo mật thành công"
+    },
+    "rbac": {
+      "selectRoleRequired": "Vui lòng chọn vai trò",
+      "noResourceToUpdate": "Không có tài nguyên nào có ID để cập nhật quyền",
+      "updatePermissionsSuccess": "Cập nhật phân quyền thành công",
+      "createRoleSuccess": "Tạo vai trò thành công",
+      "createResourceSuccess": "Tạo tài nguyên thành công"
+    }
+  },
   "checkin": {
     "breadcrumb": {
       "home": "Home",
