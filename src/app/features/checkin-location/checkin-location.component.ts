@@ -108,6 +108,8 @@ export class CheckinLocationComponent implements OnInit {
   protected openLocationModal(location?: AttendanceLocation): void {
     const branch = this.selectedBranch();
     if (!branch) return;
+    // Enforce 1 location per branch at UI level.
+    if (!location && (branch.attendanceLocations?.length ?? 0) >= 1) return;
 
     const modalRef = this.modal.create({
       nzTitle: location

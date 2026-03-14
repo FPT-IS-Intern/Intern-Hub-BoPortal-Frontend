@@ -116,6 +116,7 @@
       "title": "Allowed locations",
       "searchPlaceholder": "Search locations, coordinates...",
       "add": "Add location",
+      "limitTooltip": "Each branch can only have one check-in location.",
       "table": {
         "name": "Location name",
         "coordinates": "Coordinates (Lat/Long)",

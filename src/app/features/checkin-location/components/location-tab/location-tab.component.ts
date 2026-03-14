@@ -21,6 +21,7 @@ export class LocationTabComponent {
   @Output() deleteLocation = new EventEmitter<AttendanceLocation>();
 
   searchTerm = signal('');
+  protected readonly canCreate = computed(() => (this.locations()?.length ?? 0) === 0);
 
   filteredLocations = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();

@@ -116,6 +116,7 @@
       "title": "Danh sách tọa độ cho phép",
       "searchPlaceholder": "Tìm kiếm vị trí, tọa độ...",
       "add": "Thêm vị trí",
+      "limitTooltip": "Mỗi chi nhánh chỉ được cấu hình 1 vị trí check-in.",
       "table": {
         "name": "Tên vị trí",
         "coordinates": "Tọa độ (Lat/Long)",

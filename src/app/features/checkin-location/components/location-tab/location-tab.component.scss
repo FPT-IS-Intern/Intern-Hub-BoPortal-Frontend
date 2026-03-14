@@ -49,6 +49,27 @@
   }
 }
 
+.add-btn-tooltip {
+  display: inline-flex;
+}
+
+.add-btn--disabled {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--app-color-surface-warm-200);
+  color: var(--app-color-text-muted);
+  cursor: not-allowed;
+
+  @supports (background: color-mix(in srgb, red 10%, transparent)) {
+    background: color-mix(in srgb, var(--app-color-text-muted) 8%, transparent);
+  }
+
+  &:hover,
+  &:active {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .table-container {
   flex: 1;
   min-height: 0;
