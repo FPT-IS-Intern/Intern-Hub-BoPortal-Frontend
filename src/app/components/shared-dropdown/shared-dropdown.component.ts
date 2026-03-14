@@ -9,10 +9,12 @@ export interface DropdownOption {
   icon?: string;
 }
 
+import { NoDataComponent } from '../no-data/no-data.component';
+
 @Component({
   selector: 'app-shared-dropdown',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NoDataComponent],
   templateUrl: './shared-dropdown.component.html',
   styleUrl: './shared-dropdown.component.scss',
   providers: [
