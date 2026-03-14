@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, HostListener, forwardRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, forwardRef, ElementRef, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -23,6 +23,8 @@ export interface DropdownOption {
   ]
 })
 export class SharedDropdownComponent implements ControlValueAccessor {
+  private elementRef = inject(ElementRef);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() options: DropdownOption[] = [];
   @Input() placeholder: string = 'Chọn một mục';
@@ -40,6 +42,7 @@ export class SharedDropdownComponent implements ControlValueAccessor {
 
   @Input() set value(val: any) {
     this.internalValue = val;
+    this.cdr.markForCheck();
   }
   get value(): any {
     return this.internalValue;
@@ -47,6 +50,7 @@ export class SharedDropdownComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     this.internalValue = value;
+    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: any): void {
@@ -70,7 +74,8 @@ export class SharedDropdownComponent implements ControlValueAccessor {
     return this.options.find(opt => opt.value === this.internalValue);
   }
 
-  protected toggle(): void {
+  protected toggle(event: MouseEvent): void {
+    event.stopPropagation();
     this.isOpen = !this.isOpen;
   }
 
@@ -83,10 +88,12 @@ export class SharedDropdownComponent implements ControlValueAccessor {
   }
 
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event): void {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown-container')) {
-      this.isOpen = false;
+  onClickOutside(event: MouseEvent): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      if (this.isOpen) {
+        this.isOpen = false;
+        this.cdr.markForCheck();
+      }
     }
   }
 }

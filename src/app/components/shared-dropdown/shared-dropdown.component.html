@@ -1,5 +1,5 @@
 <div class="dropdown-container" [style.width]="width" [class.open]="isOpen">
-  <div class="dropdown-trigger" (click)="toggle()">
+  <div class="dropdown-trigger" (click)="toggle($event)">
     <div class="trigger-left">
       @if (icon) {
         <span class="left-icon" [class]="icon"></span>
