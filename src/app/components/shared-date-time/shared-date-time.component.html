@@ -1,0 +1,118 @@
+<div class="shared-date-time-wrapper">
+    <!-- Trigger -->
+    <div class="calendar-trigger" 
+         [class.active]="selectedDate" 
+         [class.disabled]="isReadOnly"
+         (click)="toggle()">
+        <div class="trigger-left">
+            <span class="custom-icon-line-calendar"></span>
+            <span class="schedule-text">{{ scheduleDisplay }}</span>
+        </div>
+        <div class="trigger-actions">
+            @if (selectedDate && !isReadOnly) {
+                <button type="button" class="clear-btn" (click)="clear($event)" title="Xóa">
+                    <span class="custom-icon-close"></span>
+                </button>
+            }
+            <span class="custom-icon-arrow-down" [class.open]="isOpen"></span>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    @if (isOpen) {
+    <div class="picker-overlay">
+        <div class="date-time-picker-container">
+            <div class="calendar-section">
+                <!-- Header -->
+                <div class="calendar-header">
+                    <button type="button" class="nav-btn" (click)="prevMonth()" *ngIf="viewMode === 'day'">
+                        <span class="custom-icon-arrow-left"></span>
+                    </button>
+                    <div class="current-month-year">
+                        <span class="month-label" (click)="switchView('month')">{{ monthNames[viewDate.getMonth()] }}</span>
+                        <span class="year-label" (click)="switchView('year')">{{ viewDate.getFullYear() }}</span>
+                    </div>
+                    <button type="button" class="nav-btn" (click)="nextMonth()" *ngIf="viewMode === 'day'">
+                        <span class="custom-icon-arrow-right"></span>
+                    </button>
+                </div>
+
+                <!-- Day View -->
+                @if (viewMode === 'day') {
+                <div class="calendar-grid">
+                    @for (day of weekDays; track day) {
+                    <div class="weekday">{{ day }}</div>
+                    }
+                    @for (day of calendarDays; track day.date.getTime()) {
+                    <div class="day-cell" [class.muted]="!day.isCurrentMonth" [class.today]="day.isToday"
+                        [class.selected]="day.isSelected" (click)="selectDay(day)">
+                        {{ day.date.getDate() }}
+                    </div>
+                    }
+                </div>
+                }
+
+                <!-- Month View -->
+                @if (viewMode === 'month') {
+                <div class="month-grid">
+                    @for (m of monthNames; track m; let i = $index) {
+                    <div class="month-item" 
+                        [class.active]="i === viewDate.getMonth()"
+                        (click)="selectMonth(i)">
+                        {{ m }}
+                    </div>
+                    }
+                </div>
+                }
+
+                <!-- Year View -->
+                @if (viewMode === 'year') {
+                <div class="year-grid">
+                    @for (y of years; track y) {
+                    <div class="year-item" 
+                        [class.active]="y === viewDate.getFullYear()"
+                        (click)="selectYear(y)">
+                        {{ y }}
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="time-section">
+                <div class="time-selectors">
+                    <!-- Hour Selector -->
+                    <div class="time-column" #hourCol>
+                        <div class="selection-frame"></div>
+                        <div class="column-mask-top"></div>
+                        <div class="column-mask-bottom"></div>
+                        <div class="scroll-container" (scroll)="onScroll('hour', $event)">
+                            @for (h of hours; track h) {
+                            <div class="time-item" [class.active]="h === selectedHour" (click)="selectHour(h)">
+                                {{ h | number:'2.0-0' }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="time-separator text-divider">:</div>
+
+                    <!-- Minute Selector -->
+                    <div class="time-column" #minCol>
+                        <div class="selection-frame"></div>
+                        <div class="column-mask-top"></div>
+                        <div class="column-mask-bottom"></div>
+                        <div class="scroll-container" (scroll)="onScroll('minute', $event)">
+                            @for (m of minutes; track m) {
+                            <div class="time-item" [class.active]="m === selectedMinute" (click)="selectMinute(m)">
+                                {{ m | number:'2.0-0' }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

@@ -37,7 +37,8 @@
             pointer-events: none;
         }
 
-        .custom-input, .custom-textarea {
+        .custom-input,
+        .custom-textarea {
             width: 100%;
             padding: 10px 16px;
             background: white;
@@ -93,60 +94,6 @@
     }
 }
 
-.schedule-card {
-    background: white;
-    border: 1px solid var(--app-color-border-alpha-soft-2);
-    border-radius: 16px;
-    padding: 16px;
-    transition: all 0.3s ease;
-
-    &.active {
-        border-color: var(--app-color-primary-alpha-32);
-        background: var(--app-color-surface-warm-50, #fffbf7);
-        box-shadow: 0 4px 12px var(--app-color-primary-alpha-8);
-    }
-
-    .schedule-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--app-color-text-main);
-            font-weight: 600;
-
-            .custom-icon-line-calendar {
-                color: var(--app-color-primary);
-                font-size: 18px;
-            }
-        }
-    }
-
-    .schedule-content {
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px dashed var(--app-color-border-alpha-soft-2);
-        
-        ::ng-deep .ant-picker {
-            width: 100%;
-            height: 44px;
-            border-radius: 10px;
-            border: 1px solid var(--app-color-border-alpha-soft-2);
-            
-            &:hover {
-                border-color: var(--app-color-primary);
-            }
-            
-            &.ant-picker-focused {
-                border-color: var(--app-color-primary);
-                box-shadow: 0 0 0 3px var(--app-color-primary-alpha-8);
-            }
-        }
-    }
-}
 
 .form-footer {
     display: flex;
@@ -198,8 +145,15 @@
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 [animate] {

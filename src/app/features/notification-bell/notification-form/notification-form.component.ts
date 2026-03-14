@@ -10,6 +10,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
+import { SharedDateTimePickerComponent } from '../../../components/shared-date-time/shared-date-time.component';
 import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../../core/mocks/notification.mock';
 
 @Component({
@@ -26,7 +27,8 @@ import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../
     NzDatePickerModule,
     NzSwitchModule,
     NzUploadModule,
-    SharedDropdownComponent
+    SharedDropdownComponent,
+    SharedDateTimePickerComponent
   ],
   templateUrl: './notification-form.component.html',
   styleUrl: './notification-form.component.scss'
@@ -38,12 +40,11 @@ export class NotificationFormComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
 
   validateForm!: FormGroup;
-  isScheduled = false;
 
   protected typeOptions = NOTIFICATION_TYPE_OPTIONS;
   protected audienceOptions = NOTIFICATION_AUDIENCE_OPTIONS;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -54,10 +55,6 @@ export class NotificationFormComponent implements OnInit {
       onclickAction: [{ value: this.initialData?.onclickAction || '', disabled: this.isReadOnly }],
       scheduleTime: [{ value: this.initialData?.scheduleTime ? new Date(this.initialData.scheduleTime) : null, disabled: this.isReadOnly }],
     });
-
-    if (this.initialData?.scheduleTime) {
-      this.isScheduled = true;
-    }
   }
 
   submitForm(): void {
@@ -65,7 +62,7 @@ export class NotificationFormComponent implements OnInit {
       const formValue = this.validateForm.value;
       const result: Partial<NotificationRecord> = {
         ...formValue,
-        scheduleTime: this.isScheduled && formValue.scheduleTime ? formValue.scheduleTime.toISOString() : undefined
+        scheduleTime: formValue.scheduleTime ? formValue.scheduleTime.toISOString() : undefined
       };
       this.save.emit(result);
     } else {

@@ -7,36 +7,31 @@
                 <div class="char-counter">{{ validateForm.get('title')?.value?.length || 0 }}/255</div>
             </div>
             @if (validateForm.get('title')?.touched && validateForm.get('title')?.invalid) {
-                <div class="error-tip">Vui lòng nhập tiêu đề (tối đa 255 ký tự)</div>
+            <div class="error-tip">Vui lòng nhập tiêu đề (tối đa 255 ký tự)</div>
             }
         </div>
 
         <div class="form-group">
             <label class="form-label required">Nội dung</label>
             <div class="input-wrapper">
-                <textarea class="custom-textarea" formControlName="content" 
+                <textarea class="custom-textarea" formControlName="content"
                     placeholder="Nhập nội dung thông báo"></textarea>
             </div>
             @if (validateForm.get('content')?.touched && validateForm.get('content')?.invalid) {
-                <div class="error-tip">Vui lòng nhập nội dung thông báo</div>
+            <div class="error-tip">Vui lòng nhập nội dung thông báo</div>
             }
         </div>
 
         <div class="row-layout">
             <div class="form-group flex-1">
                 <label class="form-label required">Loại thông báo</label>
-                <app-shared-dropdown 
-                    [options]="typeOptions" 
-                    formControlName="type"
-                    placeholder="Chọn loại">
+                <app-shared-dropdown [options]="typeOptions" formControlName="type" placeholder="Chọn loại">
                 </app-shared-dropdown>
             </div>
 
             <div class="form-group flex-1">
                 <label class="form-label required">Đối tượng nhận</label>
-                <app-shared-dropdown 
-                    [options]="audienceOptions" 
-                    formControlName="audience"
+                <app-shared-dropdown [options]="audienceOptions" formControlName="audience"
                     placeholder="Chọn đối tượng">
                 </app-shared-dropdown>
             </div>
@@ -46,30 +41,15 @@
             <label class="form-label">Hành động khi nhấn (URL)</label>
             <div class="input-wrapper">
                 <span class="input-icon custom-icon-globe"></span>
-                <input class="custom-input has-icon" formControlName="onclickAction" placeholder="https://example.com/..." />
+                <input class="custom-input has-icon" formControlName="onclickAction"
+                    placeholder="https://example.com/..." />
             </div>
         </div>
 
-        <div class="schedule-card" [class.active]="isScheduled">
-            <div class="schedule-header">
-                <div class="header-left">
-                    <span class="custom-icon-line-calendar"></span>
-                    <span class="label">Hẹn giờ gửi thông báo</span>
-                </div>
-                <nz-switch [(ngModel)]="isScheduled" [ngModelOptions]="{standalone: true}" [nzDisabled]="isReadOnly"></nz-switch>
-            </div>
-            
-            @if (isScheduled) {
-                <div class="schedule-content" @slideDown>
-                    <nz-date-picker 
-                        formControlName="scheduleTime" 
-                        nzShowTime 
-                        nzFormat="yyyy-MM-dd HH:mm"
-                        nzPlaceHolder="Chọn ngày giờ gửi"
-                        class="custom-date-picker">
-                    </nz-date-picker>
-                </div>
-            }
+        <div class="form-group">
+            <label class="form-label">Thời gian gửi</label>
+            <app-shared-date-time formControlName="scheduleTime" [isReadOnly]="isReadOnly">
+            </app-shared-date-time>
         </div>
 
         <div class="form-footer" *ngIf="!isReadOnly">
