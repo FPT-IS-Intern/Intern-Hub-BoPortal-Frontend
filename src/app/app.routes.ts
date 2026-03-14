@@ -25,6 +25,12 @@ export const routes: Routes = [
     component: BoPortalLayoutComponent,
     canActivate: [authGuard],
     children: [
+      // Kept for backward compatibility (login currently navigates to /main).
+      {
+        path: 'main',
+        redirectTo: 'general',
+        pathMatch: 'full',
+      },
       {
         path: 'general',
         component: GeneralConfigComponent,

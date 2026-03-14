@@ -2,19 +2,20 @@ import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@a
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../models/auth.model';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
 import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
-import { resolveApiErrorMessage, resolveBusinessMessage } from '../../core/errors/api-error-message.util';
+import { ErrorMessageService } from '../../i18n/error-message.service';
 
 @Component({
     selector: 'app-login-form',
     standalone: true,
-    imports: [CommonModule, ErrorMessageComponent, SharedInputTextComponent, TranslateModule],
+    imports: [CommonModule, TranslateModule, ErrorMessageComponent, SharedInputTextComponent],
     templateUrl: './login-form.component.html',
     styleUrls: ['./login-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,7 +24,7 @@ export class LoginFormComponent {
     private authService = inject(AuthService);
     private tokenService = inject(TokenStorageService);
     private router = inject(Router);
-    private translate = inject(TranslateService);
+    private errorMessageService = inject(ErrorMessageService);
 
     username = signal('');
     password = signal('');
@@ -34,10 +35,7 @@ export class LoginFormComponent {
     checkInputRequired = computed(() => this.username().trim() === '' || this.password().trim() === '');
 
     async handleSubmit() {
-        if (this.checkInputRequired()) {
-            this.error.set(this.translate.instant('login.errors.required'));
-            return;
-        }
+        if (this.checkInputRequired()) return;
 
         this.error.set(null);
         this.isLoading.set(true);
@@ -59,12 +57,12 @@ export class LoginFormComponent {
 
                 // Skip /me and general-config calls on login success as requested
                 console.log('Login successful. Navigate directly to main layout.');
-                this.router.navigate(['/general']);
+                this.router.navigate(['/main']);
             } else {
-                this.error.set(resolveBusinessMessage(res.status?.code, res.status?.message));
+                this.error.set(this.errorMessageService.resolve(res.status?.code));
             }
         } catch (err) {
-            this.error.set(resolveApiErrorMessage(err));
+            this.error.set(this.resolveHttpError(err));
         } finally {
             this.isLoading.set(false);
         }
@@ -73,4 +71,33 @@ export class LoginFormComponent {
     togglePassword() {
         this.showPassword.update((v: boolean) => !v);
     }
+
+    private resolveHttpError(err: unknown): string {
+        if (err instanceof HttpErrorResponse) {
+            const businessCode = (err.error as any)?.status?.code as string | undefined;
+            const resolvedCode = businessCode ?? fallbackCodeFromHttpStatus(err.status);
+            return this.errorMessageService.resolve(resolvedCode);
+        }
+
+        return this.errorMessageService.resolve();
+    }
+}
+
+function fallbackCodeFromHttpStatus(status: number): string | undefined {
+    if (!status) {
+        return undefined;
+    }
+    if (status >= 500) {
+        return '0500';
+    }
+    if (status === 404) {
+        return '0404';
+    }
+    if (status === 408) {
+        return '0408';
+    }
+    if (status >= 400) {
+        return '0400';
+    }
+    return undefined;
 }
