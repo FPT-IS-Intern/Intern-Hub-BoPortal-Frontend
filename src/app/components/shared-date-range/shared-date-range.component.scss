@@ -11,7 +11,7 @@
     border: 1px solid var(--app-color-border-alpha-soft-2, #e5e7eb);
     border-radius: 10px;
     cursor: pointer;
-    min-width: 240px;
+    max-width: 240px;
     gap: 10px;
     transition: all 0.3s ease;
 
@@ -226,6 +226,7 @@
     border-bottom-left-radius: 0;
   }
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;

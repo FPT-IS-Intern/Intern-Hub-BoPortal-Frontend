@@ -6,80 +6,70 @@
       {{ rangeDisplay }}
     </span>
     @if (startDate || endDate) {
-      <div class="clear-btn" (click)="$event.stopPropagation(); clear()" title="Xóa">
-        <span class="custom-icon-close"></span>
-      </div>
+    <div class="clear-btn" (click)="$event.stopPropagation(); clear()" title="Xóa">
+      <span class="custom-icon-close"></span>
+    </div>
     }
   </div>
 
   <!-- Calendar Overlay -->
   @if (isOpen) {
-    <div class="calendar-overlay">
-      <div class="calendar-header">
-        <button class="nav-btn" (click)="viewMode === 'days' ? prevMonth() : (viewMode === 'years' ? prevYears() : null)" [disabled]="viewMode === 'months'">
-          <span class="custom-icon-arrow-left"></span>
-        </button>
-        
-        <div class="current-selection">
-          <span class="view-toggle" (click)="switchView('months')">{{ monthNames[viewDate.getMonth()] }}</span>
-          <span class="separator">/</span>
-          <span class="view-toggle" (click)="switchView('years')">{{ viewDate.getFullYear() }}</span>
-        </div>
+  <div class="calendar-overlay">
+    <div class="calendar-header">
+      <button class="nav-btn" (click)="viewMode === 'days' ? prevMonth() : (viewMode === 'years' ? prevYears() : null)"
+        [disabled]="viewMode === 'months'">
+        <span class="custom-icon-arrow-left"></span>
+      </button>
 
-        <button class="nav-btn" (click)="viewMode === 'days' ? nextMonth() : (viewMode === 'years' ? nextYears() : null)" [disabled]="viewMode === 'months'">
-          <span class="custom-icon-arrow-right"></span>
-        </button>
+      <div class="current-selection">
+        <span class="view-toggle" (click)="switchView('months')">{{ monthNames[viewDate.getMonth()] }}</span>
+        <span class="separator">/</span>
+        <span class="view-toggle" (click)="switchView('years')">{{ viewDate.getFullYear() }}</span>
       </div>
 
-      <!-- Days View -->
-      @if (viewMode === 'days') {
-        <div class="calendar-grid">
-          @for (day of weekDays; track day) {
-            <div class="weekday">{{ day }}</div>
-          }
-          @for (day of calendarDays; track day.date.getTime()) {
-            <div 
-              class="day-cell" 
-              [class.muted]="!day.isCurrentMonth"
-              [class.today]="day.isToday"
-              [class.selected]="day.isSelected"
-              [class.in-range]="day.isInRange"
-              [class.range-start]="day.isStart"
-              [class.range-end]="day.isEnd"
-              (click)="selectDay(day)">
-              <span class="day-number">{{ day.date.getDate() }}</span>
-            </div>
-          }
-        </div>
-      }
+      <button class="nav-btn" (click)="viewMode === 'days' ? nextMonth() : (viewMode === 'years' ? nextYears() : null)"
+        [disabled]="viewMode === 'months'">
+        <span class="custom-icon-arrow-right"></span>
+      </button>
+    </div>
 
-      <!-- Months View -->
-      @if (viewMode === 'months') {
-        <div class="selection-grid months">
-          @for (month of monthNames; track $index) {
-            <div 
-              class="selection-item" 
-              [class.active]="viewDate.getMonth() === $index"
-              (click)="selectMonth($index)">
-              {{ month }}
-            </div>
-          }
-        </div>
+    <!-- Days View -->
+    @if (viewMode === 'days') {
+    <div class="calendar-grid">
+      @for (day of weekDays; track day) {
+      <div class="weekday">{{ day }}</div>
       }
-
-      <!-- Years View -->
-      @if (viewMode === 'years') {
-        <div class="selection-grid years">
-          @for (year of yearRange; track year) {
-            <div 
-              class="selection-item" 
-              [class.active]="viewDate.getFullYear() === year"
-              (click)="selectYear(year)">
-              {{ year }}
-            </div>
-          }
-        </div>
+      @for (day of calendarDays; track day.date.getTime()) {
+      <div class="day-cell" [class.muted]="!day.isCurrentMonth" [class.today]="day.isToday"
+        [class.selected]="day.isSelected" [class.in-range]="day.isInRange" [class.range-start]="day.isStart"
+        [class.range-end]="day.isEnd" (click)="selectDay(day)">
+        <span class="day-number">{{ day.date.getDate() }}</span>
+      </div>
       }
     </div>
+    }
+
+    <!-- Months View -->
+    @if (viewMode === 'months') {
+    <div class="selection-grid months">
+      @for (month of monthNames; track $index) {
+      <div class="selection-item" [class.active]="viewDate.getMonth() === $index" (click)="selectMonth($index)">
+        {{ month }}
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Years View -->
+    @if (viewMode === 'years') {
+    <div class="selection-grid years">
+      @for (year of yearRange; track year) {
+      <div class="selection-item" [class.active]="viewDate.getFullYear() === year" (click)="selectYear(year)">
+        {{ year }}
+      </div>
+      }
+    </div>
+    }
+  </div>
   }
 </div>

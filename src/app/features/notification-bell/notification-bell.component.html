@@ -4,30 +4,20 @@
   <div class="filter-bar">
     <div class="filter-left">
       <div class="search-wrapper">
-        <app-shared-search 
-          [value]="searchText" 
-          placeholder="Tìm theo tiêu đề..." 
-          width="280px"
+        <app-shared-search [value]="searchText" placeholder="Tìm theo tiêu đề..." width="280px"
           (valueChange)="searchText = $event; onSearchChange()">
         </app-shared-search>
       </div>
 
       <div class="dropdown-wrapper">
-        <app-shared-dropdown
-          [options]="statusOptions"
-          [(value)]="statusFilter"
-          placeholder="Trạng thái"
-          icon="custom-icon-filter-lines"
-          width="180px"
-          (valueChange)="onSearchChange()">
+        <app-shared-dropdown [options]="statusOptions" [(value)]="statusFilter" placeholder="Trạng thái"
+          icon="custom-icon-filter-lines" width="180px" (valueChange)="onSearchChange()">
         </app-shared-dropdown>
       </div>
 
       <div class="divider"></div>
 
-      <app-shared-date-range 
-        [(dateRange)]="dateRange" 
-        (dateRangeChange)="onSearchChange()">
+      <app-shared-date-range [(dateRange)]="dateRange" (dateRangeChange)="onSearchChange()">
       </app-shared-date-range>
     </div>
 
@@ -42,67 +32,45 @@
   <!-- Table & Pagination Container -->
   <div class="table-wrapper">
     @if (isLoading()) {
-      <div class="loading-container">
-        <span nz-icon nzType="loading" class="main-loader"></span>
-      </div>
+    <div class="loading-container">
+      <span nz-icon nzType="loading" class="main-loader"></span>
+    </div>
     } @else if (isError()) {
-      <app-no-data
-        title="Lỗi tải dữ liệu"
-        message="Đã có lỗi xảy ra khi tải danh sách thông báo. Vui lòng thử lại sau.">
-        <span icon class="custom-icon-error error-icon"></span>
-        <button action class="retry-btn" (click)="onSearchChange()">Thử lại</button>
-      </app-no-data>
+    <app-no-data title="Lỗi tải dữ liệu" message="Đã có lỗi xảy ra khi tải danh sách thông báo. Vui lòng thử lại sau.">
+      <span icon class="custom-icon-error error-icon"></span>
+      <button action class="retry-btn" (click)="onSearchChange()">Thử lại</button>
+    </app-no-data>
     } @else {
-      @if (listOfData.length > 0) {
-        <app-notification-table 
-          [data]="listOfData" 
-          (view)="onView($event)"
-          (edit)="onEdit($event)"
-          (delete)="onDelete($event)"
-          (sendNow)="onSendNow($event)">
-        </app-notification-table>
+    @if (listOfData.length > 0) {
+    <app-notification-table [data]="listOfData" (view)="onView($event)" (edit)="onEdit($event)"
+      (delete)="onDelete($event)" (sendNow)="onSendNow($event)">
+    </app-notification-table>
 
-        <!-- Pagination -->
-        @if (total > 0) {
-          <app-notification-pagination 
-            [pageIndex]="pageIndex" 
-            [pageSize]="pageSize" 
-            [total]="total"
-            [pageSizeOptions]="pageSizeOptions" 
-            [displayRange]="displayRange" 
-            (pageIndexChange)="onPageIndexChange($event)"
-            (pageSizeChange)="onPageSizeChange($event)">
-          </app-notification-pagination>
-        }
-      } @else {
-        <app-no-data
-          title="Không tìm thấy thông báo"
-          message="Không có dữ liệu nào khớp với điều kiện tìm kiếm của bạn.">
-          <span icon class="custom-icon-box-iso selection-icon"></span>
-        </app-no-data>
-      }
+    <!-- Pagination -->
+    @if (total > 0) {
+    <app-notification-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total"
+      [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange" (pageIndexChange)="onPageIndexChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)">
+    </app-notification-pagination>
+    }
+    } @else {
+    <app-no-data title="Không tìm thấy thông báo" message="Không có dữ liệu nào khớp với điều kiện tìm kiếm của bạn.">
+      <span icon class="custom-icon-box-iso selection-icon"></span>
+    </app-no-data>
+    }
     }
   </div>
 
   <!-- Create/Edit/View Modal -->
-  <app-modal-popup [(isVisible)]="isModalVisible" [title]="modalTitle" [showFooter]="false" (cancel)="isModalVisible = false">
-    <app-notification-form 
-      *ngIf="isModalVisible"
-      [initialData]="selectedRecord" 
-      [isReadOnly]="isReadOnly"
-      (save)="handleSaveForm($event)" 
-      (cancel)="isModalVisible = false">
+  <app-modal-popup [(isVisible)]="isModalVisible" [title]="modalTitle" [showFooter]="false"
+    (cancel)="isModalVisible = false">
+    <app-notification-form *ngIf="isModalVisible" [initialData]="selectedRecord" [isReadOnly]="isReadOnly"
+      (save)="handleSaveForm($event)" (cancel)="isModalVisible = false">
     </app-notification-form>
   </app-modal-popup>
 
   <!-- Confirm Popup for Delete / Send Now -->
-  <app-confirm-popup 
-    [(isVisible)]="isConfirmVisible" 
-    [title]="confirmTitle" 
-    [message]="confirmMessage"
-    cancelText="Hủy" 
-    confirmText="Xác nhận" 
-    (confirm)="confirmAction()"
-    (cancel)="isConfirmVisible = false">
+  <app-confirm-popup [(isVisible)]="isConfirmVisible" [title]="confirmTitle" [message]="confirmMessage" cancelText="Hủy"
+    confirmText="Xác nhận" (confirm)="confirmAction()" (cancel)="isConfirmVisible = false">
   </app-confirm-popup>
 </div>

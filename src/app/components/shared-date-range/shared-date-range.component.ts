@@ -55,9 +55,9 @@ export class SharedDateRangeComponent implements OnInit {
   protected toggle(): void {
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
-        this.viewMode = 'days';
-        this.viewDate = this.startDate || new Date();
-        this.generateCalendar();
+      this.viewMode = 'days';
+      this.viewDate = this.startDate || new Date();
+      this.generateCalendar();
     }
   }
 
@@ -82,7 +82,7 @@ export class SharedDateRangeComponent implements OnInit {
     const startYear = currentYear - (currentYear % 12);
     this.yearRange = [];
     for (let i = 0; i < 12; i++) {
-        this.yearRange.push(startYear + i);
+      this.yearRange.push(startYear + i);
     }
   }
 
@@ -99,63 +99,63 @@ export class SharedDateRangeComponent implements OnInit {
   protected generateCalendar(): void {
     const year = this.viewDate.getFullYear();
     const month = this.viewDate.getMonth();
-    
+
     // First day of month
     const firstDay = new Date(year, month, 1);
     // Last day of month
     const lastDay = new Date(year, month + 1, 0);
-    
+
     // Starting day of calendar (padded with previous month)
     const start = new Date(firstDay);
     start.setDate(start.getDate() - start.getDay());
-    
+
     const days: CalendarDay[] = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     for (let i = 0; i < 42; i++) {
-        const current = new Date(start);
-        current.setDate(current.getDate() + i);
-        current.setHours(0,0,0,0);
+      const current = new Date(start);
+      current.setDate(current.getDate() + i);
+      current.setHours(0, 0, 0, 0);
 
-        const isStart = !!this.startDate && current.getTime() === this.startDate.getTime();
-        const isEnd = !!this.endDate && current.getTime() === this.endDate.getTime();
-        const isInRange = !!this.startDate && !!this.endDate && 
-                         current > this.startDate && current < this.endDate;
+      const isStart = !!this.startDate && current.getTime() === this.startDate.getTime();
+      const isEnd = !!this.endDate && current.getTime() === this.endDate.getTime();
+      const isInRange = !!this.startDate && !!this.endDate &&
+        current > this.startDate && current < this.endDate;
 
-        days.push({
-            date: current,
-            isCurrentMonth: current.getMonth() === month,
-            isToday: current.getTime() === today.getTime(),
-            isSelected: isStart || isEnd,
-            isInRange: isInRange,
-            isStart: isStart,
-            isEnd: isEnd
-        });
+      days.push({
+        date: current,
+        isCurrentMonth: current.getMonth() === month,
+        isToday: current.getTime() === today.getTime(),
+        isSelected: isStart || isEnd,
+        isInRange: isInRange,
+        isStart: isStart,
+        isEnd: isEnd
+      });
     }
     this.calendarDays = days;
   }
 
   protected selectDay(day: CalendarDay): void {
     const selected = new Date(day.date);
-    selected.setHours(0,0,0,0);
+    selected.setHours(0, 0, 0, 0);
 
     if (!this.startDate || (this.startDate && this.endDate)) {
-        this.startDate = selected;
-        this.endDate = null;
+      this.startDate = selected;
+      this.endDate = null;
     } else if (selected < this.startDate) {
-        this.endDate = this.startDate;
-        this.startDate = selected;
+      this.endDate = this.startDate;
+      this.startDate = selected;
     } else {
-        this.endDate = selected;
-        this.isOpen = false; // Close when range is complete
+      this.endDate = selected;
+      this.isOpen = false; // Close when range is complete
     }
 
     this.updateOutput();
     this.generateCalendar();
-    
+
     if (this.startDate && this.endDate) {
-        // Close on range complete? Or keep open? Let's keep open for a moment
+      // Close on range complete? Or keep open? Let's keep open for a moment
     }
   }
 
@@ -178,8 +178,8 @@ export class SharedDateRangeComponent implements OnInit {
 
   private updateOutput(): void {
     this.dateRange = {
-        from: this.startDate ? this.formatDate(this.startDate) : null,
-        to: this.endDate ? this.formatDate(this.endDate) : null
+      from: this.startDate ? this.formatDate(this.startDate) : null,
+      to: this.endDate ? this.formatDate(this.endDate) : null
     };
     this.dateRangeChange.emit(this.dateRange);
   }
