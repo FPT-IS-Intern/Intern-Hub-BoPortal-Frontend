@@ -1,25 +1,50 @@
 <table class="notification-table">
     <thead>
         <tr>
-            <th class="col-code">Mã thông báo</th>
-            <th class="col-content">Nội dung</th>
+            <th class="col-id">ID</th>
+            <th class="col-title">Tiêu đề</th>
+            <th class="col-audience">Đối tượng</th>
+            <th class="col-status">Trạng thái</th>
+            <th class="col-created">Ngày tạo</th>
             <th class="col-action">Hành động</th>
         </tr>
     </thead>
     <tbody>
         @for (record of data; track record.id) {
         <tr>
-            <td class="col-code">{{ record.code }}</td>
-            <td class="col-content">{{ record.content }}</td>
+            <td class="col-id">{{ record.id }}</td>
+            <td class="col-title" [title]="record.title">{{ record.title }}</td>
+            <td class="col-audience">
+                <span class="audience-tag">{{ record.audience === 'All' ? 'Tất cả' : (record.audience === 'Group' ? 'Nhóm' : 'Cụ thể') }}</span>
+            </td>
+            <td class="col-status">
+                <span class="status-badge" [ngClass]="getStatusClass(record.status)">
+                    {{ getStatusLabel(record.status) }}
+                </span>
+            </td>
+            <td class="col-created">{{ record.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
             <td class="col-action">
-                <button class="custom-edit-btn" (click)="onEdit(record)" title="Chỉnh sửa">
-                    <span class="custom-icon-edit"></span>
-                </button>
+                <div class="action-buttons">
+                    <button class="action-btn view-btn" (click)="onView(record)" title="Xem">
+                        <span class="custom-icon-eye"></span>
+                    </button>
+                    <button class="action-btn edit-btn" (click)="onEdit(record)" title="Chỉnh sửa" [disabled]="record.status === 'Sent'">
+                        <span class="custom-icon-edit"></span>
+                    </button>
+                    <button class="action-btn delete-btn" (click)="onDelete(record)" title="Xóa">
+                        <span class="custom-icon-trash"></span>
+                    </button>
+                    @if (record.status !== 'Sent') {
+                    <button class="action-btn send-btn" (click)="onSendNow(record)" title="Gửi ngay">
+                        <span class="custom-icon-send"></span>
+                    </button>
+                    }
+                </div>
             </td>
         </tr>
         } @empty {
         <tr>
-            <td [attr.colspan]="3" class="empty-row-cell">
+            <td [attr.colspan]="6" class="empty-row-cell">
                 <app-no-data [fullHeight]="false" title="Trống" message="Hiện tại không có thông báo nào.">
                 </app-no-data>
             </td>

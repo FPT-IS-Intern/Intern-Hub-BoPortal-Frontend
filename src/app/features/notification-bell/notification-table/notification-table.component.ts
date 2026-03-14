@@ -13,9 +13,42 @@ import { NoDataComponent } from '../../../components/no-data/no-data.component';
 })
 export class NotificationTableComponent {
     @Input() data: NotificationRecord[] = [];
+    @Output() view = new EventEmitter<NotificationRecord>();
     @Output() edit = new EventEmitter<NotificationRecord>();
+    @Output() delete = new EventEmitter<NotificationRecord>();
+    @Output() sendNow = new EventEmitter<NotificationRecord>();
+
+    onView(record: NotificationRecord): void {
+        this.view.emit(record);
+    }
 
     onEdit(record: NotificationRecord): void {
         this.edit.emit(record);
+    }
+
+    onDelete(record: NotificationRecord): void {
+        this.delete.emit(record);
+    }
+
+    onSendNow(record: NotificationRecord): void {
+        this.sendNow.emit(record);
+    }
+
+    getStatusClass(status: string): string {
+        switch (status) {
+            case 'Sent': return 'status-sent';
+            case 'Draft': return 'status-draft';
+            case 'Scheduled': return 'status-scheduled';
+            default: return '';
+        }
+    }
+
+    getStatusLabel(status: string): string {
+        switch (status) {
+            case 'Sent': return 'Đã gửi';
+            case 'Draft': return 'Nháp';
+            case 'Scheduled': return 'Đã lên lịch';
+            default: return status;
+        }
     }
 }

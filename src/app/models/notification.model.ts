@@ -1,9 +1,14 @@
 export interface NotificationRecord {
     id: number;
-    userName: string;
-    role: string;
-    email: string;
-    code: string;
+    title: string;
     content: string;
-    time: string;
+    audience: 'All' | 'Group' | 'Specific';
+    audienceDetails?: string;
+    status: 'Sent' | 'Draft' | 'Scheduled';
+    type: 'System' | 'Promotion' | 'Warning';
+    createdAt: string;
+    sentAt?: string;
+    thumbnail?: string;
+    onclickAction?: string;
+    scheduleTime?: string;
 }

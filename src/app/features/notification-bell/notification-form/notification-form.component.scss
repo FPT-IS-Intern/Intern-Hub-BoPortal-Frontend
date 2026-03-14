@@ -1,0 +1,84 @@
+:host {
+    display: block;
+}
+
+.char-counter {
+    text-align: right;
+    font-size: 12px;
+    color: var(--app-color-text-400);
+    margin-top: 4px;
+}
+
+.row-layout {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+
+    .flex-1 {
+        flex: 1;
+    }
+}
+
+.schedule-section {
+    background: var(--app-color-surface-warm-100);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+
+    .schedule-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .label {
+            font-weight: 500;
+            color: var(--app-color-text-700);
+        }
+    }
+
+    .schedule-picker {
+        margin-bottom: 0;
+        
+        ::ng-deep .ant-picker {
+            width: 100%;
+        }
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--app-color-border-200);
+
+    button {
+        height: 40px;
+        padding: 0 24px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .cancel-btn {
+        background: var(--app-color-white);
+        border: 1px solid var(--app-color-border-300);
+        color: var(--app-color-text-700);
+
+        &:hover {
+            border-color: var(--app-color-primary);
+            color: var(--app-color-primary);
+        }
+    }
+
+    .submit-btn {
+        background: var(--app-color-primary);
+        border: none;
+        color: white;
+
+        &:hover {
+            background: var(--app-color-primary-hover);
+        }
+    }
+}
