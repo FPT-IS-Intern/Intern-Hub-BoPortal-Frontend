@@ -1,0 +1,31 @@
+<div class="dropdown-container" [style.width]="width" [class.open]="isOpen">
+  <!-- Trigger -->
+  <div class="dropdown-trigger" (click)="toggle()">
+    @if (icon) {
+      <span class="left-icon" [class]="icon"></span>
+    }
+    <span class="selected-text" [class.placeholder]="!value && value !== 0">
+      {{ selectedLabel }}
+    </span>
+    <span class="arrow-icon custom-icon-arrow-down" [class.rotate]="isOpen"></span>
+  </div>
+
+  <!-- Overlay -->
+  @if (isOpen) {
+    <div class="dropdown-overlay">
+      <ul class="options-list">
+        @for (opt of options; track opt.value) {
+          <li 
+            class="option-item" 
+            [class.active]="value === opt.value" 
+            (click)="selectOption(opt)">
+            <span class="option-label">{{ opt.label }}</span>
+            @if (value === opt.value) {
+              <span class="check-icon custom-icon-check"></span>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>
