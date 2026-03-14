@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class NoDataComponent {
   title = input<string>('Không có dữ liệu');
   message = input<string>('Hiện tại không có thông báo nào để hiển thị.');
+  size = input<'large' | 'small'>('large');
   fullHeight = input<boolean>(true);
   showAction = input<boolean>(false);
   actionText = input<string>('Thử lại');

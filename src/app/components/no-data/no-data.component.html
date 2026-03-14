@@ -1,4 +1,4 @@
-<div class="no-data-container" [class.full-height]="fullHeight()">
+<div class="no-data-container" [class.full-height]="fullHeight() && size() !== 'small'" [class.small]="size() === 'small'">
     <div class="no-data-content">
         <div class="no-data-icon-wrapper">
             <ng-content select="[icon]">

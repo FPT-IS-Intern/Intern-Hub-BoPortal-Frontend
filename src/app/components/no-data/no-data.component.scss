@@ -9,6 +9,28 @@
     &.full-height {
         min-height: 400px;
     }
+
+    &.small {
+        padding: 16px;
+        
+        .no-data-icon-wrapper {
+            margin-bottom: 8px;
+            .fallback-icon {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        .no-data-title {
+            font-size: 14px;
+            margin-bottom: 0;
+            color: var(--app-color-text-muted);
+        }
+
+        .no-data-message {
+            display: none;
+        }
+    }
 }
 
 .no-data-content {
