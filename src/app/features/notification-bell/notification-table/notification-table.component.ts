@@ -13,6 +13,8 @@ import { NoDataComponent } from '../../../components/no-data/no-data.component';
 })
 export class NotificationTableComponent {
     @Input() data: NotificationRecord[] = [];
+    @Input() pageIndex: number = 1;
+    @Input() pageSize: number = 10;
     @Output() view = new EventEmitter<NotificationRecord>();
     @Output() edit = new EventEmitter<NotificationRecord>();
     @Output() delete = new EventEmitter<NotificationRecord>();

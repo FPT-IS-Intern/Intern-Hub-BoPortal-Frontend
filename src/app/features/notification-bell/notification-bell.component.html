@@ -42,8 +42,8 @@
     </app-no-data>
     } @else {
     @if (listOfData.length > 0) {
-    <app-notification-table [data]="listOfData" (view)="onView($event)" (edit)="onEdit($event)"
-      (delete)="onDelete($event)" (sendNow)="onSendNow($event)">
+    <app-notification-table [data]="listOfData" [pageIndex]="pageIndex" [pageSize]="pageSize" (view)="onView($event)"
+      (edit)="onEdit($event)" (delete)="onDelete($event)" (sendNow)="onSendNow($event)">
     </app-notification-table>
 
     <!-- Pagination -->

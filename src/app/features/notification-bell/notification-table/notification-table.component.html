@@ -1,7 +1,7 @@
 <table class="notification-table">
     <thead>
         <tr>
-            <th class="col-id">ID</th>
+            <th class="col-id">STT</th>
             <th class="col-title">Tiêu đề</th>
             <th class="col-audience">Đối tượng</th>
             <th class="col-status">Trạng thái</th>
@@ -12,7 +12,7 @@
     <tbody>
         @for (record of data; track record.id) {
         <tr>
-            <td class="col-id">{{ record.id }}</td>
+            <td class="col-id">{{ (pageIndex - 1) * pageSize + $index + 1 }}</td>
             <td class="col-title" [title]="record.title">{{ record.title }}</td>
             <td class="col-audience">
                 <span class="audience-tag">{{ record.audience === 'All' ? 'Tất cả' : (record.audience === 'Group' ? 'Nhóm' : 'Cụ thể') }}</span>
