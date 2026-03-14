@@ -6,6 +6,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AttendanceLocation } from '../../../models/checkin-config.model';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../services/toast.service';
 
 declare const google: any;
 
@@ -25,6 +26,7 @@ export class UpsertLocationDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly modalRef = inject(NzModalRef);
   private readonly translate = inject(TranslateService);
+  private readonly toast = inject(ToastService);
   readonly data = inject<AttendanceLocation>(NZ_MODAL_DATA, { optional: true });
 
   @ViewChild('searchInput') searchElementRef!: ElementRef;
@@ -198,7 +200,7 @@ export class UpsertLocationDialogComponent implements OnInit {
 
   locateMe(): void {
     if (!navigator.geolocation) {
-      alert(this.translate.instant('checkin.locationDialog.alerts.geoUnsupported'));
+      this.toast.warningKey('checkin.locationDialog.alerts.geoUnsupported');
       return;
     }
     this.isLocating = true;
@@ -218,7 +220,7 @@ export class UpsertLocationDialogComponent implements OnInit {
       },
       (error) => {
         this.isLocating = false;
-        alert(this.translate.instant('checkin.locationDialog.alerts.geoFailed'));
+        this.toast.warningKey('checkin.locationDialog.alerts.geoFailed');
         console.error('Geolocation error:', error);
       },
       { enableHighAccuracy: true, timeout: 10000 }

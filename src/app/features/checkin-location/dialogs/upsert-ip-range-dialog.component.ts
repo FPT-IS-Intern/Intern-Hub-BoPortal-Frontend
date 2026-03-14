@@ -6,6 +6,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { IPRange } from '../../../models/checkin-config.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-upsert-ip-range-dialog',
@@ -23,6 +24,7 @@ export class UpsertIPRangeDialogComponent implements OnInit {
   private readonly modalRef = inject(NzModalRef);
   private readonly http = inject(HttpClient);
   private readonly translate = inject(TranslateService);
+  private readonly toast = inject(ToastService);
   readonly data = inject<IPRange>(NZ_MODAL_DATA, { optional: true });
 
   protected form!: FormGroup;
@@ -68,8 +70,8 @@ export class UpsertIPRangeDialogComponent implements OnInit {
               },
               error: (err) => {
                 console.error('Tất cả API lấy IP đều bị mạng Cty chặn.', err);
-                // Báo lỗi cho người dùng biết
-                alert(this.translate.instant('checkin.ipDialog.alerts.ipBlocked'));
+                // Báo lỗi cho người dùng biết qua Toast
+                this.toast.warningKey('checkin.ipDialog.alerts.ipBlocked');
                 this.isFetchingIP = false;
               }
             });
