@@ -41,25 +41,46 @@
 
   <!-- Table & Pagination Container -->
   <div class="table-wrapper">
-    <app-notification-table 
-      [data]="listOfData" 
-      (view)="onView($event)"
-      (edit)="onEdit($event)"
-      (delete)="onDelete($event)"
-      (sendNow)="onSendNow($event)">
-    </app-notification-table>
+    @if (isLoading()) {
+      <div class="loading-container">
+        <span nz-icon nzType="loading" class="main-loader"></span>
+      </div>
+    } @else if (isError()) {
+      <app-no-data
+        title="Lỗi tải dữ liệu"
+        message="Đã có lỗi xảy ra khi tải danh sách thông báo. Vui lòng thử lại sau.">
+        <span icon class="custom-icon-error error-icon"></span>
+        <button action class="retry-btn" (click)="onSearchChange()">Thử lại</button>
+      </app-no-data>
+    } @else {
+      @if (listOfData.length > 0) {
+        <app-notification-table 
+          [data]="listOfData" 
+          (view)="onView($event)"
+          (edit)="onEdit($event)"
+          (delete)="onDelete($event)"
+          (sendNow)="onSendNow($event)">
+        </app-notification-table>
 
-    <!-- Pagination -->
-    @if (total > 0) {
-      <app-notification-pagination 
-        [pageIndex]="pageIndex" 
-        [pageSize]="pageSize" 
-        [total]="total"
-        [pageSizeOptions]="pageSizeOptions" 
-        [displayRange]="displayRange" 
-        (pageIndexChange)="onPageIndexChange($event)"
-        (pageSizeChange)="onPageSizeChange($event)">
-      </app-notification-pagination>
+        <!-- Pagination -->
+        @if (total > 0) {
+          <app-notification-pagination 
+            [pageIndex]="pageIndex" 
+            [pageSize]="pageSize" 
+            [total]="total"
+            [pageSizeOptions]="pageSizeOptions" 
+            [displayRange]="displayRange" 
+            (pageIndexChange)="onPageIndexChange($event)"
+            (pageSizeChange)="onPageSizeChange($event)">
+          </app-notification-pagination>
+        }
+      } @else {
+        <app-no-data
+          title="Không tìm thấy thông báo"
+          message="Không có dữ liệu nào khớp với điều kiện tìm kiếm của bạn.">
+          <span icon class="custom-icon-box-iso selection-icon"></span>
+        </app-no-data>
+      }
     }
   </div>
 
