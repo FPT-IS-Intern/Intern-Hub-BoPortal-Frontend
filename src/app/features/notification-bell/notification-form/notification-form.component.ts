@@ -10,6 +10,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 
+import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
+
 @Component({
   selector: 'app-notification-form',
   standalone: true,
@@ -23,7 +25,8 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     NzSelectModule,
     NzDatePickerModule,
     NzSwitchModule,
-    NzUploadModule
+    NzUploadModule,
+    SharedDropdownComponent
   ],
   templateUrl: './notification-form.component.html',
   styleUrl: './notification-form.component.scss'
@@ -36,6 +39,18 @@ export class NotificationFormComponent implements OnInit {
 
   validateForm!: FormGroup;
   isScheduled = false;
+
+  protected typeOptions = [
+    { label: 'Hệ thống', value: 'System' },
+    { label: 'Khuyến mãi', value: 'Promotion' },
+    { label: 'Cảnh báo', value: 'Warning' }
+  ];
+
+  protected audienceOptions = [
+    { label: 'Tất cả người dùng', value: 'All' },
+    { label: 'Nhóm người dùng', value: 'Group' },
+    { label: 'Người dùng cụ thể', value: 'Specific' }
+  ];
 
   constructor(private fb: FormBuilder) {}
 

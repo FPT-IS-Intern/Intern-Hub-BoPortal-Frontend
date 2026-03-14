@@ -298,6 +298,40 @@
         "title": "Xóa dải IP?",
         "message": "Bạn có chắc chắn muốn xóa dải IP <b>{{name}}</b>?"
       }
+    },
+    "notification": {
+      "mgmt": {
+        "title": "Quản lý thông báo",
+        "subtitle": "Theo dõi, soạn thảo và lên lịch gửi thông báo tới người dùng hệ thống.",
+        "create": "Soạn thông báo mới",
+        "all": "Tất cả thông báo"
+      },
+      "tabs": {
+        "list": "Danh sách thông báo",
+        "compose": "Soạn thảo nội dung"
+      },
+      "list": {
+        "title": "Danh sách lịch sử",
+        "subtitle": "Xem lại các thông báo đã gửi hoặc đang chờ phát hành.",
+        "add": "Soạn thông báo mới"
+      },
+      "table": {
+        "title": "Tiêu đề",
+        "type": "Loại",
+        "target": "Đối tượng",
+        "status": "Trạng thái",
+        "dates": "Ngày gửi / Ngày tạo",
+        "actions": "Thao tác"
+      },
+      "action": {
+        "edit": "Chỉnh sửa",
+        "duplicate": "Sao chép",
+        "recall": "Thu hồi"
+      },
+      "composer": {
+        "create": "Tạo thông báo mới",
+        "edit": "Chỉnh sửa thông báo"
+      }
     }
   }
 }
