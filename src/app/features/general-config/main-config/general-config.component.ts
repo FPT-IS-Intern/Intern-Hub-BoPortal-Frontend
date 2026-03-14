@@ -124,7 +124,6 @@ export class GeneralConfigComponent implements OnInit {
       },
       error: (err) => {
         console.error('Update config error:', err);
-        this.toastService.error('Cập nhật cấu hình thất bại', 'Lỗi');
         this.cdr.markForCheck();
       },
     });

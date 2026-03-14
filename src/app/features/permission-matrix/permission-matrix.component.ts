@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -41,6 +41,7 @@ const PERMISSION_COLUMNS = [
     PermissionTableComponent,
     CreateRoleDialogComponent,
     CreateResourceDialogComponent,
+    NoDataComponent,
     ConfirmPopup,
   ],
   templateUrl: './permission-matrix.component.html',
@@ -51,6 +52,9 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly breadcrumbService = inject(BreadcrumbService);
+
+  protected readonly isInitLoading = signal(false);
+  protected readonly isError = signal(false);
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected roles: AuthzRole[] = [];
@@ -68,8 +72,60 @@ export class PermissionMatrixComponent implements OnInit {
       { label: 'Cấu Hình Hệ Thống' },
       { label: 'Ma Trận Phân Quyền', active: true }
     ]);
-    this.loadResources();
-    this.loadRoles();
+    this.fetchInitialData();
+  }
+
+  protected fetchInitialData(): void {
+    this.isInitLoading.set(true);
+    this.isError.set(false);
+
+    let pending = 2;
+    const done = () => {
+      pending -= 1;
+      if (pending <= 0) {
+        this.isInitLoading.set(false);
+        this.cdr.markForCheck();
+      }
+    };
+
+    this.authzService
+      .getAllResources()
+      .pipe(finalize(done))
+      .subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.allResources = res.data;
+            this.buildPermissionRows();
+            this.cdr.markForCheck();
+          }
+        },
+        error: (err) => {
+          console.error('Load resources error:', err);
+          this.isError.set(true);
+          this.cdr.markForCheck();
+        },
+      });
+
+    this.authzService
+      .getRoles()
+      .pipe(finalize(done))
+      .subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.roles = res.data;
+            if (this.roles.length > 0 && this.selectedRoleId == null) {
+              this.selectedRoleId = this.roles[0].id;
+              this.loadPermissions();
+            }
+            this.cdr.markForCheck();
+          }
+        },
+        error: (err) => {
+          console.error('Load roles error:', err);
+          this.isError.set(true);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   protected loadResources(): void {
@@ -84,7 +140,8 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Load resources error:', err);
-        this.toastService.error('Không thể tải danh sách tài nguyên');
+        this.isError.set(true);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -103,7 +160,8 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Load roles error:', err);
-        this.toastService.error('Không thể tải danh sách vai trò');
+        this.isError.set(true);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -119,11 +177,7 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected onRefresh(): void {
-    this.loadResources();
-    this.loadRoles();
-    if (this.selectedRoleId != null) {
-      this.loadPermissions();
-    }
+    this.fetchInitialData();
   }
 
   protected loadPermissions(): void {
@@ -147,7 +201,10 @@ export class PermissionMatrixComponent implements OnInit {
         },
         error: (err) => {
           console.error('Load permissions error:', err);
-          this.toastService.error('Không thể tải dữ liệu phân quyền');
+          if (this.permissionRows.length === 0) {
+            this.isError.set(true);
+          }
+          this.cdr.markForCheck();
         },
       });
   }
@@ -227,7 +284,6 @@ export class PermissionMatrixComponent implements OnInit {
         },
         error: (err) => {
           console.error('Update permissions error:', err);
-          this.toastService.error('Cập nhật phân quyền thất bại');
           this.cdr.markForCheck();
         },
       });
@@ -247,7 +303,6 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Create role error:', err);
-        this.toastService.error('Tạo vai trò thất bại');
         this.cdr.markForCheck();
       },
     });
@@ -266,7 +321,6 @@ export class PermissionMatrixComponent implements OnInit {
       },
       error: (err) => {
         console.error('Create resource error:', err);
-        this.toastService.error('Tạo tài nguyên thất bại');
         this.cdr.markForCheck();
       },
     });

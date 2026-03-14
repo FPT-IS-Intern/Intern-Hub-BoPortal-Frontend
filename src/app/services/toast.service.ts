@@ -15,12 +15,30 @@ export interface Toast {
 export class ToastService {
   private toasts = signal<Toast[]>([]);
   private nextId = 0;
+  private recentAt = new Map<string, number>();
+  private readonly recentTtlMs = 1500;
 
   get toastsSignal() {
     return this.toasts.asReadonly();
   }
 
   show(message: string, type: ToastType = 'success', title?: string) {
+    // Prevent spamming identical toasts (common when multiple API calls fail at once).
+    // Dedupe by `type + message` (ignore title) and throttle within a short window.
+    const key = `${type}|${message}`;
+    const now = Date.now();
+    const lastAt = this.recentAt.get(key) ?? 0;
+    if (now - lastAt < this.recentTtlMs) return;
+    this.recentAt.set(key, now);
+
+    // Cleanup old entries periodically.
+    for (const [k, ts] of this.recentAt) {
+      if (now - ts > this.recentTtlMs) this.recentAt.delete(k);
+    }
+
+    const exists = this.toasts().some((t) => t.type === type && t.message === message);
+    if (exists) return;
+
     const id = this.nextId++;
     const toast: Toast = { id, type, message, title };
     this.toasts.update((current) => [...current, toast]);

@@ -1,42 +1,56 @@
 <div class="page-body">
+  @if (isInitLoading()) {
+    <div class="loading-container central-loader">
+      <span nz-icon nzType="loading" class="spinner-icon"></span>
+    </div>
+  } @else if (isError()) {
+    <div class="error-container error-view">
+      <app-no-data title="Không tìm thấy dữ liệu phân quyền"
+        message="Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.">
+        <span icon class="custom-icon-lock security-lock-icon"></span>
+        <button action nz-button nzType="primary" class="retry-btn-sec" (click)="fetchInitialData()">
+          Thử lại
+        </button>
+      </app-no-data>
+    </div>
+  } @else {
+    <!-- Toolbar: Role selector + action buttons -->
+    <div class="toolbar">
+      <app-role-selector [roles]="roles" [selectedRole]="selectedRoleId" (roleChange)="onRoleChange($event)"
+        (refresh)="onRefresh()"></app-role-selector>
+      <div class="toolbar-actions">
+        <button nz-button nzType="default" class="action-btn" (click)="isCreateRoleVisible = true">
+          <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm vai trò
+        </button>
+        <button nz-button nzType="default" class="action-btn" (click)="isCreateResourceVisible = true">
+          <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm tài nguyên
+        </button>
+      </div>
+    </div>
 
+    <!-- Permission matrix table -->
+    <div class="table-container">
+      <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
+        (permissionChange)="permissionRows = $event"></app-permission-table>
+    </div>
 
-  <!-- Toolbar: Role selector + action buttons -->
-  <div class="toolbar">
-    <app-role-selector [roles]="roles" [selectedRole]="selectedRoleId" (roleChange)="onRoleChange($event)"
-      (refresh)="onRefresh()"></app-role-selector>
-    <div class="toolbar-actions">
-      <button nz-button nzType="default" class="action-btn" (click)="isCreateRoleVisible = true">
-        <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm vai trò
-      </button>
-      <button nz-button nzType="default" class="action-btn" (click)="isCreateResourceVisible = true">
-        <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm tài nguyên
+    <!-- Apply button -->
+    <div class="actions">
+      <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoading" class="apply-btn" (click)="onSubmit()">
+        Áp dụng
       </button>
     </div>
-  </div>
 
-  <!-- Permission matrix table -->
-  <div class="table-container">
-    <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
-      (permissionChange)="permissionRows = $event"></app-permission-table>
-  </div>
+    <!-- Confirm save popup -->
+    <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
+      message="Bạn có muốn lưu các thay đổi ma trận phân quyền?" cancelText="Không" confirmText="Có"
+      (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
 
-  <!-- Apply button -->
-  <div class="actions">
-    <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoading" class="apply-btn" (click)="onSubmit()">
-      Áp dụng
-    </button>
-  </div>
+    <!-- Create role dialog -->
+    <app-create-role-dialog [(isVisible)]="isCreateRoleVisible" (save)="onCreateRole($event)"></app-create-role-dialog>
 
-  <!-- Confirm save popup -->
-  <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
-    message="Bạn có muốn lưu các thay đổi ma trận phân quyền?" cancelText="Không" confirmText="Có"
-    (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
-
-  <!-- Create role dialog -->
-  <app-create-role-dialog [(isVisible)]="isCreateRoleVisible" (save)="onCreateRole($event)"></app-create-role-dialog>
-
-  <!-- Create resource dialog -->
-  <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
-    (save)="onCreateResource($event)"></app-create-resource-dialog>
+    <!-- Create resource dialog -->
+    <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
+      (save)="onCreateResource($event)"></app-create-resource-dialog>
+  }
 </div>

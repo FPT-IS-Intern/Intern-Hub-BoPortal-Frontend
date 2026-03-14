@@ -83,7 +83,6 @@ export class SecurityConfigComponent implements OnInit {
       },
       error: (err) => {
         console.error('Fetch security config error:', err);
-        this.toastService.error('Không thể tải cấu hình bảo mật');
         this.isError.set(true);
         this.isLoading.set(false);
         this.cdr.markForCheck();
@@ -108,7 +107,6 @@ export class SecurityConfigComponent implements OnInit {
       },
       error: (err) => {
         console.error('Update security config error:', err);
-        this.toastService.error('Cập nhật cấu hình bảo mật thất bại');
         this.cdr.markForCheck();
       },
     });

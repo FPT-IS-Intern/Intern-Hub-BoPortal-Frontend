@@ -1,8 +1,12 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ErrorMessageService } from '../../i18n/error-message.service';
 import { ToastService } from '../../services/toast.service';
+
+// When `true`, the interceptor will not emit a global error toast for that request.
+// Use this for requests where the feature already shows a specific toast.
+export const SKIP_API_ERROR_TOAST = new HttpContextToken<boolean>(() => false);
 
 export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const errorMessageService = inject(ErrorMessageService);
@@ -11,6 +15,10 @@ export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
+        return throwError(() => error);
+      }
+
+      if (req.context.get(SKIP_API_ERROR_TOAST)) {
         return throwError(() => error);
       }
 
