@@ -22,7 +22,7 @@
         &.active {
             border-color: var(--app-color-primary);
             background: var(--app-color-primary-alpha-8);
-            
+
             .trigger-left {
                 .custom-icon-line-calendar {
                     color: var(--app-color-primary);
@@ -84,21 +84,19 @@
                     background: var(--app-color-error-alpha-8, rgba(255, 77, 79, 0.1));
                 }
 
-                .custom-icon-close {
-                    font-size: 14px;
-                }
+                .custom-icon-close { font-size: 14px; }
             }
         }
     }
 
     .picker-overlay {
         position: absolute;
-        bottom: calc(100% + 8px); // Open upwards to avoid stretching modal
+        bottom: calc(100% + 8px);
         left: 0;
         z-index: 1000;
         background: white;
         border-radius: 12px;
-        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15); // Inverse shadow
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
         border: 1px solid var(--app-color-border-alpha-soft);
         animation: slideUpFade 0.2s ease-out;
 
@@ -107,38 +105,52 @@
             to { opacity: 1; transform: translateY(0); }
         }
     }
-}
 
-.date-time-picker-container {
-    display: flex;
-    background: white;
-    overflow: hidden;
-    user-select: none;
+    .date-time-picker-container {
+        display: flex;
+        background: white;
+        overflow: hidden;
+        user-select: none;
+        border-radius: 12px;
 
-    .calendar-section {
-        padding: 16px;
-        width: 280px;
-        border-right: 1px solid var(--app-color-border-alpha-soft);
+        .calendar-section {
+            padding: 16px;
+            width: 280px;
+            border-right: 1px solid var(--app-color-border-alpha-soft);
 
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-
-            .current-month-year {
+            .calendar-header {
                 display: flex;
-                gap: 8px;
-                font-weight: 700;
-                font-size: 14px;
-                color: var(--app-color-text-main);
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
 
-                .month-label, .year-label {
+                .current-month-year {
+                    display: flex;
+                    gap: 8px;
+                    font-weight: 700;
+                    font-size: 14px;
+                    color: var(--app-color-text-main);
+
+                    .month-label, .year-label {
+                        cursor: pointer;
+                        padding: 4px 8px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                        &:hover {
+                            background: var(--app-color-surface-warm-100);
+                            color: var(--app-color-primary);
+                        }
+                    }
+                }
+
+                .nav-btn {
+                    background: transparent;
+                    border: none;
+                    padding: 6px;
                     cursor: pointer;
-                    padding: 4px 8px;
-                    border-radius: 6px;
-                    transition: all 0.2s;
-
+                    color: var(--app-color-text-muted);
+                    border-radius: 8px;
+                    display: flex;
                     &:hover {
                         background: var(--app-color-surface-warm-100);
                         color: var(--app-color-primary);
@@ -146,246 +158,185 @@
                 }
             }
 
-            .nav-btn {
-                background: transparent;
-                border: none;
-                padding: 6px;
-                cursor: pointer;
-                color: var(--app-color-text-muted);
-                border-radius: 8px;
-                display: flex;
-                transition: all 0.2s;
-
-                &:hover {
-                    background: var(--app-color-surface-warm-100);
-                    color: var(--app-color-primary);
-                }
-            }
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-
-            .weekday {
-                text-align: center;
-                font-size: 11px;
-                font-weight: 600;
-                color: var(--app-color-text-muted);
-                padding: 8px 0;
-            }
-
-            .day-cell {
-                aspect-ratio: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 13px;
-                cursor: pointer;
-                border-radius: 8px;
-                transition: all 0.2s;
-                color: var(--app-color-text-main);
-
-                &:hover {
-                    background: var(--app-color-surface-warm-100);
-                }
-
-                &.muted {
-                    opacity: 0.3;
-                }
-
-                &.today {
-                    color: var(--app-color-primary);
-                    font-weight: 800;
-                    position: relative;
-
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        bottom: 4px;
-                        width: 4px;
-                        height: 4px;
-                        border-radius: 50%;
-                        background: var(--app-color-primary);
-                    }
-                }
-
-                &.selected {
-                    background: var(--app-color-primary) !important;
-                    color: white !important;
+            .calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 2px;
+                .weekday {
+                    text-align: center;
+                    font-size: 11px;
                     font-weight: 600;
+                    color: var(--app-color-text-muted);
+                    padding: 8px 0;
                 }
-            }
-        }
-
-        .month-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            height: 240px;
-            align-content: center;
-
-            .month-item {
-                padding: 12px 0;
-                text-align: center;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                border-radius: 8px;
-                transition: all 0.2s;
-                color: var(--app-color-text-main);
-
-                &:hover {
-                    background: var(--app-color-surface-warm-100);
-                    color: var(--app-color-primary);
-                }
-
-                &.active {
-                    background: var(--app-color-primary);
-                    color: white;
-                }
-            }
-        }
-
-        .year-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            height: 240px;
-            overflow-y: auto;
-            padding: 8px 4px;
-            scrollbar-width: thin;
-            &::-webkit-scrollbar { width: 4px; }
-            &::-webkit-scrollbar-thumb { background: var(--app-color-border-alpha-soft); border-radius: 10px; }
-
-            .year-item {
-                padding: 12px 0;
-                text-align: center;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                border-radius: 8px;
-                transition: all 0.2s;
-                color: var(--app-color-text-main);
-
-                &:hover {
-                    background: var(--app-color-surface-warm-100);
-                    color: var(--app-color-primary);
-                }
-
-                &.active {
-                    background: var(--app-color-primary);
-                    color: white;
-                }
-            }
-        }
-    }
-
-    .time-section {
-        width: 120px;
-        display: flex;
-        flex-direction: column;
-
-        .time-selectors {
-            flex: 1;
-            display: flex;
-            height: 250px;
-            overflow: hidden;
-            position: relative; // Boundary for selection frame across all columns
-            background: white;
-
-            .time-column {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                position: relative;
-                height: 100%;
-                
-                .scroll-container {
-                    height: 250px;
-                    overflow-y: scroll;
-                    padding: 105px 0;
-                    scrollbar-width: none;
-                    scroll-snap-type: y mandatory;
-                    scroll-behavior: smooth;
-                    -webkit-overflow-scrolling: touch;
-                    touch-action: pan-y;
-                    z-index: 1;
-
-                    &::-webkit-scrollbar { display: none; }
-
-                    .time-item {
-                        height: 40px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 14px;
-                        font-weight: 400;
-                        color: var(--app-color-text-muted);
-                        cursor: pointer;
-                        transition: all 0.2s;
-                        scroll-snap-align: center;
+                .day-cell {
+                    aspect-ratio: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 13px;
+                    cursor: pointer;
+                    border-radius: 8px;
+                    transition: all 0.2s;
+                    color: var(--app-color-text-main);
+                    &:hover { background: var(--app-color-surface-warm-100); }
+                    &.muted { opacity: 0.3; }
+                    &.today {
+                        color: var(--app-color-primary);
+                        font-weight: 800;
                         position: relative;
-                        z-index: 2;
-
-                        &:hover {
-                            color: var(--app-color-primary);
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            bottom: 4px;
+                            width: 4px;
+                            height: 4px;
+                            border-radius: 50%;
+                            background: var(--app-color-primary);
                         }
+                    }
+                    &.selected {
+                        background: var(--app-color-primary) !important;
+                        color: white !important;
+                        font-weight: 600;
+                    }
+                }
+            }
 
-                        &.active {
-                            color: var(--app-color-primary);
-                            font-weight: 800;
-                            font-size: 18px;
-                            transform: scale(1.1);
+            .month-grid, .year-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                height: 200px;
+                align-content: center;
+                overflow-y: auto;
+                padding: 8px 4px;
+                scrollbar-width: thin;
+                &::-webkit-scrollbar { width: 4px; }
+                &::-webkit-scrollbar-thumb { background: var(--app-color-border-alpha-soft); border-radius: 10px; }
+
+                .month-item, .year-item {
+                    padding: 12px 0;
+                    text-align: center;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    border-radius: 8px;
+                    transition: all 0.2s;
+                    color: var(--app-color-text-main);
+                    &:hover {
+                        background: var(--app-color-surface-warm-100);
+                        color: var(--app-color-primary);
+                    }
+                    &.active {
+                        background: var(--app-color-primary);
+                        color: white;
+                    }
+                }
+            }
+        }
+
+        .time-section {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+
+            .time-selectors {
+                display: flex;
+                height: 200px;
+                overflow: hidden;
+                position: relative;
+                background: white;
+                flex: none;
+
+                .time-column {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    height: 100%;
+
+                    .scroll-container {
+                        height: 200px;
+                        overflow-y: scroll;
+                        padding: 80px 0;
+                        scrollbar-width: none;
+                        scroll-snap-type: y mandatory;
+                        scroll-behavior: smooth;
+                        -webkit-overflow-scrolling: touch;
+                        touch-action: pan-y;
+                        z-index: 1;
+                        &::-webkit-scrollbar { display: none; }
+
+                        .time-item {
+                            height: 40px;
+                            line-height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 14px;
+                            font-weight: 400;
+                            color: var(--app-color-text-muted);
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            scroll-snap-align: center;
+                            position: relative;
+                            z-index: 2;
+                            box-sizing: border-box;
+                            margin: 0;
+
+                            &:hover { color: var(--app-color-primary); }
+                            &.active {
+                                color: var(--app-color-primary);
+                                font-weight: 800;
+                                font-size: 18px;
+                            }
                         }
+                    }
+
+                    .column-mask-top, .column-mask-bottom {
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        height: 80px;
+                        z-index: 10;
+                        pointer-events: none;
+                    }
+
+                    .column-mask-top {
+                        top: 0;
+                        background: linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0) 100%);
+                    }
+
+                    .column-mask-bottom {
+                        bottom: 0;
+                        background: linear-gradient(to top, white 0%, rgba(255, 255, 255, 0) 100%);
+                    }
+
+                    .selection-frame {
+                        position: absolute;
+                        top: 80px;
+                        left: 8px;
+                        right: 8px;
+                        height: 40px;
+                        background: var(--app-color-primary-alpha-8);
+                        border-radius: 8px;
+                        z-index: 5;
+                        pointer-events: none;
                     }
                 }
 
-                // Internal Column Masks
-                .column-mask-top, .column-mask-bottom {
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    height: 80px;
-                    z-index: 10;
-                    pointer-events: none;
+                .time-separator {
+                    display: flex;
+                    align-items: center;
+                    padding-bottom: 4px;
+                    font-weight: 700;
+                    color: var(--app-color-text-muted);
+                    opacity: 0.5;
+                    font-size: 18px;
+                    position: relative;
+                    z-index: 11;
                 }
-
-                .column-mask-top {
-                    top: 0;
-                    background: linear-gradient(to bottom, white 0%, rgba(255, 255, 255, 0) 100%);
-                }
-
-                .column-mask-bottom {
-                    bottom: 0;
-                    background: linear-gradient(to top, white 0%, rgba(255, 255, 255, 0) 100%);
-                }
-
-                .selection-frame {
-                    position: absolute;
-                    top: 50%;
-                    left: 8px;
-                    right: 8px;
-                    height: 40px;
-                    transform: translateY(-50%);
-                    background: var(--app-color-primary-alpha-8);
-                    border-radius: 8px;
-                    z-index: 5;
-                    pointer-events: none;
-                }
-            }
-
-            .time-separator {
-                display: flex;
-                align-items: center;
-                padding-bottom: 4px;
-                font-weight: 700;
-                color: var(--app-color-text-muted);
-                opacity: 0.5;
-                font-size: 18px;
-                position: relative;
-                z-index: 11;
             }
         }
     }

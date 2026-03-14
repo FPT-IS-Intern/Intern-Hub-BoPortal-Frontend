@@ -32,7 +32,7 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
 
   @Input() placeholder = 'Chọn thời gian hẹn giờ';
   @Input() isReadOnly = false;
-  
+
   protected viewDate = new Date();
   protected calendarDays: CalendarDay[] = [];
   protected weekDays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -52,8 +52,8 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
   protected hours = Array.from({ length: 24 }, (_, i) => i);
   protected minutes = Array.from({ length: 60 }, (_, i) => i);
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: any = () => { };
+  onTouched: any = () => { };
 
   ngOnInit(): void {
     const now = new Date();
@@ -61,7 +61,7 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
     this.selectedMinute = now.getMinutes();
     this.generateCalendar();
     this.generateYears();
-    
+
     // Add capture phase listener to handle clicks even if propagation is stopped by modals
     document.addEventListener('click', this.handleOutsideClick, true);
   }
@@ -72,16 +72,16 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
 
   private handleOutsideClick = (event: MouseEvent) => {
     if (!this.isOpen) return;
-    
+
     const clickTarget = event.target as HTMLElement;
     const clickedInside = this.elementRef.nativeElement.contains(clickTarget);
-    
+
     if (!clickedInside) {
       this.isOpen = false;
       this.cdr.markForCheck();
     }
   };
-// ... (skip)
+  // ... (skip)
   protected switchView(mode: 'day' | 'month' | 'year'): void {
     if (this.viewMode === mode) {
       this.viewMode = 'day';
@@ -143,13 +143,13 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
 
   protected get scheduleDisplay(): string {
     if (!this.selectedDate) return this.placeholder;
-    
-    const options: Intl.DateTimeFormatOptions = { 
-      day: '2-digit', 
-      month: '2-digit', 
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric',
-      hour: '2-digit', 
-      minute: '2-digit' 
+      hour: '2-digit',
+      minute: '2-digit'
     };
     return `${this.selectedDate.toLocaleString('vi-VN', options)}`;
   }
@@ -261,19 +261,13 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
       if (this.hourCol) {
         const container = this.hourCol.nativeElement.querySelector('.scroll-container');
         if (container) {
-          const activeItem = container.querySelector('.time-item.active');
-          if (activeItem) {
-            container.scrollTop = activeItem.offsetTop - 105;
-          }
+          container.scrollTop = this.selectedHour * 40;
         }
       }
       if (this.minCol) {
         const container = this.minCol.nativeElement.querySelector('.scroll-container');
         if (container) {
-          const activeItem = container.querySelector('.time-item.active');
-          if (activeItem) {
-            container.scrollTop = activeItem.offsetTop - 105;
-          }
+          container.scrollTop = this.selectedMinute * 40;
         }
       }
     }, 0);
@@ -310,7 +304,7 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
       current.setDate(current.getDate() + i);
       current.setHours(0, 0, 0, 0);
 
-      const isSelected = !!this.selectedDate && 
+      const isSelected = !!this.selectedDate &&
         current.getDate() === this.selectedDate.getDate() &&
         current.getMonth() === this.selectedDate.getMonth() &&
         current.getFullYear() === this.selectedDate.getFullYear();
