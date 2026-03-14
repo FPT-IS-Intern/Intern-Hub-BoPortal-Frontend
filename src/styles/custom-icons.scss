@@ -138,3 +138,11 @@
 .custom-icon-package-plus {
   @include custom-icon-file('/assets/icons/package-plus.svg', 1.25rem);
 }
+
+.line-file-eye {
+  @include custom-icon-file('/assets/icons/line-file-eye.svg', 1.1rem);
+}
+
+.duocolor-upload-02 {
+  @include custom-icon-file('/assets/icons/duocolor-upload-02.svg', 1.1rem);
+}

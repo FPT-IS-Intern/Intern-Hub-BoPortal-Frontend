@@ -26,17 +26,17 @@
             <td class="col-action">
                 <div class="action-buttons">
                     <button class="action-btn view-btn" (click)="onView(record)" title="Xem">
-                        <span class="custom-icon-eye"></span>
+                        <span class="line-file-eye"></span>
                     </button>
                     <button class="action-btn edit-btn" (click)="onEdit(record)" title="Chỉnh sửa" [disabled]="record.status === 'Sent'">
                         <span class="custom-icon-edit"></span>
                     </button>
                     <button class="action-btn delete-btn" (click)="onDelete(record)" title="Xóa">
-                        <span class="custom-icon-trash"></span>
+                        <span class="custom-icon-close"></span>
                     </button>
                     @if (record.status !== 'Sent') {
                     <button class="action-btn send-btn" (click)="onSendNow(record)" title="Gửi ngay">
-                        <span class="custom-icon-send"></span>
+                        <span class="duocolor-upload-02"></span>
                     </button>
                     }
                 </div>
