@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
@@ -52,6 +52,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class NotificationBellComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly message = inject(NzMessageService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   // Status options from Centralized Mocks
   protected statusOptions = NOTIFICATION_STATUS_OPTIONS;
@@ -71,7 +72,7 @@ export class NotificationBellComponent implements OnInit {
 
   // Filters
   protected searchText = '';
-  protected statusFilter: string | null = null;
+  protected statusFilter: string = '';
   protected dateRange: DateRange = { from: null, to: null };
 
   // New states for better UX
@@ -81,7 +82,7 @@ export class NotificationBellComponent implements OnInit {
   protected readonly allNotifications: NotificationRecord[] = [...NOTIFICATION_MOCKS];
 
   protected setStatusFilter(value: string | null): void {
-    this.statusFilter = value;
+    this.statusFilter = value ?? '';
     this.pageIndex = 1;
   }
 
@@ -209,5 +210,6 @@ export class NotificationBellComponent implements OnInit {
 
   protected onSearchChange(): void {
     this.pageIndex = 1;
+    this.cdr.markForCheck();
   }
 }

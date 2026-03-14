@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output, HostListener, forwardRef, ElementRef, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, forwardRef, ElementRef, inject, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 export interface DropdownOption {
   label: string;
@@ -22,11 +23,24 @@ export interface DropdownOption {
     }
   ]
 })
-export class SharedDropdownComponent implements ControlValueAccessor {
+export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
   private elementRef = inject(ElementRef);
   private cdr = inject(ChangeDetectorRef);
 
-  @Input() options: DropdownOption[] = [];
+  ngOnInit(): void {
+    // console.log('SharedDropdownComponent initialized with options:', this.options);
+  }
+
+  @Input() set options(val: DropdownOption[]) {
+    this._options = val || [];
+    // console.log('Dropdown options updated:', this._options);
+    this.cdr.markForCheck();
+  }
+  get options(): DropdownOption[] {
+    return this._options;
+  }
+  private _options: DropdownOption[] = [];
+
   @Input() placeholder: string = 'Chọn một mục';
   @Input() icon: string = '';
   @Input() width: string = '100%';
@@ -66,6 +80,7 @@ export class SharedDropdownComponent implements ControlValueAccessor {
   }
 
   protected get selectedLabel(): string {
+    if (!this.options || this.options.length === 0) return this.placeholder;
     const selected = this.options.find(opt => opt.value === this.internalValue);
     return selected ? selected.label : this.placeholder;
   }
