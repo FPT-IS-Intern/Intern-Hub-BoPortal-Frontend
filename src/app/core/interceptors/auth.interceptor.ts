@@ -9,11 +9,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const router = inject(Router);
     const token = tokenService.getAccessToken();
 
-    // Bỏ qua việc gắn Token cho các API lấy IP bên ngoài (tránh lỗi CORS)
-    if (req.url.includes('ipify.org') || req.url.includes('jsonip.com') || req.url.includes('ipinfo.io')) {
-        return next(req);
-    }
-
     let authReq = req;
     if (token) {
         authReq = req.clone({
@@ -26,9 +21,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
-                // Dispatch event để app.ts catch và gọi refresh token
-                window.dispatchEvent(new Event('AUTH_TOKEN_EXPIRED'));
-                console.warn('authInterceptor: 401 nhận được, đã phát sự kiện AUTH_TOKEN_EXPIRED.');
+                // Xử lý khi token hết hạn hoặc không hợp lệ
+                // Không tự động chuyển về /login, chỉ báo lỗi để UI quyết định.
+                tokenService.clearTokens();
+                console.warn('authInterceptor: 401 nhận được, giữ trên trang hiện tại.');
             }
             return throwError(() => error);
         })
