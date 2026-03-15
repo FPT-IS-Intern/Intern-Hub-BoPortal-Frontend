@@ -26,20 +26,9 @@
 }
 
 .apply-btn {
-  background: var(--app-color-primary) !important;
-  border-color: var(--app-color-primary) !important;
-  color: var(--app-color-white) !important;
-  font-weight: 500;
-  padding: 0 12px;
-  height: 44px;
-  border-radius: 8px;
-
-  &:hover {
-    background: var(--app-color-primary-hover) !important;
-    border-color: var(--app-color-primary-hover) !important;
-    color: var(--app-color-white) !important;
-  }
+  margin-left: auto;
 }
+
 .central-loader {
   display: flex;
   justify-content: center;
@@ -59,7 +48,7 @@
 .security-lock-icon {
   width: 64px;
   height: 64px;
-  opacity: 0.2;
+  opacity: 0.9;
 }
 
 .retry-btn-sec {

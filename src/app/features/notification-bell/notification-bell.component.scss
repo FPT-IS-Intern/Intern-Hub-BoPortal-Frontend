@@ -42,29 +42,6 @@
   }
 }
 
-.btn-primary-custom {
-  background: var(--app-color-primary) !important;
-  border-color: var(--app-color-primary) !important;
-  color: white !important;
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 10px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    opacity: 0.9;
-  }
-
-  span {
-    font-size: 18px;
-  }
-}
 
 .table-wrapper {
   overflow: visible;
