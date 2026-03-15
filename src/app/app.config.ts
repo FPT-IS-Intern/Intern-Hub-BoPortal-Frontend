@@ -8,7 +8,7 @@ import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SYSTEM_DESIGN_CONFIG } from 'dynamic-ds';
-import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
+
 import localeVi from '@angular/common/locales/vi';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -34,7 +34,7 @@ export const appConfig: ApplicationConfig = {
       suffix: '.json',
       useHttpBackend: true,
     }),
-    { provide: NZ_I18N, useValue: vi_VN },
+
     { provide: LOCALE_ID, useValue: 'vi' },
     {
       provide: SYSTEM_DESIGN_CONFIG,
