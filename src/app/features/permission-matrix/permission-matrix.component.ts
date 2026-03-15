@@ -17,16 +17,8 @@ import { ToastService } from '../../services/common/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MOCK_ROLES, MOCK_RESOURCES, MOCK_ROLE_PERMISSIONS } from '../../core/mocks/permission-matrix.mock';
+import { PERMISSION_COLUMNS } from '../../core/constants/permission-matrix.constants';
 import { environment } from '../../../environments/environment';
-
-const PERMISSION_COLUMNS = [
-  { key: 'create', label: 'permissionMatrix.table.actions.create' },
-  { key: 'view', label: 'permissionMatrix.table.actions.view' },
-  { key: 'update', label: 'permissionMatrix.table.actions.update' },
-  { key: 'delete', label: 'permissionMatrix.table.actions.delete' },
-  { key: 'approve', label: 'permissionMatrix.table.actions.approve' },
-] as const;
 
 @Component({
   selector: 'app-permission-matrix',
@@ -98,20 +90,7 @@ export class PermissionMatrixComponent implements OnInit {
     this.isError.set(false);
     this.loadingService.show();
 
-    if (environment.useMock) {
-      setTimeout(() => {
-        this.roles.set(MOCK_ROLES);
-        this.allResources.set(MOCK_RESOURCES);
-        if (MOCK_ROLES.length > 0) {
-          this.selectedRoleId.set(MOCK_ROLES[0].id);
-          this.loadPermissions();
-        }
-        this.isInitLoading.set(false);
-        this.loadingService.hide();
-        this.cdr.markForCheck();
-      }, 800);
-      return;
-    }
+    this.fetchInitialData();
 
     let pending = 2;
     const done = () => {
@@ -163,12 +142,6 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadResources(): void {
-    if (environment.useMock) {
-      this.allResources.set(MOCK_RESOURCES);
-      this.buildPermissionRows();
-      this.cdr.markForCheck();
-      return;
-    }
     this.authzService.getAllResources().subscribe({
       next: (res) => {
         if (res.data) {
@@ -186,11 +159,6 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadRoles(): void {
-    if (environment.useMock) {
-      this.roles.set(MOCK_ROLES);
-      this.cdr.markForCheck();
-      return;
-    }
     this.authzService.getRoles().subscribe({
       next: (res) => {
         if (res.data) {
@@ -229,16 +197,7 @@ export class PermissionMatrixComponent implements OnInit {
     this.loadingService.show();
     this.cdr.markForCheck();
 
-    if (environment.useMock) {
-      setTimeout(() => {
-        const perms = MOCK_ROLE_PERMISSIONS[roleId] || [];
-        this.buildPermissionRows(perms);
-        this.isLoading = false;
-        this.loadingService.hide();
-        this.cdr.markForCheck();
-      }, 600);
-      return;
-    }
+    this.cdr.markForCheck();
 
     this.authzService
       .getRolePermissions(roleId)

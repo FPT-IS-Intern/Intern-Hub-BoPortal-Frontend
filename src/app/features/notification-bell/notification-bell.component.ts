@@ -16,7 +16,7 @@ import { SharedDateRangeComponent, DateRange } from '../../components/shared-dat
 import { SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NotificationService } from '../../services/api/notification.service';
-import { NOTIFICATION_MOCKS, NOTIFICATION_STATUS_OPTIONS } from '../../core/mocks/notification.mock';
+import { NOTIFICATION_STATUS_OPTIONS } from '../../core/constants/notification.constants';
 import { environment } from '../../../environments/environment';
 import { signal } from '@angular/core';
 
@@ -63,14 +63,6 @@ export class NotificationBellComponent implements OnInit {
 
   private loadNotifications(): void {
     this.isError.set(false);
-
-    if (environment.useMock) {
-      setTimeout(() => {
-        this.allNotifications.set(NOTIFICATION_MOCKS);
-        this.cdr.markForCheck();
-      }, 500);
-      return;
-    }
 
     this.notificationService.getNotifications().subscribe({
       next: (res: any) => {

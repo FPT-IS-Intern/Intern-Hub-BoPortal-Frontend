@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NotificationRecord } from '../../../models/notification.model';
 import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
 import { SharedDateTimePickerComponent } from '../../../components/shared-date-time/shared-date-time.component';
-import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../../core/mocks/notification.mock';
+import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../../core/constants/notification.constants';
 
 @Component({
   selector: 'app-notification-form',
