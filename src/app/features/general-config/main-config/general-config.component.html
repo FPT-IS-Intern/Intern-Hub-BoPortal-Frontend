@@ -2,11 +2,7 @@
 
 
   <!-- Main content -->
-  @if (isLoading()) {
-    <div class="central-loading">
-       <span class="custom-icon-loading rotate spinner"></span>
-    </div>
-  } @else if (isError()) {
+  @if (isError()) {
     <div class="error-view">
       <app-no-data 
         title="Không tìm thấy cấu hình" 

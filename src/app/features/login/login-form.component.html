@@ -28,16 +28,8 @@
             </div>
             }
 
-            <button type="submit" class="btn-login" [disabled]="isLoading()">
-
-                @if (isLoading()) {
-                <span class="loading-state">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    {{ 'login.loading' | translate }}
-                </span>
-                } @else {
+            <button type="submit" class="btn-login" [disabled]="checkInputRequired()">
                 {{ 'login.button' | translate }}
-                }
             </button>
         </form>
 

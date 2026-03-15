@@ -2,15 +2,15 @@ import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject, 
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BreadcrumbService } from '../../services/breadcrumb.service';
-import { SecurityConfigService } from '../../services/security-config.service';
-import { ToastService } from '../../services/toast.service';
+import { BreadcrumbService } from '../../services/common/breadcrumb.service';
+import { SecurityConfigService } from '../../services/api/security-config.service';
+import { ToastService } from '../../services/common/toast.service';
 import { PasswordPolicyComponent } from './password-policy/password-policy.component';
 import { AccountSecurityComponent } from './account-security/account-security.component';
 import { SessionSecurityComponent } from './session-security/session-security.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { LoadingService } from '../../loading/loading.service';
+import { LoadingService } from '../../services/common/loading.service';
 import { finalize } from 'rxjs';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 
@@ -37,7 +37,6 @@ export class SecurityConfigComponent implements OnInit {
   protected isConfirmVisible = false;
   private readonly loadingService = inject(LoadingService);
 
-  protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
   protected readonly isEmpty = signal(false);
 
@@ -70,7 +69,6 @@ export class SecurityConfigComponent implements OnInit {
   }
 
   protected fetchConfig(): void {
-    this.isLoading.set(true);
     this.isError.set(false);
     this.isEmpty.set(false);
 
@@ -84,14 +82,14 @@ export class SecurityConfigComponent implements OnInit {
           this.isEmpty.set(true);
           this.isError.set(false);
         }
-        this.isLoading.set(false);
+        
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Fetch security config error:', err);
         this.isError.set(true);
         this.isEmpty.set(false);
-        this.isLoading.set(false);
+        
         this.cdr.markForCheck();
       },
     });

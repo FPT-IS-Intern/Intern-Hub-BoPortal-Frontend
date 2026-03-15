@@ -2,11 +2,7 @@
 
 
   <!-- Main content -->
-  @if (isLoading()) {
-  <div class="loading-container central-loader">
-    <span class="custom-icon-loading rotate spinner-icon"></span>
-  </div>
-  } @else if (isError()) {
+  @if (isError()) {
   <div class="error-container error-view">
     <app-no-data title="Lỗi tải dữ liệu" message="Đã xảy ra lỗi khi tải cấu hình bảo mật. Vui lòng thử lại.">
       <span icon class="custom-icon-error error-icon"></span>

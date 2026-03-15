@@ -32,11 +32,7 @@
 
   <!-- Table & Pagination Container -->
   <div class="table-wrapper">
-    @if (isLoading()) {
-    <div class="loading-container">
-      <span class="main-loader-icon custom-icon-loading rotate"></span>
-    </div>
-    } @else if (isError()) {
+    @if (isError()) {
     <app-no-data [title]="'notification.table.error.title' | translate"
       [message]="'notification.table.error.message' | translate">
       <span icon class="custom-icon-error error-icon"></span>

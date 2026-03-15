@@ -5,9 +5,9 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/api/auth.service';
 import { LoginRequest } from '../../models/auth.model';
-import { TokenStorageService } from '../../services/token-storage.service';
+import { TokenStorageService } from '../../services/common/token-storage.service';
 import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
 import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
 import { ErrorMessageService } from '../../i18n/error-message.service';
@@ -29,7 +29,7 @@ export class LoginFormComponent {
     username = signal('');
     password = signal('');
     error = signal<string | null>(null);
-    isLoading = signal(false);
+    
     showPassword = signal(false);
 
     checkInputRequired = computed(() => this.username().trim() === '' || this.password().trim() === '');
@@ -38,7 +38,7 @@ export class LoginFormComponent {
         if (this.checkInputRequired()) return;
 
         this.error.set(null);
-        this.isLoading.set(true);
+        
 
         try {
             const request: LoginRequest = {
@@ -64,7 +64,7 @@ export class LoginFormComponent {
         } catch (err) {
             this.error.set(this.resolveHttpError(err));
         } finally {
-            this.isLoading.set(false);
+            
         }
     }
 

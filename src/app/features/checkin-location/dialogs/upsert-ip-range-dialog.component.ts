@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { IPRange } from '../../../models/checkin-config.model';
 import { TranslateModule } from '@ngx-translate/core';
-import { ToastService } from '../../../services/toast.service';
+import { ToastService } from '../../../services/common/toast.service';
 import { catchError, concat, map, of, take, finalize, filter } from 'rxjs';
 import { SKIP_API_ERROR_TOAST } from '../../../core/interceptors/api-error.interceptor';
 import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';

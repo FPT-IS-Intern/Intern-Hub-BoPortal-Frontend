@@ -7,9 +7,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 
 import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { BreadcrumbService } from '../../services/breadcrumb.service';
-import { CheckinConfigService } from '../../services/checkin-config.service';
-import { ToastService } from '../../services/toast.service';
+import { BreadcrumbService } from '../../services/common/breadcrumb.service';
+import { CheckinConfigService } from '../../services/api/checkin-config.service';
+import { ToastService } from '../../services/common/toast.service';
 import { BranchCheckinConfig, IPRange, AttendanceLocation } from '../../models/checkin-config.model';
 import { UpsertLocationDialogComponent } from './dialogs/upsert-location-dialog.component';
 import { UpsertIPRangeDialogComponent } from './dialogs/upsert-ip-range-dialog.component';
@@ -50,7 +50,6 @@ export class CheckinLocationComponent implements OnInit {
   // State Signals
   protected readonly branches = signal<BranchCheckinConfig[]>([]);
   protected readonly selectedBranch = signal<BranchCheckinConfig | null>(null);
-  protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
   protected readonly activeTabIndex = signal(0);
 
@@ -74,7 +73,6 @@ export class CheckinLocationComponent implements OnInit {
   }
 
   protected fetchConfigs(): void {
-    this.isLoading.set(true);
     this.isError.set(false);
 
     this.checkinService.getCheckinConfigs().subscribe({
@@ -86,17 +84,17 @@ export class CheckinLocationComponent implements OnInit {
         if (freshData.length > 0) {
           const currentId = this.selectedBranch()?.id;
           const refreshed = currentId
-            ? freshData.find(b => b.id === currentId) ?? freshData[0]
+            ? freshData.find((b: any) => b.id === currentId) ?? freshData[0]
             : freshData[0];
           this.selectedBranch.set(refreshed);
         }
 
-        this.isLoading.set(false);
+        
       },
       error: (err) => {
         console.error('Fetch checkin configs error:', err);
         this.isError.set(true);
-        this.isLoading.set(false);
+        
       }
     });
   }

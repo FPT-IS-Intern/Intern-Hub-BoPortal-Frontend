@@ -2,8 +2,8 @@ import { Component, inject, OnInit, signal, computed, Input, Output, EventEmitte
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BranchCheckinConfig } from '../../../models/checkin-config.model';
-import { CheckinConfigService } from '../../../services/checkin-config.service';
-import { ToastService } from '../../../services/toast.service';
+import { CheckinConfigService } from '../../../services/api/checkin-config.service';
+import { ToastService } from '../../../services/common/toast.service';
 import { SharedSearchComponent } from '../../../components/shared-search/shared-search.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';

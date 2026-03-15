@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { AttendanceLocation } from '../../../models/checkin-config.model';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ToastService } from '../../../services/toast.service';
+import { ToastService } from '../../../services/common/toast.service';
 import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
 
 declare const google: any;

@@ -7,13 +7,13 @@ import { PermissionTableComponent } from './permission-table/permission-table.co
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { BreadcrumbService } from '../../services/breadcrumb.service';
+import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
-import { AuthzService } from '../../services/authz.service';
+import { AuthzService } from '../../services/api/authz.service';
 import { PermissionRow } from '../../models/permission.model';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
-import { LoadingService } from '../../loading/loading.service';
-import { ToastService } from '../../services/toast.service';
+import { LoadingService } from '../../services/common/loading.service';
+import { ToastService } from '../../services/common/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { MOCK_ROLES, MOCK_RESOURCES, MOCK_ROLE_PERMISSIONS } from '../../core/mocks/permission-matrix.mock';

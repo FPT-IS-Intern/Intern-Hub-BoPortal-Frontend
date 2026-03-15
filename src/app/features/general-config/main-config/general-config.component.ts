@@ -2,13 +2,13 @@ import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, inject, 
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BreadcrumbService } from '../../../services/breadcrumb.service';
+import { BreadcrumbService } from '../../../services/common/breadcrumb.service';
 import { GeneralInfoComponent } from '../general-info/general-info.component';
 import { SystemFormatComponent } from '../system-format/system-format.component';
 import { TimeConfigComponent } from '../time-config/time-config.component';
-import { GeneralConfigService } from '../../../services/general-config.service';
-import { UploadService } from '../../../services/upload.service';
-import { ToastService } from '../../../services/toast.service';
+import { GeneralConfigService } from '../../../services/api/general-config.service';
+import { UploadService } from '../../../services/api/upload.service';
+import { ToastService } from '../../../services/common/toast.service';
 import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
 import { NoDataComponent } from '../../../components/no-data/no-data.component';
 import { BreadcrumbItem } from '../../../components/breadcrumb/breadcrumb.component';
@@ -37,7 +37,7 @@ export class GeneralConfigComponent implements OnInit {
   protected isConfirmVisible = false;
   private selectedLogoFile: File | null = null;
   
-  protected readonly isLoading = signal(false);
+  
   protected readonly isError = signal(false);
 
   constructor(
@@ -67,7 +67,7 @@ export class GeneralConfigComponent implements OnInit {
   }
 
   private fetchConfig(): void {
-    this.isLoading.set(true);
+    
     this.isError.set(false);
     
     this.configService.getConfig().subscribe({
@@ -78,13 +78,13 @@ export class GeneralConfigComponent implements OnInit {
         } else {
           this.isError.set(true);
         }
-        this.isLoading.set(false);
+        
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Fetch config error:', err);
         this.isError.set(true);
-        this.isLoading.set(false);
+        
         this.cdr.markForCheck();
       },
     });

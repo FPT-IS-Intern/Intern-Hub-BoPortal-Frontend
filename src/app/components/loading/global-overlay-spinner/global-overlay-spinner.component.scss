@@ -1,0 +1,29 @@
+.global-spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(var(--app-color-bg-rgb, 255, 255, 255), 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: all;
+}
+
+.spinner-container {
+  text-align: center;
+}
+
+.main-spinner {
+  font-size: 40px;
+  color: var(--app-color-primary, #e18308);
+}
+
+.loading-text {
+  margin-top: 12px;
+  font-weight: 500;
+  color: var(--app-color-text-secondary);
+}

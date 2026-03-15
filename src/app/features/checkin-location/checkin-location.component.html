@@ -1,11 +1,7 @@
 <div class="page-body">
 
 
-  @if (isLoading()) {
-  <div class="loading-container">
-    <span class="custom-icon-loading rotate main-loader"></span>
-  </div>
-  } @else if (isError()) {
+  @if (isError()) {
   <app-no-data
     [title]="'checkin.page.error.title' | translate"
     [message]="'checkin.page.error.message' | translate">

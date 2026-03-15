@@ -1,10 +1,10 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { BreadcrumbService } from '../../services/breadcrumb.service';
+import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ToastService } from '../../services/toast.service';
+import { ToastService } from '../../services/common/toast.service';
 import { NotificationTableComponent } from './notification-table/notification-table.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
 import { NotificationFormComponent } from './notification-form/notification-form.component';
@@ -15,7 +15,7 @@ import { SharedSearchComponent } from '../../components/shared-search/shared-sea
 import { SharedDateRangeComponent, DateRange } from '../../components/shared-date-range/shared-date-range.component';
 import { SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { NotificationService } from '../../services/notification.service';
+import { NotificationService } from '../../services/api/notification.service';
 import { NOTIFICATION_MOCKS, NOTIFICATION_STATUS_OPTIONS } from '../../core/mocks/notification.mock';
 import { signal } from '@angular/core';
 
@@ -61,18 +61,16 @@ export class NotificationBellComponent implements OnInit {
   }
 
   private loadNotifications(): void {
-    this.isLoading.set(true);
     this.isError.set(false);
     this.notificationService.getNotifications().subscribe({
-      next: (res) => {
+      next: (res: any) => {
         if (res.data) {
           this.allNotifications.set(res.data);
         }
-        this.isLoading.set(false);
+        
       },
       error: () => {
         this.isError.set(true);
-        this.isLoading.set(false);
       }
     });
   }
@@ -88,7 +86,6 @@ export class NotificationBellComponent implements OnInit {
   protected dateRange: DateRange = { from: null, to: null };
 
   // New states for better UX
-  protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
 
   protected readonly allNotifications = signal<NotificationRecord[]>([]);
