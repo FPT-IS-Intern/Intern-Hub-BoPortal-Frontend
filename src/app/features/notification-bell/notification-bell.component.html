@@ -22,7 +22,7 @@
     </div>
 
     <div class="filter-right">
-      <button nz-button class="btn-primary-custom" (click)="onAddNew()">
+      <button class="btn-primary-custom" (click)="onAddNew()">
         <span class="custom-icon-package-plus"></span>
         Thêm mới
       </button>
@@ -33,7 +33,7 @@
   <div class="table-wrapper">
     @if (isLoading()) {
     <div class="loading-container">
-      <span nz-icon nzType="loading" class="main-loader"></span>
+      <span class="main-loader-icon custom-icon-loading rotate"></span>
     </div>
     } @else if (isError()) {
     <app-no-data title="Lỗi tải dữ liệu" message="Đã có lỗi xảy ra khi tải danh sách thông báo. Vui lòng thử lại sau.">
