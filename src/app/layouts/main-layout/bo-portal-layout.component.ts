@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationStart } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
@@ -16,6 +18,17 @@ import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 })
 export class BoPortalLayoutComponent {
   protected readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly router = inject(Router);
+
+  constructor() {
+    // Clear breadcrumbs immediately on any navigation start to avoid stale titles
+    this.router.events.pipe(
+      takeUntilDestroyed(),
+      filter(event => event instanceof NavigationStart)
+    ).subscribe(() => {
+      this.breadcrumbService.clearBreadcrumbs();
+    });
+  }
   // Mobile sidebar state
   isMobileSidebarOpen = false;
 

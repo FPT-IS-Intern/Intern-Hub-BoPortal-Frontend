@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal, computed, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -45,6 +46,7 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly loadingService = inject(LoadingService);
   private readonly translateService = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Core signals
   protected readonly isInitLoading = signal(false);
@@ -76,21 +78,29 @@ export class PermissionMatrixComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.translateService.stream('permissionMatrix.breadcrumb.title').subscribe(title => {
-      this.breadcrumbService.setBreadcrumbs([
-        { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-        { label: title, active: true }
-      ]);
-    });
+    // Set immediate initial breadcrumb to clear any stale state
+    const initialTitle = this.translateService.instant('permissionMatrix.breadcrumb.title');
+    this.updateBreadcrumbs(initialTitle);
+
+    // Subscribe to translation changes
+    this.translateService.stream('permissionMatrix.breadcrumb.title')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(title => this.updateBreadcrumbs(title));
+
     this.fetchInitialData();
+  }
+
+  private updateBreadcrumbs(title: string): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label: title, active: true }
+    ]);
   }
 
   protected fetchInitialData(): void {
     this.isInitLoading.set(true);
     this.isError.set(false);
     this.loadingService.show();
-
-    this.fetchInitialData();
 
     let pending = 2;
     const done = () => {

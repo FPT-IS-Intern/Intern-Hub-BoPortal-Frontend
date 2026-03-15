@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
@@ -47,18 +48,29 @@ export class NotificationBellComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Status options from Centralized Mocks
   protected statusOptions = NOTIFICATION_STATUS_OPTIONS;
 
   ngOnInit(): void {
-    this.translate.stream('notification.bell.breadcrumb.title').subscribe(label => {
-      this.breadcrumbService.setBreadcrumbs([
-        { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-        { label, active: true }
-      ]);
-    });
+    // Set immediate initial breadcrumb to clear any stale state
+    const initialLabel = this.translate.instant('notification.bell.breadcrumb.title');
+    this.updateBreadcrumbs(initialLabel);
+
+    // Subscribe to translation changes
+    this.translate.stream('notification.bell.breadcrumb.title')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(label => this.updateBreadcrumbs(label));
+
     this.loadNotifications();
+  }
+
+  private updateBreadcrumbs(label: string): void {
+    this.breadcrumbService.setBreadcrumbs([
+      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+      { label, active: true }
+    ]);
   }
 
   private loadNotifications(): void {
