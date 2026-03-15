@@ -143,3 +143,12 @@
     transform: translateY(0);
   }
 }
+
+:host.has-error {
+  .dropdown-trigger {
+    border-color: #ff4d4f;
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1);
+    }
+  }
+}

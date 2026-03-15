@@ -3,7 +3,8 @@
         <div class="form-group">
             <label class="form-label required">Tiêu đề</label>
             <div class="input-wrapper">
-                <input class="custom-input" formControlName="title" placeholder="Nhập tiêu đề thông báo" />
+                <input class="custom-input" [class.has-error]="validateForm.get('title')?.touched && validateForm.get('title')?.invalid" 
+                    formControlName="title" placeholder="Nhập tiêu đề thông báo" />
                 <div class="char-counter">{{ validateForm.get('title')?.value?.length || 0 }}/255</div>
             </div>
             @if (validateForm.get('title')?.touched && validateForm.get('title')?.invalid) {
@@ -14,8 +15,8 @@
         <div class="form-group">
             <label class="form-label required">Nội dung</label>
             <div class="input-wrapper">
-                <textarea class="custom-textarea" formControlName="content"
-                    placeholder="Nhập nội dung thông báo"></textarea>
+                <textarea class="custom-textarea" [class.has-error]="validateForm.get('content')?.touched && validateForm.get('content')?.invalid" 
+                    formControlName="content" placeholder="Nhập nội dung thông báo"></textarea>
             </div>
             @if (validateForm.get('content')?.touched && validateForm.get('content')?.invalid) {
             <div class="error-tip">Vui lòng nhập nội dung thông báo</div>
@@ -25,15 +26,23 @@
         <div class="row-layout">
             <div class="form-group flex-1">
                 <label class="form-label required">Loại thông báo</label>
-                <app-shared-dropdown [options]="typeOptions" formControlName="type" placeholder="Chọn loại">
+                <app-shared-dropdown [options]="typeOptions" formControlName="type" placeholder="Chọn loại"
+                    [class.has-error]="validateForm.get('type')?.touched && validateForm.get('type')?.invalid">
                 </app-shared-dropdown>
+                @if (validateForm.get('type')?.touched && validateForm.get('type')?.invalid) {
+                <div class="error-tip">Vui lòng chọn loại thông báo</div>
+                }
             </div>
 
             <div class="form-group flex-1">
                 <label class="form-label required">Đối tượng nhận</label>
                 <app-shared-dropdown [options]="audienceOptions" formControlName="audience"
-                    placeholder="Chọn đối tượng">
+                    placeholder="Chọn đối tượng"
+                    [class.has-error]="validateForm.get('audience')?.touched && validateForm.get('audience')?.invalid">
                 </app-shared-dropdown>
+                @if (validateForm.get('audience')?.touched && validateForm.get('audience')?.invalid) {
+                <div class="error-tip">Vui lòng chọn đối tượng nhận</div>
+                }
             </div>
         </div>
 

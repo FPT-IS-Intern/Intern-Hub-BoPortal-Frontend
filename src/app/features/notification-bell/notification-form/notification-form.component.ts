@@ -68,7 +68,7 @@ export class NotificationFormComponent implements OnInit {
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
-          control.markAsDirty();
+          control.markAsTouched();
           control.updateValueAndValidity({ onlySelf: true });
         }
       });
