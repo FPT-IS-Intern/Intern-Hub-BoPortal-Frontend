@@ -12,8 +12,9 @@ import {
 import { HeaderComponent, HeaderData } from './components/header/header.component';
 import { ToastContainer } from './components/toast-container/toast-container';
 import { GlobalOverlaySpinnerComponent } from './components/global-overlay-spinner/global-overlay-spinner.component';
+import { LoadingBarComponent } from './loading/loading-bar.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { firstValueFrom, filter } from 'rxjs';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { firstValueFrom, filter } from 'rxjs';
     HeaderComponent,
     ToastContainer,
     GlobalOverlaySpinnerComponent,
+    LoadingBarComponent,
   ],
   templateUrl: './app.html',
 })

@@ -15,6 +15,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { apiErrorInterceptor } from './core/interceptors/api-error.interceptor';
+import { loadingInterceptor } from './loading/loading.interceptor';
 
 registerLocaleData(localeVi);
 
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, apiErrorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor, apiErrorInterceptor])),
     provideTranslateService({
       lang: 'vi',
       fallbackLang: 'vi',
