@@ -1,15 +1,4 @@
 <div class="page-body">
-  @if (isError()) {
-  <div class="error-container error-view">
-    <app-no-data [title]="'permissionMatrix.error.title' | translate"
-      [message]="'permissionMatrix.error.message' | translate">
-      <span icon class="custom-icon-error error-icon"></span>
-      <button action class="btn-outline-custom retry-btn-sec retry-btn" (click)="fetchInitialData()">
-        {{ 'permissionMatrix.error.retry' | translate }}
-      </button>
-    </app-no-data>
-  </div>
-  } @else if (!isInitLoading()) {
   <!-- Toolbar: Role selector + action buttons -->
   <div class="toolbar">
     <div class="toolbar-left">
@@ -40,8 +29,27 @@
   </div>
 
   <div class="table-container">
-    <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
-      (permissionChange)="permissionRows.set($event)"></app-permission-table>
+    @if (isError()) {
+      <div class="error-view">
+        <app-no-data [title]="'permissionMatrix.error.title' | translate"
+          [message]="'permissionMatrix.error.message' | translate">
+          <span icon class="custom-icon-error error-icon"></span>
+          <button action class="btn-outline-custom retry-btn-sec retry-btn" (click)="fetchInitialData()">
+            {{ 'permissionMatrix.error.retry' | translate }}
+          </button>
+        </app-no-data>
+      </div>
+    } @else {
+      @if (filteredRows().length > 0) {
+        <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
+          (permissionChange)="permissionRows.set($event)"></app-permission-table>
+      } @else if (!isInitLoading()) {
+        <app-no-data [title]="'permissionMatrix.table.empty.title' | translate"
+          [message]="'permissionMatrix.table.empty.message' | translate">
+          <span icon class="custom-icon-box-iso selection-icon"></span>
+        </app-no-data>
+      }
+    }
   </div>
 
   <!-- Confirm save popup -->
@@ -57,5 +65,4 @@
   <!-- Create resource dialog -->
   <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
     (save)="onCreateResource($event)"></app-create-resource-dialog>
-  }
 </div>
