@@ -53,3 +53,4 @@ tsconfig.federation.json
 
 
 /docs
+/src/app/core/mocks
