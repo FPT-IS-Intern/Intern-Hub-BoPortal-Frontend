@@ -14,14 +14,16 @@
 
 .modal-container {
     background: white;
-    border-radius: 4px;
+    border-radius: 8px; /* Standardized to 8px */
     width: 100%;
-    max-width: 520px;
-    box-shadow: 0 10px 25px var(--app-shadow-lg);
+    max-width: 600px; /* Increased slightly for better form layout */
+    max-height: 80vh; /* Reduced further for better clearance */
+    margin: 60px 20px; /* Increased vertical margin for breathing room */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: visible;
+    overflow: hidden; /* Contain children */
 }
 
 .modal-header {
@@ -59,18 +61,34 @@
 
 .modal-body {
     padding: 24px;
-    max-height: 70vh;
-    overflow-y: auto;
+    flex: 1; /* Take available space */
+    overflow-y: auto; /* Restore scrolling */
     font-size: 14px;
     color: var(--app-color-text-700);
     position: relative;
+    min-height: 0; /* Important for flex-basis scroll */
 
-    // Sử dụng ::ng-deep để detector có thể nhìn thấy class bên trong component con
-    // Khi có picker-overlay hoặc dropdown-overlay đang mở bên trong, 
-    // chúng ta tạm thời cho phép nội dung tràn ra ngoài để không bị mất hình.
-    &::ng-deep:has(.picker-overlay),
-    &::ng-deep:has(.dropdown-overlay) {
-        overflow: visible !important;
+    /* Premium Scrollbar Style - slightly more visible */
+    &::-webkit-scrollbar {
+        width: 8px; /* Slightly wider for better usability */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--app-color-border-alpha-soft, #d1d5db);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        
+        &:hover {
+            background: var(--app-color-text-muted);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
     }
 }
 
