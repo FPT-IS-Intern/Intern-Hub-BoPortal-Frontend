@@ -145,4 +145,25 @@
 
 .duocolor-upload-02 {
   @include custom-icon-file('/assets/icons/duocolor-upload-02.svg', 1.1rem);
-}
+}
+
+.custom-icon-loading {
+  @include custom-icon-file('/assets/icons/refresh-ccw.svg', 1.25rem);
+}
+
+.custom-icon-aim {
+  @include custom-icon-file('/assets/icons/line-globe.svg', 1.25rem);
+}
+
+.rotate {
+  animation: rotate 1.5s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
