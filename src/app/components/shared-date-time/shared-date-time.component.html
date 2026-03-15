@@ -1,18 +1,15 @@
 <div class="shared-date-time-wrapper">
     <!-- Trigger -->
-    <div class="calendar-trigger" 
-         [class.active]="selectedDate" 
-         [class.disabled]="isReadOnly"
-         (click)="toggle()">
+    <div class="calendar-trigger" [class.active]="selectedDate" [class.disabled]="isReadOnly" (click)="toggle()">
         <div class="trigger-left">
             <span class="custom-icon-line-calendar"></span>
             <span class="schedule-text">{{ scheduleDisplay }}</span>
         </div>
         <div class="trigger-actions">
             @if (selectedDate && !isReadOnly) {
-                <button type="button" class="clear-btn" (click)="clear($event)" title="Xóa">
-                    <span class="custom-icon-close"></span>
-                </button>
+            <button type="button" class="clear-btn" (click)="clear($event)" title="Xóa">
+                <span class="custom-icon-close"></span>
+            </button>
             }
             <span class="custom-icon-arrow-down" [class.open]="isOpen"></span>
         </div>
@@ -29,7 +26,8 @@
                         <span class="custom-icon-arrow-left"></span>
                     </button>
                     <div class="current-month-year">
-                        <span class="month-label" (click)="switchView('month')">{{ monthNames[viewDate.getMonth()] }}</span>
+                        <span class="month-label" (click)="switchView('month')">{{ monthNames[viewDate.getMonth()]
+                            }}</span>
                         <span class="year-label" (click)="switchView('year')">{{ viewDate.getFullYear() }}</span>
                     </div>
                     <button type="button" class="nav-btn" (click)="nextMonth()" *ngIf="viewMode === 'day'">
@@ -56,9 +54,7 @@
                 @if (viewMode === 'month') {
                 <div class="month-grid">
                     @for (m of monthNames; track m; let i = $index) {
-                    <div class="month-item" 
-                        [class.active]="i === viewDate.getMonth()"
-                        (click)="selectMonth(i)">
+                    <div class="month-item" [class.active]="i === viewDate.getMonth()" (click)="selectMonth(i)">
                         {{ m }}
                     </div>
                     }
@@ -69,9 +65,7 @@
                 @if (viewMode === 'year') {
                 <div class="year-grid">
                     @for (y of years; track y) {
-                    <div class="year-item" 
-                        [class.active]="y === viewDate.getFullYear()"
-                        (click)="selectYear(y)">
+                    <div class="year-item" [class.active]="y === viewDate.getFullYear()" (click)="selectYear(y)">
                         {{ y }}
                     </div>
                     }
