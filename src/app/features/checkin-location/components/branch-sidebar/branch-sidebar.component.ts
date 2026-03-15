@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
+import { Component, Output, EventEmitter, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -13,8 +13,8 @@ import { BranchCheckinConfig } from '../../../../models/checkin-config.model';
   styleUrl: './branch-sidebar.component.scss'
 })
 export class BranchSidebarComponent {
-  @Input() branches: BranchCheckinConfig[] = [];
-  @Input() selectedBranchId: string | undefined;
+  branches = input<BranchCheckinConfig[]>([]);
+  selectedBranchId = input<string | undefined>();
   @Output() selectBranch = new EventEmitter<BranchCheckinConfig>();
   @Output() manageBranches = new EventEmitter<void>();
 
@@ -22,8 +22,9 @@ export class BranchSidebarComponent {
 
   protected readonly filteredBranches = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
-    if (!query) return this.branches;
-    return this.branches.filter(b =>
+    const branches = this.branches();
+    if (!query) return branches;
+    return branches.filter(b =>
       b.name.toLowerCase().includes(query) ||
       b.description?.toLowerCase().includes(query)
     );

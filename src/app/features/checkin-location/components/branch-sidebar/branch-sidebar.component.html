@@ -1,34 +1,34 @@
 <aside class="master-panel">
   <div class="search-box">
     <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)"
-      [placeholder]="'checkin.sidebar.searchPlaceholder' | translate"
-      variant="filled" width="100%"></app-shared-search>
-    <button class="manage-btn" (click)="manageBranches.emit()" [attr.title]="'checkin.sidebar.manageTooltip' | translate">
+      [placeholder]="'checkin.sidebar.searchPlaceholder' | translate" variant="filled" width="100%"></app-shared-search>
+    <button class="manage-btn" (click)="manageBranches.emit()"
+      [attr.title]="'checkin.sidebar.manageTooltip' | translate">
       <span icon class="custom-icon-users-edit"></span>
     </button>
   </div>
 
   <div class="branch-list">
     @for (branch of filteredBranches(); track branch.id) {
-      <div class="branch-item" [class.active]="selectedBranchId === branch.id" (click)="onSelect(branch)">
-        <div class="branch-icon">
-          <span icon class="custom-icon-box-iso"></span>
-        </div>
-        <div class="branch-info">
-          <div class="branch-name">{{ branch.name }}</div>
-          <div class="branch-status" [class.inactive]="!branch.isActive">
-            {{
-              branch.isActive
-                ? ('checkin.sidebar.status.active' | translate)
-                : ('checkin.sidebar.status.inactive' | translate)
-            }}
-          </div>
-        </div>
-
-        <span class="custom-icon-arrow-right arrow-icon"></span>
+    <div class="branch-item" [class.active]="selectedBranchId() === branch.id" (click)="onSelect(branch)">
+      <div class="branch-icon">
+        <span icon class="custom-icon-box-iso"></span>
       </div>
+      <div class="branch-info">
+        <div class="branch-name">{{ branch.name }}</div>
+        <div class="branch-status" [class.inactive]="!branch.isActive">
+          {{
+          branch.isActive
+          ? ('checkin.sidebar.status.active' | translate)
+          : ('checkin.sidebar.status.inactive' | translate)
+          }}
+        </div>
+      </div>
+
+      <span class="custom-icon-arrow-right arrow-icon"></span>
+    </div>
     } @empty {
-      <div class="empty-list">{{ 'checkin.sidebar.empty' | translate }}</div>
+    <div class="empty-list">{{ 'checkin.sidebar.empty' | translate }}</div>
     }
   </div>
 </aside>
