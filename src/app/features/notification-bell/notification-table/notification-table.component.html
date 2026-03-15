@@ -1,12 +1,12 @@
 <table class="notification-table">
     <thead>
         <tr>
-            <th class="col-id">STT</th>
-            <th class="col-title">Tiêu đề</th>
-            <th class="col-audience">Đối tượng</th>
-            <th class="col-status">Trạng thái</th>
-            <th class="col-created">Ngày tạo</th>
-            <th class="col-action">Hành động</th>
+            <th class="col-id">{{ 'notification.table.headers.index' | translate }}</th>
+            <th class="col-title">{{ 'notification.table.headers.title' | translate }}</th>
+            <th class="col-audience">{{ 'notification.table.headers.audience' | translate }}</th>
+            <th class="col-status">{{ 'notification.table.headers.status' | translate }}</th>
+            <th class="col-created">{{ 'notification.table.headers.createdAt' | translate }}</th>
+            <th class="col-action">{{ 'notification.table.headers.actions' | translate }}</th>
         </tr>
     </thead>
     <tbody>
@@ -15,27 +15,35 @@
             <td class="col-id">{{ (pageIndex - 1) * pageSize + $index + 1 }}</td>
             <td class="col-title" [title]="record.title">{{ record.title }}</td>
             <td class="col-audience">
-                <span class="audience-tag">{{ record.audience === 'All' ? 'Tất cả' : (record.audience === 'Group' ? 'Nhóm' : 'Cụ thể') }}</span>
+                <span class="audience-tag">
+                    @if (record.audience === 'All') {
+                        {{ 'notification.table.audience.all' | translate }}
+                    } @else if (record.audience === 'Group') {
+                        {{ 'notification.table.audience.group' | translate }}
+                    } @else if (record.audience === 'Specific') {
+                        {{ 'notification.table.audience.specific' | translate }}
+                    }
+                </span>
             </td>
             <td class="col-status">
                 <span class="status-badge" [ngClass]="getStatusClass(record.status)">
-                    {{ getStatusLabel(record.status) }}
+                    {{ getStatusLabel(record.status) | translate }}
                 </span>
             </td>
             <td class="col-created">{{ record.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
             <td class="col-action">
                 <div class="action-buttons">
-                    <button class="action-btn view-btn" (click)="onView(record)" title="Xem">
+                    <button class="action-btn view-btn" (click)="onView(record)" [title]="'notification.table.actions.view' | translate">
                         <span class="line-file-eye"></span>
                     </button>
-                    <button class="action-btn edit-btn" (click)="onEdit(record)" title="Chỉnh sửa" [disabled]="record.status === 'Sent'">
+                    <button class="action-btn edit-btn" (click)="onEdit(record)" [title]="'notification.table.actions.edit' | translate" [disabled]="record.status === 'Sent'">
                         <span class="custom-icon-edit"></span>
                     </button>
-                    <button class="action-btn delete-btn" (click)="onDelete(record)" title="Xóa">
+                    <button class="action-btn delete-btn" (click)="onDelete(record)" [title]="'notification.table.actions.delete' | translate">
                         <span class="custom-icon-close"></span>
                     </button>
                     @if (record.status !== 'Sent') {
-                    <button class="action-btn send-btn" (click)="onSendNow(record)" title="Gửi ngay">
+                    <button class="action-btn send-btn" (click)="onSendNow(record)" [title]="'notification.table.actions.sendNow' | translate">
                         <span class="duocolor-upload-02"></span>
                     </button>
                     }
@@ -45,7 +53,8 @@
         } @empty {
         <tr>
             <td [attr.colspan]="6" class="empty-row-cell">
-                <app-no-data [fullHeight]="false" title="Trống" message="Hiện tại không có thông báo nào.">
+                <app-no-data [fullHeight]="false" [title]="'notification.table.empty.title' | translate" 
+                    [message]="'notification.table.empty.message' | translate">
                 </app-no-data>
             </td>
         </tr>

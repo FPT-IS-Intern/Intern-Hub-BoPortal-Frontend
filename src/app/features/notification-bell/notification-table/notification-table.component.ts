@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { NotificationRecord } from '../../../models/notification.model';
 import { NoDataComponent } from '../../../components/no-data/no-data.component';
 
 @Component({
     selector: 'app-notification-table',
     standalone: true,
-    imports: [CommonModule, NoDataComponent],
+    imports: [CommonModule, NoDataComponent, TranslateModule],
     templateUrl: './notification-table.component.html',
     styleUrl: './notification-table.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,9 +48,9 @@ export class NotificationTableComponent {
 
     getStatusLabel(status: string): string {
         switch (status) {
-            case 'Sent': return 'Đã gửi';
-            case 'Draft': return 'Nháp';
-            case 'Scheduled': return 'Đã lên lịch';
+            case 'Sent': return 'notification.table.status.sent';
+            case 'Draft': return 'notification.table.status.draft';
+            case 'Scheduled': return 'notification.table.status.scheduled';
             default: return status;
         }
     }

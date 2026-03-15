@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { NotificationRecord } from '../../../models/notification.model';
 import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
 import { SharedDateTimePickerComponent } from '../../../components/shared-date-time/shared-date-time.component';
@@ -14,7 +15,8 @@ import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../
     FormsModule,
     ReactiveFormsModule,
     SharedDropdownComponent,
-    SharedDateTimePickerComponent
+    SharedDateTimePickerComponent,
+    TranslateModule
   ],
   templateUrl: './notification-form.component.html',
   styleUrl: './notification-form.component.scss'

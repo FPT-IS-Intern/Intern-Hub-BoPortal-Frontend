@@ -12,14 +12,14 @@
             <div class="tabs">
                 <div class="tab active">
                     <span class="custom-icon-grid tab-icon"></span>
-                    Tất cả
+                    {{ 'notification.dropdown.tabs.all' | translate }}
                 </div>
                 <div class="tab">
                     <span class="custom-icon-eye-off tab-icon"></span>
-                    Chưa đọc
+                    {{ 'notification.dropdown.tabs.unread' | translate }}
                 </div>
             </div>
-            <button class="read-all-btn">Đọc hết</button>
+            <button class="read-all-btn">{{ 'notification.dropdown.actions.readAll' | translate }}</button>
         </div>
 
         <div class="notifications-content empty">
@@ -27,8 +27,8 @@
                 <div class="empty-icon-wrapper">
                     <div class="orange-dot"></div>
                 </div>
-                <span class="empty-title">Chưa có thông báo</span>
-                <span class="empty-subtitle">Bạn sẽ thấy thông báo mới tại đây.</span>
+                <span class="empty-title">{{ 'notification.dropdown.empty.title' | translate }}</span>
+                <span class="empty-subtitle">{{ 'notification.dropdown.empty.subtitle' | translate }}</span>
             </div>
         </div>
     </div>

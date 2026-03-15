@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../services/toast.service';
 import { NotificationTableComponent } from './notification-table/notification-table.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
@@ -16,7 +17,6 @@ import { SharedDropdownComponent } from '../../components/shared-dropdown/shared
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NOTIFICATION_MOCKS, NOTIFICATION_STATUS_OPTIONS } from '../../core/mocks/notification.mock';
 import { signal } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notification-bell',
@@ -42,6 +42,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class NotificationBellComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly toast = inject(ToastService);
+  private readonly translate = inject(TranslateService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   // Status options from Centralized Mocks
@@ -50,8 +51,8 @@ export class NotificationBellComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.setBreadcrumbs([
       { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-      { label: 'Cấu Hình Hệ Thống' },
-      { label: 'Chuông Thông Báo', active: true }
+      { label: this.translate.instant('permissionMatrix.breadcrumb.systemConfig') },
+      { label: this.translate.instant('notification.bell.breadcrumb.title'), active: true }
     ]);
   }
 
@@ -102,13 +103,14 @@ export class NotificationBellComponent implements OnInit {
   // Form Modal State
   protected isModalVisible = false;
   protected isReadOnly = false;
-  protected modalTitle = 'Thêm mới thông báo';
+  protected modalTitleKey = '';
   protected selectedRecord: NotificationRecord | null = null;
 
   // Confirm State
   protected isConfirmVisible = false;
-  protected confirmTitle = '';
-  protected confirmMessage = '';
+  protected confirmTitleKey = '';
+  protected confirmMessageKey = '';
+  protected confirmMessageParams: any = {};
   protected confirmAction: () => void = () => { };
 
   protected get displayRange(): string {
@@ -121,32 +123,33 @@ export class NotificationBellComponent implements OnInit {
   protected onAddNew(): void {
     this.selectedRecord = null;
     this.isReadOnly = false;
-    this.modalTitle = 'Tạo thông báo mới';
+    this.modalTitleKey = 'notification.bell.modals.create';
     this.isModalVisible = true;
   }
 
   protected onView(record: NotificationRecord): void {
     this.selectedRecord = record;
     this.isReadOnly = true;
-    this.modalTitle = 'Chi tiết thông báo';
+    this.modalTitleKey = 'notification.bell.modals.detail';
     this.isModalVisible = true;
   }
 
   protected onEdit(record: NotificationRecord): void {
     this.selectedRecord = record;
     this.isReadOnly = false;
-    this.modalTitle = 'Chỉnh sửa thông báo';
+    this.modalTitleKey = 'notification.bell.modals.edit';
     this.isModalVisible = true;
   }
 
   protected onDelete(record: NotificationRecord): void {
-    this.confirmTitle = 'Xóa thông báo';
-    this.confirmMessage = `Bạn có chắc chắn muốn xóa thông báo "${record.title}"?`;
+    this.confirmTitleKey = 'notification.bell.modals.deleteTitle';
+    this.confirmMessageKey = 'notification.bell.modals.deleteMessage';
+    this.confirmMessageParams = { title: record.title };
     this.confirmAction = () => {
       const idx = this.allNotifications.findIndex(n => n.id === record.id);
       if (idx > -1) {
         this.allNotifications.splice(idx, 1);
-        this.toast.success('Đã xóa thông báo thành công');
+        this.toast.successKey('notification.bell.toast.deleteSuccess');
       }
       this.isConfirmVisible = false;
     };
@@ -154,14 +157,15 @@ export class NotificationBellComponent implements OnInit {
   }
 
   protected onSendNow(record: NotificationRecord): void {
-    this.confirmTitle = 'Gửi thông báo ngay';
-    this.confirmMessage = `Gửi thông báo "${record.title}" đến toàn bộ đối tượng đã chọn ngay lập tức?`;
+    this.confirmTitleKey = 'notification.bell.modals.sendNowTitle';
+    this.confirmMessageKey = 'notification.bell.modals.sendNowMessage';
+    this.confirmMessageParams = { title: record.title };
     this.confirmAction = () => {
       const idx = this.allNotifications.findIndex(n => n.id === record.id);
       if (idx > -1) {
         this.allNotifications[idx].status = 'Sent';
         this.allNotifications[idx].sentAt = new Date().toISOString();
-        this.toast.success('Đã gửi thông báo thành công');
+        this.toast.successKey('notification.bell.toast.sendSuccess');
       }
       this.isConfirmVisible = false;
     };
@@ -173,7 +177,7 @@ export class NotificationBellComponent implements OnInit {
       const idx = this.allNotifications.findIndex(n => n.id === this.selectedRecord?.id);
       if (idx > -1) {
         this.allNotifications[idx] = { ...this.allNotifications[idx], ...data } as NotificationRecord;
-        this.toast.success('Đã cập nhật thông báo thành công');
+        this.toast.successKey('notification.bell.toast.updateSuccess');
       }
     } else {
       const newId = Math.max(...this.allNotifications.map(n => n.id), 0) + 1;
@@ -184,7 +188,7 @@ export class NotificationBellComponent implements OnInit {
         ...data
       } as NotificationRecord;
       this.allNotifications.unshift(newRecord);
-      this.toast.success('Đã tạo thông báo thành công');
+      this.toast.successKey('notification.bell.toast.createSuccess');
     }
     this.isModalVisible = false;
   }

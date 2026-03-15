@@ -1,10 +1,11 @@
 import { Component, Input, HostListener, ElementRef, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-notifications-dropdown',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, TranslateModule],
     templateUrl: './notifications-dropdown.component.html',
     styleUrls: ['./notifications-dropdown.component.scss'],
 })
