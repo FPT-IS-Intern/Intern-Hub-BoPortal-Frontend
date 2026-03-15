@@ -1,9 +1,5 @@
 <div class="page-body">
-  @if (isInitLoading()) {
-  <div class="loading-container central-loader">
-    <span class="custom-icon-loading rotate spinner-icon"></span>
-  </div>
-  } @else if (isError()) {
+  @if (isError()) {
   <div class="error-container error-view">
     <app-no-data title="Không tìm thấy dữ liệu phân quyền"
       message="Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.">
@@ -38,9 +34,6 @@
       <div class="divider"></div>
 
       <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
-        @if (isLoading) {
-        <span class="custom-icon-loading rotate mr-2"></span>
-        }
         <span class="custom-icon-save"></span> Áp dụng
       </button>
     </div>
