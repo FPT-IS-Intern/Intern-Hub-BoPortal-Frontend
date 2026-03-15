@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
-import { IconData } from '@goat-bravos/intern-hub-layout';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
@@ -109,24 +108,8 @@ export class BoPortalLayoutComponent {
     ],
   };
 
-  // Data bổ sung truyền vào Input lẻ của SidebarComponent
-  toggleButtonIconConfig: IconData[] = [
-    {
-      ...SIDEBAR_ICONS.ARROW_RIGHT,
-      colorIcon: 'var(--neutral-color-10)',
-      width: '14px',
-      height: '14px',
-    },
-  ];
-
-  closeButtonIconConfig: IconData[] = [
-    {
-      ...SIDEBAR_ICONS.ARROW_LEFT,
-      colorIcon: 'var(--brand-700)',
-      width: '16px',
-      height: '16px',
-    },
-  ];
+  toggleButtonIconConfig = SIDEBAR_ICONS.ARROW_RIGHT;
+  closeButtonIconConfig = SIDEBAR_ICONS.ARROW_LEFT;
 
   // Sidebar Toggle Handler
   onSidebarToggle(expanded: boolean): void {
