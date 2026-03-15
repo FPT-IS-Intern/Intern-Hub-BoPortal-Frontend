@@ -1,11 +1,13 @@
 <div class="role-section">
-    <nz-select [(ngModel)]="selectedRole" (ngModelChange)="onRoleChange($event)" nzPlaceHolder="Vai trò" nzAllowClear
-        class="role-select">
-        @for (role of roles; track role.id) {
-        <nz-option [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
-        }
-    </nz-select>
-    <button nz-button nzType="primary" class="refresh-btn" (click)="onRefresh()" aria-label="Làm mới">
+    <app-shared-dropdown 
+        [options]="roleOptions()" 
+        [(value)]="selectedRole" 
+        (valueChange)="onRoleChange($event)"
+        [placeholder]="'Vai trò'"
+        class="role-select"
+        width="220px">
+    </app-shared-dropdown>
+    <button class="btn-primary-custom refresh-btn" (click)="onRefresh()" aria-label="Làm mới">
         <span class="custom-icon-refresh"></span>
     </button>
 </div>
