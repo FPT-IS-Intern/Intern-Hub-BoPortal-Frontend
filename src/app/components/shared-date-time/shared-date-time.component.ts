@@ -7,6 +7,7 @@ interface CalendarDay {
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
+  isDisabled: boolean;
 }
 
 @Component({
@@ -229,6 +230,7 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
   }
 
   protected selectDay(day: CalendarDay): void {
+    if (day.isDisabled) return;
     const newDate = new Date(day.date);
     newDate.setHours(this.selectedHour, this.selectedMinute, 0, 0);
     this.selectedDate = newDate;
@@ -318,7 +320,8 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
         date: current,
         isCurrentMonth: current.getMonth() === month,
         isToday: current.getTime() === today.getTime(),
-        isSelected: isSelected
+        isSelected: isSelected,
+        isDisabled: current.getTime() < today.getTime()
       });
     }
     this.calendarDays = days;

@@ -206,6 +206,14 @@
                         opacity: 0.3;
                     }
 
+                    &.disabled {
+                        color: var(--app-color-text-muted);
+                        opacity: 0.2;
+                        cursor: not-allowed;
+                        background: transparent !important;
+                        pointer-events: none;
+                    }
+
                     &.today {
                         color: var(--app-color-primary);
                         font-weight: 800;

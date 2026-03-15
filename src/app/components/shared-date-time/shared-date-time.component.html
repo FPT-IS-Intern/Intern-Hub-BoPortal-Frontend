@@ -43,7 +43,7 @@
                     }
                     @for (day of calendarDays; track day.date.getTime()) {
                     <div class="day-cell" [class.muted]="!day.isCurrentMonth" [class.today]="day.isToday"
-                        [class.selected]="day.isSelected" (click)="selectDay(day)">
+                        [class.selected]="day.isSelected" [class.disabled]="day.isDisabled" (click)="selectDay(day)">
                         {{ day.date.getDate() }}
                     </div>
                     }
