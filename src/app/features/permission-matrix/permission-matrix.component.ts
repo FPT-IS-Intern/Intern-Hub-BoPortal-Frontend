@@ -17,8 +17,7 @@ import { ToastService } from '../../services/common/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { MOCK_ROLES, MOCK_RESOURCES, MOCK_ROLE_PERMISSIONS } from '../../core/mocks/permission-matrix.mock';
-
-const USE_MOCK = true; // Set to true to see mock data on UI
+import { environment } from '../../../environments/environment';
 
 const PERMISSION_COLUMNS = [
   { key: 'create', label: 'Tạo' },
@@ -94,7 +93,7 @@ export class PermissionMatrixComponent implements OnInit {
     this.isError.set(false);
     this.loadingService.show();
 
-    if (USE_MOCK) {
+    if (environment.useMock) {
       setTimeout(() => {
         this.roles.set(MOCK_ROLES);
         this.allResources.set(MOCK_RESOURCES);
@@ -159,7 +158,7 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadResources(): void {
-    if (USE_MOCK) {
+    if (environment.useMock) {
       this.allResources.set(MOCK_RESOURCES);
       this.buildPermissionRows();
       this.cdr.markForCheck();
@@ -182,7 +181,7 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadRoles(): void {
-    if (USE_MOCK) {
+    if (environment.useMock) {
       this.roles.set(MOCK_ROLES);
       this.cdr.markForCheck();
       return;
@@ -225,7 +224,7 @@ export class PermissionMatrixComponent implements OnInit {
     this.loadingService.show();
     this.cdr.markForCheck();
 
-    if (USE_MOCK) {
+    if (environment.useMock) {
       setTimeout(() => {
         const perms = MOCK_ROLE_PERMISSIONS[roleId] || [];
         this.buildPermissionRows(perms);
@@ -281,7 +280,6 @@ export class PermissionMatrixComponent implements OnInit {
         crudTask: false,
       };
     });
-    console.log('Built permission rows:', rows.length, 'rows');
     this.permissionRows.set(rows);
   }
 
