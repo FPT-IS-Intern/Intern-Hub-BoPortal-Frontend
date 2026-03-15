@@ -81,7 +81,7 @@ export class NotificationBellComponent implements OnInit {
         if (res.data) {
           this.allNotifications.set(res.data);
         }
-        
+
       },
       error: () => {
         this.isError.set(true);

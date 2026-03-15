@@ -1,10 +1,6 @@
 <div class="role-section">
-    <app-shared-dropdown 
-        [options]="roleOptions()" 
-        [(value)]="selectedRole" 
-        (valueChange)="onRoleChange($event)"
-        [placeholder]="'permissionMatrix.toolbar.roleSelectorPlaceholder' | translate"
-        class="role-select"
+    <app-shared-dropdown [options]="roleOptions()" [(value)]="selectedRole" (valueChange)="onRoleChange($event)"
+        [placeholder]="'permissionMatrix.toolbar.roleSelectorPlaceholder' | translate" class="role-select"
         width="220px">
     </app-shared-dropdown>
 </div>
