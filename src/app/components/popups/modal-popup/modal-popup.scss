@@ -21,7 +21,7 @@
     display: flex;
     flex-direction: column;
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .modal-header {
@@ -63,6 +63,15 @@
     overflow-y: auto;
     font-size: 14px;
     color: var(--app-color-text-700);
+    position: relative;
+
+    // Sử dụng ::ng-deep để detector có thể nhìn thấy class bên trong component con
+    // Khi có picker-overlay hoặc dropdown-overlay đang mở bên trong, 
+    // chúng ta tạm thời cho phép nội dung tràn ra ngoài để không bị mất hình.
+    &::ng-deep:has(.picker-overlay),
+    &::ng-deep:has(.dropdown-overlay) {
+        overflow: visible !important;
+    }
 }
 
 .modal-footer {
