@@ -31,10 +31,11 @@
               }
             ],
             "styles": [
-              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles.scss"
             ],
-            "polyfills": ["zone.js"]
+            "polyfills": [
+              "zone.js"
+            ]
           },
           "configurations": {
             "production": {
