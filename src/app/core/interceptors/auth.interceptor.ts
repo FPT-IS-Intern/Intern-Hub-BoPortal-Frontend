@@ -29,9 +29,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
                 // Xử lý khi token hết hạn hoặc không hợp lệ
-                // Không tự động chuyển về /login, chỉ báo lỗi để UI quyết định.
-                tokenService.clearTokens();
-                console.warn('authInterceptor: 401 nhận được, giữ trên trang hiện tại.');
+                // Phát sự kiện AUTH_TOKEN_EXPIRED để App xử lý (refresh hoặc logout)
+                import('../utils/storage.util').then(u => u.notifyAuthTokenExpired());
+                console.warn('authInterceptor: 401 received, dispatching AUTH_TOKEN_EXPIRED.');
             }
             return throwError(() => error);
         })

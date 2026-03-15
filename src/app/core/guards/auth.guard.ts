@@ -6,12 +6,24 @@ export const authGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
     const tokenService = inject(TokenStorageService);
 
-    if (tokenService.isAuthenticated()) {
-        console.log('authGuard: Authenticated. Access granted.');
+    const accessToken = tokenService.getAccessToken();
+    const refreshToken = tokenService.getRefreshToken();
+
+    if (accessToken) {
+        console.log('authGuard: Access token found. Access granted.');
         return true;
     }
 
-    console.warn('authGuard: Not authenticated. Redirecting to /login...');
+    // Nếu không có accessToken nhưng có refreshToken, ta có thể cho qua để App.ts tự refresh
+    // HOẶC nếu muốn chặn triệt để thì redirect luôn. 
+    // Ở đây ta chọn redirect để đảm bảo "chặn ngay việc này" như user yêu cầu.
+    if (refreshToken) {
+        console.warn('authGuard: No access token but refresh token exists. Redirecting to login for re-auth.');
+    } else {
+        console.warn('authGuard: No tokens found. Redirecting to /login...');
+    }
+
+    tokenService.clearTokens();
     router.navigate(['/login']);
     return false;
 };

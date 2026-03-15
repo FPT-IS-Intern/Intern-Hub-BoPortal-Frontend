@@ -47,3 +47,10 @@ export function notifyTokenRefreshed(newAccessToken: string): void {
 export function cancelTokenRefresh(): void {
   window.dispatchEvent(new CustomEvent('TOKEN_REFRESH_CANCELLED'));
 }
+export function notifyAuthTokenExpired(): void {
+  window.dispatchEvent(new CustomEvent('AUTH_TOKEN_EXPIRED'));
+}
+
+export function notifyForceLogout(): void {
+  window.dispatchEvent(new CustomEvent('FORCE_LOGOUT'));
+}
