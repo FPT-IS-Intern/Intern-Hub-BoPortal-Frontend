@@ -5,7 +5,7 @@
         <span class="left-icon" [class]="icon"></span>
       }
       <span class="selected-text" [class.placeholder]="!value && value !== 0">
-        {{ selectedLabel }}
+        {{ selectedLabel | translate }}
       </span>
     </div>
     <span class="chevron custom-icon-chevron-down" [class.rotated]="isOpen"></span>
@@ -22,7 +22,7 @@
             @if (opt.icon) {
               <span class="item-icon" [class]="opt.icon"></span>
             }
-            <span class="item-label">{{ opt.label }}</span>
+            <span class="item-label">{{ opt.label | translate }}</span>
           </div>
           @if (value === opt.value) {
             <span class="check-icon custom-icon-success"></span>

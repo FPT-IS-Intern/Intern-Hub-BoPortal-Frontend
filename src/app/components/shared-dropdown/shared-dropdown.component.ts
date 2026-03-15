@@ -9,12 +9,13 @@ export interface DropdownOption {
   icon?: string;
 }
 
+import { TranslateModule } from '@ngx-translate/core';
 import { NoDataComponent } from '../no-data/no-data.component';
 
 @Component({
   selector: 'app-shared-dropdown',
   standalone: true,
-  imports: [CommonModule, NoDataComponent],
+  imports: [CommonModule, NoDataComponent, TranslateModule],
   templateUrl: './shared-dropdown.component.html',
   styleUrl: './shared-dropdown.component.scss',
   providers: [
