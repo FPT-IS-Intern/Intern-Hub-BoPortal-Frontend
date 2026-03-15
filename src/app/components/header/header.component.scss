@@ -63,7 +63,6 @@
           background-color: var(--neutral-color-50, var(--app-color-surface-soft));
           color: var(--brand-600, var(--app-color-primary));
           border-color: var(--brand-200, var(--app-color-brand-200));
-          transform: translateY(-1px);
           box-shadow: 0 2px 4px var(--app-shadow-md);
         }
       }
@@ -82,6 +81,3 @@
     transform: translateY(0);
   }
 }
-
-
-
