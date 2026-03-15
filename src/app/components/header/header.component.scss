@@ -26,15 +26,10 @@
     align-items: center;
 
     .logo {
-      height: 32px;
+      height: 28px;
       width: auto;
       object-fit: contain;
       cursor: pointer;
-      transition: transform 0.2s ease;
-
-      &:hover {
-        transform: scale(1.05);
-      }
     }
   }
 
