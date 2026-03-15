@@ -1,9 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule } from '@angular/forms';
 import { RoleSelectorComponent } from './role-selector/role-selector.component';
 import { PermissionTableComponent } from './permission-table/permission-table.component';
@@ -34,9 +31,6 @@ const PERMISSION_COLUMNS = [
     CommonModule,
     RouterModule,
     FormsModule,
-    NzBreadCrumbModule,
-    NzButtonModule,
-    NzIconModule,
     RoleSelectorComponent,
     PermissionTableComponent,
     CreateRoleDialogComponent,

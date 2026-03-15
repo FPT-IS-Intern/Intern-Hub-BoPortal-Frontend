@@ -1,12 +1,10 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-
 @Component({
   selector: 'app-shared-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzIconModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './shared-search.component.html',
   styleUrls: ['./shared-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

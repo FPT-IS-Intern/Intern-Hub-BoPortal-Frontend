@@ -1,14 +1,14 @@
 <div class="page-body">
   @if (isInitLoading()) {
     <div class="loading-container central-loader">
-      <span nz-icon nzType="loading" class="spinner-icon"></span>
+      <span class="custom-icon-loading rotate spinner-icon"></span>
     </div>
   } @else if (isError()) {
     <div class="error-container error-view">
       <app-no-data title="Không tìm thấy dữ liệu phân quyền"
         message="Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.">
         <span icon class="custom-icon-lock security-lock-icon"></span>
-        <button action nz-button nzType="primary" class="retry-btn-sec" (click)="fetchInitialData()">
+        <button action class="btn-primary-custom retry-btn-sec" (click)="fetchInitialData()">
           Thử lại
         </button>
       </app-no-data>
@@ -19,11 +19,11 @@
       <app-role-selector [roles]="roles" [selectedRole]="selectedRoleId" (roleChange)="onRoleChange($event)"
         (refresh)="onRefresh()"></app-role-selector>
       <div class="toolbar-actions">
-        <button nz-button nzType="default" class="action-btn" (click)="isCreateRoleVisible = true">
-          <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm vai trò
+        <button class="btn-secondary-custom action-btn" (click)="isCreateRoleVisible = true">
+          <span class="custom-icon-package-plus"></span> Thêm vai trò
         </button>
-        <button nz-button nzType="default" class="action-btn" (click)="isCreateResourceVisible = true">
-          <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm tài nguyên
+        <button class="btn-secondary-custom action-btn" (click)="isCreateResourceVisible = true">
+          <span class="custom-icon-package-plus"></span> Thêm tài nguyên
         </button>
       </div>
     </div>
@@ -36,7 +36,10 @@
 
     <!-- Apply button -->
     <div class="actions">
-      <button nz-button nzType="primary" nzSize="large" [nzLoading]="isLoading" class="apply-btn" (click)="onSubmit()">
+      <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
+        @if (isLoading) {
+          <span class="custom-icon-loading rotate mr-2"></span>
+        }
         Áp dụng
       </button>
     </div>
