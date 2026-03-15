@@ -27,14 +27,10 @@
 
     .search-wrapper {
       transition: all 0.3s ease;
-
-      /* focus-within styles removed if empty */
     }
 
     .dropdown-wrapper {
       transition: all 0.3s ease;
-
-      /* focus-within styles removed if empty */
     }
 
     .divider {
@@ -71,7 +67,7 @@
 }
 
 .table-wrapper {
-  overflow: visible; /* Unified scroll handled by parent */
+  overflow: visible;
   border-radius: 8px;
   border: 1px solid var(--app-color-border-alpha-soft);
   background: var(--app-color-white);
@@ -85,4 +81,53 @@
     display: flex !important;
     align-items: center !important;
   }
+
+  /* Loading & Error States */
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 0;
+
+    .main-loader-icon {
+      font-size: 32px;
+      color: var(--app-color-primary);
+      opacity: 0.8;
+    }
+  }
+
+  .retry-btn {
+    margin-top: 16px !important;
+    padding: 8px 24px !important;
+    background: white !important;
+    border: 1px solid var(--app-color-primary) !important;
+    color: var(--app-color-primary) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+
+    &:hover {
+      background: var(--app-color-primary-alpha-8, rgba(var(--app-color-primary-rgb), 0.08)) !important;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate {
+  animation: rotate 1s linear infinite;
 }
