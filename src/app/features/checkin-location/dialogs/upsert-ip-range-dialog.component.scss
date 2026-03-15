@@ -80,6 +80,7 @@
 
   &.has-error {
     border-color: #ef4444;
+
     &:focus {
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
     }
@@ -179,11 +180,11 @@
     }
   }
 
-  input:checked + .slider {
+  input:checked+.slider {
     background-color: #10b981;
   }
 
-  input:checked + .slider:before {
+  input:checked+.slider:before {
     transform: translateX(20px);
   }
 }
@@ -192,6 +193,7 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--app-color-text-muted);
+
   &.active {
     color: #10b981;
   }
@@ -220,9 +222,9 @@
   &.btn-primary {
     background: var(--app-color-primary);
     color: white;
+
     &:hover:not(:disabled) {
       opacity: 0.9;
-      transform: translateY(-1px);
     }
   }
 
@@ -230,6 +232,7 @@
     background: transparent;
     border: 1px solid var(--app-color-surface-warm-300);
     color: var(--app-color-text-muted);
+
     &:hover:not(:disabled) {
       background: var(--app-color-surface-warm-100);
       color: var(--app-color-text-main);
