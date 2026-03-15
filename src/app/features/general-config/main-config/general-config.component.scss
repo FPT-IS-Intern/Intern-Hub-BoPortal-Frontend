@@ -22,7 +22,7 @@
 .content-left {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px; /* Adjusted to 8*2 for consistency */
 }
 
 .actions {

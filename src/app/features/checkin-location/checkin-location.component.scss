@@ -24,10 +24,11 @@
 
 .master-detail-container {
   display: flex;
+  align-items: flex-start; /* Do NOT stretch detail-panel */
   gap: 24px;
   flex: 1;
   width: 100%;
-  min-height: 0; // Important for nested scrolling
+  min-height: 0;
 }
 
 // Detail Panel

@@ -71,7 +71,7 @@
 }
 
 .table-wrapper {
-  overflow: hidden;
+  overflow: visible; /* Unified scroll handled by parent */
   border-radius: 8px;
   border: 1px solid var(--app-color-border-alpha-soft);
   background: var(--app-color-white);
