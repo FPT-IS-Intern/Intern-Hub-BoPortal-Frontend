@@ -15,7 +15,6 @@ export class RoleSelectorComponent {
     @Input() roles: AuthzRole[] = [];
     @Input() selectedRole: string | null = null;
     @Output() roleChange = new EventEmitter<string | null>();
-    @Output() refresh = new EventEmitter<void>();
 
     protected readonly roleOptions = computed(() => {
         return this.roles.map(r => ({ label: r.name, value: r.id }));
@@ -23,9 +22,5 @@ export class RoleSelectorComponent {
 
     onRoleChange(value: string | null): void {
         this.roleChange.emit(value);
-    }
-
-    onRefresh(): void {
-        this.refresh.emit();
     }
 }

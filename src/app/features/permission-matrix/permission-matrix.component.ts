@@ -209,9 +209,6 @@ export class PermissionMatrixComponent implements OnInit {
     }
   }
 
-  protected onRefresh(): void {
-    this.fetchInitialData();
-  }
 
   protected loadPermissions(): void {
     const roleId = this.selectedRoleId();

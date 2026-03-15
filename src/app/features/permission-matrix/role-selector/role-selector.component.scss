@@ -1,31 +1,12 @@
 .role-section {
     display: flex;
-    gap: 16px;
     align-items: center;
-    max-width: 350px;
+    width: 220px;
 }
 
 .role-select {
     flex: 1;
     min-width: 0;
-}
-
-.refresh-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    background: var(--app-color-primary-300) !important;
-    border-color: var(--app-color-primary-300) !important;
-
-    &:hover {
-        background: var(--app-color-primary-hover) !important;
-        border-color: var(--app-color-primary-hover) !important;
-    }
 }
 
 

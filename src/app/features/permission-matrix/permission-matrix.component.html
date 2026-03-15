@@ -17,8 +17,8 @@
   <!-- Toolbar: Role selector + action buttons -->
   <div class="toolbar">
     <div class="toolbar-left">
-      <app-role-selector [roles]="roles()" [selectedRole]="selectedRoleId()" (roleChange)="onRoleChange($event)"
-        (refresh)="onRefresh()"></app-role-selector>
+      <app-role-selector [roles]="roles()" [selectedRole]="selectedRoleId()" (roleChange)="onRoleChange($event)">
+      </app-role-selector>
       
       <div class="search-wrapper">
         <span class="custom-icon-search search-icon"></span>

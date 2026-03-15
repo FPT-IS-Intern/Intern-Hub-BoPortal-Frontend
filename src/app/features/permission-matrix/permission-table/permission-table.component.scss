@@ -15,10 +15,10 @@
     th,
     td {
         border-bottom: 1px solid var(--app-color-border-alpha-soft-2);
-        padding: 14px 16px;
+        padding: 16px 20px;
         text-align: center;
         vertical-align: middle;
-        height: 56px;
+        height: 60px;
     }
 
     th {
@@ -30,10 +30,10 @@
         font-weight: 700;
         font-size: 13px;
         text-transform: uppercase;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.03em;
         white-space: nowrap;
         border-bottom: 2px solid var(--app-color-primary) !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.03);
     }
 
     .sticky-col {
@@ -49,7 +49,7 @@
             top: 0;
             bottom: 0;
             width: 1px;
-            background: var(--app-color-border-alpha-soft);
+            background: rgba(0, 0, 0, 0.06);
             pointer-events: none;
         }
     }
@@ -65,7 +65,7 @@
         width: 320px;
         min-width: 250px;
         text-align: left;
-        padding-left: 24px;
+        padding-left: 32px;
         z-index: 12;
         background: var(--app-color-white) !important;
     }
@@ -79,7 +79,7 @@
         background: var(--app-color-white) !important;
         color: var(--app-color-text-900);
         font-weight: 600;
-        padding-left: 24px;
+        padding-left: 32px;
     }
 
     .row-alt {
