@@ -2,6 +2,7 @@ declare const window: any;
 
 export const environment = {
   production: true,
+  useMock: false,
   apiUrl: 'https://api.interhub.vn',
   storageFileBaseUrl: 'https://s3.vn-hcm-1.vietnix.cloud/bravos/',
   get googleMapsApiKey(): string {
