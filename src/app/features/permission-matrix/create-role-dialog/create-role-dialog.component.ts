@@ -2,11 +2,12 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Simple
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-role-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalPopup],
+  imports: [CommonModule, FormsModule, ModalPopup, TranslateModule],
   templateUrl: './create-role-dialog.component.html',
   styleUrl: './create-role-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,31 +1,31 @@
-<app-modal-popup [isVisible]="isVisible" (isVisibleChange)="onVisibilityChange($event)" title="Tạo vai trò mới"
+<app-modal-popup [isVisible]="isVisible" (isVisibleChange)="onVisibilityChange($event)" [title]="'permissionMatrix.dialogs.createRole.title'| translate"
   [showFooter]="false" maxWidth="500px">
   <div class="premium-form-container">
     <div class="form-group">
-      <label class="form-label required">Tên vai trò</label>
+      <label class="form-label required">{{ 'permissionMatrix.dialogs.createRole.labels.name' | translate }}</label>
       <div class="input-wrapper">
-        <input type="text" [(ngModel)]="name" placeholder="Ví dụ: Quản trị viên hệ thống" class="custom-input"
+        <input type="text" [(ngModel)]="name" [placeholder]="'permissionMatrix.dialogs.createRole.placeholders.name' | translate" class="custom-input"
           [class.has-error]="!name.trim() && isTriedToSave" />
         @if (!name.trim() && isTriedToSave) {
-        <span class="error-tip">Vui lòng nhập tên vai trò</span>
+        <span class="error-tip">{{ 'permissionMatrix.dialogs.createRole.errors.nameRequired' | translate }}</span>
         }
       </div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Mô tả</label>
+      <label class="form-label">{{ 'permissionMatrix.dialogs.createRole.labels.description' | translate }}</label>
       <div class="input-wrapper">
-        <textarea [(ngModel)]="description" placeholder="Ghi chú thêm về vai trò này..." class="custom-input custom-textarea"
+        <textarea [(ngModel)]="description" [placeholder]="'permissionMatrix.dialogs.createRole.placeholders.description' | translate" class="custom-input custom-textarea"
           rows="3"></textarea>
       </div>
     </div>
 
     <div class="form-footer">
       <button type="button" class="custom-btn btn-ghost" (click)="onVisibilityChange(false)">
-        Hủy bỏ
+        {{ 'permissionMatrix.dialogs.createRole.actions.cancel' | translate }}
       </button>
       <button type="button" class="custom-btn btn-primary" (click)="onSave()" [disabled]="!name.trim()">
-        Tạo vai trò
+        {{ 'permissionMatrix.dialogs.createRole.actions.submit' | translate }}
       </button>
     </div>
   </div>

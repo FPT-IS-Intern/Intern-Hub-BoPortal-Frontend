@@ -2,11 +2,12 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Simple
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-resource-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalPopup],
+  imports: [CommonModule, FormsModule, ModalPopup, TranslateModule],
   templateUrl: './create-resource-dialog.component.html',
   styleUrl: './create-resource-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
