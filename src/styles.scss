@@ -37,7 +37,7 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: auto; /* Re-enable browser scroll */
   font-family: inherit;
   min-height: 100vh;
   background-color: var(--app-color-layout-bg);
