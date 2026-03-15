@@ -1,66 +1,120 @@
 .matrix-wrapper {
     overflow-x: auto;
-    border-radius: 8px; /* Standardized to 8px */
+    border-radius: 12px;
     border: 1px solid var(--app-color-border-alpha-soft);
     background: var(--app-color-white);
-    box-shadow: 0 1px 3px var(--app-shadow-sm);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 .permission-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 14px;
 
     th,
     td {
         border-bottom: 1px solid var(--app-color-border-alpha-soft-2);
-        padding: 12px;
+        padding: 14px 16px;
         text-align: center;
         vertical-align: middle;
+        height: 56px;
     }
 
     th {
-        background: var(--app-color-primary-300);
-        color: var(--app-color-border-soft);
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--app-color-white) !important;
+        color: var(--app-color-text-main);
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        border-bottom: 2px solid var(--app-color-primary) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        z-index: 5;
+        background: inherit;
+        
+        &::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--app-color-border-alpha-soft);
+            pointer-events: none;
+        }
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
     }
 
     .col-function {
-        width: 350px;
-        min-width: 200px;
+        width: 320px;
+        min-width: 250px;
         text-align: left;
+        padding-left: 24px;
+        z-index: 12;
+        background: var(--app-color-white) !important;
     }
 
     .col-permission {
-        min-width: 80px;
+        width: 120px;
+        min-width: 100px;
     }
 
     .cell-function {
-        background: var(--app-color-warning-soft-2);
-        color: var(--app-color-text-main);
-        font-weight: 500;
+        background: var(--app-color-white) !important;
+        color: var(--app-color-text-900);
+        font-weight: 600;
+        padding-left: 24px;
     }
 
-    .row-alt .cell-function {
-        background: var(--app-color-white);
+    .row-alt {
+        background: var(--app-color-surface-soft);
+        
+        .cell-function, .cell-checkbox {
+            background: var(--app-color-surface-soft) !important;
+        }
+    }
+
+    .row-hover {
+        transition: all 0.2s ease;
+        &:hover {
+            background: var(--app-color-primary-alpha-8) !important;
+            
+            .cell-function, .cell-checkbox {
+                background: var(--app-color-primary-alpha-8) !important;
+            }
+        }
     }
 
     .cell-checkbox {
-        background: var(--app-color-white);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
+        padding: 0 !important; /* Remove padding to allow flex centering */
+        
         .custom-checkbox {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
             position: relative;
             cursor: pointer;
-            font-size: 20px;
             user-select: none;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
+
 
             input {
                 position: absolute;
@@ -83,12 +137,12 @@
                 position: absolute;
                 top: 0;
                 left: 0;
-                height: 18px;
-                width: 18px;
+                height: 20px;
+                width: 20px;
                 background-color: var(--app-color-white);
-                border: 1px solid var(--app-color-border-alpha-soft-2);
-                border-radius: 4px;
-                transition: all 0.2s ease;
+                border: 2px solid #d1d5db;
+                border-radius: 6px;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
                 &:after {
                     content: "";
@@ -96,25 +150,32 @@
                     display: none;
                     left: 6px;
                     top: 2px;
-                    width: 4px;
-                    height: 9px;
+                    width: 5px;
+                    height: 10px;
                     border: solid white;
-                    border-width: 0 2px 2px 0;
-                    transform: rotate(45deg);
+                    border-width: 0 2.5px 2.5px 0;
+                    transform: rotate(45deg) scale(0.8);
+                    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
             }
 
             &:hover input ~ .checkmark {
                 border-color: var(--app-color-primary);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px var(--app-color-primary-alpha-8);
             }
-        }
-    }
 
-    .row-alt .cell-checkbox {
-        background: var(--app-color-surface-neutral-25);
+            input:checked ~ .checkmark {
+                background-color: var(--app-color-primary);
+                border-color: var(--app-color-primary);
+                transform: translateY(0);
+                box-shadow: 0 2px 4px var(--app-color-primary-alpha-10);
 
-        .checkmark {
-            background-color: var(--app-color-surface-neutral-25);
+                &:after {
+                    display: block;
+                    transform: rotate(45deg) scale(1);
+                }
+            }
         }
     }
 }

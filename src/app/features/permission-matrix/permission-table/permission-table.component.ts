@@ -15,7 +15,6 @@ export class PermissionTableComponent {
     @Input() columns: readonly any[] = [];
     @Input() rows: any[] = [];
     @Output() permissionChange = new EventEmitter<any[]>();
-
     onPermissionChange(): void {
         this.permissionChange.emit(this.rows);
     }

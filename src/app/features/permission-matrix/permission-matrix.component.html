@@ -1,59 +1,67 @@
 <div class="page-body">
   @if (isInitLoading()) {
-    <div class="loading-container central-loader">
-      <span class="custom-icon-loading rotate spinner-icon"></span>
-    </div>
+  <div class="loading-container central-loader">
+    <span class="custom-icon-loading rotate spinner-icon"></span>
+  </div>
   } @else if (isError()) {
-    <div class="error-container error-view">
-      <app-no-data title="Không tìm thấy dữ liệu phân quyền"
-        message="Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.">
-        <span icon class="custom-icon-lock security-lock-icon"></span>
-        <button action class="btn-primary-custom retry-btn-sec retry-btn" (click)="fetchInitialData()">
-          Thử lại
-        </button>
-      </app-no-data>
-    </div>
+  <div class="error-container error-view">
+    <app-no-data title="Không tìm thấy dữ liệu phân quyền"
+      message="Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.">
+      <span icon class="custom-icon-lock security-lock-icon"></span>
+      <button action class="btn-primary-custom retry-btn-sec retry-btn" (click)="fetchInitialData()">
+        Thử lại
+      </button>
+    </app-no-data>
+  </div>
   } @else {
-    <!-- Toolbar: Role selector + action buttons -->
-    <div class="toolbar">
-      <app-role-selector [roles]="roles" [selectedRole]="selectedRoleId" (roleChange)="onRoleChange($event)"
+  <!-- Toolbar: Role selector + action buttons -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <app-role-selector [roles]="roles()" [selectedRole]="selectedRoleId()" (roleChange)="onRoleChange($event)"
         (refresh)="onRefresh()"></app-role-selector>
-      <div class="toolbar-actions">
-        <button class="btn-secondary-custom action-btn" (click)="isCreateRoleVisible = true">
-          <span class="custom-icon-package-plus"></span> Thêm vai trò
-        </button>
-        <button class="btn-secondary-custom action-btn" (click)="isCreateResourceVisible = true">
-          <span class="custom-icon-package-plus"></span> Thêm tài nguyên
-        </button>
+      
+      <div class="search-wrapper">
+        <span class="custom-icon-search search-icon"></span>
+        <input type="text" class="search-input" placeholder="Tìm kiếm tài nguyên..." 
+          [ngModel]="searchQuery()" (ngModelChange)="onSearchQueryChange($event)">
       </div>
     </div>
 
-    <!-- Permission matrix table -->
-    <div class="table-container">
-      <app-permission-table [columns]="permissionColumns" [rows]="permissionRows"
-        (permissionChange)="permissionRows = $event"></app-permission-table>
-    </div>
-
-    <!-- Apply button -->
-    <div class="actions">
-      <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
-        @if (isLoading) {
-          <span class="custom-icon-loading rotate mr-2"></span>
-        }
-        Áp dụng
+    <div class="toolbar-actions">
+      <button class="btn-secondary-custom action-btn" (click)="isCreateRoleVisible = true">
+        <span class="custom-icon-package-plus"></span> Thêm vai trò
+      </button>
+      <button class="btn-secondary-custom action-btn" (click)="isCreateResourceVisible = true">
+        <span class="custom-icon-package-plus"></span> Thêm tài nguyên
       </button>
     </div>
+  </div>
 
-    <!-- Confirm save popup -->
-    <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
-      message="Bạn có muốn lưu các thay đổi ma trận phân quyền?" cancelText="Không" confirmText="Có"
-      (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
+  <div class="table-container">
+    <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
+      (permissionChange)="permissionRows.set($event)"></app-permission-table>
+  </div>
 
-    <!-- Create role dialog -->
-    <app-create-role-dialog [(isVisible)]="isCreateRoleVisible" (save)="onCreateRole($event)"></app-create-role-dialog>
+  <!-- Apply button -->
+  <div class="actions">
+    <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
+      @if (isLoading) {
+      <span class="custom-icon-loading rotate mr-2"></span>
+      }
+      Áp dụng
+    </button>
+  </div>
 
-    <!-- Create resource dialog -->
-    <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
-      (save)="onCreateResource($event)"></app-create-resource-dialog>
+  <!-- Confirm save popup -->
+  <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
+    message="Bạn có muốn lưu các thay đổi ma trận phân quyền?" cancelText="Không" confirmText="Có"
+    (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
+
+  <!-- Create role dialog -->
+  <app-create-role-dialog [(isVisible)]="isCreateRoleVisible" (save)="onCreateRole($event)"></app-create-role-dialog>
+
+  <!-- Create resource dialog -->
+  <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
+    (save)="onCreateResource($event)"></app-create-resource-dialog>
   }
 </div>

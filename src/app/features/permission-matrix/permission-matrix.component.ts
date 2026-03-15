@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,9 @@ import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } fro
 import { ToastService } from '../../services/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
+import { MOCK_ROLES, MOCK_RESOURCES, MOCK_ROLE_PERMISSIONS } from '../../core/mocks/permission-matrix.mock';
+
+const USE_MOCK = true; // Set to true to see mock data on UI
 
 const PERMISSION_COLUMNS = [
   { key: 'create', label: 'Tạo' },
@@ -47,18 +50,30 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly breadcrumbService = inject(BreadcrumbService);
 
+  // Core signals
   protected readonly isInitLoading = signal(false);
   protected readonly isError = signal(false);
+  protected readonly searchQuery = signal('');
+  protected readonly roles = signal<AuthzRole[]>([]);
+  protected readonly allResources = signal<AuthzResource[]>([]);
+  protected readonly selectedRoleId = signal<string | null>(null);
+  protected readonly permissionRows = signal<PermissionRow[]>([]);
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
-  protected roles: AuthzRole[] = [];
-  protected allResources: AuthzResource[] = [];
-  protected selectedRoleId: string | null = null;
-  protected permissionRows: PermissionRow[] = [];
   protected isLoading = false;
   protected isConfirmVisible = false;
   protected isCreateRoleVisible = false;
   protected isCreateResourceVisible = false;
+
+  // Filtered rows for the table
+  protected readonly filteredRows = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const rows = this.permissionRows();
+    if (!query) return rows;
+    return rows.filter(row => 
+      row.function.toLowerCase().includes(query)
+    );
+  });
 
   ngOnInit(): void {
     this.breadcrumbService.setBreadcrumbs([
@@ -72,6 +87,20 @@ export class PermissionMatrixComponent implements OnInit {
   protected fetchInitialData(): void {
     this.isInitLoading.set(true);
     this.isError.set(false);
+
+    if (USE_MOCK) {
+      setTimeout(() => {
+        this.roles.set(MOCK_ROLES);
+        this.allResources.set(MOCK_RESOURCES);
+        if (MOCK_ROLES.length > 0) {
+          this.selectedRoleId.set(MOCK_ROLES[0].id);
+          this.loadPermissions();
+        }
+        this.isInitLoading.set(false);
+        this.cdr.markForCheck();
+      }, 500);
+      return;
+    }
 
     let pending = 2;
     const done = () => {
@@ -88,7 +117,7 @@ export class PermissionMatrixComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res.data) {
-            this.allResources = res.data;
+            this.allResources.set(res.data);
             this.buildPermissionRows();
             this.cdr.markForCheck();
           }
@@ -106,9 +135,9 @@ export class PermissionMatrixComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res.data) {
-            this.roles = res.data;
-            if (this.roles.length > 0 && this.selectedRoleId == null) {
-              this.selectedRoleId = this.roles[0].id;
+            this.roles.set(res.data);
+            if (res.data.length > 0 && this.selectedRoleId() == null) {
+              this.selectedRoleId.set(res.data[0].id);
               this.loadPermissions();
             }
             this.cdr.markForCheck();
@@ -123,13 +152,18 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadResources(): void {
+    if (USE_MOCK) {
+      this.allResources.set(MOCK_RESOURCES);
+      this.buildPermissionRows();
+      this.cdr.markForCheck();
+      return;
+    }
     this.authzService.getAllResources().subscribe({
       next: (res) => {
         if (res.data) {
-          this.allResources = res.data;
+          this.allResources.set(res.data);
           this.buildPermissionRows();
           this.cdr.markForCheck();
-          console.log("All Resources:", res.data);
         }
       },
       error: (err) => {
@@ -141,12 +175,17 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadRoles(): void {
+    if (USE_MOCK) {
+      this.roles.set(MOCK_ROLES);
+      this.cdr.markForCheck();
+      return;
+    }
     this.authzService.getRoles().subscribe({
       next: (res) => {
         if (res.data) {
-          this.roles = res.data;
-          if (this.roles.length > 0 && this.selectedRoleId == null) {
-            this.selectedRoleId = this.roles[0].id;
+          this.roles.set(res.data);
+          if (res.data.length > 0 && this.selectedRoleId() == null) {
+            this.selectedRoleId.set(res.data[0].id);
             this.loadPermissions();
           }
           this.cdr.markForCheck();
@@ -161,7 +200,7 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected onRoleChange(roleId: string | null): void {
-    this.selectedRoleId = roleId;
+    this.selectedRoleId.set(roleId);
     if (roleId != null) {
       this.loadPermissions();
     } else {
@@ -175,13 +214,24 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected loadPermissions(): void {
-    if (this.selectedRoleId == null) return;
+    const roleId = this.selectedRoleId();
+    if (roleId == null) return;
 
     this.isLoading = true;
     this.cdr.markForCheck();
 
+    if (USE_MOCK) {
+      setTimeout(() => {
+        const perms = MOCK_ROLE_PERMISSIONS[roleId] || [];
+        this.buildPermissionRows(perms);
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }, 300);
+      return;
+    }
+
     this.authzService
-      .getRolePermissions(this.selectedRoleId)
+      .getRolePermissions(roleId)
       .pipe(finalize(() => {
         this.isLoading = false;
         this.cdr.markForCheck();
@@ -195,7 +245,7 @@ export class PermissionMatrixComponent implements OnInit {
         },
         error: (err) => {
           console.error('Load permissions error:', err);
-          if (this.permissionRows.length === 0) {
+          if (this.permissionRows().length === 0) {
             this.isError.set(true);
           }
           this.cdr.markForCheck();
@@ -206,12 +256,13 @@ export class PermissionMatrixComponent implements OnInit {
   private buildPermissionRows(rolePermissions: AuthzRolePermission[] = []): void {
     const permMap = new Map<string, string[]>();
     for (const p of rolePermissions) {
-      permMap.set(String(p.resource.id), p.permissions ?? []);
+      if (p.resource && p.resource.id) {
+        permMap.set(String(p.resource.id), p.permissions ?? []);
+      }
     }
 
-    this.permissionRows = this.allResources.map((resource) => {
+    const rows = this.allResources().map((resource) => {
       const actions = permMap.get(String(resource.id)) ?? [];
-      console.log("ResourceId:", resource.id, "Actions:", actions, "Name:", resource.name);
       return {
         resourceId: resource.id,
         function: resource.name,
@@ -224,10 +275,17 @@ export class PermissionMatrixComponent implements OnInit {
         crudTask: false,
       };
     });
+    console.log('Built permission rows:', rows.length, 'rows');
+    this.permissionRows.set(rows);
   }
 
+  protected onSearchQueryChange(query: string): void {
+    this.searchQuery.set(query);
+  }
+
+
   protected onSubmit(): void {
-    if (this.selectedRoleId == null) {
+    if (this.selectedRoleId() == null) {
       this.toastService.warningKey('toast.rbac.selectRoleRequired', 'toast.system');
       return;
     }
@@ -235,12 +293,13 @@ export class PermissionMatrixComponent implements OnInit {
   }
 
   protected handleConfirmSave(): void {
-    if (this.selectedRoleId == null) {
+    const roleId = this.selectedRoleId();
+    if (roleId == null) {
       this.isConfirmVisible = false;
       return;
     }
 
-    const resources: ResourcePermission[] = this.permissionRows
+    const resources: ResourcePermission[] = this.permissionRows()
       .filter(row => row.resourceId != null)
       .map(row => ({
         id: row.resourceId!,
@@ -265,7 +324,7 @@ export class PermissionMatrixComponent implements OnInit {
     this.cdr.markForCheck();
 
     this.authzService
-      .updateRolePermissions(this.selectedRoleId, resources)
+      .updateRolePermissions(roleId, resources)
       .pipe(finalize(() => {
         this.isLoading = false;
         this.cdr.markForCheck();

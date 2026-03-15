@@ -2,17 +2,21 @@
     <table class="permission-table">
         <thead>
             <tr>
-                <th class="col-function">Chức năng</th>
+                <th class="col-function sticky-col">Chức năng</th>
                 @for (col of columns; track col.key) {
-                <th class="col-permission">{{ col.label }}</th>
+                <th class="col-permission sticky-header">
+                    <div class="header-content">
+                        <span>{{ col.label }}</span>
+                    </div>
+                </th>
                 }
             </tr>
         </thead>
         <tbody>
             @if (rows.length > 0) {
             @for (row of rows; track row.function; let i = $index) {
-            <tr [class.row-alt]="i % 2 === 1">
-                <td class="col-function cell-function">{{ row.function }}</td>
+            <tr [class.row-alt]="i % 2 === 1" class="row-hover">
+                <td class="col-function cell-function sticky-col">{{ row.function }}</td>
                 @for (col of columns; track col.key) {
                 <td class="col-permission cell-checkbox">
                     <label class="custom-checkbox">
