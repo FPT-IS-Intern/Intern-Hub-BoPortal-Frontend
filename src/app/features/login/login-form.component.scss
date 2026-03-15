@@ -64,7 +64,6 @@
             &:ver:not(:disabled) {
                 background: var(--app-color-warning-hover);
                 transition: all 0.3s;
-                // transform: translateY(-1px);
             }
 
             &:disabled {
