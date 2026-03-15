@@ -2,13 +2,8 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../services/toast.service';
 import { NotificationTableComponent } from './notification-table/notification-table.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
 import { NotificationFormComponent } from './notification-form/notification-form.component';
@@ -30,11 +25,6 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     RouterModule,
     FormsModule,
-    NzButtonModule,
-    NzIconModule,
-    NzInputModule,
-    NzSelectModule,
-    NzDatePickerModule,
     NotificationTableComponent,
     NotificationPaginationComponent,
     NotificationFormComponent,
@@ -51,7 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class NotificationBellComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
-  private readonly message = inject(NzMessageService);
+  private readonly toast = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   // Status options from Centralized Mocks
@@ -156,7 +146,7 @@ export class NotificationBellComponent implements OnInit {
       const idx = this.allNotifications.findIndex(n => n.id === record.id);
       if (idx > -1) {
         this.allNotifications.splice(idx, 1);
-        this.message.success('Đã xóa thông báo thành công');
+        this.toast.success('Đã xóa thông báo thành công');
       }
       this.isConfirmVisible = false;
     };
@@ -171,7 +161,7 @@ export class NotificationBellComponent implements OnInit {
       if (idx > -1) {
         this.allNotifications[idx].status = 'Sent';
         this.allNotifications[idx].sentAt = new Date().toISOString();
-        this.message.success('Đã gửi thông báo thành công');
+        this.toast.success('Đã gửi thông báo thành công');
       }
       this.isConfirmVisible = false;
     };
@@ -183,7 +173,7 @@ export class NotificationBellComponent implements OnInit {
       const idx = this.allNotifications.findIndex(n => n.id === this.selectedRecord?.id);
       if (idx > -1) {
         this.allNotifications[idx] = { ...this.allNotifications[idx], ...data } as NotificationRecord;
-        this.message.success('Đã cập nhật thông báo thành công');
+        this.toast.success('Đã cập nhật thông báo thành công');
       }
     } else {
       const newId = Math.max(...this.allNotifications.map(n => n.id), 0) + 1;
@@ -194,7 +184,7 @@ export class NotificationBellComponent implements OnInit {
         ...data
       } as NotificationRecord;
       this.allNotifications.unshift(newRecord);
-      this.message.success('Đã tạo thông báo thành công');
+      this.toast.success('Đã tạo thông báo thành công');
     }
     this.isModalVisible = false;
   }
