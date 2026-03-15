@@ -104,3 +104,52 @@
         transform: translateY(0);
     }
 }
+
+/* Projected Action Styles (e.g., Retry Button) */
+::ng-deep [action].retry-btn {
+    margin-top: 16px;
+    padding: 8px 24px;
+    background: white;
+    border: 1px solid var(--app-color-primary);
+    color: var(--app-color-primary);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+        background: var(--app-color-primary-alpha-8, rgba(var(--app-color-primary-rgb), 0.08));
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+/* Shared Loading State (Optional use within components) */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 0;
+    width: 100%;
+    
+    .main-loader-icon {
+        font-size: 32px;
+        color: var(--app-color-primary);
+        opacity: 0.8;
+    }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rotate {
+    animation: rotate 1s linear infinite;
+}
