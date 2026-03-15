@@ -16,7 +16,7 @@
     padding: 0 16px;
     background: white;
     border: 1px solid var(--app-color-border-alpha-soft-2, #e5e7eb);
-    border-radius: 10px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     gap: 12px;
@@ -71,7 +71,7 @@
     left: 0;
     width: 100%;
     background: white;
-    border-radius: 12px;
+    border-radius: 4px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--app-color-border-alpha-soft);
     z-index: 2000;
@@ -93,7 +93,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
     gap: 12px;

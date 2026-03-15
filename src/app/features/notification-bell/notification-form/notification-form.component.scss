@@ -69,7 +69,7 @@
             padding: 10px 16px;
             background: white;
             border: 1px solid var(--app-color-border-alpha-soft-2, #e5e7eb);
-            border-radius: 10px;
+            border-radius: 4px;
             font-size: 14px;
             color: var(--app-color-text-main);
             transition: all 0.3s ease;
@@ -140,7 +140,7 @@
     button {
         height: 44px;
         padding: 0 24px;
-        border-radius: 10px;
+        border-radius: 4px;
         font-size: 14px;
         font-weight: 600;
         display: flex;
