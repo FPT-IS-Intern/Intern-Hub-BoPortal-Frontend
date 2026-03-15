@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthzRole } from '../../../models/authz.model';
 import { SharedDropdownComponent, DropdownOption } from '../../../components/shared-dropdown/shared-dropdown.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-role-selector',
     standalone: true,
-    imports: [CommonModule, FormsModule, SharedDropdownComponent],
+    imports: [CommonModule, FormsModule, SharedDropdownComponent, TranslateModule],
     templateUrl: './role-selector.component.html',
     styleUrl: './role-selector.component.scss',
 })

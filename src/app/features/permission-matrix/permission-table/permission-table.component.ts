@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { NoDataComponent } from '../../../components/no-data/no-data.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-permission-table',
     standalone: true,
-    imports: [CommonModule, FormsModule, NoDataComponent],
+    imports: [CommonModule, FormsModule, NoDataComponent, TranslateModule],
     templateUrl: './permission-table.component.html',
     styleUrl: './permission-table.component.scss',
 })

@@ -2,11 +2,11 @@
     <table class="permission-table">
         <thead>
             <tr>
-                <th class="col-function sticky-col">Chức năng</th>
+                <th class="col-function sticky-col">{{ 'permissionMatrix.table.resource' | translate }}</th>
                 @for (col of columns; track col.key) {
                 <th class="col-permission sticky-header">
                     <div class="header-content">
-                        <span>{{ col.label }}</span>
+                        <span>{{ col.label | translate }}</span>
                     </div>
                 </th>
                 }
@@ -30,8 +30,8 @@
             } @else {
             <tr>
                 <td [attr.colspan]="columns.length + 1" class="empty-cell">
-                    <app-no-data title="Không có tài nguyên"
-                        message="Vui lòng thêm tài nguyên hoặc chọn vai trò khác để xem ma trận phân quyền."
+                    <app-no-data [title]="'permissionMatrix.table.empty.title' | translate"
+                        [message]="'permissionMatrix.table.empty.message' | translate"
                         [fullHeight]="false">
                         <span icon class="custom-icon-users permission-users-icon"></span>
                     </app-no-data>
