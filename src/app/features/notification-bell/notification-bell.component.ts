@@ -15,6 +15,7 @@ import { SharedSearchComponent } from '../../components/shared-search/shared-sea
 import { SharedDateRangeComponent, DateRange } from '../../components/shared-date-range/shared-date-range.component';
 import { SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { NotificationService } from '../../services/notification.service';
 import { NOTIFICATION_MOCKS, NOTIFICATION_STATUS_OPTIONS } from '../../core/mocks/notification.mock';
 import { signal } from '@angular/core';
 
@@ -44,6 +45,7 @@ export class NotificationBellComponent implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly notificationService = inject(NotificationService);
 
   // Status options from Centralized Mocks
   protected statusOptions = NOTIFICATION_STATUS_OPTIONS;
@@ -54,6 +56,24 @@ export class NotificationBellComponent implements OnInit {
         { label: 'Home', icon: 'custom-icon-home', url: '/main' },
         { label, active: true }
       ]);
+    });
+    this.loadNotifications();
+  }
+
+  private loadNotifications(): void {
+    this.isLoading.set(true);
+    this.isError.set(false);
+    this.notificationService.getNotifications().subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.allNotifications.set(res.data);
+        }
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isError.set(true);
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -71,7 +91,7 @@ export class NotificationBellComponent implements OnInit {
   protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
 
-  protected readonly allNotifications: NotificationRecord[] = [...NOTIFICATION_MOCKS];
+  protected readonly allNotifications = signal<NotificationRecord[]>([]);
 
   protected setStatusFilter(value: string | null): void {
     this.statusFilter = value ?? '';
@@ -79,7 +99,7 @@ export class NotificationBellComponent implements OnInit {
   }
 
   protected get filteredNotifications(): NotificationRecord[] {
-    return this.allNotifications.filter(item => {
+    return this.allNotifications().filter(item => {
       const matchSearch = item.title.toLowerCase().includes(this.searchText.toLowerCase());
       const matchStatus = this.statusFilter ? item.status === this.statusFilter : true;
 
@@ -147,12 +167,18 @@ export class NotificationBellComponent implements OnInit {
     this.confirmMessageKey = 'notification.bell.modals.deleteMessage';
     this.confirmMessageParams = { title: record.title };
     this.confirmAction = () => {
-      const idx = this.allNotifications.findIndex(n => n.id === record.id);
-      if (idx > -1) {
-        this.allNotifications.splice(idx, 1);
-        this.toast.successKey('notification.bell.toast.deleteSuccess');
-      }
-      this.isConfirmVisible = false;
+      if (!record.id) return;
+      this.notificationService.deleteNotification(record.id).subscribe({
+        next: () => {
+          this.allNotifications.update(list => list.filter(n => n.id !== record.id));
+          this.toast.successKey('notification.bell.toast.deleteSuccess');
+          this.isConfirmVisible = false;
+        },
+        error: () => {
+          this.toast.errorKey('notification.bell.toast.deleteError');
+          this.isConfirmVisible = false;
+        }
+      });
     };
     this.isConfirmVisible = true;
   }
@@ -162,36 +188,41 @@ export class NotificationBellComponent implements OnInit {
     this.confirmMessageKey = 'notification.bell.modals.sendNowMessage';
     this.confirmMessageParams = { title: record.title };
     this.confirmAction = () => {
-      const idx = this.allNotifications.findIndex(n => n.id === record.id);
-      if (idx > -1) {
-        this.allNotifications[idx].status = 'Sent';
-        this.allNotifications[idx].sentAt = new Date().toISOString();
-        this.toast.successKey('notification.bell.toast.sendSuccess');
-      }
-      this.isConfirmVisible = false;
+      if (!record.id) return;
+      this.notificationService.sendNow(record.id).subscribe({
+        next: () => {
+          this.loadNotifications(); // Refresh list to get updated status/times
+          this.toast.successKey('notification.bell.toast.sendSuccess');
+          this.isConfirmVisible = false;
+        },
+        error: () => {
+          this.toast.errorKey('notification.bell.toast.sendError');
+          this.isConfirmVisible = false;
+        }
+      });
     };
     this.isConfirmVisible = true;
   }
 
   protected handleSaveForm(data: Partial<NotificationRecord>): void {
     if (this.selectedRecord) {
-      const idx = this.allNotifications.findIndex(n => n.id === this.selectedRecord?.id);
-      if (idx > -1) {
-        this.allNotifications[idx] = { ...this.allNotifications[idx], ...data } as NotificationRecord;
-        this.toast.successKey('notification.bell.toast.updateSuccess');
-      }
+      if (!this.selectedRecord.id) return;
+      this.notificationService.updateNotification(this.selectedRecord.id, data).subscribe({
+        next: () => {
+          this.loadNotifications();
+          this.toast.successKey('notification.bell.toast.updateSuccess');
+          this.isModalVisible = false;
+        }
+      });
     } else {
-      const newId = Math.max(...this.allNotifications.map(n => n.id), 0) + 1;
-      const newRecord: NotificationRecord = {
-        id: newId,
-        createdAt: new Date().toISOString(),
-        status: data.scheduleTime ? 'Scheduled' : 'Draft',
-        ...data
-      } as NotificationRecord;
-      this.allNotifications.unshift(newRecord);
-      this.toast.successKey('notification.bell.toast.createSuccess');
+      this.notificationService.createNotification(data).subscribe({
+        next: () => {
+          this.loadNotifications();
+          this.toast.successKey('notification.bell.toast.createSuccess');
+          this.isModalVisible = false;
+        }
+      });
     }
-    this.isModalVisible = false;
   }
 
   protected onPageIndexChange(index: number): void {
