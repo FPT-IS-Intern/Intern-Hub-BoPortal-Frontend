@@ -5,7 +5,7 @@ import { HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
 import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
-import { BreadcrumbService } from '../../services/breadcrumb.service';
+import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 
 @Component({
   selector: 'app-bo-portal-layout',
