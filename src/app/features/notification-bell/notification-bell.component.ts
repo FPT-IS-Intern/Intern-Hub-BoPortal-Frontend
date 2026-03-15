@@ -49,11 +49,12 @@ export class NotificationBellComponent implements OnInit {
   protected statusOptions = NOTIFICATION_STATUS_OPTIONS;
 
   ngOnInit(): void {
-    this.breadcrumbService.setBreadcrumbs([
-      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-      { label: this.translate.instant('permissionMatrix.breadcrumb.systemConfig') },
-      { label: this.translate.instant('notification.bell.breadcrumb.title'), active: true }
-    ]);
+    this.translate.stream('notification.bell.breadcrumb.title').subscribe(label => {
+      this.breadcrumbService.setBreadcrumbs([
+        { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+        { label, active: true }
+      ]);
+    });
   }
 
   // State
