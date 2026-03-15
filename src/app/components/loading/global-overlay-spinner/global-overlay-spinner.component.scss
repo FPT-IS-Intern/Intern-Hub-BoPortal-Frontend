@@ -4,26 +4,63 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(var(--app-color-bg-rgb, 255, 255, 255), 0.7);
-  backdrop-filter: blur(4px);
+  /* Premium Glassmorphism Overlay */
+  background: rgba(var(--app-color-bg-rgb, 255, 255, 255), 0.4);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
   z-index: 2000000;
   display: flex;
   justify-content: center;
   align-items: center;
   pointer-events: all;
+  transition: opacity 0.3s ease;
 }
 
 .spinner-container {
-  text-align: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.main-spinner {
-  font-size: 40px;
-  color: var(--app-color-primary, #e18308);
+/* Modern Multi-layered Spinner */
+.spinner {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  padding: 3px;
+  background: conic-gradient(from 0deg, transparent 0%, var(--app-color-primary, #e18308) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #fff 0);
+  animation: spin 0.8s linear infinite;
 }
 
-.loading-text {
-  margin-top: 12px;
-  font-weight: 500;
-  color: var(--app-color-text-secondary);
+/* Inner Glow/Pulse Effect */
+.spinner-container::after {
+  content: '';
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background: var(--app-color-primary, #e18308);
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.2;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
 }

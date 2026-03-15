@@ -7,51 +7,48 @@ import { LoadingService } from '../../../services/common/loading.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <progress class="top-progress" *ngIf="isLoading()"></progress>
+    <div class="top-progress-container" *ngIf="isLoading()">
+      <div class="top-progress-bar"></div>
+    </div>
   `,
   styles: [`
-    .top-progress {
+    .top-progress-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 3px;
-      z-index: 1000000;
-      appearance: none;
-      -webkit-appearance: none;
-      border: none;
-      background: transparent;
+      background: rgba(var(--app-color-primary-rgb, 225, 131, 8), 0.2); /* Darker track for better contrast */
+      z-index: 3000000; /* Higher than global overlay (2,000,000) */
+      overflow: hidden;
       pointer-events: none;
-      display: block;
     }
 
-    .top-progress::-webkit-progress-bar {
-      background: transparent;
-    }
-
-    .top-progress::-webkit-progress-value {
-      background: var(--app-color-primary, #e18308);
-      box-shadow: 0 0 10px var(--app-color-primary-alpha-60, rgba(225, 131, 8, 0.6));
-    }
-
-    .top-progress::-moz-progress-bar {
-      background: var(--app-color-primary, #e18308);
-    }
-
-    .top-progress:indeterminate {
-      background-image: linear-gradient(
-        90deg,
-        transparent 0%,
-        var(--app-color-primary, #e18308) 50%,
+    .top-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 30%; /* Narrower for a 'streak' look */
+      /* Shooting star gradient effect */
+      background: linear-gradient(
+        90deg, 
+        transparent 0%, 
+        rgba(255, 109, 0, 0.4) 20%, 
+        #ff6d00 50%, 
+        rgba(255, 109, 0, 0.4) 80%, 
         transparent 100%
       );
-      background-size: 200% 100%;
-      animation: progress-indeterminate 1.5s infinite linear;
+      animation: top-progress-streak 0.8s infinite ease-in-out;
     }
 
-    @keyframes progress-indeterminate {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    @keyframes top-progress-streak {
+      0% {
+        transform: translateX(-150%);
+      }
+      100% {
+        transform: translateX(350%);
+      }
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
