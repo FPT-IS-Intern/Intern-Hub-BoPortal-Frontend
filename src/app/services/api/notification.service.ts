@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { getBaseUrl } from '../core/config/app-config';
+import { getBaseUrl } from '../../core/config/app-config';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { NotificationRecord } from '../models/notification.model';
-import { SKIP_API_ERROR_TOAST } from '../core/interceptors/api-error.interceptor';
+import { NotificationRecord } from '../../models/notification.model';
+import { SKIP_API_ERROR_TOAST } from '../../core/interceptors/api-error.interceptor';
 
 @Injectable({
   providedIn: 'root'

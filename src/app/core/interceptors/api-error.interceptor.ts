@@ -2,7 +2,7 @@ import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ErrorMessageService } from '../../i18n/error-message.service';
-import { ToastService } from '../../services/toast.service';
+import { ToastService } from '../../services/common/toast.service';
 
 // When `true`, the interceptor will not emit a global error toast for that request.
 // Use this for requests where the feature already shows a specific toast.

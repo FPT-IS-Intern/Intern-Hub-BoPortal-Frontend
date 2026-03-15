@@ -2,7 +2,7 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './services/api/auth.service';
 import {
   StorageUtil,
   cancelTokenRefresh,
@@ -11,8 +11,8 @@ import {
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
 import { ToastContainer } from './components/toast-container/toast-container';
-import { GlobalOverlaySpinnerComponent } from './components/global-overlay-spinner/global-overlay-spinner.component';
-import { LoadingBarComponent } from './loading/loading-bar.component';
+import { GlobalOverlaySpinnerComponent } from './components/loading/global-overlay-spinner/global-overlay-spinner.component';
+import { TopProgressBarComponent } from './components/loading/top-progress-bar/top-progress-bar.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 
@@ -25,13 +25,13 @@ import { filter } from 'rxjs';
     HeaderComponent,
     ToastContainer,
     GlobalOverlaySpinnerComponent,
-    LoadingBarComponent,
+    TopProgressBarComponent,
   ],
   templateUrl: './app.html',
 })
 export class App implements OnInit, OnDestroy {
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AuthService) as any;
 
   isLoginRoute = false;
 
@@ -109,7 +109,7 @@ export class App implements OnInit, OnDestroy {
     }
 
     this.authService.refreshAccessToken({ refreshToken }).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         const newAccessToken = response.data?.accessToken;
         const newRefreshToken = response.data?.refreshToken;
 

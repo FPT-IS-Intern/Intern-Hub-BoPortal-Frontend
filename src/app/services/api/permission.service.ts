@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, delay } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { getBaseUrl } from '../core/config/app-config';
-import { PermissionRow } from '../models/permission.model';
+import { getBaseUrl } from '../../core/config/app-config';
+import { PermissionRow } from '../../models/permission.model';
 
 
 @Injectable({

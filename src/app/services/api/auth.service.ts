@@ -2,10 +2,10 @@ import { Injectable, signal, inject } from '@angular/core';
 import { Observable, finalize, tap, forkJoin, of, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { GeneralConfigService } from './general-config.service';
-import { LogoutRequest, LoginRequest, LoginResponse, BoAdminProfile } from '../models/auth.model';
+import { LogoutRequest, LoginRequest, LoginResponse, BoAdminProfile } from '../../models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { StorageUtil } from '../core/utils/storage.util';
-import { getBaseUrl } from '../core/config/app-config';
+import { StorageUtil } from '../../core/utils/storage.util';
+import { getBaseUrl } from '../../core/config/app-config';
 
 @Injectable({
   providedIn: 'root',

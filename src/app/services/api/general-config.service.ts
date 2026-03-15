@@ -2,9 +2,9 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, tap, of } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { getBaseUrl } from '../core/config/app-config';
-import { GeneralConfig } from '../models/general-config.model';
-import { SKIP_API_ERROR_TOAST } from '../core/interceptors/api-error.interceptor';
+import { getBaseUrl } from '../../core/config/app-config';
+import { GeneralConfig } from '../../models/general-config.model';
+import { SKIP_API_ERROR_TOAST } from '../../core/interceptors/api-error.interceptor';
 
 @Injectable({
     providedIn: 'root',

@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { getBaseUrl } from '../core/config/app-config';
-import { CheckinConfigResponse, IPRange, AttendanceLocation } from '../models/checkin-config.model';
-import { SKIP_API_ERROR_TOAST } from '../core/interceptors/api-error.interceptor';
+import { getBaseUrl } from '../../core/config/app-config';
+import { CheckinConfigResponse, IPRange, AttendanceLocation } from '../../models/checkin-config.model';
+import { SKIP_API_ERROR_TOAST } from '../../core/interceptors/api-error.interceptor';
 
 @Injectable({
   providedIn: 'root'

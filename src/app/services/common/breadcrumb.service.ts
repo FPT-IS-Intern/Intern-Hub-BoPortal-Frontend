@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { BreadcrumbItem } from '../components/breadcrumb/breadcrumb.component';
+import { BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 
 @Injectable({
   providedIn: 'root'
