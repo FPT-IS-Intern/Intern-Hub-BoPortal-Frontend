@@ -1,11 +1,11 @@
 <div class="page-body">
   @if (isError()) {
   <div class="error-container error-view">
-    <app-no-data title="Lỗi tải dữ liệu"
-      message="Đã xảy ra lỗi khi tải ma trận phân quyền. Vui lòng thử lại.">
+    <app-no-data [title]="'permissionMatrix.error.title' | translate"
+      [message]="'permissionMatrix.error.message' | translate">
       <span icon class="custom-icon-error error-icon"></span>
       <button action class="btn-outline-custom retry-btn-sec retry-btn" (click)="fetchInitialData()">
-        Thử lại
+        {{ 'permissionMatrix.error.retry' | translate }}
       </button>
     </app-no-data>
   </div>
@@ -18,23 +18,23 @@
       
       <div class="search-wrapper">
         <span class="custom-icon-search search-icon"></span>
-        <input type="text" class="search-input" placeholder="Tìm kiếm tài nguyên..." 
+        <input type="text" class="search-input" [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate" 
           [ngModel]="searchQuery()" (ngModelChange)="onSearchQueryChange($event)">
       </div>
     </div>
 
     <div class="toolbar-actions">
       <button class="btn-secondary-custom" (click)="isCreateRoleVisible = true">
-        <span class="custom-icon-package-plus"></span> Thêm vai trò
+        <span class="custom-icon-package-plus"></span> {{ 'permissionMatrix.toolbar.addRole' | translate }}
       </button>
       <button class="btn-secondary-custom" (click)="isCreateResourceVisible = true">
-        <span class="custom-icon-package-plus"></span> Thêm tài nguyên
+        <span class="custom-icon-package-plus"></span> {{ 'permissionMatrix.toolbar.addResource' | translate }}
       </button>
       
       <div class="divider"></div>
 
       <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
-        <span class="custom-icon-save"></span> Áp dụng
+        <span class="custom-icon-save"></span> {{ 'permissionMatrix.actions.apply' | translate }}
       </button>
     </div>
   </div>
@@ -45,8 +45,10 @@
   </div>
 
   <!-- Confirm save popup -->
-  <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
-    message="Bạn có muốn lưu các thay đổi ma trận phân quyền?" cancelText="Không" confirmText="Có"
+  <app-confirm-popup [(isVisible)]="isConfirmVisible" [title]="'permissionMatrix.actions.confirm.title' | translate"
+    [message]="'permissionMatrix.actions.confirm.message' | translate" 
+    [cancelText]="'permissionMatrix.actions.confirm.no' | translate" 
+    [confirmText]="'permissionMatrix.actions.confirm.yes' | translate"
     (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
 
   <!-- Create role dialog -->

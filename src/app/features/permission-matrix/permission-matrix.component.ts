@@ -16,15 +16,16 @@ import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MOCK_ROLES, MOCK_RESOURCES, MOCK_ROLE_PERMISSIONS } from '../../core/mocks/permission-matrix.mock';
 import { environment } from '../../../environments/environment';
 
 const PERMISSION_COLUMNS = [
-  { key: 'create', label: 'Tạo' },
-  { key: 'view', label: 'Xem' },
-  { key: 'update', label: 'Cập nhật' },
-  { key: 'delete', label: 'Xóa' },
-  { key: 'approve', label: 'Phê duyệt' },
+  { key: 'create', label: 'permissionMatrix.table.actions.create' },
+  { key: 'view', label: 'permissionMatrix.table.actions.view' },
+  { key: 'update', label: 'permissionMatrix.table.actions.update' },
+  { key: 'delete', label: 'permissionMatrix.table.actions.delete' },
+  { key: 'approve', label: 'permissionMatrix.table.actions.approve' },
 ] as const;
 
 @Component({
@@ -40,6 +41,7 @@ const PERMISSION_COLUMNS = [
     CreateResourceDialogComponent,
     NoDataComponent,
     ConfirmPopup,
+    TranslateModule,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',
@@ -50,6 +52,7 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly loadingService = inject(LoadingService);
+  private readonly translateService = inject(TranslateService);
 
   // Core signals
   protected readonly isInitLoading = signal(false);
@@ -81,10 +84,12 @@ export class PermissionMatrixComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.breadcrumbService.setBreadcrumbs([
-      { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-      { label: 'Ma Trận Phân Quyền', active: true }
-    ]);
+    this.translateService.stream('permissionMatrix.breadcrumb.title').subscribe(title => {
+      this.breadcrumbService.setBreadcrumbs([
+        { label: 'Home', icon: 'custom-icon-home', url: '/main' },
+        { label: title, active: true }
+      ]);
+    });
     this.fetchInitialData();
   }
 
