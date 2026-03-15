@@ -441,29 +441,79 @@
       "title": "Ma Trận Phân Quyền"
     },
     "toolbar": {
+      "searchPlaceholder": "Tìm kiếm tài nguyên...",
+      "roleSelectorPlaceholder": "Vai trò",
       "addRole": "Thêm vai trò",
       "addResource": "Thêm tài nguyên"
     },
     "table": {
-      "resource": "Tài nguyên",
+      "resource": "Chức năng",
       "actions": {
         "create": "Tạo",
         "view": "Xem",
         "update": "Cập nhật",
         "delete": "Xóa",
         "approve": "Phê duyệt"
+      },
+      "empty": {
+        "title": "Không có tài nguyên",
+        "message": "Vui lòng thêm tài nguyên hoặc chọn vai trò khác để xem ma trận phân quyền."
       }
     },
     "actions": {
       "apply": "Áp dụng",
       "confirm": {
         "title": "Lưu lại",
-        "message": "Bạn có muốn lưu các thay đổi ma trận phân quyền?"
+        "message": "Bạn có muốn lưu các thay đổi ma trận phân quyền?",
+        "yes": "Có",
+        "no": "Không"
+      }
+    },
+    "dialogs": {
+      "createRole": {
+        "title": "Tạo vai trò mới",
+        "labels": {
+          "name": "Tên vai trò",
+          "description": "Mô tả"
+        },
+        "placeholders": {
+          "name": "Ví dụ: Quản trị viên hệ thống",
+          "description": "Ghi chú thêm về vai trò này..."
+        },
+        "errors": {
+          "nameRequired": "Vui lòng nhập tên vai trò"
+        },
+        "actions": {
+          "cancel": "Hủy bỏ",
+          "submit": "Tạo vai trò"
+        }
+      },
+      "createResource": {
+        "title": "Tạo tài nguyên mới",
+        "labels": {
+          "name": "Tên tài nguyên",
+          "code": "Mã tài nguyên",
+          "description": "Mô tả"
+        },
+        "placeholders": {
+          "name": "Ví dụ: Quản lý nhân viên",
+          "code": "Ví dụ: employee_management",
+          "description": "Ghi chú thêm về tài nguyên này..."
+        },
+        "errors": {
+          "nameRequired": "Vui lòng nhập tên tài nguyên",
+          "codeRequired": "Vui lòng nhập mã tài nguyên"
+        },
+        "actions": {
+          "cancel": "Hủy bỏ",
+          "submit": "Tạo tài nguyên"
+        }
       }
     },
     "error": {
-      "title": "Không tìm thấy dữ liệu phân quyền",
-      "message": "Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại."
+      "title": "Lỗi tải dữ liệu",
+      "message": "Đã xảy ra lỗi khi tải ma trận phân quyền. Vui lòng thử lại.",
+      "retry": "Thử lại"
     }
   }
 }

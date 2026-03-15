@@ -441,29 +441,78 @@
       "title": "Permission Matrix"
     },
     "toolbar": {
+      "searchPlaceholder": "Search resources...",
+      "roleSelectorPlaceholder": "Role",
       "addRole": "Add Role",
       "addResource": "Add Resource"
     },
     "table": {
-      "resource": "Resource",
+      "resource": "Function",
       "actions": {
         "create": "Create",
         "view": "View",
         "update": "Update",
         "delete": "Delete",
         "approve": "Approve"
+      },
+      "empty": {
+        "title": "No resources",
+        "message": "Please add resources or select another role to view the permission matrix."
       }
     },
     "actions": {
       "apply": "Apply",
       "confirm": {
         "title": "Save changes",
-        "message": "Do you want to save the permission matrix changes?"
+        "message": "Do you want to save the permission matrix changes?",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "dialogs": {
+      "createRole": {
+        "title": "Create new role",
+        "labels": {
+          "name": "Role Name",
+          "description": "Description"
+        },
+        "placeholders": {
+          "name": "e.g., System Administrator",
+          "description": "Additional notes about this role..."
+        },
+        "errors": {
+          "nameRequired": "Please enter role name"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Create Role"
+        }
+      },
+      "createResource": {
+        "title": "Create new resource",
+        "labels": {
+          "name": "Resource Name",
+          "code": "Resource Code",
+          "description": "Description"
+        },
+        "placeholders": {
+          "name": "e.g., Employee Management",
+          "code": "e.g., employee_management",
+          "description": "Additional notes about this resource..."
+        },
+        "errors": {
+          "nameRequired": "Please enter resource name",
+          "codeRequired": "Please enter resource code"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Create Resource"
+        }
       }
     },
     "error": {
-      "title": "Permission data not found",
-      "message": "An error occurred while loading the permission matrix or data does not exist.",
+      "title": "Data load error",
+      "message": "An error occurred while loading the permission matrix. Please try again.",
       "retry": "Retry"
     }
   }
