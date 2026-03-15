@@ -37,7 +37,8 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  overflow-y: auto; /* Re-enable browser scroll */
+  overflow-y: auto;
+  /* Re-enable browser scroll */
   font-family: inherit;
   min-height: 100vh;
   background-color: var(--app-color-layout-bg);
@@ -50,15 +51,15 @@ app-root {
 }
 
 // PREMIUM FOCUS RESET
-button, 
-a, 
-input, 
-select, 
+button,
+a,
+input,
+select,
 textarea {
   &:focus {
     outline: none !important;
   }
-  
+
   &:focus-visible {
     outline: none !important;
     box-shadow: 0 0 0 3px var(--app-color-primary-alpha-20, rgba(225, 131, 8, 0.2)) !important;
