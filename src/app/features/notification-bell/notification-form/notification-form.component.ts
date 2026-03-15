@@ -53,9 +53,16 @@ export class NotificationFormComponent implements OnInit {
       audience: [{ value: this.initialData?.audience || 'All', disabled: this.isReadOnly }, [Validators.required]],
       type: [{ value: this.initialData?.type || 'System', disabled: this.isReadOnly }, [Validators.required]],
       onclickAction: [{ value: this.initialData?.onclickAction || '', disabled: this.isReadOnly }],
-      scheduleTime: [{ value: this.initialData?.scheduleTime ? new Date(this.initialData.scheduleTime) : null, disabled: this.isReadOnly }],
+      scheduleTime: [{ value: this.initialData?.scheduleTime ? new Date(this.initialData.scheduleTime) : null, disabled: this.isReadOnly }, [this.futureDateValidator]],
     });
   }
+
+  private futureDateValidator = (control: any) => {
+    if (!control.value) return null;
+    const now = new Date();
+    const selected = new Date(control.value);
+    return selected > now ? null : { pastDate: true };
+  };
 
   submitForm(): void {
     if (this.validateForm.valid) {

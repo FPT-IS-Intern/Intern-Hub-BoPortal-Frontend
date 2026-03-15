@@ -57,8 +57,12 @@
 
         <div class="form-group">
             <label class="form-label">Thời gian gửi</label>
-            <app-shared-date-time formControlName="scheduleTime" [isReadOnly]="isReadOnly">
+            <app-shared-date-time formControlName="scheduleTime" [isReadOnly]="isReadOnly"
+                [class.has-error]="validateForm.get('scheduleTime')?.touched && validateForm.get('scheduleTime')?.hasError('pastDate')">
             </app-shared-date-time>
+            @if (validateForm.get('scheduleTime')?.touched && validateForm.get('scheduleTime')?.hasError('pastDate')) {
+            <div class="error-tip">Thời gian gửi phải lớn hơn thời gian hiện tại</div>
+            }
         </div>
 
         <div class="form-footer" *ngIf="!isReadOnly">
