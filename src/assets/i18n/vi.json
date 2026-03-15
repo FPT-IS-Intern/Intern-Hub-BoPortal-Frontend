@@ -304,72 +304,166 @@
         "title": "Xóa dải IP?",
         "message": "Bạn có chắc chắn muốn xóa dải IP <b>{{name}}</b>?"
       }
-    },
-    "notification": {
-      "mgmt": {
-        "title": "Quản lý thông báo",
-        "subtitle": "Theo dõi, soạn thảo và lên lịch gửi thông báo tới người dùng hệ thống.",
-        "create": "Soạn thông báo mới",
-        "all": "Tất cả thông báo"
-      },
-      "tabs": {
-        "list": "Danh sách thông báo",
-        "compose": "Soạn thảo nội dung"
-      },
-      "list": {
-        "title": "Danh sách lịch sử",
-        "subtitle": "Xem lại các thông báo đã gửi hoặc đang chờ phát hành.",
-        "add": "Soạn thông báo mới"
-      },
-      "table": {
-        "title": "Tiêu đề",
-        "type": "Loại",
-        "target": "Đối tượng",
-        "status": "Trạng thái",
-        "dates": "Ngày gửi / Ngày tạo",
-        "actions": "Thao tác"
-      },
-      "action": {
-        "edit": "Chỉnh sửa",
-        "duplicate": "Sao chép",
-        "recall": "Thu hồi"
-      },
-      "composer": {
-        "create": "Tạo thông báo mới",
-        "edit": "Chỉnh sửa thông báo"
-      }
-    },
-    "permissionMatrix": {
+    }
+  },
+  "notification": {
+    "bell": {
       "breadcrumb": {
-        "systemConfig": "Cấu Hình Hệ Thống",
-        "title": "Ma Trận Phân Quyền"
+        "title": "Chuông Thông Báo"
       },
-      "toolbar": {
-        "addRole": "Thêm vai trò",
-        "addResource": "Thêm tài nguyên"
-      },
-      "table": {
-        "resource": "Tài nguyên",
-        "actions": {
-          "create": "Tạo",
-          "view": "Xem",
-          "update": "Cập nhật",
-          "delete": "Xóa",
-          "approve": "Phê duyệt"
-        }
+      "filters": {
+        "searchPlaceholder": "Tìm theo tiêu đề...",
+        "statusPlaceholder": "Trạng thái"
       },
       "actions": {
-        "apply": "Áp dụng",
-        "confirm": {
-          "title": "Lưu lại",
-          "message": "Bạn có muốn lưu các thay đổi ma trận phân quyền?"
-        }
+        "add": "Thêm mới"
+      },
+      "modals": {
+        "create": "Tạo thông báo mới",
+        "edit": "Chỉnh sửa thông báo",
+        "detail": "Chi tiết thông báo",
+        "deleteTitle": "Xóa thông báo",
+        "deleteMessage": "Bạn có chắc chắn muốn xóa thông báo \"{{title}}\"?",
+        "sendNowTitle": "Gửi thông báo ngay",
+        "sendNowMessage": "Gửi thông báo \"{{title}}\" đến toàn bộ đối tượng đã chọn ngay lập tức?",
+        "confirm": "Xác nhận",
+        "cancel": "Hủy"
+      },
+      "toast": {
+        "createSuccess": "Đã tạo thông báo thành công",
+        "updateSuccess": "Đã cập nhật thông báo thành công",
+        "deleteSuccess": "Đã xóa thông báo thành công",
+        "sendSuccess": "Đã gửi thông báo thành công"
+      }
+    },
+    "table": {
+      "headers": {
+        "index": "STT",
+        "title": "Tiêu đề",
+        "audience": "Đối tượng",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Hành động"
+      },
+      "audience": {
+        "all": "Tất cả",
+        "group": "Nhóm",
+        "specific": "Cụ thể"
+      },
+      "status": {
+        "sent": "Đã gửi",
+        "draft": "Nháp",
+        "scheduled": "Đã lên lịch"
+      },
+      "actions": {
+        "view": "Xem",
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "sendNow": "Gửi ngay"
+      },
+      "empty": {
+        "title": "Trống",
+        "message": "Hiện tại không có thông báo nào."
       },
       "error": {
-        "title": "Không tìm thấy dữ liệu phân quyền",
-        "message": "Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.",
+        "title": "Lỗi tải dữ liệu",
+        "message": "Đã có lỗi xảy ra khi tải danh sách thông báo. Vui lòng thử lại sau.",
         "retry": "Thử lại"
+      },
+      "notFound": {
+        "title": "Không tìm thấy thông báo",
+        "message": "Không có dữ liệu nào khớp với điều kiện tìm kiếm của bạn."
       }
+    },
+    "form": {
+      "labels": {
+        "title": "Tiêu đề",
+        "content": "Nội dung",
+        "type": "Loại thông báo",
+        "audience": "Đối tượng nhận",
+        "actionUrl": "Hành động khi nhấn (URL)",
+        "scheduleTime": "Thời gian gửi"
+      },
+      "placeholders": {
+        "title": "Nhập tiêu đề thông báo",
+        "content": "Nhập nội dung thông báo",
+        "type": "Chọn loại",
+        "audience": "Chọn đối tượng",
+        "actionUrl": "https://example.com/..."
+      },
+      "errors": {
+        "title": "Vui lòng nhập tiêu đề (tối đa 255 ký tự)",
+        "content": "Vui lòng nhập nội dung thông báo",
+        "type": "Vui lòng chọn loại thông báo",
+        "audience": "Vui lòng chọn đối tượng nhận",
+        "pastDate": "Thời gian gửi phải lớn hơn thời gian hiện tại"
+      },
+      "actions": {
+        "cancel": "Hủy",
+        "save": "Lưu thông báo"
+      }
+    },
+    "dropdown": {
+      "tabs": {
+        "all": "Tất cả",
+        "unread": "Chưa đọc"
+      },
+      "actions": {
+        "readAll": "Đọc hết"
+      },
+      "empty": {
+        "title": "Chưa có thông báo",
+        "subtitle": "Bạn sẽ thấy thông báo mới tại đây."
+      }
+    },
+    "mocks": {
+      "status": {
+        "all": "Tất cả trạng thái",
+        "sent": "Đã gửi",
+        "draft": "Nháp",
+        "scheduled": "Đã lên lịch"
+      },
+      "type": {
+        "system": "Thông báo hệ thống",
+        "promotion": "Tin tức nội bộ",
+        "warning": "Cảnh báo quan trọng"
+      },
+      "audience": {
+        "all": "Tất cả nhân viên",
+        "group": "Nhóm đơn vị/Phòng ban",
+        "specific": "Cá nhân cụ thể"
+      }
+    }
+  },
+  "permissionMatrix": {
+    "breadcrumb": {
+      "systemConfig": "Cấu Hình Hệ Thống",
+      "title": "Ma Trận Phân Quyền"
+    },
+    "toolbar": {
+      "addRole": "Thêm vai trò",
+      "addResource": "Thêm tài nguyên"
+    },
+    "table": {
+      "resource": "Tài nguyên",
+      "actions": {
+        "create": "Tạo",
+        "view": "Xem",
+        "update": "Cập nhật",
+        "delete": "Xóa",
+        "approve": "Phê duyệt"
+      }
+    },
+    "actions": {
+      "apply": "Áp dụng",
+      "confirm": {
+        "title": "Lưu lại",
+        "message": "Bạn có muốn lưu các thay đổi ma trận phân quyền?"
+      }
+    },
+    "error": {
+      "title": "Không tìm thấy dữ liệu phân quyền",
+      "message": "Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại."
     }
   }
 }

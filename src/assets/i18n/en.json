@@ -304,72 +304,167 @@
         "title": "Delete IP range?",
         "message": "Are you sure you want to delete IP range <b>{{name}}</b>?"
       }
-    },
-    "permissionMatrix": {
+    }
+  },
+  "notification": {
+    "bell": {
       "breadcrumb": {
-        "systemConfig": "System Configuration",
-        "title": "Permission Matrix"
+        "title": "Notification Bell"
       },
-      "toolbar": {
-        "addRole": "Add Role",
-        "addResource": "Add Resource"
-      },
-      "table": {
-        "resource": "Resource",
-        "actions": {
-          "create": "Create",
-          "view": "View",
-          "update": "Update",
-          "delete": "Delete",
-          "approve": "Approve"
-        }
+      "filters": {
+        "searchPlaceholder": "Search by title...",
+        "statusPlaceholder": "Status"
       },
       "actions": {
-        "apply": "Apply",
-        "confirm": {
-          "title": "Save changes",
-          "message": "Do you want to save the permission matrix changes?"
-        }
+        "add": "Add New"
       },
-      "error": {
-        "title": "Permission data not found",
-        "message": "An error occurred while loading the permission matrix or data does not exist.",
-        "retry": "Retry"
+      "modals": {
+        "create": "Create new notification",
+        "edit": "Edit notification",
+        "detail": "Notification details",
+        "deleteTitle": "Delete notification",
+        "deleteMessage": "Are you sure you want to delete notification \"{{title}}\"?",
+        "sendNowTitle": "Send notification now",
+        "sendNowMessage": "Send notification \"{{title}}\" to all selected targets immediately?",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "createSuccess": "Notification created successfully",
+        "updateSuccess": "Notification updated successfully",
+        "deleteSuccess": "Notification deleted successfully",
+        "sendSuccess": "Notification sent successfully"
       }
     },
-    "notification": {
-      "mgmt": {
-        "title": "Notification Management",
-        "subtitle": "Track, compose and schedule notifications to system users.",
-        "create": "Compose new notification",
-        "all": "All notifications"
-      },
-      "tabs": {
-        "list": "Notification list",
-        "compose": "Compose content"
-      },
-      "list": {
-        "title": "History list",
-        "subtitle": "Review sent notifications or those pending release.",
-        "add": "Compose new notification"
-      },
-      "table": {
+    "table": {
+      "headers": {
+        "index": "No.",
         "title": "Title",
-        "type": "Type",
-        "target": "Target",
+        "audience": "Audience",
         "status": "Status",
-        "dates": "Sent date / Created date",
+        "createdAt": "Created Date",
         "actions": "Actions"
       },
-      "action": {
-        "edit": "Edit",
-        "duplicate": "Duplicate",
-        "recall": "Recall"
+      "audience": {
+        "all": "All",
+        "group": "Group",
+        "specific": "Specific"
       },
-      "composer": {
-        "create": "Create new notification",
-        "edit": "Edit notification"
+      "status": {
+        "sent": "Sent",
+        "draft": "Draft",
+        "scheduled": "Scheduled"
+      },
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete",
+        "sendNow": "Send Now"
+      },
+      "empty": {
+        "title": "Empty",
+        "message": "There are currently no notifications."
+      },
+      "error": {
+        "title": "Data load error",
+        "message": "An error occurred while loading the notification list. Please try again later.",
+        "retry": "Try again"
+      },
+      "notFound": {
+        "title": "No notifications found",
+        "message": "No data matches your search criteria."
       }
+    },
+    "form": {
+      "labels": {
+        "title": "Title",
+        "content": "Content",
+        "type": "Notification Type",
+        "audience": "Target Audience",
+        "actionUrl": "On click action (URL)",
+        "scheduleTime": "Schedule Time"
+      },
+      "placeholders": {
+        "title": "Enter notification title",
+        "content": "Enter notification content",
+        "type": "Select type",
+        "audience": "Select audience",
+        "actionUrl": "https://example.com/..."
+      },
+      "errors": {
+        "title": "Please enter a title (max 255 characters)",
+        "content": "Please enter notification content",
+        "type": "Please select a notification type",
+        "audience": "Please select a target audience",
+        "pastDate": "Schedule time must be greater than current time"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save Notification"
+      }
+    },
+    "dropdown": {
+      "tabs": {
+        "all": "All",
+        "unread": "Unread"
+      },
+      "actions": {
+        "readAll": "Mark all as read"
+      },
+      "empty": {
+        "title": "No notifications",
+        "subtitle": "You will see new notifications here."
+      }
+    },
+    "mocks": {
+      "status": {
+        "all": "All status",
+        "sent": "Sent",
+        "draft": "Draft",
+        "scheduled": "Scheduled"
+      },
+      "type": {
+        "system": "System Notification",
+        "promotion": "Internal News",
+        "warning": "Critical Warning"
+      },
+      "audience": {
+        "all": "All employees",
+        "group": "Unit/Department Group",
+        "specific": "Specific individual"
+      }
+    }
+  },
+  "permissionMatrix": {
+    "breadcrumb": {
+      "systemConfig": "System Configuration",
+      "title": "Permission Matrix"
+    },
+    "toolbar": {
+      "addRole": "Add Role",
+      "addResource": "Add Resource"
+    },
+    "table": {
+      "resource": "Resource",
+      "actions": {
+        "create": "Create",
+        "view": "View",
+        "update": "Update",
+        "delete": "Delete",
+        "approve": "Approve"
+      }
+    },
+    "actions": {
+      "apply": "Apply",
+      "confirm": {
+        "title": "Save changes",
+        "message": "Do you want to save the permission matrix changes?"
+      }
+    },
+    "error": {
+      "title": "Permission data not found",
+      "message": "An error occurred while loading the permission matrix or data does not exist.",
+      "retry": "Retry"
     }
   }
 }
