@@ -81,7 +81,13 @@
       },
       "actions": {
         "edit": "Sửa",
-        "delete": "Xóa"
+        "delete": "Xóa",
+        "cancel": "Hủy bỏ",
+        "save": "Lưu lại",
+        "add": "Thêm mới"
+      },
+      "confirmDelete": {
+        "title": "Xác nhận xóa"
       }
     },
     "page": {
@@ -331,6 +337,38 @@
       "composer": {
         "create": "Tạo thông báo mới",
         "edit": "Chỉnh sửa thông báo"
+      }
+    },
+    "permissionMatrix": {
+      "breadcrumb": {
+        "systemConfig": "Cấu Hình Hệ Thống",
+        "title": "Ma Trận Phân Quyền"
+      },
+      "toolbar": {
+        "addRole": "Thêm vai trò",
+        "addResource": "Thêm tài nguyên"
+      },
+      "table": {
+        "resource": "Tài nguyên",
+        "actions": {
+          "create": "Tạo",
+          "view": "Xem",
+          "update": "Cập nhật",
+          "delete": "Xóa",
+          "approve": "Phê duyệt"
+        }
+      },
+      "actions": {
+        "apply": "Áp dụng",
+        "confirm": {
+          "title": "Lưu lại",
+          "message": "Bạn có muốn lưu các thay đổi ma trận phân quyền?"
+        }
+      },
+      "error": {
+        "title": "Không tìm thấy dữ liệu phân quyền",
+        "message": "Đã xảy ra lỗi khi tải ma trận phân quyền hoặc dữ liệu hiện không tồn tại.",
+        "retry": "Thử lại"
       }
     }
   }

@@ -81,7 +81,13 @@
       },
       "actions": {
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "save": "Save",
+        "add": "Add New"
+      },
+      "confirmDelete": {
+        "title": "Confirm Delete"
       }
     },
     "page": {
@@ -297,6 +303,72 @@
       "confirmDelete": {
         "title": "Delete IP range?",
         "message": "Are you sure you want to delete IP range <b>{{name}}</b>?"
+      }
+    },
+    "permissionMatrix": {
+      "breadcrumb": {
+        "systemConfig": "System Configuration",
+        "title": "Permission Matrix"
+      },
+      "toolbar": {
+        "addRole": "Add Role",
+        "addResource": "Add Resource"
+      },
+      "table": {
+        "resource": "Resource",
+        "actions": {
+          "create": "Create",
+          "view": "View",
+          "update": "Update",
+          "delete": "Delete",
+          "approve": "Approve"
+        }
+      },
+      "actions": {
+        "apply": "Apply",
+        "confirm": {
+          "title": "Save changes",
+          "message": "Do you want to save the permission matrix changes?"
+        }
+      },
+      "error": {
+        "title": "Permission data not found",
+        "message": "An error occurred while loading the permission matrix or data does not exist.",
+        "retry": "Retry"
+      }
+    },
+    "notification": {
+      "mgmt": {
+        "title": "Notification Management",
+        "subtitle": "Track, compose and schedule notifications to system users.",
+        "create": "Compose new notification",
+        "all": "All notifications"
+      },
+      "tabs": {
+        "list": "Notification list",
+        "compose": "Compose content"
+      },
+      "list": {
+        "title": "History list",
+        "subtitle": "Review sent notifications or those pending release.",
+        "add": "Compose new notification"
+      },
+      "table": {
+        "title": "Title",
+        "type": "Type",
+        "target": "Target",
+        "status": "Status",
+        "dates": "Sent date / Created date",
+        "actions": "Actions"
+      },
+      "action": {
+        "edit": "Edit",
+        "duplicate": "Duplicate",
+        "recall": "Recall"
+      },
+      "composer": {
+        "create": "Create new notification",
+        "edit": "Edit notification"
       }
     }
   }
