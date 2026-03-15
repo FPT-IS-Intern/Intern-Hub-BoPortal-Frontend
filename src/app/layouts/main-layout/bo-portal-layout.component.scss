@@ -103,11 +103,14 @@ $radius: 28px;
 
 .breadcrumb-container {
   margin-bottom: 24px;
+  min-height: 24px; /* Prevent collapse when empty */
+  display: flex;
+  align-items: center;
 }
 
 .content-wrapper {
   width: 100%;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease; /* Avoid expensive 'all' transition */
 }
 
 .sidebar-overlay {
