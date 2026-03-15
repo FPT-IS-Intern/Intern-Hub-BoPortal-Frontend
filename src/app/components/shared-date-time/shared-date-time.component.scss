@@ -1,6 +1,11 @@
 .shared-date-time-wrapper {
     position: relative;
     width: 100%;
+    
+    // Đảm bảo wrapper của picker đang mở luôn nổi lên trên các form-group khác
+    &:has(.picker-overlay) {
+        z-index: 2001;
+    }
 
     .calendar-trigger {
         display: flex;
@@ -99,7 +104,7 @@
         position: absolute;
         bottom: calc(100% + 8px);
         left: 0;
-        z-index: 1000;
+        z-index: 2000;
         background: white;
         border-radius: 12px;
         box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
