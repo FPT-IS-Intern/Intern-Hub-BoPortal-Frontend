@@ -12,6 +12,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb
 import { AuthzService } from '../../services/authz.service';
 import { PermissionRow } from '../../models/permission.model';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
+import { LoadingService } from '../../loading/loading.service';
 import { ToastService } from '../../services/toast.service';
 import { finalize } from 'rxjs';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
@@ -49,6 +50,7 @@ export class PermissionMatrixComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly loadingService = inject(LoadingService);
 
   // Core signals
   protected readonly isInitLoading = signal(false);
@@ -58,6 +60,10 @@ export class PermissionMatrixComponent implements OnInit {
   protected readonly allResources = signal<AuthzResource[]>([]);
   protected readonly selectedRoleId = signal<string | null>(null);
   protected readonly permissionRows = signal<PermissionRow[]>([]);
+  
+  protected readonly isEmpty = computed(() => {
+    return !this.isInitLoading() && !this.isError() && (this.roles().length === 0 || this.allResources().length === 0);
+  });
 
   protected readonly permissionColumns = PERMISSION_COLUMNS;
   protected isLoading = false;
@@ -87,6 +93,7 @@ export class PermissionMatrixComponent implements OnInit {
   protected fetchInitialData(): void {
     this.isInitLoading.set(true);
     this.isError.set(false);
+    this.loadingService.show();
 
     if (USE_MOCK) {
       setTimeout(() => {
@@ -97,8 +104,9 @@ export class PermissionMatrixComponent implements OnInit {
           this.loadPermissions();
         }
         this.isInitLoading.set(false);
+        this.loadingService.hide();
         this.cdr.markForCheck();
-      }, 500);
+      }, 800);
       return;
     }
 
@@ -215,6 +223,7 @@ export class PermissionMatrixComponent implements OnInit {
     if (roleId == null) return;
 
     this.isLoading = true;
+    this.loadingService.show();
     this.cdr.markForCheck();
 
     if (USE_MOCK) {
@@ -222,8 +231,9 @@ export class PermissionMatrixComponent implements OnInit {
         const perms = MOCK_ROLE_PERMISSIONS[roleId] || [];
         this.buildPermissionRows(perms);
         this.isLoading = false;
+        this.loadingService.hide();
         this.cdr.markForCheck();
-      }, 300);
+      }, 600);
       return;
     }
 

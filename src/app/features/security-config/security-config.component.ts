@@ -10,6 +10,7 @@ import { AccountSecurityComponent } from './account-security/account-security.co
 import { SessionSecurityComponent } from './session-security/session-security.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { LoadingService } from '../../loading/loading.service';
 import { finalize } from 'rxjs';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 
@@ -34,9 +35,11 @@ export class SecurityConfigComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly form: FormGroup;
   protected isConfirmVisible = false;
+  private readonly loadingService = inject(LoadingService);
 
   protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
+  protected readonly isEmpty = signal(false);
 
   constructor(
     private readonly fb: FormBuilder,
@@ -66,17 +69,20 @@ export class SecurityConfigComponent implements OnInit {
     this.fetchConfig();
   }
 
-  private fetchConfig(): void {
+  protected fetchConfig(): void {
     this.isLoading.set(true);
     this.isError.set(false);
+    this.isEmpty.set(false);
 
     this.configService.getConfig().subscribe({
       next: (res) => {
         if (res.data) {
           this.form.patchValue(res.data);
           this.isError.set(false);
+          this.isEmpty.set(false);
         } else {
-          this.isError.set(true);
+          this.isEmpty.set(true);
+          this.isError.set(false);
         }
         this.isLoading.set(false);
         this.cdr.markForCheck();
@@ -84,6 +90,7 @@ export class SecurityConfigComponent implements OnInit {
       error: (err) => {
         console.error('Fetch security config error:', err);
         this.isError.set(true);
+        this.isEmpty.set(false);
         this.isLoading.set(false);
         this.cdr.markForCheck();
       },

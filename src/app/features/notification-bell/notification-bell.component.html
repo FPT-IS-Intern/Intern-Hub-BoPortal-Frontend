@@ -3,15 +3,16 @@
   <div class="filter-bar">
     <div class="filter-left">
       <div class="search-wrapper">
-        <app-shared-search [value]="searchText" [placeholder]="'notification.bell.filters.searchPlaceholder' | translate" 
-          width="280px" (valueChange)="searchText = $event; onSearchChange()">
+        <app-shared-search [value]="searchText"
+          [placeholder]="'notification.bell.filters.searchPlaceholder' | translate" width="280px"
+          (valueChange)="searchText = $event; onSearchChange()">
         </app-shared-search>
       </div>
 
       <div class="dropdown-wrapper">
-        <app-shared-dropdown [options]="statusOptions" [(value)]="statusFilter" 
-          [placeholder]="'notification.bell.filters.statusPlaceholder' | translate"
-          icon="custom-icon-filter-lines" width="180px" (valueChange)="onSearchChange()">
+        <app-shared-dropdown [options]="statusOptions" [(value)]="statusFilter"
+          [placeholder]="'notification.bell.filters.statusPlaceholder' | translate" icon="custom-icon-filter-lines"
+          width="180px" (valueChange)="onSearchChange()">
         </app-shared-dropdown>
       </div>
 
@@ -36,7 +37,7 @@
       <span class="main-loader-icon custom-icon-loading rotate"></span>
     </div>
     } @else if (isError()) {
-    <app-no-data [title]="'notification.table.error.title' | translate" 
+    <app-no-data [title]="'notification.table.error.title' | translate"
       [message]="'notification.table.error.message' | translate">
       <span icon class="custom-icon-error error-icon"></span>
       <button action class="btn-outline-custom retry-btn-sec" (click)="onSearchChange()">
@@ -57,7 +58,7 @@
     </app-notification-pagination>
     }
     } @else {
-    <app-no-data [title]="'notification.table.notFound.title' | translate" 
+    <app-no-data [title]="'notification.table.notFound.title' | translate"
       [message]="'notification.table.notFound.message' | translate">
       <span icon class="custom-icon-box-iso selection-icon"></span>
     </app-no-data>
@@ -74,11 +75,10 @@
   </app-modal-popup>
 
   <!-- Confirm Popup for Delete / Send Now -->
-  <app-confirm-popup [(isVisible)]="isConfirmVisible" 
-    [title]="confirmTitleKey | translate" 
-    [message]="confirmMessageKey | translate: confirmMessageParams" 
+  <app-confirm-popup [(isVisible)]="isConfirmVisible" [title]="confirmTitleKey | translate"
+    [message]="confirmMessageKey | translate: confirmMessageParams"
     [cancelText]="'notification.bell.modals.cancel' | translate"
-    [confirmText]="'notification.bell.modals.confirm' | translate" 
-    (confirm)="confirmAction()" (cancel)="isConfirmVisible = false">
+    [confirmText]="'notification.bell.modals.confirm' | translate" (confirm)="confirmAction()"
+    (cancel)="isConfirmVisible = false">
   </app-confirm-popup>
 </div>

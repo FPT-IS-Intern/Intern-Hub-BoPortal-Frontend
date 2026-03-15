@@ -3,38 +3,36 @@
 
   <!-- Main content -->
   @if (isLoading()) {
-    <div class="loading-container central-loader">
-       <span class="custom-icon-loading rotate spinner-icon"></span>
-    </div>
+  <div class="loading-container central-loader">
+    <span class="custom-icon-loading rotate spinner-icon"></span>
+  </div>
   } @else if (isError()) {
-    <div class="error-container error-view">
-      <app-no-data 
-        title="Không tìm thấy cấu hình bảo mật" 
-        message="Đã xảy ra lỗi khi tải cấu hình bảo mật hoặc cấu hình hiện không tồn tại.">
-        <span icon class="custom-icon-lock security-lock-icon"></span>
-        <button action class="btn-outline-custom retry-btn-sec" (click)="ngOnInit()">
-          Thử lại
-        </button>
-      </app-no-data>
-    </div>
-  } @else {
-    <div class="content-wrapper">
-      <!-- Row 1: Password Policy -->
-      <app-password-policy [form]="form"></app-password-policy>
-
-      <!-- Row 2: Session Security -->
-      <app-session-security [form]="form"></app-session-security>
-
-      <!-- Row 3: Account Security -->
-      <app-account-security [form]="form"></app-account-security>
-    </div>
-
-    <!-- Apply button -->
-    <div class="actions">
-      <button class="btn-primary-custom apply-btn" (click)="onSubmit()">
-        Áp dụng
+  <div class="error-container error-view">
+    <app-no-data title="Lỗi tải dữ liệu" message="Đã xảy ra lỗi khi tải cấu hình bảo mật. Vui lòng thử lại.">
+      <span icon class="custom-icon-error error-icon"></span>
+      <button action class="btn-outline-custom retry-btn-sec" (click)="fetchConfig()">
+        Thử lại
       </button>
-    </div>
+    </app-no-data>
+  </div>
+  } @else {
+  <div class="content-wrapper">
+    <!-- Row 1: Password Policy -->
+    <app-password-policy [form]="form"></app-password-policy>
+
+    <!-- Row 2: Session Security -->
+    <app-session-security [form]="form"></app-session-security>
+
+    <!-- Row 3: Account Security -->
+    <app-account-security [form]="form"></app-account-security>
+  </div>
+
+  <!-- Apply button -->
+  <div class="actions">
+    <button class="btn-primary-custom apply-btn" (click)="onSubmit()">
+      Áp dụng
+    </button>
+  </div>
   }
 
   <app-confirm-popup [(isVisible)]="isConfirmVisible" title="Lưu lại"
