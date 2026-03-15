@@ -1,5 +1,5 @@
 <div class="modal-overlay" *ngIf="isVisible" (click)="handleCancel()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-container" (click)="$event.stopPropagation()" [style.maxWidth]="maxWidth">
         <!-- Header -->
         <div class="modal-header">
             <h3 class="modal-title">{{ title }}</h3>

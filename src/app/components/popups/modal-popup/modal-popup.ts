@@ -15,6 +15,7 @@ export class ModalPopup {
   @Input() saveText: string = 'Lưu';
   @Input() showFooter: boolean = true;
   @Input() okDisabled: boolean = false;
+  @Input() maxWidth: string = '520px';
 
   @Output() isVisibleChange = new EventEmitter<boolean>();
   @Output() cancel = new EventEmitter<void>();
