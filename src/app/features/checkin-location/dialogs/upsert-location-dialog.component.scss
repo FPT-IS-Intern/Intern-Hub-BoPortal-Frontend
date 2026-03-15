@@ -182,7 +182,7 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  right: 140px;
+  right: 190px;
   /* Space for the locate-me button */
   z-index: 10;
   display: flex;
@@ -274,7 +274,6 @@
   &:hover:not(:disabled) {
     background: var(--app-color-primary);
     color: white;
-    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 

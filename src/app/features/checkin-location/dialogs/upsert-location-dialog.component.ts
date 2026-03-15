@@ -1,12 +1,11 @@
-import { Component, Input, OnInit, inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, inject, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AttendanceLocation } from '../../../models/checkin-config.model';
 import { environment } from '../../../../environments/environment';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '../../../services/toast.service';
+import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
 
 declare const google: any;
 
@@ -16,18 +15,21 @@ declare const google: any;
   imports: [
     CommonModule, 
     ReactiveFormsModule,
-    NzIconModule,
-    TranslateModule
+    TranslateModule,
+    ModalPopup
   ],
   templateUrl: './upsert-location-dialog.component.html',
   styleUrl: './upsert-location-dialog.component.scss'
 })
 export class UpsertLocationDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly modalRef = inject(NzModalRef);
   private readonly translate = inject(TranslateService);
   private readonly toast = inject(ToastService);
-  readonly data = inject<AttendanceLocation>(NZ_MODAL_DATA, { optional: true });
+
+  @Input() isVisible = false;
+  @Input() data: AttendanceLocation | null = null;
+  @Output() isVisibleChange = new EventEmitter<boolean>();
+  @Output() save = new EventEmitter<any>();
 
   @ViewChild('searchInput') searchElementRef!: ElementRef;
 
@@ -228,12 +230,13 @@ export class UpsertLocationDialogComponent implements OnInit {
   }
 
   submit(): void {
-    if ((this as any).form.valid) {
-      this.modalRef.close(this.form.value);
+    if (this.form.valid) {
+      this.save.emit(this.form.value);
     }
   }
 
   cancel(): void {
-    (this as any).modalRef.destroy();
+    this.isVisible = false;
+    this.isVisibleChange.emit(this.isVisible);
   }
 }

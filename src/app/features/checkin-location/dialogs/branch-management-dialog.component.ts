@@ -1,18 +1,13 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { BranchCheckinConfig } from '../../../models/checkin-config.model';
 import { CheckinConfigService } from '../../../services/checkin-config.service';
 import { ToastService } from '../../../services/toast.service';
 import { SharedSearchComponent } from '../../../components/shared-search/shared-search.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
+import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-branch-management-dialog',
@@ -21,23 +16,27 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     CommonModule, 
     FormsModule, 
     ReactiveFormsModule,
-    NzModalModule, 
-    NzIconModule, 
-    NzButtonModule,
     SharedSearchComponent,
-    TranslateModule
+    TranslateModule,
+    ModalPopup,
+    ConfirmPopup
   ],
   templateUrl: './branch-management-dialog.component.html',
   styleUrl: './branch-management-dialog.component.scss'
 })
 export class BranchManagementDialogComponent implements OnInit {
-  private readonly modalRef = inject(NzModalRef);
-  private readonly modalService = inject(NzModalService);
   private readonly checkinService = inject(CheckinConfigService);
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
-  readonly modalData = inject<{ branches: BranchCheckinConfig[] }>(NZ_MODAL_DATA, { optional: true });
+  
+  @Input() isVisible = false;
+  @Input() data: { branches: BranchCheckinConfig[] } | null = null;
+  @Output() isVisibleChange = new EventEmitter<boolean>();
+  @Output() close = new EventEmitter<boolean>();
+
+  protected readonly isDeleteConfirmVisible = signal(false);
+  protected branchToDelete = signal<BranchCheckinConfig | null>(null);
   
   protected readonly branches = signal<BranchCheckinConfig[]>([]);
   protected readonly searchQuery = signal('');
@@ -66,8 +65,8 @@ export class BranchManagementDialogComponent implements OnInit {
   });
 
   ngOnInit() {
-    if (this.modalData?.branches) {
-      this.branches.set([...this.modalData.branches]);
+    if (this.data?.branches) {
+      this.branches.set([...this.data.branches]);
     }
   }
 
@@ -108,7 +107,7 @@ export class BranchManagementDialogComponent implements OnInit {
             : this.translate.instant('checkin.branchDialog.toast.createSuccess')
         );
         this.isSaving = false;
-        this.modalRef.close(true); // Close with success to trigger refresh
+        this.close.emit(true);
       },
       error: () => {
         this.toast.error(this.translate.instant('checkin.branchDialog.toast.saveError'));
@@ -118,20 +117,27 @@ export class BranchManagementDialogComponent implements OnInit {
   }
 
   onDelete(branch: BranchCheckinConfig) {
-    this.modalService.confirm({
-      nzTitle: this.translate.instant('checkin.branchDialog.confirmDelete.title'),
-      nzContent: this.translate.instant('checkin.branchDialog.confirmDelete.message', { name: branch.name }),
-      nzOkText: this.translate.instant('checkin.common.actions.delete'),
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.checkinService.deleteBranch(branch.id).subscribe({
-          next: () => {
-            this.toast.success(this.translate.instant('checkin.branchDialog.toast.deleteSuccess'));
-            this.modalRef.close(true);
-          },
-          error: () => this.toast.error(this.translate.instant('checkin.branchDialog.toast.deleteError'))
-        });
-      }
+    this.branchToDelete.set(branch);
+    this.isDeleteConfirmVisible.set(true);
+  }
+
+  handleDeleteConfirm() {
+    const branch = this.branchToDelete();
+    if (!branch) return;
+
+    this.isDeleteConfirmVisible.set(false);
+    this.checkinService.deleteBranch(branch.id).subscribe({
+      next: () => {
+        this.toast.success(this.translate.instant('checkin.branchDialog.toast.deleteSuccess'));
+        this.close.emit(true);
+      },
+      error: () => this.toast.error(this.translate.instant('checkin.branchDialog.toast.deleteError'))
     });
+  }
+
+  handleCancel() {
+    this.isVisible = false;
+    this.isVisibleChange.emit(this.isVisible);
+    this.close.emit(false);
   }
 }

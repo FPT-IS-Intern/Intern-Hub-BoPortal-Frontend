@@ -3,7 +3,7 @@
 
   @if (isLoading()) {
   <div class="loading-container">
-    <span nz-icon nzType="loading" class="main-loader"></span>
+    <span class="custom-icon-loading rotate main-loader"></span>
   </div>
   } @else if (isError()) {
   <app-no-data
@@ -82,5 +82,48 @@
       }
     </main>
   </div>
+  }
+
+  <!-- Static Dialogs rendered on demand -->
+  @if (isLocationModalVisible()) {
+    <app-upsert-location-dialog
+      [isVisible]="true"
+      (isVisibleChange)="isLocationModalVisible.set($event)"
+      [data]="selectedLocation()"
+      (save)="handleLocationSave($event)">
+    </app-upsert-location-dialog>
+  }
+
+  @if (isIPModalVisible()) {
+    <app-upsert-ip-range-dialog
+      [isVisible]="true"
+      (isVisibleChange)="isIPModalVisible.set($event)"
+      [data]="selectedIPRange()"
+      (save)="handleIPSave($event)">
+    </app-upsert-ip-range-dialog>
+  }
+
+  @if (isBranchManagementVisible()) {
+    <app-branch-management-dialog
+      [isVisible]="true"
+      (isVisibleChange)="isBranchManagementVisible.set($event)"
+      [data]="{ branches: branches() }"
+      (close)="handleBranchManagementClose($event)">
+    </app-branch-management-dialog>
+  }
+
+  @if (isDeleteConfirmVisible()) {
+    <app-confirm-popup
+      [isVisible]="true"
+      (isVisibleChange)="isDeleteConfirmVisible.set($event)"
+      [title]="'checkin.common.confirmDelete.title' | translate"
+      [message]="(deleteConfirmData()?.type === 'location' 
+        ? 'checkin.location.confirmDelete.message' 
+        : 'checkin.ip.confirmDelete.message') | translate: { name: deleteConfirmData()?.data?.name }"
+      [cancelText]="'checkin.common.actions.cancel' | translate"
+      [confirmText]="'checkin.common.actions.delete' | translate"
+      (confirm)="onConfirmDelete()"
+      (cancel)="isDeleteConfirmVisible.set(false)">
+    </app-confirm-popup>
   }
 </div>

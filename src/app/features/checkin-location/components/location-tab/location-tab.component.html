@@ -5,12 +5,12 @@
       [placeholder]="'checkin.locationTab.searchPlaceholder' | translate"></app-shared-search>
     @if (canCreate()) {
       <button class="add-btn" (click)="addLocation.emit()">
-        <span nz-icon nzType="plus"></span> {{ 'checkin.locationTab.add' | translate }}
+        <span class="custom-icon-package-plus"></span> {{ 'checkin.locationTab.add' | translate }}
       </button>
     } @else {
       <span class="add-btn-tooltip" [attr.title]="'checkin.locationTab.limitTooltip' | translate">
         <button class="add-btn add-btn--disabled" type="button" disabled>
-          <span nz-icon nzType="plus"></span> {{ 'checkin.locationTab.add' | translate }}
+          <span class="custom-icon-package-plus"></span> {{ 'checkin.locationTab.add' | translate }}
         </button>
       </span>
     }

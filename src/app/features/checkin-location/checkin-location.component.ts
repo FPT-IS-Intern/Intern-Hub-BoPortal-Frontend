@@ -1,14 +1,10 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DestroyRef } from '@angular/core';
+import { finalize } from 'rxjs';
 
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { BreadcrumbService } from '../../services/breadcrumb.service';
@@ -21,6 +17,7 @@ import { BranchManagementDialogComponent } from './dialogs/branch-management-dia
 import { BranchSidebarComponent } from './components/branch-sidebar/branch-sidebar.component';
 import { LocationTabComponent } from './components/location-tab/location-tab.component';
 import { IpTabComponent } from './components/ip-tab/ip-tab.component';
+import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-checkin-location',
@@ -30,14 +27,14 @@ import { IpTabComponent } from './components/ip-tab/ip-tab.component';
     RouterModule,
     FormsModule,
     NoDataComponent,
-    NzInputModule,
-    NzIconModule,
-    NzButtonModule,
-    NzModalModule,
     TranslateModule,
     BranchSidebarComponent,
     LocationTabComponent,
-    IpTabComponent
+    IpTabComponent,
+    UpsertLocationDialogComponent,
+    UpsertIPRangeDialogComponent,
+    BranchManagementDialogComponent,
+    ConfirmPopup
   ],
   templateUrl: './checkin-location.component.html',
   styleUrl: './checkin-location.component.scss'
@@ -45,10 +42,10 @@ import { IpTabComponent } from './components/ip-tab/ip-tab.component';
 export class CheckinLocationComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly checkinService = inject(CheckinConfigService);
-  private readonly modal = inject(NzModalService);
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   // State Signals
   protected readonly branches = signal<BranchCheckinConfig[]>([]);
@@ -56,6 +53,17 @@ export class CheckinLocationComponent implements OnInit {
   protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
   protected readonly activeTabIndex = signal(0);
+
+  // Dialog State Signals
+  protected readonly isLocationModalVisible = signal(false);
+  protected readonly selectedLocation = signal<AttendanceLocation | null>(null);
+  protected readonly isIPModalVisible = signal(false);
+  protected readonly selectedIPRange = signal<IPRange | null>(null);
+  protected readonly isBranchManagementVisible = signal(false);
+
+  // Delete Confirm State
+  protected readonly isDeleteConfirmVisible = signal(false);
+  protected deleteConfirmData = signal<{ type: 'location' | 'ip'; data: any } | null>(null);
 
   ngOnInit(): void {
     this.updateBreadcrumbs();
@@ -108,57 +116,54 @@ export class CheckinLocationComponent implements OnInit {
   protected openLocationModal(location?: AttendanceLocation): void {
     const branch = this.selectedBranch();
     if (!branch) return;
-    // Enforce 1 location per branch at UI level.
     if (!location && (branch.attendanceLocations?.length ?? 0) >= 1) return;
 
-    const modalRef = this.modal.create({
-      nzTitle: location
-        ? this.translate.instant('checkin.locationDialog.title.edit')
-        : this.translate.instant('checkin.locationDialog.title.create'),
-      nzContent: UpsertLocationDialogComponent,
-      nzData: location,
-      nzFooter: null,
-      nzWidth: 900
-    });
+    this.selectedLocation.set(location || null);
+    this.isLocationModalVisible.set(true);
+    this.cdr.markForCheck();
+  }
 
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        const isEdit = !!result.id;
-        const payload = { ...result, branchId: branch.id };
-        const request$ = isEdit
-          ? this.checkinService.updateLocation(result.id, payload)
-          : this.checkinService.createLocation(payload);
+  protected handleLocationSave(result: any): void {
+    const branch = this.selectedBranch();
+    if (!branch) return;
 
-        request$.subscribe({
-          next: () => {
-            this.toast.success(
-              isEdit
-                ? this.translate.instant('checkin.location.toast.updateSuccess')
-                : this.translate.instant('checkin.location.toast.createSuccess')
-            );
-            this.fetchConfigs();
-          },
-          error: () => this.toast.error(this.translate.instant('checkin.location.toast.saveError'))
-        });
-      }
+    this.isLocationModalVisible.set(false);
+    const isEdit = !!result.id;
+    const payload = { ...result, branchId: branch.id };
+    const request$ = isEdit
+      ? this.checkinService.updateLocation(result.id, payload)
+      : this.checkinService.createLocation(payload);
+
+    request$.subscribe({
+      next: () => {
+        this.toast.success(
+          isEdit
+            ? this.translate.instant('checkin.location.toast.updateSuccess')
+            : this.translate.instant('checkin.location.toast.createSuccess')
+        );
+        this.fetchConfigs();
+      },
+      error: () => this.toast.error(this.translate.instant('checkin.location.toast.saveError'))
     });
   }
 
   protected confirmDeleteLocation(location: AttendanceLocation): void {
-    this.modal.confirm({
-      nzTitle: this.translate.instant('checkin.location.confirmDelete.title'),
-      nzContent: this.translate.instant('checkin.location.confirmDelete.message', { name: location.name }),
-      nzOkText: this.translate.instant('checkin.common.actions.delete'),
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.checkinService.deleteLocation(location.id).subscribe({
-          next: () => {
-            this.toast.success(this.translate.instant('checkin.location.toast.deleteSuccess'));
-            this.fetchConfigs();
-          },
-          error: () => this.toast.error(this.translate.instant('checkin.location.toast.deleteError'))
-        });
-      }
+    this.deleteConfirmData.set({ type: 'location', data: location });
+    this.isDeleteConfirmVisible.set(true);
+    this.cdr.markForCheck();
+  }
+
+  protected handleLocationDelete(): void {
+    const data = this.deleteConfirmData()?.data;
+    if (!data) return;
+
+    this.isDeleteConfirmVisible.set(false);
+    this.checkinService.deleteLocation(data.id).subscribe({
+      next: () => {
+        this.toast.success(this.translate.instant('checkin.location.toast.deleteSuccess'));
+        this.fetchConfigs();
+      },
+      error: () => this.toast.error(this.translate.instant('checkin.location.toast.deleteError'))
     });
   }
 
@@ -166,73 +171,78 @@ export class CheckinLocationComponent implements OnInit {
     const branch = this.selectedBranch();
     if (!branch) return;
 
-    const modalRef = this.modal.create({
-      nzTitle: range
-        ? this.translate.instant('checkin.ipDialog.title.edit')
-        : this.translate.instant('checkin.ipDialog.title.create'),
-      nzContent: UpsertIPRangeDialogComponent,
-      nzData: range,
-      nzFooter: null,
-      nzWidth: 500
-    });
+    this.selectedIPRange.set(range || null);
+    this.isIPModalVisible.set(true);
+    this.cdr.markForCheck();
+  }
 
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        const isEdit = !!result.id;
-        const payload = { ...result, branchId: branch.id };
-        const request$ = isEdit
-          ? this.checkinService.updateIPRange(result.id, payload)
-          : this.checkinService.createIPRange(payload);
+  protected handleIPSave(result: any): void {
+    const branch = this.selectedBranch();
+    if (!branch) return;
 
-        request$.subscribe({
-          next: () => {
-            this.toast.success(
-              isEdit
-                ? this.translate.instant('checkin.ip.toast.updateSuccess')
-                : this.translate.instant('checkin.ip.toast.createSuccess')
-            );
-            this.fetchConfigs();
-          },
-          error: () => this.toast.error(this.translate.instant('checkin.ip.toast.saveError'))
-        });
-      }
+    this.isIPModalVisible.set(false);
+    const isEdit = !!result.id;
+    const payload = { ...result, branchId: branch.id };
+    const request$ = isEdit
+      ? this.checkinService.updateIPRange(result.id, payload)
+      : this.checkinService.createIPRange(payload);
+
+    request$.subscribe({
+      next: () => {
+        this.toast.success(
+          isEdit
+            ? this.translate.instant('checkin.ip.toast.updateSuccess')
+            : this.translate.instant('checkin.ip.toast.createSuccess')
+        );
+        this.fetchConfigs();
+      },
+      error: () => this.toast.error(this.translate.instant('checkin.ip.toast.saveError'))
     });
   }
 
   protected confirmDeleteIP(range: IPRange): void {
-    this.modal.confirm({
-      nzTitle: this.translate.instant('checkin.ip.confirmDelete.title'),
-      nzContent: this.translate.instant('checkin.ip.confirmDelete.message', { name: range.name }),
-      nzOkText: this.translate.instant('checkin.common.actions.delete'),
-      nzOkDanger: true,
-      nzOnOk: () => {
-        this.checkinService.deleteIPRange(range.id).subscribe({
-          next: () => {
-            this.toast.success(this.translate.instant('checkin.ip.toast.deleteSuccess'));
-            this.fetchConfigs();
-          },
-          error: () => this.toast.error(this.translate.instant('checkin.ip.toast.deleteError'))
-        });
-      }
+    this.deleteConfirmData.set({ type: 'ip', data: range });
+    this.isDeleteConfirmVisible.set(true);
+    this.cdr.markForCheck();
+  }
+
+  protected handleIPDelete(): void {
+    const data = this.deleteConfirmData()?.data;
+    if (!data) return;
+
+    this.isDeleteConfirmVisible.set(false);
+    this.checkinService.deleteIPRange(data.id).subscribe({
+      next: () => {
+        this.toast.success(this.translate.instant('checkin.ip.toast.deleteSuccess'));
+        this.fetchConfigs();
+      },
+      error: () => this.toast.error(this.translate.instant('checkin.ip.toast.deleteError'))
     });
+  }
+
+  protected onConfirmDelete(): void {
+    const config = this.deleteConfirmData();
+    if (!config) return;
+
+    if (config.type === 'location') {
+      this.handleLocationDelete();
+    } else {
+      this.handleIPDelete();
+    }
   }
 
   // --- Branch Management ---
 
   protected onManageBranches(): void {
-    const modalRef = this.modal.create({
-      nzTitle: this.translate.instant('checkin.branchDialog.title'),
-      nzContent: BranchManagementDialogComponent,
-      nzData: { branches: this.branches() },
-      nzFooter: null,
-      nzWidth: 800
-    });
+    this.isBranchManagementVisible.set(true);
+    this.cdr.markForCheck();
+  }
 
-    modalRef.afterClose.subscribe(result => {
-      if (result) {
-        this.fetchConfigs();
-      }
-    });
+  protected handleBranchManagementClose(refresh: boolean): void {
+    this.isBranchManagementVisible.set(false);
+    if (refresh) {
+      this.fetchConfigs();
+    }
   }
 
   private updateBreadcrumbs(): void {

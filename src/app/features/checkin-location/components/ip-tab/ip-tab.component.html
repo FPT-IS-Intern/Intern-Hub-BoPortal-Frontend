@@ -4,7 +4,7 @@
     <app-shared-search [value]="searchTerm()" (valueChange)="searchTerm.set($event)"
       [placeholder]="'checkin.ipTab.searchPlaceholder' | translate"></app-shared-search>
     <button class="add-btn" (click)="addIP.emit()">
-      <span nz-icon nzType="plus"></span> {{ 'checkin.ipTab.add' | translate }}
+      <span class="custom-icon-package-plus"></span> {{ 'checkin.ipTab.add' | translate }}
     </button>
   </div>
 </div>

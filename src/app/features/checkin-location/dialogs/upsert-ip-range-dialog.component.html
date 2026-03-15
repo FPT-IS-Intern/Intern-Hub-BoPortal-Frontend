@@ -1,9 +1,11 @@
-<div class="dialog-content">
-  <div class="form-section">
-    <h3 class="view-title">
-      {{ data?.id ? ('checkin.ipDialog.title.edit' | translate) : ('checkin.ipDialog.title.create' | translate) }}
-    </h3>
+<app-modal-popup
+  [(isVisible)]="isVisible"
+  [title]="data?.id ? ('checkin.ipDialog.title.edit' | translate) : ('checkin.ipDialog.title.create' | translate)"
+  [showFooter]="false"
+  maxWidth="500px"
+  (cancel)="cancel()">
 
+  <div class="form-section">
     <form [formGroup]="form" (ngSubmit)="submit()" class="custom-form">
       <div class="form-group">
         <label class="form-label required">{{ 'checkin.ipDialog.form.name.label' | translate }}</label>
@@ -72,4 +74,5 @@
       </div>
     </form>
   </div>
-</div>
+</app-modal-popup>
+

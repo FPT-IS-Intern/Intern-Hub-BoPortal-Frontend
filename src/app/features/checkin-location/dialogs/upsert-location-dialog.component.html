@@ -1,11 +1,13 @@
-<div class="dialog-content">
+<app-modal-popup
+  [(isVisible)]="isVisible"
+  [title]="data ? ('checkin.locationDialog.title.edit' | translate) : ('checkin.locationDialog.title.create' | translate)"
+  [showFooter]="false"
+  maxWidth="950px"
+  (cancel)="cancel()">
+
   <div class="split-layout">
     <!-- Left Side: Form -->
     <div class="form-section">
-      <h3 class="view-title">
-        {{ data ? ('checkin.locationDialog.title.edit' | translate) : ('checkin.locationDialog.title.create' | translate) }}
-      </h3>
-
       <form [formGroup]="form" (ngSubmit)="submit()" class="custom-form">
         <div class="form-group">
           <label class="form-label required">{{ 'checkin.locationDialog.form.name.label' | translate }}</label>
@@ -87,20 +89,21 @@
     <div class="map-section">
       <div class="map-container-wrapper">
         <div class="map-search-wrapper">
-          <span nz-icon nzType="search" class="search-icon"></span>
+          <span class="custom-icon-search search-icon"></span>
           <input #searchInput type="text" [placeholder]="'checkin.locationDialog.map.searchPlaceholder' | translate" class="map-search-input" />
         </div>
         <div id="google-map" class="map-canvas"></div>
         <button type="button" class="locate-me-btn" (click)="locateMe()" [disabled]="isLocating"
           [attr.title]="'checkin.locationDialog.map.locateTitle' | translate">
-          <span nz-icon [nzType]="isLocating ? 'loading' : 'aim'" nzTheme="outline"></span>
+          <span [class]="isLocating ? 'custom-icon-loading rotate' : 'custom-icon-aim'"></span>
           {{ isLocating ? ('checkin.locationDialog.map.locating' | translate) : ('checkin.locationDialog.map.locate' | translate) }}
         </button>
         <div class="map-hint">
-          <span nz-icon nzType="info-circle"></span>
+          <span class="custom-icon-info"></span>
           {{ 'checkin.locationDialog.map.hint' | translate }}
         </div>
       </div>
     </div>
   </div>
-</div>
+</app-modal-popup>
+

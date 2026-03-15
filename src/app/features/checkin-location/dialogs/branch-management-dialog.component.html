@@ -1,136 +1,156 @@
-<div class="dialog-content">
-  <!-- State: LIST -->
-  @if (viewState === 'list') {
-  <div class="actions-header">
-    <div class="search-wrapper">
-      <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)"
-        [placeholder]="'checkin.branchDialog.searchPlaceholder' | translate"
-        variant="filled" width="100%">
-      </app-shared-search>
-    </div>
-    <button type="button" class="custom-btn btn-primary add-btn" (click)="goToUpsert()">
-      <span nz-icon nzType="plus"></span> {{ 'checkin.branchDialog.actions.add' | translate }}
-    </button>
-  </div>
+<app-modal-popup
+  [(isVisible)]="isVisible"
+  [title]="'checkin.branchDialog.title' | translate"
+  [showFooter]="false"
+  maxWidth="800px"
+  (cancel)="handleCancel()">
 
-  <div class="custom-table-wrapper" [class.has-scroll]="scrollConfig()">
-    <table class="custom-table">
-      <thead>
-        <tr>
-          <th style="width: 60%">{{ 'checkin.branchDialog.table.name' | translate }}</th>
-          <th style="width: 20%">{{ 'checkin.branchDialog.table.status' | translate }}</th>
-          <th style="width: 20%; text-align: center;">{{ 'checkin.branchDialog.table.actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody [style.max-height]="scrollConfig() ? '350px' : 'auto'">
-        @for (data of filteredBranches(); track data.id) {
-        <tr>
-          <td style="width: 60%">
-            <div class="branch-cell">
-              <span class="branch-name">{{ data.name }}</span>
-              @if (data.description) {
-              <span class="branch-desc">{{ data.description }}</span>
-              }
-            </div>
-          </td>
-          <td style="width: 20%">
-            <span class="status-badge" [class.active]="data.isActive">
-              <span class="dot"></span>
-              {{
-                data.isActive
-                  ? ('checkin.common.status.active' | translate)
-                  : ('checkin.common.status.inactive' | translate)
-              }}
-            </span>
-          </td>
-          <td style="width: 20%">
-            <div class="actions-cell">
-              <button class="action-icon-btn edit" (click)="goToUpsert(data)" [attr.title]="'checkin.common.actions.edit' | translate">
-                <span icon class="custom-icon-edit"></span>
-              </button>
-              <button class="action-icon-btn delete" (click)="onDelete(data)" [attr.title]="'checkin.common.actions.delete' | translate">
-                <span icon class="custom-icon-close"></span>
-              </button>
-            </div>
-          </td>
-        </tr>
-        } @empty {
-        <tr>
-          <td colspan="3" class="empty-cell">{{ 'checkin.branchDialog.empty' | translate }}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  }
-
-  <!-- State: UPSERT -->
-  @if (viewState === 'upsert') {
-  <div class="upsert-header">
-    <span class="upsert-title">
-      {{
-        editingBranch
-          ? ('checkin.branchDialog.upsert.editTitle' | translate)
-          : ('checkin.branchDialog.upsert.createTitle' | translate)
-      }}
-    </span>
-  </div>
-
-  <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="custom-form">
-    <div class="form-group">
-      <label class="form-label required">{{ 'checkin.branchDialog.form.name.label' | translate }}</label>
-      <div class="input-wrapper">
-        <input type="text" formControlName="name"
-          [placeholder]="'checkin.branchDialog.form.name.placeholder' | translate"
-          class="custom-input"
-          [class.has-error]="branchForm.get('name')?.invalid && branchForm.get('name')?.touched" />
-        @if (branchForm.get('name')?.invalid && branchForm.get('name')?.touched) {
-        <span class="error-tip">{{ 'checkin.branchDialog.form.name.error' | translate }}</span>
-        }
+  <div class="management-container">
+    <!-- State: LIST -->
+    @if (viewState === 'list') {
+    <div class="actions-header">
+      <div class="search-wrapper">
+        <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)"
+          [placeholder]="'checkin.branchDialog.searchPlaceholder' | translate"
+          variant="filled" width="100%">
+        </app-shared-search>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">{{ 'checkin.branchDialog.form.description.label' | translate }}</label>
-      <div class="input-wrapper">
-        <textarea formControlName="description" rows="3"
-          [placeholder]="'checkin.branchDialog.form.description.placeholder' | translate"
-          class="custom-input"></textarea>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">{{ 'checkin.branchDialog.form.status.label' | translate }}</label>
-      <div class="switch-row">
-        <label class="custom-switch">
-          <input type="checkbox" formControlName="isActive" />
-          <span class="slider"></span>
-        </label>
-        <span class="status-text" [class.active]="branchForm.get('isActive')?.value">
-          {{
-            branchForm.get('isActive')?.value
-              ? ('checkin.common.status.active' | translate)
-              : ('checkin.common.status.inactive' | translate)
-          }}
-        </span>
-      </div>
-    </div>
-
-    <div class="form-footer">
-      <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">
-        {{ 'checkin.branchDialog.actions.back' | translate }}
+      <button type="button" class="custom-btn btn-primary add-btn" (click)="goToUpsert()">
+        <span class="custom-icon-package-plus"></span> {{ 'checkin.branchDialog.actions.add' | translate }}
       </button>
-      <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="branchForm.invalid || isSaving">
-        @if (isSaving) {
-        <span nz-icon nzType="loading" class="mr-2"></span>
-        }
+    </div>
+
+    <div class="custom-table-wrapper" [class.has-scroll]="scrollConfig()">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th style="width: 60%">{{ 'checkin.branchDialog.table.name' | translate }}</th>
+            <th style="width: 20%">{{ 'checkin.branchDialog.table.status' | translate }}</th>
+            <th style="width: 20%; text-align: center;">{{ 'checkin.branchDialog.table.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody [style.max-height]="scrollConfig() ? '350px' : 'auto'">
+          @for (data of filteredBranches(); track data.id) {
+          <tr>
+            <td style="width: 60%">
+              <div class="branch-cell">
+                <span class="branch-name">{{ data.name }}</span>
+                @if (data.description) {
+                <span class="branch-desc">{{ data.description }}</span>
+                }
+              </div>
+            </td>
+            <td style="width: 20%">
+              <span class="status-badge" [class.active]="data.isActive">
+                <span class="dot"></span>
+                {{
+                  data.isActive
+                    ? ('checkin.common.status.active' | translate)
+                    : ('checkin.common.status.inactive' | translate)
+                }}
+              </span>
+            </td>
+            <td style="width: 20%">
+              <div class="actions-cell">
+                <button class="action-icon-btn edit" (click)="goToUpsert(data)" [attr.title]="'checkin.common.actions.edit' | translate">
+                  <span icon class="custom-icon-edit"></span>
+                </button>
+                <button class="action-icon-btn delete" (click)="onDelete(data)" [attr.title]="'checkin.common.actions.delete' | translate">
+                  <span icon class="custom-icon-close"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="3" class="empty-cell">{{ 'checkin.branchDialog.empty' | translate }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+
+    <!-- State: UPSERT -->
+    @if (viewState === 'upsert') {
+    <div class="upsert-header">
+      <span class="upsert-title">
         {{
           editingBranch
-            ? ('checkin.branchDialog.actions.update' | translate)
-            : ('checkin.branchDialog.actions.create' | translate)
+            ? ('checkin.branchDialog.upsert.editTitle' | translate)
+            : ('checkin.branchDialog.upsert.createTitle' | translate)
         }}
-      </button>
+      </span>
     </div>
-  </form>
-  }
-</div>
+
+    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="custom-form">
+      <div class="form-group">
+        <label class="form-label required">{{ 'checkin.branchDialog.form.name.label' | translate }}</label>
+        <div class="input-wrapper">
+          <input type="text" formControlName="name"
+            [placeholder]="'checkin.branchDialog.form.name.placeholder' | translate"
+            class="custom-input"
+            [class.has-error]="branchForm.get('name')?.invalid && branchForm.get('name')?.touched" />
+          @if (branchForm.get('name')?.invalid && branchForm.get('name')?.touched) {
+          <span class="error-tip">{{ 'checkin.branchDialog.form.name.error' | translate }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">{{ 'checkin.branchDialog.form.description.label' | translate }}</label>
+        <div class="input-wrapper">
+          <textarea formControlName="description" rows="3"
+            [placeholder]="'checkin.branchDialog.form.description.placeholder' | translate"
+            class="custom-input"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">{{ 'checkin.branchDialog.form.status.label' | translate }}</label>
+        <div class="switch-row">
+          <label class="custom-switch">
+            <input type="checkbox" formControlName="isActive" />
+            <span class="slider"></span>
+          </label>
+          <span class="status-text" [class.active]="branchForm.get('isActive')?.value">
+            {{
+              branchForm.get('isActive')?.value
+                ? ('checkin.common.status.active' | translate)
+                : ('checkin.common.status.inactive' | translate)
+            }}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button type="button" class="custom-btn btn-ghost cancel-btn" (click)="viewState = 'list'">
+          {{ 'checkin.branchDialog.actions.back' | translate }}
+        </button>
+        <button type="submit" class="custom-btn btn-primary submit-btn" [disabled]="branchForm.invalid || isSaving">
+          @if (isSaving) {
+          <span class="custom-icon-loading rotate mr-2"></span>
+          }
+          {{
+            editingBranch
+              ? ('checkin.branchDialog.actions.update' | translate)
+              : ('checkin.branchDialog.actions.create' | translate)
+          }}
+        </button>
+      </div>
+    </form>
+    }
+  </div>
+
+  <app-confirm-popup
+    [isVisible]="isDeleteConfirmVisible()"
+    (isVisibleChange)="isDeleteConfirmVisible.set($event)"
+    [title]="'checkin.branchDialog.confirmDelete.title' | translate"
+    [message]="'checkin.branchDialog.confirmDelete.message' | translate: { name: branchToDelete()?.name }"
+    [cancelText]="'checkin.common.actions.cancel' | translate"
+    [confirmText]="'checkin.common.actions.delete' | translate"
+    (confirm)="handleDeleteConfirm()"
+    (cancel)="isDeleteConfirmVisible.set(false)">
+  </app-confirm-popup>
+</app-modal-popup>
+

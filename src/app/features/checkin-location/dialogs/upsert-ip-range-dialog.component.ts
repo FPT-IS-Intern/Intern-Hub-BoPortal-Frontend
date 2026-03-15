@@ -1,40 +1,53 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { IPRange } from '../../../models/checkin-config.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastService } from '../../../services/toast.service';
 import { catchError, concat, map, of, take, finalize, filter } from 'rxjs';
 import { SKIP_API_ERROR_TOAST } from '../../../core/interceptors/api-error.interceptor';
+import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
 
 @Component({
   selector: 'app-upsert-ip-range-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ModalPopup],
   templateUrl: './upsert-ip-range-dialog.component.html',
   styleUrls: ['./upsert-ip-range-dialog.component.scss']
 })
 export class UpsertIPRangeDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly modalRef = inject(NzModalRef);
   private readonly http = inject(HttpClient);
   private readonly toast = inject(ToastService);
-  readonly data = inject<IPRange>(NZ_MODAL_DATA, { optional: true });
+
+  @Input() isVisible = false;
+  @Input() data: IPRange | null = null;
+  @Output() isVisibleChange = new EventEmitter<boolean>();
+  @Output() save = new EventEmitter<any>();
 
   protected form = this.fb.group({
-    id: [this.data?.id || null],
-    name: [this.data?.name || '', [Validators.required]],
-    ipPrefix: [this.data?.ipPrefix || '', [Validators.required]],
-    description: [this.data?.description || ''],
-    isActive: [this.data ? this.data.isActive : true]
+    id: [null as string | null],
+    name: ['', [Validators.required]],
+    ipPrefix: ['', [Validators.required]],
+    description: [''],
+    isActive: [true]
   });
 
   isFetchingIP = false;
 
   ngOnInit(): void {
-    if (!this.data?.id) this.fetchCurrentIP();
+    if (this.data) {
+      this.form.patchValue({
+        id: this.data.id,
+        name: this.data.name,
+        ipPrefix: this.data.ipPrefix,
+        description: this.data.description,
+        isActive: this.data.isActive
+      });
+    } else {
+      this.fetchCurrentIP();
+    }
   }
 
   fetchCurrentIP(): void {
@@ -71,10 +84,11 @@ export class UpsertIPRangeDialogComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.valid) this.modalRef.close(this.form.value);
+    if (this.form.valid) this.save.emit(this.form.value);
   }
 
   cancel(): void {
-    this.modalRef.destroy();
+    this.isVisible = false;
+    this.isVisibleChange.emit(this.isVisible);
   }
 }
