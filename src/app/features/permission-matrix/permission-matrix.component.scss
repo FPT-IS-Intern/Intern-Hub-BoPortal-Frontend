@@ -28,7 +28,6 @@
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  margin-bottom: 24px;
   position: relative;
   z-index: 20;
 }
@@ -43,7 +42,7 @@
   position: relative;
   width: 300px;
   transition: all 0.3s ease;
-  
+
   .search-icon {
     position: absolute;
     left: 12px;
@@ -91,7 +90,8 @@
   }
 }
 
-.btn-primary-custom, .btn-secondary-custom {
+.btn-primary-custom,
+.btn-secondary-custom {
   height: 42px;
   padding: 0 24px;
   border-radius: 10px;
@@ -115,7 +115,7 @@
   background: var(--app-color-primary) !important;
   color: white !important;
   box-shadow: 0 4px 12px var(--app-color-primary-alpha-10);
-  
+
   &:hover {
     filter: brightness(1.05);
     box-shadow: 0 6px 16px var(--app-color-primary-alpha-20);
@@ -146,5 +146,6 @@
 }
 
 .table-container {
-  margin-bottom: 0; /* Table is now the final content piece */
+  margin-bottom: 0;
+  /* Table is now the final content piece */
 }

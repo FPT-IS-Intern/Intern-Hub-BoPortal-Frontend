@@ -100,7 +100,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 0 12px;
+    padding: 0 9.5px;
     margin-bottom: 2px;
     box-sizing: border-box;
     height: 44px;
@@ -108,7 +108,7 @@
 
     &-content {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       gap: 12px;
       height: 100%;

@@ -40,8 +40,13 @@
   cursor: pointer;
   transition: transform 0.1s, opacity 0.2s;
 
-  &:hover { opacity: 0.9; }
-  &:active { transform: scale(0.98); }
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .table-container {
@@ -67,7 +72,8 @@
   tbody {
     display: table-row-group;
 
-    &:empty, &:has(tr:only-child .empty-row) {
+    &:empty,
+    &:has(tr:only-child .empty-row) {
       justify-content: center;
     }
   }
@@ -79,7 +85,7 @@
     &.empty-row {
       flex: 1;
       height: 100%;
-      
+
       td {
         flex: 1;
         justify-content: center;
@@ -89,16 +95,33 @@
     }
   }
 
-  th, td {
+  th,
+  td {
     padding: 12px 16px;
     text-align: left;
     font-size: 14px;
     border-bottom: 1px solid var(--app-color-surface-warm-100);
 
-    &:nth-child(1) { flex: 2; } // Tên gợi nhớ
-    &:nth-child(2) { flex: 2; } // Dải IP Prefix
-    &:nth-child(3) { flex: 2.5; } // Mô tả
-    &:nth-child(4) { flex: 1.2; } // Trạng thái
+    &:nth-child(1) {
+      flex: 2;
+    }
+
+    // Tên gợi nhớ
+    &:nth-child(2) {
+      flex: 2;
+    }
+
+    // Dải IP Prefix
+    &:nth-child(3) {
+      flex: 2.5;
+    }
+
+    // Mô tả
+    &:nth-child(4) {
+      flex: 1.2;
+    }
+
+    // Trạng thái
     &.col-actions {
       flex: 0 0 100px;
       justify-content: flex-end;
@@ -114,11 +137,19 @@
     border-bottom: 1px solid var(--app-color-surface-warm-150);
   }
 
-  tr:hover td { background: var(--app-color-surface-warm-25, #f8fafc); }
+  tr:hover td {
+    background: var(--app-color-surface-warm-25, #f8fafc);
+  }
 }
 
-.font-semibold { font-weight: 600; }
-.text-muted { color: var(--app-color-text-muted); font-size: 13px; }
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-muted {
+  color: var(--app-color-text-muted);
+  font-size: 13px;
+}
 
 .ip-code {
   background: var(--app-color-surface-warm-150);
@@ -138,8 +169,17 @@
   display: inline-flex;
   align-items: center;
 
-  &-success { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
-  &-error { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+  &-success {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #d1fae5;
+  }
+
+  &-error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+  }
 }
 
 .col-actions {
@@ -161,13 +201,21 @@
   transition: all 0.2s;
   color: var(--app-color-text-muted);
 
-  &:hover { background: var(--app-color-surface-warm-200); }
-  &.edit:hover { color: var(--app-color-primary); }
-  &.delete:hover { color: #ef4444; }
+  &:hover {
+    background: var(--app-color-surface-warm-200);
+  }
+
+  &.edit:hover {
+    color: var(--app-color-primary);
+  }
+
+  &.delete:hover {
+    color: #ef4444;
+  }
 }
 
 .empty-icon {
   width: 48px;
   height: 48px;
-  opacity: 0.1;
+  opacity: 0.9;
 }
