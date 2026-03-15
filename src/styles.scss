@@ -48,3 +48,26 @@ app-root {
   min-height: 100vh;
   background-color: inherit;
 }
+
+// PREMIUM FOCUS RESET
+button, 
+a, 
+input, 
+select, 
+textarea {
+  &:focus {
+    outline: none !important;
+  }
+  
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px var(--app-color-primary-alpha-20, rgba(225, 131, 8, 0.2)) !important;
+  }
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}

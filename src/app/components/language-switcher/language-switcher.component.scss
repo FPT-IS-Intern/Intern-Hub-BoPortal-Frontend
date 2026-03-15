@@ -10,8 +10,8 @@
   padding: 0 8px;
   height: 40px;
   border-radius: 8px;
-  border: 1px solid var(--neutral-color-100, var(--app-color-border));
-  background: var(--neutral-color-10, var(--app-color-white));
+  border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
+  background: var(--app-color-white, #ffffff);
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
@@ -26,11 +26,6 @@
   border-color: var(--brand-200, var(--app-color-brand-200));
 }
 
-.lang-trigger:focus {
-  outline: none;
-  border-color: var(--brand-400, var(--app-color-brand-400));
-  box-shadow: 0 0 0 2px rgba(0, 107, 223, 0.15);
-}
 
 .lang-flag {
   width: 26px;
@@ -45,7 +40,7 @@
   transition: transform 0.2s ease;
 }
 
-.custom-icon-chevron-down.rotate {
+.custom-icon-chevron-down.is-flipped {
   transform: rotate(180deg);
 }
 

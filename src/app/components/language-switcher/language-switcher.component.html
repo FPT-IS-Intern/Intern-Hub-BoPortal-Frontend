@@ -1,7 +1,7 @@
 <div class="lang-switcher">
   <button type="button" class="lang-trigger" (click)="toggleDropdown($event)" [class.active]="isDropdownOpen">
     <img class="lang-flag" [src]="currentOption.icon" [alt]="currentOption.labelKey | translate" />
-    <span class="custom-icon-chevron-down" [class.rotate]="isDropdownOpen"></span>
+    <span class="custom-icon-chevron-down" [class.is-flipped]="isDropdownOpen"></span>
     <span class="sr-only">{{ 'language.label' | translate }}</span>
   </button>
 
