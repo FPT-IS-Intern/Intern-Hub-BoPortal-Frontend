@@ -2,13 +2,6 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationRecord } from '../../../models/notification.model';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
 import { SharedDateTimePickerComponent } from '../../../components/shared-date-time/shared-date-time.component';
 import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../../core/mocks/notification.mock';
@@ -20,13 +13,6 @@ import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_AUDIENCE_OPTIONS } from '../../
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    NzFormModule,
-    NzInputModule,
-    NzRadioModule,
-    NzSelectModule,
-    NzDatePickerModule,
-    NzSwitchModule,
-    NzUploadModule,
     SharedDropdownComponent,
     SharedDateTimePickerComponent
   ],
