@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { LoadingService } from '../../services/common/loading.service';
 
-let totalRequests = 0;
+let activeRequests = 0;
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
@@ -12,14 +12,25 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  totalRequests++;
-  loadingService.show();
+  // Determine which loading type to show
+  // GET requests use Top Progress Bar (page loading)
+  // POST, PUT, DELETE, PATCH use Global Overlay (blocking loading)
+  const isDataMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method);
+  
+  activeRequests++;
+  
+  if (isDataMutation) {
+    loadingService.showGlobalLoading();
+  } else {
+    loadingService.showPageLoading();
+  }
 
   return next(req).pipe(
     finalize(() => {
-      totalRequests--;
-      if (totalRequests === 0) {
-        loadingService.hide();
+      activeRequests--;
+      if (activeRequests === 0) {
+        loadingService.hideGlobalLoading();
+        loadingService.hidePageLoading();
       }
     })
   );

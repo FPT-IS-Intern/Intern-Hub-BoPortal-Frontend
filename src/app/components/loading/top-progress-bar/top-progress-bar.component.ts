@@ -12,5 +12,5 @@ import { LoadingService } from '../../../services/common/loading.service';
 })
 export class TopProgressBarComponent {
   private readonly loadingService = inject(LoadingService);
-  protected readonly isLoading = this.loadingService.isLoading;
+  protected readonly isLoading = this.loadingService.isPageLoading;
 }

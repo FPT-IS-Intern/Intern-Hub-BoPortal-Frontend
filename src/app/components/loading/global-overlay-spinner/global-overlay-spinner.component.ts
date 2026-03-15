@@ -12,5 +12,5 @@ import { LoadingService } from '../../../services/common/loading.service';
 })
 export class GlobalOverlaySpinnerComponent {
   private readonly loading: LoadingService = inject(LoadingService);
-  readonly isLoading = this.loading.isLoading;
+  readonly isLoading = this.loading.isGlobalLoading;
 }
