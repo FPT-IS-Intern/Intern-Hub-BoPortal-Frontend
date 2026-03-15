@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { DynamicDsService } from 'dynamic-ds';
+
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
@@ -28,7 +28,6 @@ import { firstValueFrom, filter } from 'rxjs';
   templateUrl: './app.html',
 })
 export class App implements OnInit, OnDestroy {
-  private readonly themeService = inject(DynamicDsService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
@@ -71,8 +70,6 @@ export class App implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.themeService.initializeTheme().subscribe();
-
     // Fetch /me if already logged in to populate header
     if (StorageUtil.getAccessToken()) {
       this.authService.me().subscribe();
