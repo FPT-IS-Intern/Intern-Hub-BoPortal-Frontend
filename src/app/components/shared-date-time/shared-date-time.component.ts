@@ -129,10 +129,11 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       if (!this.selectedDate) {
-        this.selectedDate = new Date();
-        this.selectedHour = this.selectedDate.getHours();
-        this.selectedMinute = this.selectedDate.getMinutes();
-        this.updateValue();
+        // Reset view date and time columns to current when opening empty
+        const now = new Date();
+        this.viewDate = new Date(now);
+        this.selectedHour = now.getHours();
+        this.selectedMinute = now.getMinutes();
         this.generateCalendar();
       }
       setTimeout(() => this.scrollToSelected(), 0);
