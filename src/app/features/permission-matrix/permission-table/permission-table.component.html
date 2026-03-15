@@ -15,7 +15,10 @@
                 <td class="col-function cell-function">{{ row.function }}</td>
                 @for (col of columns; track col.key) {
                 <td class="col-permission cell-checkbox">
-                    <label nz-checkbox [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()"></label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()">
+                        <span class="checkmark"></span>
+                    </label>
                 </td>
                 }
             </tr>
