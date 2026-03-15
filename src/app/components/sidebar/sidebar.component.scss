@@ -21,149 +21,160 @@
     .sidebar {
       width: 227px;
       padding: 16px 8px;
-      background-color: transparent;
-      overflow-y: auto;
+    }
+
+    .label {
+      display: inline-block;
+      opacity: 1;
     }
   }
 
-  >div {
+  > div {
     height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
-    background-color: var(--brand-500);
     border-radius: 16px;
     overflow: visible !important;
+    transition: background-color 0.3s ease;
   }
-}
-
-.sidebar-item-container {
-  overflow: visible !important;
-  position: relative;
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
-
   width: 59px;
   padding: 8px;
   box-sizing: border-box;
-  overflow: visible;
-  background-color: transparent;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.3s ease, padding 0.3s ease;
 
-  transition:
-    width 0.3s ease,
-    padding 0.3s ease,
-    background-color 0.3s ease;
+  &-item-container {
+    position: relative;
+  }
+
+  &-item {
+    display: block;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 10px 12px;
+    margin-bottom: 2px;
+    box-sizing: border-box;
+    height: 48px;
+
+    &-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 100%;
+      white-space: nowrap;
+    }
+
+    .icon-left {
+      font-size: 20px;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .icon-right {
+      margin-left: auto;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    &:hover {
+      background-color: var(--app-color-border-soft-alpha, rgba(0, 0, 0, 0.05));
+    }
+
+    &.active {
+      background-color: var(--brand-200, #e6f7ff);
+      .label, .icon-left {
+        color: var(--brand-500, #1890ff) !important;
+      }
+    }
+  }
 }
 
-.sidebar-wrapper.expanded>div {
-  background-color: var(--neutral-color-50);
+.expanded .sidebar-item:hover {
+  background-color: var(--expanded-hover-bg, var(--neutral-100));
 }
 
 .sub-menu {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  padding-left: 12px;
-  margin-top: 0;
-  transition: all 0.3s ease;
+  padding-left: 20px;
+  margin-top: 2px;
 }
 
 .sub-item {
-  ::ng-deep .functional-label {
-    height: 36px !important;
+  height: 36px !important;
+  padding: 6px 12px !important;
+
+  .label {
     font-size: 13px !important;
-    font-weight: 400;
+    font-weight: 400 !important;
+  }
+
+  .icon-left {
+    font-size: 16px !important;
   }
 }
 
-.sidebar-item {
-  display: block;
+.sidebar-actions {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-button {
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  overflow: visible;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background-color: var(--brand-600);
+  color: white;
 
-  &:hover,
-  &.active {
-    background-color: var(--app-color-border-soft-alpha) !important;
+  i {
+    font-size: 16px;
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 }
 
-.sidebar-wrapper.expanded .sidebar-item {
-
-  &:hover,
-  &.active {
-    background-color: var(--expanded-hover-bg, var(--neutral-400)) !important;
-  }
+.close-button {
+  background-color: var(--neutral-color-50, #f5f5f5);
+  color: var(--brand-700, #0050b3);
+  border: 1px solid var(--neutral-300, #d9d9d9);
 }
 
-.sidebar a {
-  text-decoration: none;
-}
-
-/* ✅ Toggle button (collapsed state) - FORCE 36x36, radius 8, margin-bottom 16px */
-.sidebar-toggle-button {
-  flex-shrink: 0;
-  margin-bottom: 16px;
-  margin-left: auto;
-  margin-right: auto;
-
-  /* ✅ Force override button-container styles */
-  ::ng-deep .button-container {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:active {
-      transform: scale(0.9);
-    }
-  }
-}
-
-/* ✅ Close button (expanded state) - FORCE 36x36, radius 8, margin-bottom 16px */
-.sidebar-close-button {
-  flex-shrink: 0;
-  margin-bottom: 16px;
-
-  /* ✅ Force override button-container styles */
-  ::ng-deep .button-container {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:active {
-      transform: scale(0.9);
-    }
-  }
-}
-
-/* Scrollbar styling cho sidebar */
+/* Scrollbar styling */
 .sidebar::-webkit-scrollbar {
   width: 4px;
 }

@@ -1,11 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ButtonContainerComponent, FunctionalLabelComponent, IconData } from '@goat-bravos/intern-hub-layout';
 
 export interface SidebarItem {
-  iconLeft?: IconData | string;
-  iconRight?: IconData | string;
+  iconLeft?: string;
+  iconRight?: string;
   content: string;
   url?: string;
   colorIconLeft?: string;
@@ -71,7 +70,7 @@ export interface SidebarData {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FunctionalLabelComponent, ButtonContainerComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
@@ -86,9 +85,8 @@ export class SidebarComponent {
 
   @Output() sidebarToggled = new EventEmitter<boolean>();
 
-  @Input() toggleButtonIconData?: IconData[];
-
-  @Input() closeButtonIconData?: IconData[];
+  @Input() toggleButtonIconData?: string;
+  @Input() closeButtonIconData?: string;
 
   expandedItems: Set<SidebarItem> = new Set();
   activeItem: SidebarItem | null = null;
@@ -97,7 +95,7 @@ export class SidebarComponent {
     this.isSidebarExpanded = !this.isSidebarExpanded;
     this.sidebarToggled.emit(this.isSidebarExpanded);
     if (!this.isSidebarExpanded) {
-      this.expandedItems.clear(); // Clear expanded menus when collapsing sidebar
+      this.expandedItems.clear();
     }
   }
 
@@ -114,33 +112,15 @@ export class SidebarComponent {
     return this.expandedItems.has(item);
   }
 
-  getRightIcon(item: SidebarItem): string | IconData | undefined {
+  getRightIcon(item: SidebarItem): string | undefined {
     if (!item.iconRight) return undefined;
-
     const isExpanded = this.isItemExpanded(item);
-
-    // If it's a string identifier
-    if (typeof item.iconRight === 'string') {
-      return isExpanded
-        ? item.iconRight.replace('down', 'up')
-        : item.iconRight.replace('up', 'down');
-    }
-
-    // If it's an IconData object
-    if (typeof item.iconRight === 'object' && 'icon' in item.iconRight) {
-      const iconName = item.iconRight.icon;
-      if (!iconName) return item.iconRight;
-      return {
-        ...item.iconRight,
-        icon: isExpanded ? iconName.replace('down', 'up') : iconName.replace('up', 'down'),
-      };
-    }
-
-    return item.iconRight;
+    return isExpanded
+      ? item.iconRight.replace('down', 'up')
+      : item.iconRight.replace('up', 'down');
   }
 
   onMenuItemClick(item: SidebarItem, event: Event): void {
-    void event;
     this.activeItem = item;
   }
 }
