@@ -6,7 +6,7 @@ import { LoadingService } from '../../../services/common/loading.service';
 @Component({
   selector: 'app-global-overlay-spinner',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [TranslateModule],
   templateUrl: './global-overlay-spinner.component.html',
   styleUrls: ['./global-overlay-spinner.component.scss'],
 })

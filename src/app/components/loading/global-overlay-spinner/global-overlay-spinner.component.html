@@ -1,5 +1,7 @@
-<div class="global-spinner-overlay" *ngIf="isLoading()">
-  <div class="spinner-container">
-    <div class="spinner"></div>
+@if (isLoading()) {
+  <div class="global-spinner-overlay">
+    <div class="spinner-container">
+      <div class="spinner"></div>
+    </div>
   </div>
-</div>
+}
