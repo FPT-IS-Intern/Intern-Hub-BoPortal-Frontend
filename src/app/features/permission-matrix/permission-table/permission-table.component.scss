@@ -161,7 +161,6 @@
 
             &:hover input ~ .checkmark {
                 border-color: var(--app-color-primary);
-                transform: translateY(-1px);
                 box-shadow: 0 4px 8px var(--app-color-primary-alpha-8);
             }
 

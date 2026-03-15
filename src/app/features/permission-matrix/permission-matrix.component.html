@@ -28,11 +28,20 @@
     </div>
 
     <div class="toolbar-actions">
-      <button class="btn-secondary-custom action-btn" (click)="isCreateRoleVisible = true">
+      <button class="btn-secondary-custom" (click)="isCreateRoleVisible = true">
         <span class="custom-icon-package-plus"></span> Thêm vai trò
       </button>
-      <button class="btn-secondary-custom action-btn" (click)="isCreateResourceVisible = true">
+      <button class="btn-secondary-custom" (click)="isCreateResourceVisible = true">
         <span class="custom-icon-package-plus"></span> Thêm tài nguyên
+      </button>
+      
+      <div class="divider"></div>
+
+      <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
+        @if (isLoading) {
+        <span class="custom-icon-loading rotate mr-2"></span>
+        }
+        <span class="custom-icon-save"></span> Áp dụng
       </button>
     </div>
   </div>
@@ -40,16 +49,6 @@
   <div class="table-container">
     <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
       (permissionChange)="permissionRows.set($event)"></app-permission-table>
-  </div>
-
-  <!-- Apply button -->
-  <div class="actions">
-    <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
-      @if (isLoading) {
-      <span class="custom-icon-loading rotate mr-2"></span>
-      }
-      Áp dụng
-    </button>
   </div>
 
   <!-- Confirm save popup -->

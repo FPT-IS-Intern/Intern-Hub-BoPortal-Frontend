@@ -80,12 +80,20 @@
 
 .toolbar-actions {
   display: flex;
+  align-items: center;
   gap: 12px;
+
+  .divider {
+    width: 1px;
+    height: 24px;
+    background: var(--app-color-border-alpha-soft);
+    margin: 0 4px;
+  }
 }
 
 .btn-primary-custom, .btn-secondary-custom {
   height: 40px;
-  padding: 0 20px;
+  padding: 0 16px;
   border-radius: 10px;
   font-weight: 600;
   display: flex;
@@ -93,8 +101,9 @@
   gap: 8px;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 13.5px;
+  white-space: nowrap;
 
   span {
     font-size: 18px;
@@ -104,11 +113,11 @@
 .btn-primary-custom {
   background: var(--app-color-primary) !important;
   color: white !important;
+  box-shadow: 0 4px 12px var(--app-color-primary-alpha-10);
   
   &:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px var(--app-color-primary-alpha-10);
+    filter: brightness(1.05);
+    box-shadow: 0 6px 16px var(--app-color-primary-alpha-20);
   }
 
   &:active {
@@ -119,6 +128,7 @@
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
   }
 }
 
@@ -135,10 +145,5 @@
 }
 
 .table-container {
-  margin-bottom: 24px;
-}
-
-.actions {
-  display: flex;
-  justify-content: flex-end;
+  margin-bottom: 0; /* Table is now the final content piece */
 }
