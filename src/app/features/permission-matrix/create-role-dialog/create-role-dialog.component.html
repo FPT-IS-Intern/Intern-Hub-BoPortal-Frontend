@@ -1,11 +1,32 @@
 <app-modal-popup [isVisible]="isVisible" (isVisibleChange)="onVisibilityChange($event)" title="Tạo vai trò mới"
-  saveText="Tạo" cancelText="Hủy" [okDisabled]="!isValid" (save)="onSave()">
-  <div class="dialog-form">
-    <app-shared-input-text headerInput="Tên vai trò" placeholder="Nhập tên vai trò" [required]="true" [value]="name"
-      (valueChange)="name = $event">
-    </app-shared-input-text>
-    <app-shared-input-text headerInput="Mô tả" placeholder="Nhập mô tả" [value]="description"
-      (valueChange)="description = $event">
-    </app-shared-input-text>
+  [showFooter]="false" maxWidth="500px">
+  <div class="premium-form-container">
+    <div class="form-group">
+      <label class="form-label required">Tên vai trò</label>
+      <div class="input-wrapper">
+        <input type="text" [(ngModel)]="name" placeholder="Ví dụ: Quản trị viên hệ thống" class="custom-input"
+          [class.has-error]="!name.trim() && isTriedToSave" />
+        @if (!name.trim() && isTriedToSave) {
+        <span class="error-tip">Vui lòng nhập tên vai trò</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mô tả</label>
+      <div class="input-wrapper">
+        <textarea [(ngModel)]="description" placeholder="Ghi chú thêm về vai trò này..." class="custom-input custom-textarea"
+          rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button type="button" class="custom-btn btn-ghost" (click)="onVisibilityChange(false)">
+        Hủy bỏ
+      </button>
+      <button type="button" class="custom-btn btn-primary" (click)="onSave()" [disabled]="!name.trim()">
+        Tạo vai trò
+      </button>
+    </div>
   </div>
 </app-modal-popup>

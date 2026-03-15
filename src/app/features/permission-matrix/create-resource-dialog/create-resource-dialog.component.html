@@ -1,14 +1,43 @@
 <app-modal-popup [isVisible]="isVisible" (isVisibleChange)="onVisibilityChange($event)" title="Tạo tài nguyên mới"
-  saveText="Tạo" cancelText="Hủy" [okDisabled]="!isValid" (save)="onSave()">
-  <div class="dialog-form">
-    <app-shared-input-text headerInput="Tên tài nguyên" placeholder="Nhập tên tài nguyên" [required]="true"
-      [value]="name" (valueChange)="name = $event">
-    </app-shared-input-text>
-    <app-shared-input-text headerInput="Mã tài nguyên" placeholder="Nhập mã tài nguyên" [required]="true"
-      [value]="code" (valueChange)="code = $event">
-    </app-shared-input-text>
-    <app-shared-input-text headerInput="Mô tả" placeholder="Nhập mô tả" [value]="description"
-      (valueChange)="description = $event">
-    </app-shared-input-text>
+  [showFooter]="false" maxWidth="500px">
+  <div class="premium-form-container">
+    <div class="form-group">
+      <label class="form-label required">Tên tài nguyên</label>
+      <div class="input-wrapper">
+        <input type="text" [(ngModel)]="name" placeholder="Ví dụ: Quản lý nhân viên" class="custom-input"
+          [class.has-error]="!name.trim() && isTriedToSave" />
+        @if (!name.trim() && isTriedToSave) {
+        <span class="error-tip">Vui lòng nhập tên tài nguyên</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label required">Mã tài nguyên</label>
+      <div class="input-wrapper">
+        <input type="text" [(ngModel)]="code" placeholder="Ví dụ: employee_management" class="custom-input"
+          [class.has-error]="!code.trim() && isTriedToSave" />
+        @if (!code.trim() && isTriedToSave) {
+        <span class="error-tip">Vui lòng nhập mã tài nguyên</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mô tả</label>
+      <div class="input-wrapper">
+        <textarea [(ngModel)]="description" placeholder="Ghi chú thêm về tài nguyên này..." class="custom-input custom-textarea"
+          rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button type="button" class="custom-btn btn-ghost" (click)="onVisibilityChange(false)">
+        Hủy bỏ
+      </button>
+      <button type="button" class="custom-btn btn-primary" (click)="onSave()" [disabled]="!isValid">
+        Tạo tài nguyên
+      </button>
+    </div>
   </div>
 </app-modal-popup>

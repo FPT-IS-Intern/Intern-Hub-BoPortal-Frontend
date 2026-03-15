@@ -84,7 +84,6 @@ export class PermissionMatrixComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.setBreadcrumbs([
       { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-      { label: 'Cấu Hình Hệ Thống' },
       { label: 'Ma Trận Phân Quyền', active: true }
     ]);
     this.fetchInitialData();

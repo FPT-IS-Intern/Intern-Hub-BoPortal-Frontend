@@ -2,12 +2,11 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Simple
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
-import { SharedInputTextComponent } from '../../../components/shared-input-text/shared-input-text.component';
 
 @Component({
   selector: 'app-create-role-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalPopup, SharedInputTextComponent],
+  imports: [CommonModule, FormsModule, ModalPopup],
   templateUrl: './create-role-dialog.component.html',
   styleUrl: './create-role-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +18,7 @@ export class CreateRoleDialogComponent implements OnChanges {
 
   name = '';
   description = '';
+  isTriedToSave = false;
 
   get isValid(): boolean {
     return this.name.trim().length > 0;
@@ -31,6 +31,7 @@ export class CreateRoleDialogComponent implements OnChanges {
   }
 
   onSave(): void {
+    this.isTriedToSave = true;
     if (!this.isValid) return;
     this.save.emit({ name: this.name.trim(), description: this.description.trim() });
   }
@@ -44,5 +45,6 @@ export class CreateRoleDialogComponent implements OnChanges {
   private resetForm(): void {
     this.name = '';
     this.description = '';
+    this.isTriedToSave = false;
   }
 }
