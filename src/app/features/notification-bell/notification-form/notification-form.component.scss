@@ -117,13 +117,13 @@
     }
 
     .btn-secondary-custom {
-        background: white;
+        background: transparent;
         border: 1px solid var(--app-color-border-alpha-soft-2);
-        color: var(--app-color-text-main);
+        color: var(--app-color-text-muted);
 
         &:hover {
             background: var(--app-color-surface-warm-100);
-            border-color: var(--app-color-text-muted);
+            color: var(--app-color-text-main);
         }
     }
 
@@ -133,8 +133,7 @@
         color: white;
 
         &:hover {
-            background: var(--app-color-primary-hover);
-            transform: translateY(-1px);
+            opacity: 0.9;
             box-shadow: 0 4px 12px var(--app-color-primary-alpha-20);
         }
 

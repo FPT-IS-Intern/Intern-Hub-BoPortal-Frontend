@@ -144,14 +144,18 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
   protected get scheduleDisplay(): string {
     if (!this.selectedDate) return this.placeholder;
 
-    const options: Intl.DateTimeFormatOptions = {
+    const time = this.selectedDate.toLocaleTimeString('vi-VN', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+    const date = this.selectedDate.toLocaleDateString('vi-VN', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    };
-    return `${this.selectedDate.toLocaleString('vi-VN', options)}`;
+      year: 'numeric'
+    });
+    
+    return `${date} - ${time}`;
   }
 
   protected clear(event: MouseEvent): void {

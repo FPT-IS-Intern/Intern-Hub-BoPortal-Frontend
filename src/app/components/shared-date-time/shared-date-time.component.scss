@@ -15,22 +15,21 @@
         min-height: 48px;
 
         &:hover {
-            border-color: var(--app-color-primary-alpha-40);
             background: var(--app-color-surface-warm-50);
         }
 
         &.active {
-            border-color: var(--app-color-primary);
-            background: var(--app-color-primary-alpha-8);
+            border-color: var(--app-color-border-alpha-soft-2);
+            background: white;
 
             .trigger-left {
                 .custom-icon-line-calendar {
-                    color: var(--app-color-primary);
+                    color: var(--app-color-text-muted);
                 }
 
                 .schedule-text {
-                    color: var(--app-color-primary);
-                    font-weight: 700;
+                    color: var(--app-color-text-main);
+                    font-weight: 500;
                 }
             }
         }
@@ -80,12 +79,13 @@
                 padding: 4px;
                 display: flex;
                 border-radius: 50%;
-                color: var(--app-color-error, #ff4d4f);
+                color: var(--app-color-text-muted);
                 cursor: pointer;
                 transition: all 0.2s;
 
                 &:hover {
-                    background: var(--app-color-error-alpha-8, rgba(255, 77, 79, 0.1));
+                    background: var(--app-color-surface-warm-100);
+                    color: var(--app-color-error, #ff4d4f);
                 }
 
                 .custom-icon-close {
