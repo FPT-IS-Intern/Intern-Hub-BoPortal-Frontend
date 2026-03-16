@@ -8,11 +8,32 @@
     </label>
     }
 
-    <div class="input-wrapper">
-        <input type="time" [formControlName]="controlName()" [required]="required()" step="1" class="custom-input"
-            [class.has-value]="value()" />
-        @if (placeholder() && !value()) {
-        <span class="placeholder-overlay">{{ placeholder() }}</span>
-        }
+    <div class="time-field" (click)="toggleOpen($event)">
+        <span class="time-value">
+            {{ selectedHour() || '00' }}:{{ selectedMinute() || '00' }}
+        </span>
+        <span class="time-chevron custom-icon-chevron-down" [class.open]="isOpen()"></span>
     </div>
+
+    @if (isOpen()) {
+    <div class="time-dropdown">
+        <div class="time-col">
+            @for (opt of hours; track opt.value) {
+            <button type="button" class="time-option" [class.active]="opt.value === selectedHour()"
+                (click)="onHourChange(opt.value)">
+                {{ opt.label }}
+            </button>
+            }
+        </div>
+        <div class="time-separator-col">:</div>
+        <div class="time-col">
+            @for (opt of minutes; track opt.value) {
+            <button type="button" class="time-option" [class.active]="opt.value === selectedMinute()"
+                (click)="onMinuteChange(opt.value)">
+                {{ opt.label }}
+            </button>
+            }
+        </div>
+    </div>
+    }
 </div>
