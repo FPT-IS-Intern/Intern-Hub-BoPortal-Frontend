@@ -1,7 +1,7 @@
 <div class="sidebar-wrapper" [class.expanded]="isSidebarExpanded"
   [style.--expanded-hover-bg]="data.defaultBackgroundColorHoverExpanded || 'var(--app-color-surface-warm-100)'">
   <div
-    [style.background-color]="isSidebarExpanded ? (data.backgroundColor || 'var(--app-color-white)') : 'var(--app-color-primary)'">
+    [style.background-color]="isSidebarExpanded ? (data.backgroundColor || 'var(--app-color-white)') : (data.backgroundColor || 'var(--app-color-white)')">
     <aside class="sidebar">
       @for (item of data.menuItems; track $index) {
       <div class="sidebar-item-container">
