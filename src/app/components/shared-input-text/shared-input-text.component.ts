@@ -13,10 +13,10 @@ import { FormsModule } from '@angular/forms';
 export class SharedInputTextComponent {
     @Input() headerInput = '';
     @Input() placeholder = '';
-    @Input() typeInput: 'text' | 'password' = 'text';
+    @Input() typeInput: 'text' | 'password' | 'number' | 'url' = 'text';
     @Input() required = false;
     @Input() icon: string | null = null;
-    @Input() value = '';
+    @Input() value: string | number | null = '';
 
     @Output() valueChange = new EventEmitter<string>();
     @Output() iconClick = new EventEmitter<void>();
