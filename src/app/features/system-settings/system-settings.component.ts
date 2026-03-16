@@ -239,8 +239,7 @@ export class SystemSettingsComponent implements OnInit {
         workStartTime: this.toInputTime(config.workStartTime),
         workEndTime: this.toInputTime(config.workEndTime),
         autoCheckoutTime: this.toInputTime(config.autoCheckoutTime),
-      },
-      { emitEvent: false }
+      }
     );
     this.systemForm.markAsPristine();
   }
@@ -257,8 +256,7 @@ export class SystemSettingsComponent implements OnInit {
         allowWhitespace: !!config.allowWhitespace,
         autoLogoutMinutes: config.autoLogoutMinutes ?? 0,
         maxLoginAttempts: config.maxLoginAttempts ?? 0,
-      },
-      { emitEvent: false }
+      }
     );
     this.securityForm.markAsPristine();
   }
