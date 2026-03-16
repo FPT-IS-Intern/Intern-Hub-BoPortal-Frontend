@@ -91,6 +91,11 @@
         <div class="map-search-wrapper">
           <span class="custom-icon-search search-icon"></span>
           <input #searchInput type="text" [placeholder]="'checkin.locationDialog.map.searchPlaceholder' | translate" class="map-search-input" />
+          @if (searchInputValue) {
+            <button type="button" class="search-clear-btn" (click)="clearSearch()" title="Xóa">
+              <span class="custom-icon-close"></span>
+            </button>
+          }
         </div>
         <div id="google-map" class="map-canvas"></div>
         <button type="button" class="locate-me-btn" (click)="locateMe()" [disabled]="isLocating"

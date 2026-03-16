@@ -221,6 +221,33 @@
   }
 }
 
+.search-clear-btn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--app-color-surface-warm-200, #e8e2d8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-left: 4px;
+
+  span {
+    font-size: 12px;
+    color: var(--app-color-text-muted);
+  }
+
+  &:hover {
+    background: var(--app-color-surface-warm-300, #d4cbc0);
+
+    span {
+      color: var(--app-color-text-main);
+    }
+  }
+}
+
 /* Hide Google's default UI elements if they clash */
 .pac-container {
   border-radius: 8px;
