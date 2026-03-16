@@ -1,0 +1,239 @@
+:host {
+  display: block;
+}
+
+.page-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0;
+  min-height: 100%;
+}
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sticky-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px 0 12px;
+  background: var(--app-color-white);
+  border-bottom: 1px solid var(--app-color-border-soft, #f1f5f9);
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0; // or top: var(--header-height)
+  z-index: 10;
+}
+
+.bar-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.settings-card {
+  background: var(--app-color-white);
+  border-radius: 12px;
+  border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  }
+}
+
+.card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--app-color-border-soft, #f1f5f9);
+  background: var(--app-color-surface-warm, #f8fafc);
+}
+
+.card-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--app-color-text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-icon {
+  font-size: 20px;
+  color: var(--app-color-primary);
+}
+
+.card-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--app-color-text-muted);
+}
+
+.card-body {
+  padding: 6px 20px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  gap: 20px;
+  border-bottom: 1px solid var(--app-color-border-soft, #f1f5f9);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.setting-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.setting-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--app-color-text-main);
+}
+
+.setting-note {
+  font-size: 12px;
+  color: var(--app-color-text-muted);
+  line-height: 1.5;
+}
+
+.setting-control {
+  flex: 0 0 360px;
+  max-width: 360px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 48px;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+    
+    .setting-item:nth-last-child(1),
+    .setting-item:nth-last-child(2) {
+      border-bottom: none;
+    }
+  }
+}
+
+.value-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.unit {
+  font-size: 13px;
+  color: var(--app-color-text-subtle-2);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.setting-control app-shared-input-text,
+.setting-control app-shared-input-time,
+.setting-control app-shared-dropdown {
+  display: block;
+  width: 100%;
+}
+
+.setting-control :is(app-shared-input-text, app-shared-input-time) .custom-input {
+  height: 34px;
+}
+
+.logo-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logo-preview {
+  width: 120px;
+  height: 64px;
+  border-radius: 6px;
+  border: 1px dashed var(--app-color-border-soft, #cbd5e1);
+  background: var(--app-color-surface-soft, #f8fafc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+.input-with-error {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.inline-error-text {
+  display: flex;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--app-color-danger, #dc2626);
+  margin-top: 2px;
+}
+
+.error-view {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.2;
+}
+
+.retry-btn {
+  margin-top: 16px;
+}
+
+.form-hint {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.form-hint.error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+@media (max-width: 1024px) {
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

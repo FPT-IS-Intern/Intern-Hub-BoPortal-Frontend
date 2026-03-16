@@ -56,10 +56,12 @@
   "toast": {
     "system": "Hệ thống",
     "config": {
-      "updateSuccess": "Cập nhật cấu hình thành công"
+      "updateSuccess": "Cập nhật cấu hình thành công",
+      "updateError": "Không thể cập nhật cấu hình hệ thống"
     },
     "security": {
-      "updateSuccess": "Cập nhật cấu hình bảo mật thành công"
+      "updateSuccess": "Cập nhật cấu hình bảo mật thành công",
+      "updateError": "Không thể cập nhật cấu hình bảo mật"
     },
     "rbac": {
       "selectRoleRequired": "Vui lòng chọn vai trò",
@@ -514,6 +516,90 @@
       "title": "Lỗi tải dữ liệu",
       "message": "Đã xảy ra lỗi khi tải ma trận phân quyền. Vui lòng thử lại.",
       "retry": "Thử lại"
+    }
+  },
+  "systemSettings": {
+    "breadcrumb": {
+      "title": "Cấu hình hệ thống"
+    },
+    "actions": {
+      "saveAll": "Lưu tất cả"
+    },
+    "page": {
+      "error": {
+        "title": "Không thể tải cấu hình",
+        "message": "Đã xảy ra lỗi khi tải cấu hình hệ thống. Vui lòng thử lại.",
+        "retry": "Thử lại"
+      },
+      "desc": "Cập nhật cấu hình hệ thống và bảo mật trong một màn hình."
+    },
+    "table": {
+      "setting": "Thiết lập",
+      "value": "Giá trị",
+      "note": "Ghi chú"
+    },
+    "sections": {
+      "system": {
+        "title": "Cấu hình hệ thống",
+        "desc": "Quản lý nhận diện ứng dụng và thời gian làm việc.",
+        "actions": {}
+      },
+      "security": {
+        "title": "Cấu hình bảo mật",
+        "desc": "Thiết lập quy tắc mật khẩu và giới hạn bảo mật phiên.",
+        "actions": {}
+      }
+    },
+    "fields": {
+      "appName": "Tên ứng dụng",
+      "logoUrl": "Logo (URL)",
+      "defaultLanguage": "Ngôn ngữ mặc định",
+      "workStartTime": "Giờ bắt đầu làm việc",
+      "workEndTime": "Giờ kết thúc làm việc",
+      "autoCheckoutTime": "Giờ tự động checkout",
+      "minPasswordLength": "Độ dài mật khẩu tối thiểu",
+      "maxPasswordLength": "Độ dài mật khẩu tối đa",
+      "minUppercaseChars": "Số ký tự in hoa tối thiểu",
+      "minSpecialChars": "Số ký tự đặc biệt tối thiểu",
+      "minNumericChars": "Số ký tự số tối thiểu",
+      "passwordExpiryDays": "Hết hạn mật khẩu (ngày)",
+      "allowWhitespace": "Cho phép khoảng trắng trong mật khẩu",
+      "autoLogoutMinutes": "Tự động đăng xuất sau",
+      "maxLoginAttempts": "Số lần đăng nhập tối đa"
+    },
+    "placeholders": {
+      "appName": "VD: BoPortal Admin",
+      "logoUrl": "https://example.com/logo.svg"
+    },
+    "units": {
+      "chars": "ký tự",
+      "days": "ngày",
+      "minutes": "phút",
+      "times": "lần"
+    },
+    "options": {
+      "allow": "Cho phép",
+      "disallow": "Không cho phép"
+    },
+    "validation": {
+      "passwordRange": "Độ dài mật khẩu tối thiểu không được lớn hơn tối đa."
+    },
+    "help": {
+      "appName": "Hiển thị ở header và màn hình đăng nhập.",
+      "logoUrl": "Dùng cho khu vực nhận diện thương hiệu.",
+      "defaultLanguage": "Áp dụng mặc định cho phiên mới.",
+      "workStartTime": "Giờ bắt đầu làm việc tiêu chuẩn.",
+      "workEndTime": "Giờ kết thúc làm việc tiêu chuẩn.",
+      "autoCheckoutTime": "Tự động checkout sau thời điểm này.",
+      "minPasswordLength": "Số ký tự tối thiểu yêu cầu.",
+      "maxPasswordLength": "Số ký tự tối đa cho phép.",
+      "minUppercaseChars": "Số chữ in hoa tối thiểu (A-Z).",
+      "minSpecialChars": "Số ký tự đặc biệt tối thiểu (vd: !@#).",
+      "minNumericChars": "Số chữ số tối thiểu (0-9).",
+      "passwordExpiryDays": "Bắt buộc đổi mật khẩu sau số ngày này.",
+      "allowWhitespace": "Cho phép khoảng trắng trong mật khẩu.",
+      "autoLogoutMinutes": "Tự động đăng xuất khi không hoạt động.",
+      "maxLoginAttempts": "Khóa sau số lần đăng nhập sai."
     }
   }
 }
