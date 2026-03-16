@@ -63,18 +63,22 @@
   </div>
 
   <!-- Create/Edit/View Modal -->
+  @if (isModalVisible) {
   <app-modal-popup [(isVisible)]="isModalVisible" [title]="modalTitleKey | translate" [showFooter]="false"
     (cancel)="isModalVisible = false">
-    <app-notification-form *ngIf="isModalVisible" [initialData]="selectedRecord" [isReadOnly]="isReadOnly"
+    <app-notification-form [initialData]="selectedRecord" [isReadOnly]="isReadOnly"
       (save)="handleSaveForm($event)" (cancel)="isModalVisible = false">
     </app-notification-form>
   </app-modal-popup>
+  }
 
   <!-- Confirm Popup for Delete / Send Now -->
+  @if (isConfirmVisible) {
   <app-confirm-popup [(isVisible)]="isConfirmVisible" [title]="confirmTitleKey | translate"
     [message]="confirmMessageKey | translate: confirmMessageParams"
     [cancelText]="'notification.bell.modals.cancel' | translate"
     [confirmText]="'notification.bell.modals.confirm' | translate" (confirm)="confirmAction()"
     (cancel)="isConfirmVisible = false">
   </app-confirm-popup>
+  }
 </div>

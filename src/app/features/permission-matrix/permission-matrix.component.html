@@ -53,16 +53,22 @@
   </div>
 
   <!-- Confirm save popup -->
+  @if (isConfirmVisible) {
   <app-confirm-popup [(isVisible)]="isConfirmVisible" [title]="'permissionMatrix.actions.confirm.title' | translate"
-    [message]="'permissionMatrix.actions.confirm.message' | translate" 
-    [cancelText]="'permissionMatrix.actions.confirm.no' | translate" 
+    [message]="'permissionMatrix.actions.confirm.message' | translate"
+    [cancelText]="'permissionMatrix.actions.confirm.no' | translate"
     [confirmText]="'permissionMatrix.actions.confirm.yes' | translate"
     (confirm)="handleConfirmSave()" (cancel)="handleConfirmCancel()"></app-confirm-popup>
+  }
 
   <!-- Create role dialog -->
+  @if (isCreateRoleVisible) {
   <app-create-role-dialog [(isVisible)]="isCreateRoleVisible" (save)="onCreateRole($event)"></app-create-role-dialog>
+  }
 
   <!-- Create resource dialog -->
+  @if (isCreateResourceVisible) {
   <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
     (save)="onCreateResource($event)"></app-create-resource-dialog>
+  }
 </div>
