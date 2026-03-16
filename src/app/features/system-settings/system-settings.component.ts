@@ -54,6 +54,7 @@ export class SystemSettingsComponent implements OnInit {
   protected readonly isInitLoading = signal(false);
   protected readonly isError = signal(false);
   protected readonly isSaving = signal(false);
+  protected readonly logoPreviewError = signal(false);
 
   protected languageOptions: { label: string; value: string }[] = [];
   protected allowWhitespaceOptions: { label: string; value: boolean }[] = [];
@@ -216,6 +217,17 @@ export class SystemSettingsComponent implements OnInit {
     control.setValue(value);
     control.markAsDirty();
     control.markAsTouched();
+    if (controlName === 'logoUrl') {
+      this.logoPreviewError.set(false);
+    }
+  }
+
+  protected onLogoError(): void {
+    this.logoPreviewError.set(true);
+  }
+
+  protected onLogoLoad(): void {
+    this.logoPreviewError.set(false);
   }
 
   private patchSystemConfig(config: any): void {

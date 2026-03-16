@@ -60,10 +60,10 @@
                     [value]="systemForm.get('logoUrl')?.value || ''"
                     (valueChange)="updateControl(systemForm, 'logoUrl', $event)">
                   </app-shared-input-text>
-                  @if (systemForm.get('logoUrl')?.value) {
+                  @if (systemForm.get('logoUrl')?.value && !logoPreviewError()) {
                     <div class="logo-preview">
                       <img [src]="systemForm.get('logoUrl')?.value" alt="Logo Preview"
-                        (error)="$event.target.style.display='none'">
+                        (error)="onLogoError()" (load)="onLogoLoad()">
                     </div>
                   }
                 </div>
