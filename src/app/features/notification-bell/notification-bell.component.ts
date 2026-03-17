@@ -853,8 +853,8 @@ export class NotificationBellComponent implements OnInit {
     this.isHistoryLoading = true;
     this.templateService.restoreTemplate(this.selectedCode.code, {
       channel: this.selectedChannel,
-      locale: this.getLocaleParam(),
-      templateVersion: item.version,
+      lang: this.getLocaleParam(),
+      version: item.version,
     })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
