@@ -120,6 +120,15 @@
   font-size: 12px;
 }
 
+.btn-outline-custom.small.danger {
+  border-color: var(--app-color-danger);
+  color: var(--app-color-danger);
+}
+
+.btn-outline-custom.small.danger:hover {
+  background: var(--app-color-danger-50);
+}
+
 .empty-state {
   padding: 32px;
   text-align: center;
@@ -186,6 +195,12 @@
 .params-title {
   font-weight: 700;
   color: var(--app-color-text-main);
+}
+
+.params-description {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--app-color-text-muted);
 }
 
 
@@ -269,14 +284,7 @@
 }
 
 .tab-indicator {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+  display: none;
 }
 
 .channel-form {

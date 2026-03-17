@@ -45,6 +45,8 @@ interface NotificationCode {
   channels: ChannelConfig[];
   paramsSchemaByChannel: Record<ChannelType, Record<string, string>>;
   historyByChannel: Record<ChannelType, ChannelHistoryItem[]>;
+  isDeletable?: boolean;
+  definitionDescription?: string;
   definitionExists?: boolean;
   isNew?: boolean;
 }
@@ -100,6 +102,7 @@ export class NotificationBellComponent implements OnInit {
 
   paramsDraft: ParamSchemaItem[] = [];
   paramsErrors: Record<number, string> = {};
+  definitionDescriptionDraft = '';
   htmlEditorMode: 'design' | 'source' = 'design';
   dirtyByChannel: Partial<Record<ChannelType, boolean>> = {};
 
@@ -216,6 +219,7 @@ export class NotificationBellComponent implements OnInit {
       code: summary.code,
       name: summary.description || summary.code,
       active: true,
+      isDeletable: summary.isDeletable,
       channels: this.normalizeChannels(summary.channels || []).map(channel => ({
         channel,
         active: true,
@@ -348,6 +352,7 @@ export class NotificationBellComponent implements OnInit {
         PUSH: [],
         IN_APP: [],
       },
+      isDeletable: false,
       definitionExists: false,
       isNew: true,
     };
@@ -436,6 +441,9 @@ export class NotificationBellComponent implements OnInit {
           if (response.data && this.selectedCode) {
             this.updateParamsSchema(response.data.paramsSchema);
             this.selectedCode.definitionExists = true;
+            if (response.data.description !== undefined) {
+              this.selectedCode.definitionDescription = response.data.description || '';
+            }
           }
         },
         error: (error) => {
@@ -462,19 +470,46 @@ export class NotificationBellComponent implements OnInit {
       });
   }
 
-  private updateParamsSchema(paramsSchema?: string): void {
+  private updateParamsSchema(paramsSchema?: unknown): void {
     if (!this.selectedCode || !paramsSchema) return;
 
-    try {
-      const schema = JSON.parse(paramsSchema);
+    const schema = this.coerceParamsSchema(paramsSchema);
 
-      // Update schema for all channels
-      ['EMAIL', 'PUSH', 'IN_APP'].forEach(channel => {
-        this.selectedCode!.paramsSchemaByChannel[channel as ChannelType] = schema || {};
-      });
-    } catch (error) {
-      console.error('Error parsing params schema:', error);
+    // Update schema for all channels
+    ['EMAIL', 'PUSH', 'IN_APP'].forEach(channel => {
+      this.selectedCode!.paramsSchemaByChannel[channel as ChannelType] = schema || {};
+    });
+  }
+
+  private coerceParamsSchema(input: unknown): Record<string, string> {
+    if (!input) return {};
+
+    let raw: unknown = input;
+    if (typeof raw === 'string') {
+      try {
+        raw = JSON.parse(raw);
+      } catch (error) {
+        console.error('Error parsing params schema:', error);
+        return {};
+      }
     }
+
+    if (!raw || typeof raw !== 'object') return {};
+
+    const result: Record<string, string> = {};
+    Object.entries(raw as Record<string, unknown>).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        result[key] = value;
+        return;
+      }
+      if (value && typeof value === 'object' && 'description' in value) {
+        const desc = (value as { description?: unknown }).description;
+        result[key] = typeof desc === 'string' ? desc : '';
+        return;
+      }
+      result[key] = '';
+    });
+    return result;
   }
 
   private normalizeChannels(channels: string[]): ChannelType[] {
@@ -531,11 +566,18 @@ export class NotificationBellComponent implements OnInit {
     }
   }
 
-  private buildParamsSchemaPayload(): string | undefined {
+  private buildParamsSchemaPayload(): Record<string, { description?: string }> | undefined {
     if (!this.selectedCode) return undefined;
     const schema = this.selectedCode.paramsSchemaByChannel[this.selectedChannel] || {};
     if (Object.keys(schema).length === 0) return undefined;
-    return JSON.stringify(schema);
+    return this.buildParamsSchemaObject(schema);
+  }
+
+  private buildParamsSchemaObject(schema: Record<string, string>): Record<string, { description?: string }> {
+    return Object.entries(schema).reduce((acc, [key, description]) => {
+      acc[key] = { description: description || '' };
+      return acc;
+    }, {} as Record<string, { description?: string }>);
   }
 
   private loadHistory(channel: ChannelType): void {
@@ -716,6 +758,7 @@ export class NotificationBellComponent implements OnInit {
       description: item.description,
     }));
     this.paramsErrors = {};
+    this.definitionDescriptionDraft = this.selectedCode.definitionDescription || '';
     this.isParamsModalOpen = true;
   }
 
@@ -752,11 +795,12 @@ export class NotificationBellComponent implements OnInit {
     if (Object.keys(this.paramsErrors).length > 0) {
       return;
     }
-    const paramsSchema = JSON.stringify(nextSchema);
+    const paramsSchema = this.buildParamsSchemaObject(nextSchema);
+    const description = this.definitionDescriptionDraft.trim();
     const hasDefinition = !!this.selectedCode.definitionExists;
     const request$ = hasDefinition
-      ? this.templateService.updateTemplateDefinition(this.selectedCode.code, { paramsSchema })
-      : this.templateService.createTemplateDefinition({ code: this.selectedCode.code, paramsSchema });
+      ? this.templateService.updateTemplateDefinition(this.selectedCode.code, { paramsSchema, description })
+      : this.templateService.createTemplateDefinition({ code: this.selectedCode.code, paramsSchema, description });
 
     this.isLoading = true;
     request$
@@ -769,6 +813,11 @@ export class NotificationBellComponent implements OnInit {
           if (this.selectedCode) {
             this.selectedCode.definitionExists = true;
             this.updateParamsSchema(response.data?.paramsSchema || paramsSchema);
+            if (response.data?.description !== undefined) {
+              this.selectedCode.definitionDescription = response.data.description || '';
+            } else {
+              this.selectedCode.definitionDescription = description;
+            }
           }
           this.isParamsModalOpen = false;
           this.markDirty();
@@ -817,6 +866,26 @@ export class NotificationBellComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error restoring template history:', error);
+        }
+      });
+  }
+
+  deleteCode(item: NotificationCode): void {
+    if (!item.isDeletable) return;
+    const confirmDelete = window.confirm('Delete template definition?');
+    if (!confirmDelete) return;
+    this.isLoading = true;
+    this.templateService.deleteTemplateDefinition(item.code)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe({
+        next: () => {
+          this.loadTemplates();
+        },
+        error: (error) => {
+          console.error('Error deleting template definition:', error);
         }
       });
   }
