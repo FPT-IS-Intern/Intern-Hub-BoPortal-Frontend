@@ -388,13 +388,14 @@
 .params-pane {
   align-self: start;
   position: sticky;
-  top: 16px;
+  top: calc(64px + 16px);
   height: fit-content;
 }
 
+// Let the whole card move with page scroll (no inner scroll).
 .params-pane .params-card {
-  max-height: calc(100vh - 140px);
-  overflow: auto;
+  overflow: visible;
+  max-height: none;
 }
 
 .form-preview {

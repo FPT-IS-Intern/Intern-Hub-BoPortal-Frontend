@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Params } from '@angular/router';
 
 export interface BreadcrumbItem {
   label: string;
   url?: string;
+  queryParams?: Params;
   icon?: string;
   active?: boolean;
 }

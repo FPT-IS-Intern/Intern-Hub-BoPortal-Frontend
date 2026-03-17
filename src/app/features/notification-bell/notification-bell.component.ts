@@ -108,7 +108,6 @@ export class NotificationBellComponent implements OnInit {
   dirtyByChannel: Partial<Record<ChannelType, boolean>> = {};
 
   historySelection: ChannelHistoryItem | null = null;
-  historyPreviewMode: 'render' | 'code' = 'render';
   isRestoreConfirmOpen = false;
   restoreCandidate: ChannelHistoryItem | null = null;
 
@@ -254,7 +253,7 @@ export class NotificationBellComponent implements OnInit {
       const detailLabel = this.translate.instant('notification.master.detail.title', { code: this.selectedCode.code });
       this.breadcrumbService.setBreadcrumbs([
         { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-        { label: masterLabel, url: '/notifications?view=list' },
+        { label: masterLabel, url: '/notifications', queryParams: { view: 'list' } },
         { label: detailLabel, active: true },
       ]);
       return;
@@ -976,7 +975,6 @@ export class NotificationBellComponent implements OnInit {
 
   selectHistory(item: ChannelHistoryItem): void {
     this.historySelection = item;
-    this.historyPreviewMode = 'render';
   }
 
   openRestoreConfirm(item: ChannelHistoryItem): void {
