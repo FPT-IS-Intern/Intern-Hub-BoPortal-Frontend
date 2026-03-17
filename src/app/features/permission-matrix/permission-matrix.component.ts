@@ -20,7 +20,7 @@ import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popu
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PERMISSION_COLUMNS } from '../../core/constants/permission-matrix.constants';
 import { environment } from '../../../environments/environment';
-import { PermissionMatrixSkeletonComponent } from '../../components/skeletons/permission-matrix-skeleton/permission-matrix-skeleton.component';
+import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
 
 @Component({
   selector: 'app-permission-matrix',
@@ -36,7 +36,7 @@ import { PermissionMatrixSkeletonComponent } from '../../components/skeletons/pe
     NoDataComponent,
     ConfirmPopup,
     TranslateModule,
-    PermissionMatrixSkeletonComponent,
+    TableSkeletonComponent,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',

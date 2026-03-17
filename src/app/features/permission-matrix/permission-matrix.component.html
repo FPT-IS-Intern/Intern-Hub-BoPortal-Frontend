@@ -4,10 +4,10 @@
     <div class="toolbar-left">
       <app-role-selector [roles]="roles()" [selectedRole]="selectedRoleId()" (roleChange)="onRoleChange($event)">
       </app-role-selector>
-      
+
       <div class="search-wrapper">
         <span class="custom-icon-search search-icon"></span>
-        <input type="text" class="search-input" [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate" 
+        <input type="text" class="search-input" [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate"
           [ngModel]="searchQuery()" (ngModelChange)="onSearchQueryChange($event)">
       </div>
     </div>
@@ -19,7 +19,7 @@
       <button class="btn-secondary-custom" (click)="isCreateResourceVisible = true">
         <span class="custom-icon-package-plus"></span> {{ 'permissionMatrix.toolbar.addResource' | translate }}
       </button>
-      
+
       <div class="divider"></div>
 
       <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
@@ -31,7 +31,12 @@
   <div class="table-container">
     @if (isInitLoading()) {
       <div class="state-panel">
-        <app-permission-matrix-skeleton></app-permission-matrix-skeleton>
+        <app-table-skeleton
+          class="skeleton-panel"
+          [columns]="6"
+          [rows]="5"
+          [columnWidths]="['30%','10%','10%','10%','10%','10%']">
+        </app-table-skeleton>
       </div>
     } @else if (isLoading) {
       <div class="state-panel loading-view">

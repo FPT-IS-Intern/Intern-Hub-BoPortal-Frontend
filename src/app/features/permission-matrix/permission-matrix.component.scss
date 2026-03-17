@@ -21,6 +21,12 @@
   flex-direction: column;
 }
 
+.skeleton-panel {
+  border-radius: 8px;
+  background: var(--app-color-white);
+  padding: 12px 24px;
+}
+
 .loading-view {
   align-items: center;
   justify-content: center;
