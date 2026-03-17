@@ -135,6 +135,18 @@
   overflow: hidden;
 }
 
+.detail-no-data {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--app-color-surface-warm-100);
+  background: white;
+  margin-top: 16px;
+  padding: 16px;
+}
+
 
 .no-selection {
   flex: 1;

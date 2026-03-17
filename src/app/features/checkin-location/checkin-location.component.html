@@ -1,14 +1,6 @@
 <div class="page-body">
 
 
-  @if (isError()) {
-  <app-no-data [title]="'checkin.page.error.title' | translate" [message]="'checkin.page.error.message' | translate">
-    <span icon class="custom-icon-error error-icon"></span>
-    <button action class="retry-btn" (click)="fetchConfigs()">
-      {{ 'checkin.page.error.retry' | translate }}
-    </button>
-  </app-no-data>
-  } @else {
   <div class="master-detail-container">
     <!-- Master: Branch List -->
     <app-branch-sidebar [branches]="branches()" [selectedBranchId]="selectedBranch()?.id"
@@ -45,28 +37,29 @@
         </div>
 
         <div class="tab-content">
-          @if (activeTabIndex() === 0) {
-          <app-location-tab [locations]="branch.attendanceLocations || []" (addLocation)="openLocationModal()"
-            (editLocation)="openLocationModal($event)" (deleteLocation)="confirmDeleteLocation($event)">
+          @if (isError()) {
+          <app-no-data [title]="'checkin.page.error.title' | translate"
+            [message]="'checkin.page.error.message' | translate">
+            <span icon class="custom-icon-error error-icon"></span>
+            <button action class="retry-btn" (click)="fetchConfigs()">
+              {{ 'checkin.page.error.retry' | translate }}
+            </button>
+          </app-no-data>
+          } @else if (activeTabIndex() === 0) {
+          <app-location-tab [locations]="branch.attendanceLocations || []"
+            (addLocation)="openLocationModal()" (editLocation)="openLocationModal($event)"
+            (deleteLocation)="confirmDeleteLocation($event)">
           </app-location-tab>
           } @else {
-          <app-ip-tab [ipRanges]="branch.allowedIpRanges || []" (addIP)="openIPModal()" (editIP)="openIPModal($event)"
-            (deleteIP)="confirmDeleteIP($event)">
+          <app-ip-tab [ipRanges]="branch.allowedIpRanges || []" (addIP)="openIPModal()"
+            (editIP)="openIPModal($event)" (deleteIP)="confirmDeleteIP($event)">
           </app-ip-tab>
           }
         </div>
       </div>
-      } @else {
-      <div class="no-selection">
-        <app-no-data [title]="'checkin.page.noSelection.title' | translate"
-          [message]="'checkin.page.noSelection.message' | translate">
-          <span icon class="custom-icon-box-iso selection-icon"></span>
-        </app-no-data>
-      </div>
       }
     </main>
   </div>
-  }
 
   <!-- Static Dialogs rendered on demand -->
   @if (isLocationModalVisible()) {
@@ -89,8 +82,8 @@
 
   @if (isDeleteConfirmVisible()) {
   <app-confirm-popup [isVisible]="true" (isVisibleChange)="isDeleteConfirmVisible.set($event)"
-    [title]="'checkin.common.confirmDelete.title' | translate" [message]="(deleteConfirmData()?.type === 'location' 
-        ? 'checkin.location.confirmDelete.message' 
+    [title]="'checkin.common.confirmDelete.title' | translate" [message]="(deleteConfirmData()?.type === 'location'
+        ? 'checkin.location.confirmDelete.message'
         : 'checkin.ip.confirmDelete.message') | translate: { name: deleteConfirmData()?.data?.name }"
     [cancelText]="'checkin.common.actions.cancel' | translate"
     [confirmText]="'checkin.common.actions.delete' | translate" (confirm)="onConfirmDelete()"
