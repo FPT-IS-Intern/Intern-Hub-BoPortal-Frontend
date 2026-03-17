@@ -49,7 +49,7 @@
   border: 1px solid var(--app-color-border-alpha-soft);
   background: var(--app-color-white);
   box-shadow: 0 1px 3px var(--app-shadow-sm);
-  min-height: 500px; /* Prevent collapse during loading */
+  min-height: calc(100vh - 260px);
   display: flex;
   flex-direction: column;
 }
