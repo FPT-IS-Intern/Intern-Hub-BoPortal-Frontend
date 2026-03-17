@@ -40,6 +40,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: calc(100vh - 260px);
 }
 
 .detail-header {
@@ -135,17 +136,6 @@
   overflow: hidden;
 }
 
-.detail-no-data {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  border: 1px solid var(--app-color-surface-warm-100);
-  background: white;
-  margin-top: 16px;
-  padding: 16px;
-}
 
 
 .no-selection {
@@ -169,7 +159,7 @@
 .error-icon {
   width: 64px;
   height: 64px;
-  opacity: 0.2;
+  opacity: 0.9;
 }
 
 .selection-icon {
