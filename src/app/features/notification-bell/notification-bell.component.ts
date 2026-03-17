@@ -184,7 +184,6 @@ export class NotificationBellComponent implements OnInit {
     this.templateService.listTemplateSummaries({
       code: code || undefined,
       channel: channel || undefined,
-      lang: this.currentLocale,
       page: Math.max(this.pageIndex - 1, 0),
       size: this.pageSize
     })
@@ -399,11 +398,12 @@ export class NotificationBellComponent implements OnInit {
     if (!this.selectedCode) return;
 
     this.isLoading = true;
+    const locale = this.getLocaleParam();
 
     // Load all templates for this code
     this.templateService.listTemplates({
       code,
-      locale: this.currentLocale,
+      locale,
       page: 0,
       size: 100
     })
@@ -456,7 +456,7 @@ export class NotificationBellComponent implements OnInit {
   }
 
   private loadTemplateChannels(code: string): void {
-    this.templateService.getTemplateChannels(code, this.currentLocale)
+    this.templateService.getTemplateChannels(code, this.getLocaleParam())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
@@ -527,6 +527,11 @@ export class NotificationBellComponent implements OnInit {
     return date.toLocaleString(locale);
   }
 
+  private getLocaleParam(): string {
+    const candidate = `${this.currentLocale || this.translate.currentLang || 'vi'}`.trim();
+    return candidate || 'vi';
+  }
+
   private mapTemplateToChannelConfig(template: TemplateResponse, target?: ChannelConfig): ChannelConfig {
     const config: ChannelConfig = target || {
       channel: template.channel as ChannelType,
@@ -583,7 +588,7 @@ export class NotificationBellComponent implements OnInit {
   private loadHistory(channel: ChannelType): void {
     if (!this.selectedCode) return;
     this.isHistoryLoading = true;
-    this.templateService.getTemplateHistory(this.selectedCode.code, channel, this.currentLocale)
+    this.templateService.getTemplateHistory(this.selectedCode.code, channel, this.getLocaleParam())
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isHistoryLoading = false)
@@ -848,7 +853,7 @@ export class NotificationBellComponent implements OnInit {
     this.isHistoryLoading = true;
     this.templateService.restoreTemplate(this.selectedCode.code, {
       channel: this.selectedChannel,
-      locale: this.currentLocale,
+      locale: this.getLocaleParam(),
       templateVersion: item.version,
     })
       .pipe(
@@ -892,11 +897,12 @@ export class NotificationBellComponent implements OnInit {
 
   saveConfig(): void {
     if (!this.selectedCode || !this.selectedChannelConfig) return;
+    const locale = this.getLocaleParam();
     const paramsSchema = this.buildParamsSchemaPayload();
     const request = {
       code: this.selectedCode.code,
       channel: this.selectedChannel,
-      locale: this.currentLocale,
+      locale,
       subject: this.selectedChannelConfig.subject,
       content: this.selectedChannelConfig.content || '',
       format: this.selectedChannelConfig.format,
