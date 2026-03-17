@@ -6,6 +6,18 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
+.pagination-container {
+  border: 1px solid var(--app-color-border-alpha-soft);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.matrix-wrapper:has(+ .pagination-container) {
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+
 .permission-table {
   width: 100%;
   border-collapse: separate;
