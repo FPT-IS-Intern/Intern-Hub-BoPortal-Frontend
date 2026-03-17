@@ -15,14 +15,6 @@
       <div class="state-panel">
         <app-system-settings-skeleton></app-system-settings-skeleton>
       </div>
-      } @else if (isLoading()) {
-      <div class="state-panel loading-view">
-        <span class="custom-icon-loading spinner"></span>
-        <div class="loading-text">
-          <div class="loading-title">{{ 'systemSettings.page.loading.title' | translate }}</div>
-          <div class="loading-desc">{{ 'systemSettings.page.loading.message' | translate }}</div>
-        </div>
-      </div>
       } @else if (isError()) {
       <div class="state-panel">
         <div class="error-view">
