@@ -3,18 +3,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedSearchComponent } from '../../../../components/shared-search/shared-search.component';
+import { CheckinSidebarSkeletonComponent } from '../../../../components/skeletons/checkin-sidebar-skeleton/checkin-sidebar-skeleton.component';
 import { BranchCheckinConfig } from '../../../../models/checkin-config.model';
 
 @Component({
   selector: 'app-branch-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, SharedSearchComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, SharedSearchComponent, CheckinSidebarSkeletonComponent],
   templateUrl: './branch-sidebar.component.html',
   styleUrl: './branch-sidebar.component.scss'
 })
 export class BranchSidebarComponent {
   branches = input<BranchCheckinConfig[]>([]);
   selectedBranchId = input<string | undefined>();
+  isLoading = input<boolean>(false);
   @Output() selectBranch = new EventEmitter<BranchCheckinConfig>();
   @Output() manageBranches = new EventEmitter<void>();
 
