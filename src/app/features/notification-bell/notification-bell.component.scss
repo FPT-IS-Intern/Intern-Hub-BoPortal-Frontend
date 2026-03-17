@@ -38,6 +38,12 @@
   overflow: hidden;
 }
 
+.pagination-container {
+  border-top: 1px solid var(--app-color-border-alpha-soft);
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
 .master-table {
   width: 100%;
   border-collapse: collapse;

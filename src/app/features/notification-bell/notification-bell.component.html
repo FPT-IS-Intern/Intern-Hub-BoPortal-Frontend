@@ -77,19 +77,20 @@
         }
       </tbody>
     </table>
+    @if (total > 0) {
+    <div class="pagination-container">
+      <app-notification-pagination
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [total]="total"
+        [pageSizeOptions]="pageSizeOptions"
+        [displayRange]="displayRange"
+        (pageIndexChange)="onPageIndexChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-notification-pagination>
+    </div>
+    }
   </div>
-
-  @if (total > 0) {
-  <app-notification-pagination
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [total]="total"
-    [pageSizeOptions]="pageSizeOptions"
-    [displayRange]="displayRange"
-    (pageIndexChange)="onPageIndexChange($event)"
-    (pageSizeChange)="onPageSizeChange($event)">
-  </app-notification-pagination>
-  }
   } @else {
   <div class="channel-card">
     <div class="channel-tabs">
