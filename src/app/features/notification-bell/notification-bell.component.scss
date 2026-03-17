@@ -375,7 +375,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .editor-pane {
@@ -386,16 +386,9 @@
 }
 
 .params-pane {
-  position: relative;
-  align-self: stretch;
-}
-
-// Sticky card that follows the page scroll.
-.params-pane .params-card {
   position: sticky;
   top: calc(64px + 16px);
-  overflow: visible;
-  max-height: none;
+  align-self: start;
 }
 
 .form-preview {
@@ -671,7 +664,8 @@
 }
 
 .history-panel {
-  width: 480px;
+  width: min(70vw, 960px);
+  min-width: 520px;
   background: var(--app-color-white);
   height: 100%;
   display: flex;
@@ -689,7 +683,7 @@
 
 .history-body {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 3fr 7fr;
   gap: 0;
   height: 100%;
   min-height: 0;
