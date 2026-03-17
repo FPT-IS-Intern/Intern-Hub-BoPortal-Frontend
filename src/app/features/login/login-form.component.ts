@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, inject, ChangeDetectionStrategy, AfterViewInit, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -20,25 +20,39 @@ import { ErrorMessageService } from '../../i18n/error-message.service';
     styleUrls: ['./login-form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements AfterViewInit {
     private authService = inject(AuthService);
     private tokenService = inject(TokenStorageService);
     private router = inject(Router);
     private errorMessageService = inject(ErrorMessageService);
+    private hostEl = inject<ElementRef<HTMLElement>>(ElementRef);
 
     username = signal('');
     password = signal('');
     error = signal<string | null>(null);
-    
+
     showPassword = signal(false);
 
     checkInputRequired = computed(() => this.username().trim() === '' || this.password().trim() === '');
+
+    ngAfterViewInit(): void {
+        this.logDisabledState('afterViewInit');
+        setTimeout(() => this.logDisabledState('afterViewInit+0'), 0);
+        setTimeout(() => this.logDisabledState('afterViewInit+300'), 300);
+        setTimeout(() => this.logDisabledState('afterViewInit+1000'), 1000);
+    }
+
+    @HostListener('window:pageshow')
+    onPageShow(): void {
+        this.logDisabledState('pageshow');
+        setTimeout(() => this.logDisabledState('pageshow+300'), 300);
+    }
 
     async handleSubmit() {
         if (this.checkInputRequired()) return;
 
         this.error.set(null);
-        
+
 
         try {
             const request: LoginRequest = {
@@ -64,7 +78,7 @@ export class LoginFormComponent {
         } catch (err) {
             this.error.set(this.resolveHttpError(err));
         } finally {
-            
+
         }
     }
 
@@ -80,6 +94,19 @@ export class LoginFormComponent {
         }
 
         return this.errorMessageService.resolve();
+    }
+
+    private logDisabledState(source: string): void {
+        const inputs = this.hostEl.nativeElement.querySelectorAll('input');
+        const usernameValue = inputs[0]?.value ?? '';
+        const passwordValue = inputs[1]?.value ?? '';
+        console.log(`[login] ${source}`, {
+            usernameSignal: this.username(),
+            passwordSignal: this.password() ? '***' : '',
+            usernameInput: usernameValue,
+            passwordInput: passwordValue ? '***' : '',
+            checkInputRequired: this.checkInputRequired(),
+        });
     }
 }
 

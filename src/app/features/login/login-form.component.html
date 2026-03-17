@@ -28,7 +28,11 @@
             </div>
             }
 
-            <button type="submit" class="btn-login" [disabled]="checkInputRequired()">
+            <button
+                type="submit"
+                class="btn-login"
+                [class.is-disabled]="checkInputRequired()"
+                [disabled]="checkInputRequired()">
                 {{ 'login.button' | translate }}
             </button>
         </form>
