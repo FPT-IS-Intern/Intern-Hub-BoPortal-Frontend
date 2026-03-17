@@ -29,7 +29,19 @@
   </div>
 
   <div class="table-container">
-    @if (isError()) {
+    @if (isInitLoading()) {
+      <div class="state-panel">
+        <app-permission-matrix-skeleton></app-permission-matrix-skeleton>
+      </div>
+    } @else if (isLoading) {
+      <div class="state-panel loading-view">
+        <span class="custom-icon-loading spinner"></span>
+        <div class="loading-text">
+          <div class="loading-title">{{ 'permissionMatrix.page.loading.title' | translate }}</div>
+          <div class="loading-desc">{{ 'permissionMatrix.page.loading.message' | translate }}</div>
+        </div>
+      </div>
+    } @else if (isError()) {
       <div class="error-view">
         <app-no-data [title]="'permissionMatrix.error.title' | translate"
           [message]="'permissionMatrix.error.message' | translate">
@@ -43,11 +55,13 @@
       @if (filteredRows().length > 0) {
         <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
           (permissionChange)="permissionRows.set($event)"></app-permission-table>
-      } @else if (!isInitLoading()) {
-        <app-no-data [title]="'permissionMatrix.table.empty.title' | translate"
-          [message]="'permissionMatrix.table.empty.message' | translate">
-          <span icon class="custom-icon-box-iso selection-icon"></span>
-        </app-no-data>
+      } @else {
+        <div class="empty-view">
+          <app-no-data [title]="'permissionMatrix.table.empty.title' | translate"
+            [message]="'permissionMatrix.table.empty.message' | translate">
+            <span icon class="custom-icon-box-iso selection-icon"></span>
+          </app-no-data>
+        </div>
       }
     }
   </div>
