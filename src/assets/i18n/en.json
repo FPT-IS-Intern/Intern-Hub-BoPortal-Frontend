@@ -531,6 +531,14 @@
         "message": "An error occurred while loading system settings. Please try again.",
         "retry": "Try again"
       },
+      "loading": {
+        "title": "Loading system settings",
+        "message": "Please wait while we fetch the latest configuration."
+      },
+      "empty": {
+        "title": "No configuration found",
+        "message": "System settings are not available yet."
+      },
       "desc": "Update core system and security settings in one place."
     },
     "table": {

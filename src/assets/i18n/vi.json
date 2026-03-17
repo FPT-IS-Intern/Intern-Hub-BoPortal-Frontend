@@ -531,6 +531,14 @@
         "message": "Đã xảy ra lỗi khi tải cấu hình hệ thống. Vui lòng thử lại.",
         "retry": "Thử lại"
       },
+      "loading": {
+        "title": "Đang tải cấu hình hệ thống",
+        "message": "Vui lòng chờ trong giây lát."
+      },
+      "empty": {
+        "title": "Chưa có cấu hình",
+        "message": "Hiện chưa có dữ liệu cấu hình hệ thống."
+      },
       "desc": "Cập nhật cấu hình hệ thống và bảo mật trong một màn hình."
     },
     "table": {
