@@ -735,6 +735,10 @@ export class NotificationBellComponent implements OnInit {
     return !!this.selectedChannelConfig && !this.selectedChannelConfig.id;
   }
 
+  get canOpenHistory(): boolean {
+    return !!this.selectedChannelConfig?.id || this.historyItems.length > 0;
+  }
+
   onPageIndexChange(index: number): void {
     this.pageIndex = index;
     this.loadTemplates();

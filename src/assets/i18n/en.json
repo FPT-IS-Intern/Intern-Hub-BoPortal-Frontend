@@ -345,8 +345,11 @@
       "detail": {
         "title": "Notification Code {{code}}",
         "params": {
+          "templateInfo": "Template info",
+          "systemCode": "System code:",
           "title": "Parameters",
           "define": "Define",
+          "addNew": "+ Add parameter",
           "empty": "No parameters"
         },
         "form": {

@@ -105,9 +105,11 @@
       </div>
       <div class="tab-actions">
         <app-shared-dropdown
+          class="add-channel-dropdown"
           [options]="missingChannelOptions"
           [(value)]="addChannelValue"
           [placeholder]="'notification.master.actions.addChannel' | translate"
+          icon="custom-icon-package-plus"
           width="140px"
           (valueChange)="addChannel($event)">
         </app-shared-dropdown>
@@ -190,7 +192,7 @@
           {{ 'notification.master.actions.cancelChannel' | translate }}
         </button>
         }
-        @if (historyItems.length > 0) {
+        @if (canOpenHistory) {
         <button class="btn-outline-custom" (click)="openHistorySidebar()">
           {{ 'notification.master.detail.version.history' | translate }}
         </button>
@@ -203,19 +205,15 @@
 
       <div class="params-pane">
         <div class="params-card">
-          <div class="params-header">
-            <div>
-              @if (selectedCode?.code) {
-              <div class="params-code">{{ selectedCode?.code }}</div>
-              }
-              @if (selectedCode?.definitionDescription) {
-              <div class="params-description">{{ selectedCode?.definitionDescription }}</div>
-              }
-            </div>
-            <button class="btn-outline-custom" (click)="openParamsModal()">
-              {{ 'notification.master.detail.params.define' | translate }}
-            </button>
+          <div class="template-label">{{ 'notification.master.detail.params.templateInfo' | translate }}</div>
+          <div class="template-title">
+            {{ selectedCode?.definitionDescription || selectedCode?.name || selectedCode?.code }}
           </div>
+          <div class="template-meta">
+            <span class="template-meta-label">{{ 'notification.master.detail.params.systemCode' | translate }}</span>
+            <span class="template-badge">{{ selectedCode?.code }}</span>
+          </div>
+          <div class="template-divider"></div>
           <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
           <div class="params-list">
             @if (paramsList.length) {
@@ -231,6 +229,9 @@
             <span class="params-empty">{{ 'notification.master.detail.params.empty' | translate }}</span>
             }
           </div>
+          <button class="btn-outline-custom small params-add-btn" (click)="openParamsModal()">
+            {{ 'notification.master.detail.params.addNew' | translate }}
+          </button>
         </div>
       </div>
     </div>
@@ -259,7 +260,7 @@
     </div>
 
     <div class="form-group">
-      <label class="form-label">{{ 'notification.master.create.descriptionLabel' | translate }}</label>
+      <label class="form-label required">{{ 'notification.master.create.descriptionLabel' | translate }}</label>
       <input
         class="custom-input"
         [(ngModel)]="createDescriptionValue"
