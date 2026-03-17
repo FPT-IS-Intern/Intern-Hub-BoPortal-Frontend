@@ -16,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'checkin',
+    redirectTo: 'users',
     pathMatch: 'full',
   },
   {
@@ -26,16 +26,16 @@ export const routes: Routes = [
     children: [
       {
         path: 'main',
-        redirectTo: 'checkin',
+        redirectTo: 'users',
         pathMatch: 'full',
-      },
-      {
-        path: 'permissions',
-        component: PermissionMatrixComponent,
       },
       {
         path: 'users',
         component: UserManagementComponent,
+      },
+      {
+        path: 'permissions',
+        component: PermissionMatrixComponent,
       },
       {
         path: 'notifications',

@@ -70,8 +70,8 @@ export class LoginFormComponent implements AfterViewInit {
                 }
 
                 // Skip /me and general-config calls on login success as requested
-                console.log('Login successful. Navigate directly to main layout.');
-                this.router.navigate(['/main']);
+                console.log('Login successful. Navigate directly to first sidebar item.');
+                this.router.navigate(['/users']);
             } else {
                 this.error.set(this.errorMessageService.resolve(res.status?.code));
             }
