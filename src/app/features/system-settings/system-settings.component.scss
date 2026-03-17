@@ -132,7 +132,7 @@
 
   @media (min-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
-    
+
     .setting-item:nth-last-child(1),
     .setting-item:nth-last-child(2) {
       border-bottom: none;
@@ -211,10 +211,21 @@
   justify-content: center;
 }
 
+.error-view-wrapper {
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--app-color-border-alpha-soft);
+  background: var(--app-color-white);
+  box-shadow: 0 1px 3px var(--app-shadow-sm);
+  min-height: calc(100vh - 260px);
+  display: flex;
+  flex-direction: column;
+}
+
 .error-icon {
   width: 64px;
   height: 64px;
-  opacity: 0.2;
+  opacity: 0.9;
 }
 
 .retry-btn {

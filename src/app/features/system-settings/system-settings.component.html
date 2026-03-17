@@ -1,13 +1,15 @@
 <div class="page-body">
   @if (isError()) {
-  <div class="error-view">
-    <app-no-data [title]="'systemSettings.page.error.title' | translate"
-      [message]="'systemSettings.page.error.message' | translate">
-      <span icon class="custom-icon-error error-icon"></span>
-      <button action class="btn-outline-custom retry-btn" (click)="fetchConfigurations()">
-        {{ 'systemSettings.page.error.retry' | translate }}
-      </button>
-    </app-no-data>
+  <div class="error-view-wrapper">
+    <div class="error-view">
+      <app-no-data [title]="'systemSettings.page.error.title' | translate"
+        [message]="'systemSettings.page.error.message' | translate">
+        <span icon class="custom-icon-error error-icon"></span>
+        <button action class="btn-outline-custom retry-btn" (click)="fetchConfigurations()">
+          {{ 'systemSettings.page.error.retry' | translate }}
+        </button>
+      </app-no-data>
+    </div>
   </div>
   } @else {
   <section class="settings-panel">
@@ -31,7 +33,7 @@
             </h2>
             <p class="card-desc">{{ 'systemSettings.sections.system.desc' | translate }}</p>
           </div>
-          
+
           <div class="card-body">
           <div class="settings-grid" [formGroup]="systemForm">
             <div class="setting-item">
@@ -47,7 +49,7 @@
                 </app-shared-input-text>
               </div>
             </div>
-            
+
             <div class="setting-item">
               <div class="setting-info">
                 <label class="setting-name">{{ 'systemSettings.fields.logoUrl' | translate }}</label>
@@ -69,7 +71,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="setting-item">
               <div class="setting-info">
                 <label class="setting-name">{{ 'systemSettings.fields.defaultLanguage' | translate }}</label>
@@ -81,7 +83,7 @@
                 </app-shared-dropdown>
               </div>
             </div>
-            
+
             <div class="setting-item">
               <div class="setting-info">
                 <label class="setting-name">{{ 'systemSettings.fields.workStartTime' | translate }}</label>
@@ -91,7 +93,7 @@
                 <app-shared-input-time [form]="systemForm" controlName="workStartTime"></app-shared-input-time>
               </div>
             </div>
-            
+
             <div class="setting-item">
               <div class="setting-info">
                 <label class="setting-name">{{ 'systemSettings.fields.workEndTime' | translate }}</label>
@@ -101,7 +103,7 @@
                 <app-shared-input-time [form]="systemForm" controlName="workEndTime"></app-shared-input-time>
               </div>
             </div>
-            
+
             <div class="setting-item">
               <div class="setting-info">
                 <label class="setting-name">{{ 'systemSettings.fields.autoCheckoutTime' | translate }}</label>
@@ -124,7 +126,7 @@
             </h2>
             <p class="card-desc">{{ 'systemSettings.sections.security.desc' | translate }}</p>
           </div>
-          
+
           <div class="card-body">
             <div class="settings-grid" [formGroup]="securityForm">
               <div class="setting-item">
