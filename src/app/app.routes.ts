@@ -7,6 +7,7 @@ import { LoginFormComponent } from './features/login/login-form.component';
 import { authGuard } from './core/guards/auth.guard';
 import { CheckinLocationComponent } from './features/checkin-location/checkin-location.component';
 import { SystemSettingsComponent } from './features/system-settings/system-settings.component';
+import { UserManagementComponent } from './features/user-management/user-management.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,10 @@ export const routes: Routes = [
       {
         path: 'permissions',
         component: PermissionMatrixComponent,
+      },
+      {
+        path: 'users',
+        component: UserManagementComponent,
       },
       {
         path: 'notifications',

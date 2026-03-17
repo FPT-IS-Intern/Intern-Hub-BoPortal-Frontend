@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationStart } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -58,7 +58,7 @@ export class BoPortalLayoutComponent {
     closeButtonBackgroundColor: 'var(--app-color-white)',
     closeButtonMarginRight: '12px',
 
-    // ===== DEFAULT (collapsed & expanded dùng chung) =====
+    // ===== DEFAULT (collapsed & expanded dÃ¹ng chung) =====
     defaultWidth: '100%',
     defaultHeight: '48px',
     defaultBorderRadius: '8px',
@@ -95,22 +95,27 @@ export class BoPortalLayoutComponent {
     menuItems: [
       {
         iconLeft: SIDEBAR_ICONS.USERS,
-        content: 'Ma trận phân quyền',
+        content: 'Quáº£n lÃ½ ngÆ°á»i dÃ¹ng',
+        url: '/users',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.SHIELD_PLUS,
+        content: 'Ma tráº­n phÃ¢n quyá»n',
         url: '/permissions',
       },
       {
         iconLeft: SIDEBAR_ICONS.BELL,
-        content: 'Chuông thông báo',
+        content: 'ChuÃ´ng thÃ´ng bÃ¡o',
         url: '/notifications',
       },
       {
         iconLeft: SIDEBAR_ICONS.GLOBE,
-        content: 'Địa điểm checkin',
+        content: 'Äá»‹a Ä‘iá»ƒm checkin',
         url: '/checkin',
       },
       {
         iconLeft: SIDEBAR_ICONS.SETTINGS,
-        content: 'Cấu hình hệ thống',
+        content: 'Cáº¥u hÃ¬nh há»‡ thá»‘ng',
         url: '/system-settings',
       },
     ],

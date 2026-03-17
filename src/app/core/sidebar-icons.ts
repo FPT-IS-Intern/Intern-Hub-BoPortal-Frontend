@@ -11,4 +11,5 @@ export const SIDEBAR_ICONS = {
   USERS: 'custom-icon-users',
   BELL: 'custom-icon-bell',
   GLOBE: 'custom-icon-globe',
+  SHIELD_PLUS: 'custom-icon-shield-plus',
 };
