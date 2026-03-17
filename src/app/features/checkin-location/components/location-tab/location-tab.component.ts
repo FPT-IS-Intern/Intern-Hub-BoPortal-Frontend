@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class LocationTabComponent {
   locations = input<AttendanceLocation[]>([]);
+  showEmptyState = input<boolean>(true);
   @Output() addLocation = new EventEmitter<void>();
   @Output() editLocation = new EventEmitter<AttendanceLocation>();
   @Output() deleteLocation = new EventEmitter<AttendanceLocation>();
@@ -24,7 +25,7 @@ export class LocationTabComponent {
 
   filteredLocations = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
-    const locations = this.locations();
+    const locations = this.locations() ?? [];
     if (!term) return locations;
     return locations.filter(loc =>
       (loc.name?.toLowerCase() || '').includes(term) ||
@@ -32,4 +33,6 @@ export class LocationTabComponent {
       (loc.longitude?.toString() || '').includes(term)
     );
   });
+
+  protected readonly hasLocations = computed(() => this.filteredLocations().length > 0);
 }

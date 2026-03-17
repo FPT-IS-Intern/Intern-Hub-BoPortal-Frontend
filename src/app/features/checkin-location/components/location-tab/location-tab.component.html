@@ -29,6 +29,7 @@
       </tr>
     </thead>
     <tbody>
+      @if (hasLocations()) {
       @for (loc of filteredLocations(); track loc.id) {
       <tr>
         <td class="font-semibold">{{ loc.name }}</td>
@@ -44,21 +45,22 @@
           </span>
         </td>
         <td class="col-actions">
-          <button class="icon-btn edit" [attr.title]="'checkin.common.actions.edit' | translate" (click)="editLocation.emit(loc)">
+          <button class="icon-btn edit" [attr.title]="'checkin.common.actions.edit' | translate"
+            (click)="editLocation.emit(loc)">
             <span icon class="custom-icon-edit"></span>
           </button>
-          <button class="icon-btn delete" [attr.title]="'checkin.common.actions.delete' | translate" (click)="deleteLocation.emit(loc)">
+          <button class="icon-btn delete" [attr.title]="'checkin.common.actions.delete' | translate"
+            (click)="deleteLocation.emit(loc)">
             <span icon class="custom-icon-close"></span>
           </button>
         </td>
       </tr>
-      } @empty {
+      }
+      } @else if (showEmptyState()) {
       <tr class="empty-row">
         <td colspan="5">
-          <app-no-data
-            [title]="'checkin.locationTab.empty.title' | translate"
-            [message]="'checkin.locationTab.empty.message' | translate"
-            [fullHeight]="false">
+          <app-no-data [title]="'checkin.locationTab.empty.title' | translate"
+            [message]="'checkin.locationTab.empty.message' | translate" [fullHeight]="false">
             <span icon class="custom-icon-globe empty-icon"></span>
           </app-no-data>
         </td>
