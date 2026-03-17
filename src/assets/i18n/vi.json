@@ -376,11 +376,18 @@
         "configure": "Cấu hình",
         "delete": "Xóa",
         "cancel": "Hủy",
+        "cancelChannel": "Hủy kênh",
         "addChannel": "Thêm kênh"
+      },
+      "deleteConfirm": {
+        "title": "Xóa mã",
+        "message": "Bạn có chắc chắn muốn xóa mã {{code}} không?",
+        "confirm": "Xóa",
+        "cancel": "Hủy"
       },
       "table": {
         "code": "Mã",
-        "name": "Tên",
+        "name": "Mô tả",
         "channels": "Kênh",
         "actions": "Thao tác"
       },
@@ -396,7 +403,12 @@
         "descriptionLabel": "Mô tả",
         "descriptionPlaceholder": "Nhập mô tả",
         "channelLabel": "Kênh mặc định",
-        "continue": "Tiếp tục"
+        "continue": "Tiếp tục",
+        "errors": {
+          "codeRequired": "Vui lòng nhập mã",
+          "descriptionRequired": "Vui lòng nhập mô tả",
+          "channelRequired": "Vui lòng chọn kênh"
+        }
       },
       "params": {
         "title": "Tham số",
@@ -410,7 +422,17 @@
         "empty": "Chưa có lịch sử",
         "preview": "Xem trước",
         "restore": "Khôi phục",
-        "selectHint": "Chọn một phiên bản để xem"
+        "selectHint": "Chọn một phiên bản để xem",
+        "previewMode": {
+          "render": "Xem giao diện",
+          "code": "Xem mã HTML"
+        },
+        "restoreConfirm": {
+          "title": "Khôi phục phiên bản",
+          "message": "Bạn có chắc chắn muốn ghi đè nội dung hiện tại bằng phiên bản v{{version}} không?",
+          "confirm": "Khôi phục",
+          "cancel": "Hủy"
+        }
       },
       "channels": {
         "email": "Email",

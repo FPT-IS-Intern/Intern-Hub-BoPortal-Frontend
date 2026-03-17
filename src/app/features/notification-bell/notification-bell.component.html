@@ -58,7 +58,7 @@
                 {{ 'notification.master.actions.configure' | translate }}
               </button>
               @if (item.isDeletable) {
-              <button class="btn-outline-custom small danger" (click)="deleteCode(item)">
+              <button class="btn-outline-custom small danger" (click)="openDeleteConfirm(item)">
                 {{ 'notification.master.actions.delete' | translate }}
               </button>
               }
@@ -181,13 +181,20 @@
         </div>
 
         <div class="version-card">
-          <div class="version-info">
-            <div class="version-label">{{ 'notification.master.detail.version.label' | translate }}</div>
-            <div class="version-value">v{{ selectedChannelConfig.version }}</div>
-          </div>
-          <button class="btn-outline-custom" (click)="openHistorySidebar()">
-            {{ 'notification.master.detail.version.history' | translate }}
-          </button>
+        <div class="version-info">
+          <div class="version-label">{{ 'notification.master.detail.version.label' | translate }}</div>
+          <div class="version-value">v{{ selectedChannelConfig.version }}</div>
+        </div>
+        @if (isSelectedChannelNew) {
+        <button class="btn-outline-custom" (click)="removeSelectedChannel()">
+          {{ 'notification.master.actions.cancelChannel' | translate }}
+        </button>
+        }
+        @if (historyItems.length > 0) {
+        <button class="btn-outline-custom" (click)="openHistorySidebar()">
+          {{ 'notification.master.detail.version.history' | translate }}
+        </button>
+        }
           <button class="btn-primary-custom" (click)="saveConfig()" [disabled]="!isDirty">
             {{ 'notification.master.detail.version.save' | translate }}
           </button>
@@ -198,7 +205,9 @@
         <div class="params-card">
           <div class="params-header">
             <div>
-              <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
+              @if (selectedCode?.code) {
+              <div class="params-code">{{ selectedCode?.code }}</div>
+              }
               @if (selectedCode?.definitionDescription) {
               <div class="params-description">{{ selectedCode?.definitionDescription }}</div>
               }
@@ -207,10 +216,11 @@
               {{ 'notification.master.detail.params.define' | translate }}
             </button>
           </div>
+          <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
           <div class="params-list">
             @if (paramsList.length) {
             @for (item of paramsList; track item.key) {
-            <div class="param-chip">
+            <div class="param-chip clickable" (click)="insertParam(item.key)">
               <span class="param-key">{{ item.key }}</span>
               @if (item.description) {
               <span class="param-desc">{{ item.description }}</span>
@@ -240,8 +250,11 @@
       <input
         class="custom-input"
         [(ngModel)]="createCodeValue"
-        (ngModelChange)="createCodeValue = $event?.toUpperCase()"
+        (ngModelChange)="onCreateCodeChange($event)"
         [placeholder]="'notification.master.create.codePlaceholder' | translate">
+      @if (createErrors.code) {
+      <div class="field-error">{{ createErrors.code | translate }}</div>
+      }
       <div class="hint-text">{{ 'notification.master.create.codeHint' | translate }}</div>
     </div>
 
@@ -250,7 +263,11 @@
       <input
         class="custom-input"
         [(ngModel)]="createDescriptionValue"
+        (ngModelChange)="onCreateDescriptionChange($event)"
         [placeholder]="'notification.master.create.descriptionPlaceholder' | translate">
+      @if (createErrors.description) {
+      <div class="field-error">{{ createErrors.description | translate }}</div>
+      }
     </div>
 
     <div class="form-group">
@@ -258,15 +275,19 @@
       <app-shared-dropdown
         [options]="createChannelOptions"
         [(value)]="createChannelValue"
+        (valueChange)="onCreateChannelChange($event)"
         width="220px">
       </app-shared-dropdown>
+      @if (createErrors.channel) {
+      <div class="field-error">{{ createErrors.channel | translate }}</div>
+      }
     </div>
 
     <div class="modal-actions">
       <button class="btn-secondary-custom" (click)="closeCreateModal()">
         {{ 'notification.master.actions.cancel' | translate }}
       </button>
-      <button class="btn-primary-custom" (click)="handleCreateContinue()">
+      <button class="btn-primary-custom" (click)="handleCreateContinue()" [disabled]="!isCreateFormValid">
         {{ 'notification.master.create.continue' | translate }}
       </button>
     </div>
@@ -353,9 +374,26 @@
           @if (historySelection.subject) {
           <div class="preview-subject">{{ historySelection.subject }}</div>
           }
+          <div class="preview-format">
+            {{ 'notification.master.detail.form.format' | translate }}: {{ historySelection.format }}
+          </div>
+          @if (historySelection.format === 'HTML') {
+          <div class="preview-toggle">
+            <button class="toggle-btn" [class.active]="historyPreviewMode === 'render'" (click)="historyPreviewMode = 'render'">
+              {{ 'notification.master.history.previewMode.render' | translate }}
+            </button>
+            <button class="toggle-btn" [class.active]="historyPreviewMode === 'code'" (click)="historyPreviewMode = 'code'">
+              {{ 'notification.master.history.previewMode.code' | translate }}
+            </button>
+          </div>
+          }
+          @if (historySelection.format === 'HTML' && historyPreviewMode === 'render') {
+          <div class="preview-text preview-html" [innerHTML]="historySelection.content"></div>
+          } @else {
           <div class="preview-text">{{ historySelection.content }}</div>
+          }
         </div>
-        <button class="btn-primary-custom" (click)="restoreHistory(historySelection)">
+        <button class="btn-primary-custom" (click)="openRestoreConfirm(historySelection)">
           {{ 'notification.master.history.restore' | translate }}
         </button>
         } @else {
@@ -368,3 +406,43 @@
   </div>
 </div>
 }
+
+<app-modal-popup
+  [(isVisible)]="isDeleteConfirmOpen"
+  [title]="'notification.master.deleteConfirm.title' | translate"
+  [showFooter]="false"
+  (cancel)="closeDeleteConfirm()">
+  <div class="modal-body">
+    <div class="confirm-message">
+      {{ 'notification.master.deleteConfirm.message' | translate:{ code: deleteCandidate?.code } }}
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary-custom" (click)="closeDeleteConfirm()">
+        {{ 'notification.master.deleteConfirm.cancel' | translate }}
+      </button>
+      <button class="btn-primary-custom" (click)="confirmDelete()">
+        {{ 'notification.master.deleteConfirm.confirm' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal-popup>
+
+<app-modal-popup
+  [(isVisible)]="isRestoreConfirmOpen"
+  [title]="'notification.master.history.restoreConfirm.title' | translate"
+  [showFooter]="false"
+  (cancel)="closeRestoreConfirm()">
+  <div class="modal-body">
+    <div class="confirm-message">
+      {{ 'notification.master.history.restoreConfirm.message' | translate:{ version: restoreCandidate?.version } }}
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary-custom" (click)="closeRestoreConfirm()">
+        {{ 'notification.master.history.restoreConfirm.cancel' | translate }}
+      </button>
+      <button class="btn-primary-custom" (click)="confirmRestoreHistory()">
+        {{ 'notification.master.history.restoreConfirm.confirm' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal-popup>

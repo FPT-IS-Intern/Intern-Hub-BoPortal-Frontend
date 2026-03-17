@@ -99,6 +99,7 @@ export class NotificationBellComponent implements OnInit {
   createCodeValue = '';
   createDescriptionValue = '';
   createChannelValue: ChannelType = 'EMAIL';
+  createErrors: Partial<Record<'code' | 'description' | 'channel', string>> = {};
 
   paramsDraft: ParamSchemaItem[] = [];
   paramsErrors: Record<number, string> = {};
@@ -107,6 +108,9 @@ export class NotificationBellComponent implements OnInit {
   dirtyByChannel: Partial<Record<ChannelType, boolean>> = {};
 
   historySelection: ChannelHistoryItem | null = null;
+  historyPreviewMode: 'render' | 'code' = 'render';
+  isRestoreConfirmOpen = false;
+  restoreCandidate: ChannelHistoryItem | null = null;
 
   get historyItems(): ChannelHistoryItem[] {
     if (!this.selectedCode) return [];
@@ -149,6 +153,8 @@ export class NotificationBellComponent implements OnInit {
   currentLocale = 'vi';
   availableChannelsFromApi: ChannelType[] | null = null;
   isHistoryLoading = false;
+  isDeleteConfirmOpen = false;
+  deleteCandidate: NotificationCode | null = null;
 
   constructor() {
     this.translate.onLangChange
@@ -304,6 +310,7 @@ export class NotificationBellComponent implements OnInit {
     this.createCodeValue = '';
     this.createDescriptionValue = '';
     this.createChannelValue = 'EMAIL';
+    this.createErrors = {};
     this.isCreateModalOpen = true;
   }
 
@@ -312,10 +319,24 @@ export class NotificationBellComponent implements OnInit {
   }
 
   handleCreateContinue(): void {
+    this.createErrors = {};
     const normalized = this.createCodeValue.trim().toUpperCase().replace(/\s+/g, '_');
-    if (!normalized) return;
+    if (!normalized) {
+      this.createErrors.code = 'notification.master.create.errors.codeRequired';
+    }
 
     const description = this.createDescriptionValue.trim();
+    if (!description) {
+      this.createErrors.description = 'notification.master.create.errors.descriptionRequired';
+    }
+    if (!this.createChannelValue) {
+      this.createErrors.channel = 'notification.master.create.errors.channelRequired';
+    }
+
+    if (Object.keys(this.createErrors).length > 0) {
+      this.createCodeValue = normalized;
+      return;
+    }
 
     const exists = this.notificationCodes.some(item => item.code === normalized);
     if (exists) {
@@ -654,6 +675,48 @@ export class NotificationBellComponent implements OnInit {
     this.markDirty();
   }
 
+  onCreateCodeChange(value: string): void {
+    this.createCodeValue = value?.toUpperCase() || '';
+    if (this.createErrors.code) {
+      this.createErrors.code = undefined;
+    }
+  }
+
+  onCreateDescriptionChange(value: string): void {
+    this.createDescriptionValue = value;
+    if (this.createErrors.description) {
+      this.createErrors.description = undefined;
+    }
+  }
+
+  onCreateChannelChange(value: ChannelType): void {
+    this.createChannelValue = value;
+    if (this.createErrors.channel) {
+      this.createErrors.channel = undefined;
+    }
+  }
+
+  get isCreateFormValid(): boolean {
+    return !!this.createCodeValue.trim() && !!this.createDescriptionValue.trim() && !!this.createChannelValue;
+  }
+
+  removeSelectedChannel(): void {
+    if (!this.selectedCode || !this.selectedChannelConfig) return;
+    if (this.selectedChannelConfig.id) return;
+    const channel = this.selectedChannel;
+    const index = this.selectedCode.channels.findIndex(item => item.channel === channel);
+    if (index >= 0) {
+      this.selectedCode.channels.splice(index, 1);
+    }
+    this.dirtyByChannel[channel] = false;
+    if (this.selectedCode.channels.length > 0) {
+      const nextChannel = this.getDefaultChannel(this.selectedCode);
+      this.selectChannel(nextChannel);
+    } else {
+      this.selectedChannelConfig = null;
+    }
+  }
+
   private getRecommendedFormat(channel: ChannelType): ChannelFormat {
     return channel === 'EMAIL' ? 'HTML' : 'TEXT';
   }
@@ -666,6 +729,10 @@ export class NotificationBellComponent implements OnInit {
   get isFormatNonOptimal(): boolean {
     if (!this.selectedChannelConfig) return false;
     return this.selectedChannelConfig.format !== this.getRecommendedFormat(this.selectedChannel);
+  }
+
+  get isSelectedChannelNew(): boolean {
+    return !!this.selectedChannelConfig && !this.selectedChannelConfig.id;
   }
 
   onPageIndexChange(index: number): void {
@@ -707,6 +774,65 @@ export class NotificationBellComponent implements OnInit {
     if (!this.selectedChannelConfig) return;
     const target = event.target as HTMLTextAreaElement;
     this.selectedChannelConfig.content = target.value;
+    this.markDirty();
+  }
+
+  insertParam(key: string): void {
+    if (!this.selectedChannelConfig || !key) return;
+    const token = `{{${key}}}`;
+    if (this.selectedChannelConfig.format === 'HTML' && this.htmlEditorMode === 'design') {
+      const editor = this.getHtmlEditor();
+      if (!editor) {
+        this.selectedChannelConfig.content = (this.selectedChannelConfig.content || '') + token;
+        this.markDirty();
+        return;
+      }
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(token));
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        editor.insertAdjacentText('beforeend', token);
+      }
+      this.selectedChannelConfig.content = editor.innerHTML;
+      this.markDirty();
+      return;
+    }
+
+    const field = this.getContentTextField();
+    if (field) {
+      this.insertIntoTextField(field, token);
+    } else {
+      this.selectedChannelConfig.content = (this.selectedChannelConfig.content || '') + token;
+      this.markDirty();
+    }
+  }
+
+  private getHtmlEditor(): HTMLElement | null {
+    return document.querySelector('.html-editor-canvas') as HTMLElement | null;
+  }
+
+  private getContentTextField(): HTMLTextAreaElement | null {
+    if (this.selectedChannelConfig?.format === 'HTML' && this.htmlEditorMode === 'source') {
+      return document.querySelector('.html-source') as HTMLTextAreaElement | null;
+    }
+    return document.querySelector('.text-area-wrapper .custom-textarea') as HTMLTextAreaElement | null;
+  }
+
+  private insertIntoTextField(field: HTMLInputElement | HTMLTextAreaElement, token: string): void {
+    const start = field.selectionStart ?? field.value.length;
+    const end = field.selectionEnd ?? field.value.length;
+    field.value = field.value.slice(0, start) + token + field.value.slice(end);
+    const next = start + token.length;
+    field.setSelectionRange(next, next);
+    field.focus();
+    if (this.selectedChannelConfig) {
+      this.selectedChannelConfig.content = field.value;
+    }
     this.markDirty();
   }
 
@@ -846,6 +972,23 @@ export class NotificationBellComponent implements OnInit {
 
   selectHistory(item: ChannelHistoryItem): void {
     this.historySelection = item;
+    this.historyPreviewMode = 'render';
+  }
+
+  openRestoreConfirm(item: ChannelHistoryItem): void {
+    this.restoreCandidate = item;
+    this.isRestoreConfirmOpen = true;
+  }
+
+  closeRestoreConfirm(): void {
+    this.isRestoreConfirmOpen = false;
+    this.restoreCandidate = null;
+  }
+
+  confirmRestoreHistory(): void {
+    if (!this.restoreCandidate) return;
+    this.restoreHistory(this.restoreCandidate);
+    this.closeRestoreConfirm();
   }
 
   restoreHistory(item: ChannelHistoryItem): void {
@@ -875,10 +1018,25 @@ export class NotificationBellComponent implements OnInit {
       });
   }
 
-  deleteCode(item: NotificationCode): void {
+  openDeleteConfirm(item: NotificationCode): void {
     if (!item.isDeletable) return;
-    const confirmDelete = window.confirm('Delete template definition?');
-    if (!confirmDelete) return;
+    this.deleteCandidate = item;
+    this.isDeleteConfirmOpen = true;
+  }
+
+  closeDeleteConfirm(): void {
+    this.isDeleteConfirmOpen = false;
+    this.deleteCandidate = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.deleteCandidate) return;
+    this.deleteCode(this.deleteCandidate);
+    this.closeDeleteConfirm();
+  }
+
+  private deleteCode(item: NotificationCode): void {
+    if (!item.isDeletable) return;
     this.isLoading = true;
     this.templateService.deleteTemplateDefinition(item.code)
       .pipe(
