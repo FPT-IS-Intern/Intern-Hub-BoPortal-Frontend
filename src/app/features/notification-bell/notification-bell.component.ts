@@ -13,6 +13,7 @@ import { TemplateService } from '../../services/api/template.service';
 import { TemplateResponse, TemplateSummaryResponse } from '../../models/template.model';
 import { finalize } from 'rxjs';
 import { DataTableColumn, DataTableComponent } from '../../components/data-table/data-table.component';
+import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
 
 type ChannelType = 'EMAIL' | 'PUSH' | 'IN_APP';
 type ChannelFilter = 'ALL' | ChannelType;
@@ -63,6 +64,7 @@ interface NotificationCode {
     SharedDropdownComponent,
     NotificationPaginationComponent,
     DataTableComponent,
+    TableSkeletonComponent,
     ModalPopup,
   ],
   templateUrl: './notification-bell.component.html',

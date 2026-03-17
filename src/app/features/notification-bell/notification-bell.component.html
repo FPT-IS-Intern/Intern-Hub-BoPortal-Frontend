@@ -28,6 +28,14 @@
     </div>
   </div>
 
+  @if (isLoading) {
+  <app-table-skeleton
+    class="skeleton-panel"
+    [columns]="4"
+    [rows]="6"
+    [columnWidths]="['20%','40%','20%','10%']">
+  </app-table-skeleton>
+  } @else {
   <app-data-table
     tableClass="notification-table"
     [columns]="tableColumns"
@@ -86,6 +94,7 @@
       </app-notification-pagination>
     </ng-template>
   </app-data-table>
+  }
   } @else {
   <div class="channel-card">
     <div class="channel-tabs">
