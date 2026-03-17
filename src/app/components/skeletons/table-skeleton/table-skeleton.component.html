@@ -1,0 +1,18 @@
+<div class="skeleton-table">
+  <div class="skeleton-table-header">
+    @if (headerMode === 'single') {
+    <div class="skeleton-col full"></div>
+    } @else {
+    @for (widthClass of widthClasses; track widthClass) {
+    <div class="skeleton-col" [ngClass]="widthClass"></div>
+    }
+    }
+  </div>
+  @for (row of rowIndexes; track row) {
+  <div class="skeleton-table-row">
+    @for (widthClass of widthClasses; track widthClass) {
+    <div class="skeleton-col" [ngClass]="widthClass"></div>
+    }
+  </div>
+  }
+</div>
