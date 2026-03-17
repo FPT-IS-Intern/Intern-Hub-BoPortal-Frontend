@@ -17,6 +17,7 @@ import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
 import { SharedInputTimeComponent } from '../../components/shared-input-time/shared-input-time.component';
 import { SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
+import { SystemSettingsSkeletonComponent } from '../../components/skeletons/system-settings-skeleton/system-settings-skeleton.component';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
@@ -32,6 +33,7 @@ import { AuthService } from '../../services/api/auth.service';
     ReactiveFormsModule,
     TranslateModule,
     NoDataComponent,
+    SystemSettingsSkeletonComponent,
     SharedInputTextComponent,
     SharedInputTimeComponent,
     SharedDropdownComponent,
@@ -52,9 +54,12 @@ export class SystemSettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   protected readonly isInitLoading = signal(false);
+  protected readonly isLoading = signal(false);
   protected readonly isError = signal(false);
   protected readonly isSaving = signal(false);
   protected readonly logoPreviewError = signal(false);
+  protected readonly hasData = signal(false);
+  protected readonly hasLoadedOnce = signal(false);
 
   protected languageOptions: { label: string; value: string }[] = [];
   protected allowWhitespaceOptions: { label: string; value: boolean }[] = [];
@@ -101,7 +106,11 @@ export class SystemSettingsComponent implements OnInit {
 
   protected fetchConfigurations(): void {
     this.isError.set(false);
-    this.isInitLoading.set(true);
+    if (this.hasLoadedOnce()) {
+      this.isLoading.set(true);
+    } else {
+      this.isInitLoading.set(true);
+    }
     this.loadingService.show();
 
     this.systemService
@@ -109,25 +118,30 @@ export class SystemSettingsComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.isInitLoading.set(false);
+          this.isLoading.set(false);
+          this.hasLoadedOnce.set(true);
+          this.loadingService.hide();
           this.cdr.markForCheck();
         })
       )
       .subscribe({
         next: (res) => {
-          if (!res.data) {
-            this.isError.set(true);
-            return;
+          const systemConfig = res.data?.systemConfig ?? null;
+          const securityConfig = res.data?.securityConfig ?? null;
+          const hasData = !!systemConfig || !!securityConfig;
+          this.hasData.set(hasData);
+          if (!hasData) return;
+          if (systemConfig) {
+            this.patchSystemConfig(systemConfig);
           }
-          if (res.data.systemConfig) {
-            this.patchSystemConfig(res.data.systemConfig);
-          }
-          if (res.data.securityConfig) {
-            this.patchSecurityConfig(res.data.securityConfig);
+          if (securityConfig) {
+            this.patchSecurityConfig(securityConfig);
           }
         },
         error: (err) => {
           console.error('Load system configuration error:', err);
           this.isError.set(true);
+          this.hasData.set(false);
         },
       });
   }
