@@ -1,84 +1,367 @@
-<div class="page-body">
-  <!-- Filter Bar -->
+<div class="notification-page">
+  @if (viewMode === 'list') {
   <div class="filter-bar">
     <div class="filter-left">
-      <div class="search-wrapper">
-        <app-shared-search [value]="searchText"
-          [placeholder]="'notification.bell.filters.searchPlaceholder' | translate" width="280px"
-          (valueChange)="searchText = $event; onSearchChange()">
-        </app-shared-search>
-      </div>
+      <app-shared-search
+        [value]="searchCode"
+        [placeholder]="'notification.master.filters.searchPlaceholder' | translate"
+        width="280px"
+        (valueChange)="searchCode = $event; onSearchChange()">
+      </app-shared-search>
 
-      <div class="dropdown-wrapper">
-        <app-shared-dropdown [options]="statusOptions" [(value)]="statusFilter"
-          [placeholder]="'notification.bell.filters.statusPlaceholder' | translate" icon="custom-icon-filter-lines"
-          width="180px" (valueChange)="onSearchChange()">
-        </app-shared-dropdown>
-      </div>
+      <app-shared-dropdown
+        [options]="channelFilterOptions"
+        [(value)]="channelFilter"
+        [placeholder]="'notification.master.filters.channels.placeholder' | translate"
+        icon="custom-icon-filter-lines"
+        width="180px"
+        (valueChange)="onSearchChange()">
+      </app-shared-dropdown>
 
-      <div class="divider"></div>
-
-      <app-shared-date-range [(dateRange)]="dateRange" (dateRangeChange)="onSearchChange()">
-      </app-shared-date-range>
     </div>
 
     <div class="filter-right">
-      <button class="btn-primary-custom" (click)="onAddNew()">
+      <button class="btn-primary-custom" (click)="openCreateModal()">
         <span class="custom-icon-package-plus"></span>
-        {{ 'notification.bell.actions.add' | translate }}
+        {{ 'notification.master.actions.createCode' | translate }}
       </button>
     </div>
   </div>
 
-  <!-- Table & Pagination Container -->
   <div class="table-wrapper">
-    @if (isError()) {
-    <app-no-data [title]="'notification.table.error.title' | translate"
-      [message]="'notification.table.error.message' | translate">
-      <span icon class="custom-icon-error error-icon"></span>
-      <button action class="btn-outline-custom retry-btn-sec" (click)="onSearchChange()">
-        {{ 'notification.table.error.retry' | translate }}
-      </button>
-    </app-no-data>
-    } @else {
-    @if (listOfData.length > 0) {
-    <app-notification-table [data]="listOfData" [pageIndex]="pageIndex" [pageSize]="pageSize" (view)="onView($event)"
-      (edit)="onEdit($event)" (delete)="onDelete($event)" (sendNow)="onSendNow($event)">
-    </app-notification-table>
-
-    <!-- Pagination -->
-    @if (total > 0) {
-    <app-notification-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total"
-      [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange" (pageIndexChange)="onPageIndexChange($event)"
-      (pageSizeChange)="onPageSizeChange($event)">
-    </app-notification-pagination>
-    }
-    } @else {
-    <app-no-data [title]="'notification.table.notFound.title' | translate"
-      [message]="'notification.table.notFound.message' | translate">
-      <span icon class="custom-icon-box-iso selection-icon"></span>
-    </app-no-data>
-    }
-    }
+    <table class="master-table">
+      <thead>
+        <tr>
+          <th>{{ 'notification.master.table.code' | translate }}</th>
+          <th>{{ 'notification.master.table.name' | translate }}</th>
+          <th>{{ 'notification.master.table.channels' | translate }}</th>
+          <th class="col-actions">{{ 'notification.master.table.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of listOfData; track item.code) {
+        <tr>
+          <td class="code-cell">{{ item.code }}</td>
+          <td class="name-cell">{{ item.name }}</td>
+          <td>
+            <div class="channel-chips">
+              @for (channel of item.channels; track channel.channel) {
+              @if (channel.active) {
+              <span class="chip">{{ channel.channel }}</span>
+              }
+              }
+            </div>
+          </td>
+          <td class="col-actions">
+            <div class="action-buttons">
+              <button class="btn-outline-custom small" (click)="goToDetail(item)">
+                {{ 'notification.master.actions.configure' | translate }}
+              </button>
+              @if (item.isDeletable) {
+              <button class="btn-outline-custom small danger" (click)="deleteCode(item)">
+                {{ 'notification.master.actions.delete' | translate }}
+              </button>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="4">
+            <div class="empty-state">
+              <span class="empty-title">{{ 'notification.master.empty.title' | translate }}</span>
+              <span class="empty-subtitle">{{ 'notification.master.empty.subtitle' | translate }}</span>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
   </div>
 
-  <!-- Create/Edit/View Modal -->
-  @if (isModalVisible) {
-  <app-modal-popup [(isVisible)]="isModalVisible" [title]="modalTitleKey | translate" [showFooter]="false"
-    (cancel)="isModalVisible = false">
-    <app-notification-form [initialData]="selectedRecord" [isReadOnly]="isReadOnly"
-      (save)="handleSaveForm($event)" (cancel)="isModalVisible = false">
-    </app-notification-form>
-  </app-modal-popup>
+  @if (total > 0) {
+  <app-notification-pagination
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [total]="total"
+    [pageSizeOptions]="pageSizeOptions"
+    [displayRange]="displayRange"
+    (pageIndexChange)="onPageIndexChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)">
+  </app-notification-pagination>
   }
+  } @else {
+  <div class="params-card">
+    <div class="params-header">
+      <div>
+        <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
+        @if (selectedCode?.definitionDescription) {
+        <div class="params-description">{{ selectedCode?.definitionDescription }}</div>
+        }
+        
+      </div>
+      <button class="btn-outline-custom" (click)="openParamsModal()">
+        {{ 'notification.master.detail.params.define' | translate }}
+      </button>
+    </div>
+    <div class="params-list">
+      @if (paramsList.length) {
+      @for (item of paramsList; track item.key) {
+      <div class="param-chip">
+        <span class="param-key">{{ item.key }}</span>
+        @if (item.description) {
+        <span class="param-desc">{{ item.description }}</span>
+        }
+      </div>
+      }
+      } @else {
+      <span class="params-empty">{{ 'notification.master.detail.params.empty' | translate }}</span>
+      }
+    </div>
+  </div>
 
-  <!-- Confirm Popup for Delete / Send Now -->
-  @if (isConfirmVisible) {
-  <app-confirm-popup [(isVisible)]="isConfirmVisible" [title]="confirmTitleKey | translate"
-    [message]="confirmMessageKey | translate: confirmMessageParams"
-    [cancelText]="'notification.bell.modals.cancel' | translate"
-    [confirmText]="'notification.bell.modals.confirm' | translate" (confirm)="confirmAction()"
-    (cancel)="isConfirmVisible = false">
-  </app-confirm-popup>
+  <div class="channel-card">
+    <div class="channel-tabs">
+      <div class="tab-list">
+        @for (channel of availableChannels; track channel) {
+        <button class="tab" [class.active]="selectedChannel === channel" (click)="selectChannel(channel)">
+          {{ channel === 'IN_APP' ? 'IN-APP' : channel }}
+          @if (hasChannelData(channel)) {
+          <span class="tab-indicator"></span>
+          }
+        </button>
+        }
+      </div>
+      <div class="tab-actions">
+        <app-shared-dropdown
+          [options]="missingChannelOptions"
+          [(value)]="addChannelValue"
+          [placeholder]="'notification.master.actions.addChannel' | translate"
+          width="140px"
+          (valueChange)="addChannel($event)">
+        </app-shared-dropdown>
+      </div>
+    </div>
+
+    @if (selectedChannelConfig) {
+    <div class="channel-form">
+      <div class="form-preview">
+        <div class="form-grid">
+          <div class="field">
+            <label>{{ 'notification.master.detail.form.format' | translate }}</label>
+            <app-shared-dropdown
+              [options]="formatOptions"
+              [(value)]="selectedChannelConfig.format"
+              width="160px"
+              (valueChange)="markDirty()">
+            </app-shared-dropdown>
+            @if (isFormatNonOptimal) {
+            <div class="field-hint">
+              {{ 'notification.master.detail.form.formatHint' | translate }}
+            </div>
+            }
+          </div>
+
+          <div class="field full">
+            <label>{{ 'notification.master.detail.form.subject' | translate }}</label>
+            <input
+              class="custom-input"
+              [(ngModel)]="selectedChannelConfig.subject"
+              (ngModelChange)="markDirty()"
+              [placeholder]="'notification.master.detail.form.subjectPlaceholder' | translate">
+          </div>
+        </div>
+
+        <div class="field full content-row">
+          <label>{{ 'notification.master.detail.form.content' | translate }}</label>
+          @if (selectedChannelConfig.format === 'HTML') {
+          <div class="html-editor">
+            <div class="html-editor-toolbar">
+              <div class="mode-tabs">
+                <button class="mode-tab" [class.active]="htmlEditorMode === 'design'" (click)="setHtmlEditorMode('design')">
+                  Soạn thảo
+                </button>
+                <button class="mode-tab" [class.active]="htmlEditorMode === 'source'" (click)="setHtmlEditorMode('source')">
+                  HTML
+                </button>
+              </div>
+              <div class="tool-buttons" *ngIf="htmlEditorMode === 'design'">
+                <button type="button" class="tool-btn" (click)="execHtmlCommand('bold')"><b>B</b></button>
+                <button type="button" class="tool-btn" (click)="execHtmlCommand('italic')"><i>I</i></button>
+                <button type="button" class="tool-btn" (click)="execHtmlCommand('underline')"><u>U</u></button>
+                <button type="button" class="tool-btn" (click)="execHtmlCommand('insertUnorderedList')">• List</button>
+                <button type="button" class="tool-btn" (click)="execHtmlCommand('createLink')">Link</button>
+              </div>
+            </div>
+            @if (htmlEditorMode === 'design') {
+            <div class="html-editor-canvas" contenteditable="true" (input)="onHtmlInput($event)" [innerHTML]="selectedChannelConfig.content"></div>
+            } @else {
+            <textarea class="custom-textarea html-source" [value]="selectedChannelConfig.content" (input)="onHtmlSourceInput($event)"></textarea>
+            }
+          </div>
+          } @else {
+          <div class="text-area-wrapper">
+            <textarea class="custom-textarea" [(ngModel)]="selectedChannelConfig.content" (ngModelChange)="markDirty()"></textarea>
+            <div class="text-counter">{{ selectedChannelConfig.content.length || 0 }} / 2000</div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="version-card">
+        <div class="version-info">
+          <div class="version-label">{{ 'notification.master.detail.version.label' | translate }}</div>
+          <div class="version-value">v{{ selectedChannelConfig.version }}</div>
+        </div>
+        <button class="btn-outline-custom" (click)="openHistorySidebar()">
+          {{ 'notification.master.detail.version.history' | translate }}
+        </button>
+        <button class="btn-primary-custom" (click)="saveConfig()" [disabled]="!isDirty">
+          {{ 'notification.master.detail.version.save' | translate }}
+        </button>
+      </div>
+    </div>
+    }
+  </div>
   }
 </div>
+
+<app-modal-popup
+  [(isVisible)]="isCreateModalOpen"
+  [title]="'notification.master.create.title' | translate"
+  [showFooter]="false"
+  (cancel)="closeCreateModal()">
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="form-label required">{{ 'notification.master.create.codeLabel' | translate }}</label>
+      <input
+        class="custom-input"
+        [(ngModel)]="createCodeValue"
+        (ngModelChange)="createCodeValue = $event?.toUpperCase()"
+        [placeholder]="'notification.master.create.codePlaceholder' | translate">
+      <div class="hint-text">{{ 'notification.master.create.codeHint' | translate }}</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">{{ 'notification.master.create.descriptionLabel' | translate }}</label>
+      <input
+        class="custom-input"
+        [(ngModel)]="createDescriptionValue"
+        [placeholder]="'notification.master.create.descriptionPlaceholder' | translate">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label required">{{ 'notification.master.create.channelLabel' | translate }}</label>
+      <app-shared-dropdown
+        [options]="createChannelOptions"
+        [(value)]="createChannelValue"
+        width="220px">
+      </app-shared-dropdown>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary-custom" (click)="closeCreateModal()">
+        {{ 'notification.master.actions.cancel' | translate }}
+      </button>
+      <button class="btn-primary-custom" (click)="handleCreateContinue()">
+        {{ 'notification.master.create.continue' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal-popup>
+
+<app-modal-popup
+  [(isVisible)]="isParamsModalOpen"
+  [title]="'notification.master.params.title' | translate"
+  [showFooter]="false"
+  (cancel)="isParamsModalOpen = false">
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="form-label">Mô tả</label>
+      <textarea
+        class="custom-textarea"
+        rows="3"
+        [(ngModel)]="definitionDescriptionDraft"
+        placeholder="Nhập mô tả cho tham số">
+      </textarea>
+    </div>
+    <div class="params-editor">
+      @for (item of paramsDraft; track $index) {
+      <div class="params-row">
+        <div class="param-field">
+          <input class="custom-input" [(ngModel)]="item.key" [placeholder]="'notification.master.params.key' | translate">
+          @if (paramsErrors[$index]) {
+          <div class="field-error">{{ paramsErrors[$index] }}</div>
+          }
+        </div>
+        <input class="custom-input" [(ngModel)]="item.description" [placeholder]="'notification.master.params.description' | translate">
+        <button class="icon-btn" (click)="removeParamRow($index)">
+          <span class="custom-icon-close"></span>
+        </button>
+      </div>
+      }
+      <button class="btn-outline-custom small" (click)="addParamRow()">
+        {{ 'notification.master.params.add' | translate }}
+      </button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary-custom" (click)="isParamsModalOpen = false">
+        {{ 'notification.master.actions.cancel' | translate }}
+      </button>
+      <button class="btn-primary-custom" (click)="saveParams()">
+        {{ 'notification.master.params.save' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal-popup>
+
+@if (isHistoryOpen) {
+<div class="history-overlay" (click)="closeHistorySidebar()">
+  <div class="history-panel" (click)="$event.stopPropagation()">
+    <div class="history-header">
+      <h3>{{ 'notification.master.history.title' | translate }}</h3>
+      <button class="icon-btn" (click)="closeHistorySidebar()">
+        <span class="custom-icon-close"></span>
+      </button>
+    </div>
+
+    <div class="history-body">
+      <div class="history-list">
+        @for (item of historyItems; track item.version) {
+        <button class="history-item" [class.active]="historySelection === item" (click)="selectHistory(item)">
+          <div class="history-meta">
+            <span class="history-version">v{{ item.version }}</span>
+            <span class="history-time">{{ item.updatedAt }}</span>
+          </div>
+          <span class="history-user">{{ item.updatedBy }}</span>
+        </button>
+        } @empty {
+        <div class="history-empty">
+          {{ 'notification.master.history.empty' | translate }}
+        </div>
+        }
+      </div>
+
+      <div class="history-preview">
+        @if (historySelection) {
+        <div class="preview-title">{{ 'notification.master.history.preview' | translate }}</div>
+        <div class="preview-content">
+          @if (historySelection.subject) {
+          <div class="preview-subject">{{ historySelection.subject }}</div>
+          }
+          <div class="preview-text">{{ historySelection.content }}</div>
+        </div>
+        <button class="btn-primary-custom" (click)="restoreHistory(historySelection)">
+          {{ 'notification.master.history.restore' | translate }}
+        </button>
+        } @else {
+        <div class="history-empty">
+          {{ 'notification.master.history.selectHint' | translate }}
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

@@ -338,6 +338,86 @@
         "sendSuccess": "Notification sent successfully"
       }
     },
+    "master": {
+      "breadcrumb": {
+        "title": "Notification Codes"
+      },
+      "detail": {
+        "title": "Notification Code {{code}}",
+        "params": {
+          "title": "Parameters",
+          "define": "Define",
+          "empty": "No parameters"
+        },
+        "form": {
+          "format": "Format",
+          "formatHint": "Email should use HTML format.",
+          "formatHtml": "HTML",
+          "formatText": "Text",
+          "subject": "Subject",
+          "subjectPlaceholder": "Enter subject",
+          "content": "Content"
+        },
+        "version": {
+          "label": "Version",
+          "history": "History",
+          "save": "Save"
+        }
+      },
+      "filters": {
+        "searchPlaceholder": "Search by code...",
+        "channels": {
+          "placeholder": "Channel",
+          "all": "All"
+        }
+      },
+      "actions": {
+        "createCode": "Create code",
+        "configure": "Configure",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "addChannel": "Add channel"
+      },
+      "table": {
+        "code": "Code",
+        "name": "Name",
+        "channels": "Channels",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No notification codes",
+        "subtitle": "Create your first code to start configuring."
+      },
+      "create": {
+        "title": "Create notification code",
+        "codeLabel": "Code",
+        "codePlaceholder": "Enter code",
+        "codeHint": "Use uppercase, no spaces.",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Enter description",
+        "channelLabel": "Default channel",
+        "continue": "Continue"
+      },
+      "params": {
+        "title": "Parameters",
+        "key": "Key",
+        "description": "Description",
+        "add": "Add param",
+        "save": "Save"
+      },
+      "history": {
+        "title": "Version history",
+        "empty": "No history",
+        "preview": "Preview",
+        "restore": "Restore",
+        "selectHint": "Select a version to preview"
+      },
+      "channels": {
+        "email": "Email",
+        "push": "Push",
+        "inApp": "In-app"
+      }
+    },
     "table": {
       "headers": {
         "index": "No.",
