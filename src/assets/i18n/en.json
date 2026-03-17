@@ -406,6 +406,10 @@
         "title": "No notification codes",
         "subtitle": "Create your first code to start configuring."
       },
+      "error": {
+        "title": "Unable to load notification codes",
+        "message": "Please try again."
+      },
       "create": {
         "title": "Create notification code",
         "codeLabel": "Code",

@@ -406,6 +406,10 @@
         "title": "Chưa có mã thông báo",
         "subtitle": "Tạo mã đầu tiên để bắt đầu cấu hình."
       },
+      "error": {
+        "title": "Không thể tải mã thông báo",
+        "message": "Vui lòng thử lại sau."
+      },
       "create": {
         "title": "Tạo mã thông báo",
         "codeLabel": "Mã",

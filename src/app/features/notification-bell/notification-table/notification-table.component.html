@@ -1,3 +1,4 @@
+@if (data.length) {
 <table class="notification-table">
     <thead>
         <tr>
@@ -50,14 +51,15 @@
                 </div>
             </td>
         </tr>
-        } @empty {
-        <tr>
-            <td [attr.colspan]="6" class="empty-row-cell">
-                <app-no-data [fullHeight]="false" [title]="'notification.table.empty.title' | translate" 
-                    [message]="'notification.table.empty.message' | translate">
-                </app-no-data>
-            </td>
-        </tr>
         }
     </tbody>
 </table>
+} @else {
+<div class="notification-empty">
+    <app-no-data
+        [fullHeight]="false"
+        [title]="'notification.table.empty.title' | translate"
+        [message]="'notification.table.empty.message' | translate">
+    </app-no-data>
+</div>
+}

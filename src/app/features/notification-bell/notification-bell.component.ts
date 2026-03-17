@@ -14,6 +14,7 @@ import { TemplateResponse, TemplateSummaryResponse } from '../../models/template
 import { finalize } from 'rxjs';
 import { DataTableColumn, DataTableComponent } from '../../components/data-table/data-table.component';
 import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
 
 type ChannelType = 'EMAIL' | 'PUSH' | 'IN_APP';
 type ChannelFilter = 'ALL' | ChannelType;
@@ -65,6 +66,7 @@ interface NotificationCode {
     NotificationPaginationComponent,
     DataTableComponent,
     TableSkeletonComponent,
+    NoDataComponent,
     ModalPopup,
   ],
   templateUrl: './notification-bell.component.html',
@@ -160,6 +162,7 @@ export class NotificationBellComponent implements OnInit {
   notificationCodes: NotificationCode[] = [];
   totalItems = 0;
   isLoading = false;
+  isLoadError = false;
   currentLocale = 'vi';
   availableChannelsFromApi: ChannelType[] | null = null;
   isHistoryLoading = false;
@@ -195,6 +198,7 @@ export class NotificationBellComponent implements OnInit {
 
   private loadTemplates(): void {
     this.isLoading = true;
+    this.isLoadError = false;
     const code = this.searchCode.trim();
     const channel = this.channelFilter === 'ALL' ? undefined : this.channelFilter;
     this.templateService.listTemplateSummaries({
@@ -212,6 +216,7 @@ export class NotificationBellComponent implements OnInit {
           if (response.data) {
             this.notificationCodes = this.mapSummariesToNotificationCodes(response.data.items || []);
             this.totalItems = response.data.total ?? this.notificationCodes.length;
+            this.isLoadError = false;
             const nextPage = (response.data.page ?? 0) + 1;
             if (nextPage !== this.pageIndex) {
               this.pageIndex = nextPage;
@@ -220,13 +225,19 @@ export class NotificationBellComponent implements OnInit {
           }
           this.notificationCodes = [];
           this.totalItems = 0;
+          this.isLoadError = false;
         },
         error: (error) => {
           console.error('Error loading templates:', error);
           this.notificationCodes = [];
           this.totalItems = 0;
+          this.isLoadError = true;
         }
       });
+  }
+
+  retryLoadTemplates(): void {
+    this.loadTemplates();
   }
 
   private mapSummariesToNotificationCodes(summaries: TemplateSummaryResponse[]): NotificationCode[] {

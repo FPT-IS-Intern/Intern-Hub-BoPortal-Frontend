@@ -35,6 +35,15 @@
     [rows]="6"
     [columnWidths]="['20%','40%','20%','10%']">
   </app-table-skeleton>
+  } @else if (isLoadError) {
+  <div class="error-view">
+    <app-no-data
+      [title]="'notification.master.error.title' | translate"
+      [message]="'notification.master.error.message' | translate"
+      [showAction]="true"
+      (actionClicked)="retryLoadTemplates()">
+    </app-no-data>
+  </div>
   } @else {
   <app-data-table
     tableClass="notification-table"
@@ -76,10 +85,11 @@
     </ng-template>
 
     <ng-template #empty>
-      <div class="empty-state">
-        <span class="empty-title">{{ 'notification.master.empty.title' | translate }}</span>
-        <span class="empty-subtitle">{{ 'notification.master.empty.subtitle' | translate }}</span>
-      </div>
+      <app-no-data
+        [fullHeight]="false"
+        [title]="'notification.master.empty.title' | translate"
+        [message]="'notification.master.empty.subtitle' | translate">
+      </app-no-data>
     </ng-template>
 
     <ng-template #pagination>
