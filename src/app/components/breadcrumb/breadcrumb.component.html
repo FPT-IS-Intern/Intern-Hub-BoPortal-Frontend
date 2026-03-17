@@ -2,12 +2,12 @@
     @for (item of items(); track item.label; let last = $last) {
         <div class="breadcrumb-item-wrapper">
             @if (item.icon) {
-                <a [routerLink]="item.url || '/'" class="breadcrumb-item home-link" [class.active]="item.active">
+                <a [routerLink]="item.url || '/'" [queryParams]="item.queryParams || null" class="breadcrumb-item home-link" [class.active]="item.active">
                     <span [class]="item.icon" style="width: 16px; height: 16px; font-size: 16px;"></span>
                 </a>
             } @else {
                 @if (item.url && !item.active) {
-                    <a [routerLink]="item.url" class="breadcrumb-item">
+                    <a [routerLink]="item.url" [queryParams]="item.queryParams || null" class="breadcrumb-item">
                         {{ item.label }}
                     </a>
                 } @else {

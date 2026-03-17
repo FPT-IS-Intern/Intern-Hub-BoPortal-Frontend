@@ -253,7 +253,7 @@ export class NotificationBellComponent implements OnInit {
       const detailLabel = this.translate.instant('notification.master.detail.title', { code: this.selectedCode.code });
       this.breadcrumbService.setBreadcrumbs([
         { label: 'Home', icon: 'custom-icon-home', url: '/main' },
-        { label: masterLabel, url: '/notifications?view=list' },
+        { label: masterLabel, url: '/notifications', queryParams: { view: 'list' } },
         { label: detailLabel, active: true },
       ]);
       return;
