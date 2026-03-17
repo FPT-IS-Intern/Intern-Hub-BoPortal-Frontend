@@ -336,7 +336,86 @@
         "sendSuccess": "Đã gửi thông báo thành công"
       }
     },
-    "table": {
+        "master": {
+      "breadcrumb": {
+        "title": "Mã thông báo"
+      },
+      "detail": {
+        "title": "Mã thông báo {{code}}",
+        "params": {
+          "title": "Tham số",
+          "define": "Định nghĩa",
+          "empty": "Chưa có tham số"
+        },
+        "form": {
+          "format": "Định dạng",
+          "formatHint": "Email nên dùng HTML.",
+          "formatHtml": "HTML",
+          "formatText": "Văn bản",
+          "subject": "Tiêu đề",
+          "subjectPlaceholder": "Nhập tiêu đề",
+          "content": "Nội dung"
+        },
+        "version": {
+          "label": "Phiên bản",
+          "history": "Lịch sử",
+          "save": "Lưu"
+        }
+      },
+      "filters": {
+        "searchPlaceholder": "Tìm theo mã...",
+        "channels": {
+          "placeholder": "Kênh",
+          "all": "Tất cả"
+        }
+      },
+      "actions": {
+        "createCode": "Tạo mã",
+        "configure": "Cấu hình",
+        "delete": "Xóa",
+        "cancel": "Hủy",
+        "addChannel": "Thêm kênh"
+      },
+      "table": {
+        "code": "Mã",
+        "name": "Tên",
+        "channels": "Kênh",
+        "actions": "Thao tác"
+      },
+      "empty": {
+        "title": "Chưa có mã thông báo",
+        "subtitle": "Tạo mã đầu tiên để bắt đầu cấu hình."
+      },
+      "create": {
+        "title": "Tạo mã thông báo",
+        "codeLabel": "Mã",
+        "codePlaceholder": "Nhập mã",
+        "codeHint": "Viết hoa, không dấu cách.",
+        "descriptionLabel": "Mô tả",
+        "descriptionPlaceholder": "Nhập mô tả",
+        "channelLabel": "Kênh mặc định",
+        "continue": "Tiếp tục"
+      },
+      "params": {
+        "title": "Tham số",
+        "key": "Tên biến",
+        "description": "Mô tả",
+        "add": "Thêm biến",
+        "save": "Lưu"
+      },
+      "history": {
+        "title": "Lịch sử phiên bản",
+        "empty": "Chưa có lịch sử",
+        "preview": "Xem trước",
+        "restore": "Khôi phục",
+        "selectHint": "Chọn một phiên bản để xem"
+      },
+      "channels": {
+        "email": "Email",
+        "push": "Push",
+        "inApp": "In-app"
+      }
+    },"table": {
       "headers": {
         "index": "STT",
         "title": "Tiêu đề",
