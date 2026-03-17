@@ -91,35 +91,6 @@
   </app-notification-pagination>
   }
   } @else {
-  <div class="params-card">
-    <div class="params-header">
-      <div>
-        <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
-        @if (selectedCode?.definitionDescription) {
-        <div class="params-description">{{ selectedCode?.definitionDescription }}</div>
-        }
-        
-      </div>
-      <button class="btn-outline-custom" (click)="openParamsModal()">
-        {{ 'notification.master.detail.params.define' | translate }}
-      </button>
-    </div>
-    <div class="params-list">
-      @if (paramsList.length) {
-      @for (item of paramsList; track item.key) {
-      <div class="param-chip">
-        <span class="param-key">{{ item.key }}</span>
-        @if (item.description) {
-        <span class="param-desc">{{ item.description }}</span>
-        }
-      </div>
-      }
-      } @else {
-      <span class="params-empty">{{ 'notification.master.detail.params.empty' | translate }}</span>
-      }
-    </div>
-  </div>
-
   <div class="channel-card">
     <div class="channel-tabs">
       <div class="tab-list">
@@ -145,80 +116,112 @@
 
     @if (selectedChannelConfig) {
     <div class="channel-form">
-      <div class="form-preview">
-        <div class="form-grid">
-          <div class="field">
-            <label>{{ 'notification.master.detail.form.format' | translate }}</label>
-            <app-shared-dropdown
-              [options]="formatOptions"
-              [(value)]="selectedChannelConfig.format"
-              width="160px"
-              (valueChange)="markDirty()">
-            </app-shared-dropdown>
-            @if (isFormatNonOptimal) {
-            <div class="field-hint">
-              {{ 'notification.master.detail.form.formatHint' | translate }}
+      <div class="editor-pane">
+        <div class="form-preview">
+          <div class="form-grid">
+            <div class="field">
+              <label>{{ 'notification.master.detail.form.subject' | translate }}</label>
+              <input
+                class="custom-input"
+                [(ngModel)]="selectedChannelConfig.subject"
+                (ngModelChange)="markDirty()"
+                [placeholder]="'notification.master.detail.form.subjectPlaceholder' | translate">
             </div>
-            }
+
+            <div class="field">
+              <label>{{ 'notification.master.detail.form.format' | translate }}</label>
+              <app-shared-dropdown
+                [options]="formatOptions"
+                [(value)]="selectedChannelConfig.format"
+                width="160px"
+                (valueChange)="markDirty()">
+              </app-shared-dropdown>
+              @if (isFormatNonOptimal) {
+              <div class="field-hint">
+                {{ 'notification.master.detail.form.formatHint' | translate }}
+              </div>
+              }
+            </div>
           </div>
 
-          <div class="field full">
-            <label>{{ 'notification.master.detail.form.subject' | translate }}</label>
-            <input
-              class="custom-input"
-              [(ngModel)]="selectedChannelConfig.subject"
-              (ngModelChange)="markDirty()"
-              [placeholder]="'notification.master.detail.form.subjectPlaceholder' | translate">
+          <div class="field full content-row">
+            <label>{{ 'notification.master.detail.form.content' | translate }}</label>
+            @if (selectedChannelConfig.format === 'HTML') {
+            <div class="html-editor">
+              <div class="html-editor-toolbar">
+                <div class="mode-tabs">
+                  <button class="mode-tab" [class.active]="htmlEditorMode === 'design'" (click)="setHtmlEditorMode('design')">
+                    Soạn thảo
+                  </button>
+                  <button class="mode-tab" [class.active]="htmlEditorMode === 'source'" (click)="setHtmlEditorMode('source')">
+                    HTML
+                  </button>
+                </div>
+                <div class="tool-buttons" *ngIf="htmlEditorMode === 'design'">
+                  <button type="button" class="tool-btn" (click)="execHtmlCommand('bold')"><b>B</b></button>
+                  <button type="button" class="tool-btn" (click)="execHtmlCommand('italic')"><i>I</i></button>
+                  <button type="button" class="tool-btn" (click)="execHtmlCommand('underline')"><u>U</u></button>
+                  <button type="button" class="tool-btn" (click)="execHtmlCommand('insertUnorderedList')">• List</button>
+                  <button type="button" class="tool-btn" (click)="execHtmlCommand('createLink')">Link</button>
+                </div>
+              </div>
+              @if (htmlEditorMode === 'design') {
+              <div class="html-editor-canvas" contenteditable="true" (input)="onHtmlInput($event)" [innerHTML]="selectedChannelConfig.content"></div>
+              } @else {
+              <textarea class="custom-textarea html-source" [value]="selectedChannelConfig.content" (input)="onHtmlSourceInput($event)"></textarea>
+              }
+            </div>
+            } @else {
+            <div class="text-area-wrapper">
+              <textarea class="custom-textarea" [(ngModel)]="selectedChannelConfig.content" (ngModelChange)="markDirty()"></textarea>
+              <div class="text-counter">{{ selectedChannelConfig.content.length || 0 }} / 2000</div>
+            </div>
+            }
           </div>
         </div>
 
-        <div class="field full content-row">
-          <label>{{ 'notification.master.detail.form.content' | translate }}</label>
-          @if (selectedChannelConfig.format === 'HTML') {
-          <div class="html-editor">
-            <div class="html-editor-toolbar">
-              <div class="mode-tabs">
-                <button class="mode-tab" [class.active]="htmlEditorMode === 'design'" (click)="setHtmlEditorMode('design')">
-                  Soạn thảo
-                </button>
-                <button class="mode-tab" [class.active]="htmlEditorMode === 'source'" (click)="setHtmlEditorMode('source')">
-                  HTML
-                </button>
-              </div>
-              <div class="tool-buttons" *ngIf="htmlEditorMode === 'design'">
-                <button type="button" class="tool-btn" (click)="execHtmlCommand('bold')"><b>B</b></button>
-                <button type="button" class="tool-btn" (click)="execHtmlCommand('italic')"><i>I</i></button>
-                <button type="button" class="tool-btn" (click)="execHtmlCommand('underline')"><u>U</u></button>
-                <button type="button" class="tool-btn" (click)="execHtmlCommand('insertUnorderedList')">• List</button>
-                <button type="button" class="tool-btn" (click)="execHtmlCommand('createLink')">Link</button>
-              </div>
-            </div>
-            @if (htmlEditorMode === 'design') {
-            <div class="html-editor-canvas" contenteditable="true" (input)="onHtmlInput($event)" [innerHTML]="selectedChannelConfig.content"></div>
-            } @else {
-            <textarea class="custom-textarea html-source" [value]="selectedChannelConfig.content" (input)="onHtmlSourceInput($event)"></textarea>
-            }
+        <div class="version-card">
+          <div class="version-info">
+            <div class="version-label">{{ 'notification.master.detail.version.label' | translate }}</div>
+            <div class="version-value">v{{ selectedChannelConfig.version }}</div>
           </div>
-          } @else {
-          <div class="text-area-wrapper">
-            <textarea class="custom-textarea" [(ngModel)]="selectedChannelConfig.content" (ngModelChange)="markDirty()"></textarea>
-            <div class="text-counter">{{ selectedChannelConfig.content.length || 0 }} / 2000</div>
-          </div>
-          }
+          <button class="btn-outline-custom" (click)="openHistorySidebar()">
+            {{ 'notification.master.detail.version.history' | translate }}
+          </button>
+          <button class="btn-primary-custom" (click)="saveConfig()" [disabled]="!isDirty">
+            {{ 'notification.master.detail.version.save' | translate }}
+          </button>
         </div>
       </div>
 
-      <div class="version-card">
-        <div class="version-info">
-          <div class="version-label">{{ 'notification.master.detail.version.label' | translate }}</div>
-          <div class="version-value">v{{ selectedChannelConfig.version }}</div>
+      <div class="params-pane">
+        <div class="params-card">
+          <div class="params-header">
+            <div>
+              <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
+              @if (selectedCode?.definitionDescription) {
+              <div class="params-description">{{ selectedCode?.definitionDescription }}</div>
+              }
+            </div>
+            <button class="btn-outline-custom" (click)="openParamsModal()">
+              {{ 'notification.master.detail.params.define' | translate }}
+            </button>
+          </div>
+          <div class="params-list">
+            @if (paramsList.length) {
+            @for (item of paramsList; track item.key) {
+            <div class="param-chip">
+              <span class="param-key">{{ item.key }}</span>
+              @if (item.description) {
+              <span class="param-desc">{{ item.description }}</span>
+              }
+            </div>
+            }
+            } @else {
+            <span class="params-empty">{{ 'notification.master.detail.params.empty' | translate }}</span>
+            }
+          </div>
         </div>
-        <button class="btn-outline-custom" (click)="openHistorySidebar()">
-          {{ 'notification.master.detail.version.history' | translate }}
-        </button>
-        <button class="btn-primary-custom" (click)="saveConfig()" [disabled]="!isDirty">
-          {{ 'notification.master.detail.version.save' | translate }}
-        </button>
       </div>
     </div>
     }

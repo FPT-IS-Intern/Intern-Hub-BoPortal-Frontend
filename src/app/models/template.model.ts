@@ -69,6 +69,6 @@ export interface TemplateUpsertRequest {
 
 export interface TemplateRestoreRequest {
   channel: string;
-  locale: string;
-  templateVersion: number;
+  lang?: string;
+  version: number;
 }
