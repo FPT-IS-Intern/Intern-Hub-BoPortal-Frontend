@@ -1,17 +1,14 @@
 <div class="pagination-bar">
     <div class="pagination-left">
         <span class="page-range">
-            Hiển thị {{ displayRange }}
-            <span class="info-icon" title="Thông tin hiển thị">
+            Hiá»ƒn thá»‹ {{ displayRange }}
+            <span class="info-icon" title="ThÃ´ng tin hiá»ƒn thá»‹">
                 <span class="custom-icon-info"></span>
             </span>
         </span>
     </div>
 
     <div class="pagination-right-group">
-        <button class="custom-approve-btn" (click)="onApproveAll()">
-            Duyệt tất cả
-        </button>
 
         <div class="pagination-center">
             <button class="nav-btn" [disabled]="pageIndex <= 1" (click)="prevPage()">
@@ -34,7 +31,7 @@
                 <span class="custom-icon-arrow-right"></span>
             </button>
 
-            <span class="total-text">Tổng {{ total }}</span>
+            <span class="total-text">Tá»•ng {{ total }}</span>
         </div>
 
         <div class="pagination-right">

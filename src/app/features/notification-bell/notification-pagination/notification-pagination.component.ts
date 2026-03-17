@@ -18,7 +18,6 @@ export class NotificationPaginationComponent implements OnChanges {
 
     @Output() pageIndexChange = new EventEmitter<number>();
     @Output() pageSizeChange = new EventEmitter<number>();
-    @Output() approveAll = new EventEmitter<void>();
 
     totalPages = 0;
     pages: (number | string)[] = [];
@@ -142,7 +141,4 @@ export class NotificationPaginationComponent implements OnChanges {
         this.pageSizeChange.emit(Number(value));
     }
 
-    onApproveAll(): void {
-        this.approveAll.emit();
-    }
 }
