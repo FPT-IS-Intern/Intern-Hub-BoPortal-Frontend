@@ -15,10 +15,10 @@
   th,
   td {
     border-bottom: 1px solid var(--app-color-border-alpha-soft-2);
-    padding: 16px 20px;
+    padding: 10px 16px;
     text-align: center;
     vertical-align: middle;
-    height: 60px;
+    height: 44px;
   }
 
   th {
@@ -26,12 +26,12 @@
     top: 0;
     z-index: 10;
     background: var(--app-color-primary-300) !important;
-    color: var(--app-color-border-soft);
+    color: var(--app-color-white, #ffffff);
     font-weight: 600;
     font-size: 14px;
     line-height: 1.2;
     text-align: left;
-    padding: 14px 12px;
+    padding: 10px 12px;
     white-space: nowrap;
   }
 
@@ -78,30 +78,33 @@
     background: var(--app-color-white) !important;
     color: var(--app-color-text-900);
     font-weight: 600;
-    padding-left: 32px;
+    padding-left: 24px;
   }
 
   .row-alt {
     background: var(--app-color-surface-soft);
 
-    .cell-function, .cell-checkbox {
+    .cell-function,
+    .cell-checkbox {
       background: var(--app-color-surface-soft) !important;
     }
   }
 
   .row-hover {
     transition: all 0.2s ease;
+
     &:hover {
       background: var(--app-color-primary-alpha-8) !important;
 
-      .cell-function, .cell-checkbox {
+      .cell-function,
+      .cell-checkbox {
         background: var(--app-color-primary-alpha-8) !important;
       }
     }
   }
 
   .cell-checkbox {
-    padding: 0 !important; /* Remove padding to allow flex centering */
+    padding: 0 !important;
 
     .custom-checkbox {
       display: flex;
@@ -113,7 +116,6 @@
       user-select: none;
       width: 20px;
       height: 20px;
-
 
       input {
         position: absolute;
@@ -177,6 +179,7 @@
     }
   }
 }
+
 .permission-users-icon {
   width: 64px;
   height: 64px;
