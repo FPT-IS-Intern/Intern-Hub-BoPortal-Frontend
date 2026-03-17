@@ -56,10 +56,12 @@
   "toast": {
     "system": "System",
     "config": {
-      "updateSuccess": "Configuration updated successfully"
+      "updateSuccess": "Configuration updated successfully",
+      "updateError": "Unable to update system configuration"
     },
     "security": {
-      "updateSuccess": "Security configuration updated successfully"
+      "updateSuccess": "Security configuration updated successfully",
+      "updateError": "Unable to update security configuration"
     },
     "rbac": {
       "selectRoleRequired": "Please select a role",
@@ -616,6 +618,98 @@
       "title": "Data load error",
       "message": "An error occurred while loading the permission matrix. Please try again.",
       "retry": "Retry"
+    }
+  },
+  "systemSettings": {
+    "breadcrumb": {
+      "title": "System settings"
+    },
+    "actions": {
+      "saveAll": "Save all"
+    },
+    "page": {
+      "error": {
+        "title": "Unable to load configuration",
+        "message": "An error occurred while loading system settings. Please try again.",
+        "retry": "Try again"
+      },
+      "loading": {
+        "title": "Loading system settings",
+        "message": "Please wait while we fetch the latest configuration."
+      },
+      "empty": {
+        "title": "No configuration found",
+        "message": "System settings are not available yet."
+      },
+      "desc": "Update core system and security settings in one place."
+    },
+    "table": {
+      "setting": "Setting",
+      "value": "Value",
+      "note": "Notes"
+    },
+    "sections": {
+      "system": {
+        "title": "System configuration",
+        "desc": "Manage app identity and working time rules.",
+        "actions": {}
+      },
+      "security": {
+        "title": "Security configuration",
+        "desc": "Set password rules and session security thresholds.",
+        "actions": {}
+      }
+    },
+    "fields": {
+      "appName": "Application name",
+      "logoUrl": "Logo URL",
+      "defaultLanguage": "Default language",
+      "workStartTime": "Work start time",
+      "workEndTime": "Work end time",
+      "autoCheckoutTime": "Auto checkout time",
+      "minPasswordLength": "Minimum password length",
+      "maxPasswordLength": "Maximum password length",
+      "minUppercaseChars": "Minimum uppercase characters",
+      "minSpecialChars": "Minimum special characters",
+      "minNumericChars": "Minimum numeric characters",
+      "passwordExpiryDays": "Password expiry (days)",
+      "allowWhitespace": "Allow whitespace in password",
+      "autoLogoutMinutes": "Auto logout after",
+      "maxLoginAttempts": "Maximum login attempts"
+    },
+    "placeholders": {
+      "appName": "e.g., BoPortal Admin",
+      "logoUrl": "https://example.com/logo.svg"
+    },
+    "units": {
+      "chars": "chars",
+      "days": "days",
+      "minutes": "minutes",
+      "times": "times"
+    },
+    "options": {
+      "allow": "Allow",
+      "disallow": "Disallow"
+    },
+    "validation": {
+      "passwordRange": "Minimum password length cannot exceed maximum length."
+    },
+    "help": {
+      "appName": "Displayed in the header and login screen.",
+      "logoUrl": "Used in the top-left brand area.",
+      "defaultLanguage": "Applied for new sessions by default.",
+      "workStartTime": "Start of standard working hours.",
+      "workEndTime": "End of standard working hours.",
+      "autoCheckoutTime": "Automatically checks out after this time.",
+      "minPasswordLength": "Minimum total characters required.",
+      "maxPasswordLength": "Maximum total characters allowed.",
+      "minUppercaseChars": "Minimum uppercase letters (A-Z).",
+      "minSpecialChars": "Minimum special characters (e.g., !@#).",
+      "minNumericChars": "Minimum digits (0-9).",
+      "passwordExpiryDays": "Force password reset after this many days.",
+      "allowWhitespace": "Allow spaces inside passwords.",
+      "autoLogoutMinutes": "Inactive session auto-logout time.",
+      "maxLoginAttempts": "Lock after this many failed attempts."
     }
   }
 }

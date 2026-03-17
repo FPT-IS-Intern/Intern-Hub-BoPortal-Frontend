@@ -145,3 +145,43 @@ button {
     transform: translateY(0);
   }
 }
+
+// =============================================
+// Google Maps Autocomplete Dropdown (pac-container)
+// Must be global - Angular ViewEncapsulation prevents
+// component-scoped styles from affecting <body>-level elements
+// =============================================
+.pac-container {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  margin-top: 4px;
+  font-family: inherit;
+  z-index: 2147483647 !important; /* Max z-index to appear above nz-modal overlay */
+
+  .pac-item {
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    border-top: 1px solid #f0f0f0;
+
+    &:first-child {
+      border-top: none;
+    }
+
+    &:hover {
+      background-color: #f9f6f1;
+    }
+  }
+
+  .pac-item-query {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111;
+  }
+
+  .pac-matched {
+    font-weight: 700;
+    color: var(--app-color-primary, #E18308);
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, inject, ViewChild, ElementRef, Output, EventEmitter, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AttendanceLocation } from '../../../models/checkin-config.model';
@@ -13,7 +13,7 @@ declare const google: any;
   selector: 'app-upsert-location-dialog',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
     TranslateModule,
     ModalPopup
@@ -25,6 +25,7 @@ export class UpsertLocationDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
   private readonly toast = inject(ToastService);
+  private readonly ngZone = inject(NgZone);
 
   @Input() isVisible = false;
   @Input() data: AttendanceLocation | null = null;
@@ -37,7 +38,9 @@ export class UpsertLocationDialogComponent implements OnInit {
   private map: any;
   private marker: any;
   private radiusCircle: any;
+  private geocoder: any;
   protected isLocating = false;
+  protected searchInputValue = '';
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -127,6 +130,159 @@ export class UpsertLocationDialogComponent implements OnInit {
     });
 
     this.initAutocomplete();
+    this.initUrlListener();
+  }
+
+  private initUrlListener(): void {
+    if (!this.searchElementRef) return;
+
+    const input = this.searchElementRef.nativeElement;
+
+    // Listen for input events (handle typing or pasting)
+    input.addEventListener('input', (e: any) => {
+      const value = e.target.value;
+      this.searchInputValue = value; // Keep track for clear button visibility
+      if (this.isGoogleMapsUrl(value)) {
+        this.handleUrlPaste(value);
+      }
+    });
+
+    // Explicit paste event for faster response
+    input.addEventListener('paste', (e: ClipboardEvent) => {
+      const pasteData = e.clipboardData?.getData('text');
+      if (pasteData && this.isGoogleMapsUrl(pasteData)) {
+        // Prevent clearing if autocomplete tries to take over
+        setTimeout(() => this.handleUrlPaste(pasteData), 50);
+      }
+    });
+  }
+
+  private isGoogleMapsUrl(text: string): boolean {
+    return text.includes('google.com/maps') || text.includes('goo.gl/maps') || text.includes('maps.app.goo.gl');
+  }
+
+  private handleUrlPaste(url: string): void {
+    const coords = this.extractCoordsFromUrl(url);
+    if (coords) {
+      const { lat, lng } = coords;
+
+      this.form.patchValue({
+        latitude: lat,
+        longitude: lng
+      }, { emitEvent: false });
+
+      if (this.map && this.marker) {
+        const latLng = new google.maps.LatLng(lat, lng);
+        this.marker.setPosition(latLng);
+        this.radiusCircle.setCenter(latLng);
+        this.map.setCenter(latLng);
+        this.map.setZoom(17);
+      }
+
+      // Keep the URL text in the search input and sync the tracked value
+      this.searchInputValue = url;
+      if (this.searchElementRef) {
+        this.searchElementRef.nativeElement.value = url;
+      }
+
+      // Step 1: Try to extract place name directly from URL path (instant, no API call)
+      const urlName = this.extractNameFromUrl(url);
+      if (urlName) {
+        this.form.patchValue({ name: urlName });
+      }
+
+      // Step 2: Always refine with reverse geocoding (more accurate, async)
+      this.reverseGeocode(lat, lng);
+
+      this.toast.success('Đã lấy tọa độ từ link Google Maps!');
+    }
+  }
+
+  private extractNameFromUrl(url: string): string | null {
+    // Extract name from /maps/place/NAME/ pattern (e.g. /maps/place/Eximbank+Ben+Nghe/)
+    const placePattern = /\/maps\/place\/([^/@]+)/;
+    const match = url.match(placePattern);
+    if (match && match[1]) {
+      try {
+        // Decode URL encoding and replace + with spaces
+        return decodeURIComponent(match[1].replace(/\+/g, ' ')).trim();
+      } catch {
+        return match[1].replace(/\+/g, ' ').trim();
+      }
+    }
+    return null;
+  }
+
+  private extractCoordsFromUrl(url: string): { lat: number, lng: number } | null {
+    // Priority 1: !3dlat!4dlng (Internal Google Maps data - highest accuracy for pinned items)
+    const paramPattern = /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/;
+    const paramMatch = url.match(paramPattern);
+    if (paramMatch) {
+      return {
+        lat: parseFloat(paramMatch[1]),
+        lng: parseFloat(paramMatch[2])
+      };
+    }
+
+    // Priority 2: q=lat,lng (Query parameters for specific coordinates)
+    const qPattern = /q=(-?\d+\.\d+),(-?\d+\.\d+)/;
+    const qMatch = url.match(qPattern);
+    if (qMatch) {
+      return {
+        lat: parseFloat(qMatch[1]),
+        lng: parseFloat(qMatch[2])
+      };
+    }
+
+    // Priority 3: @lat,lng (Map viewport center - fallback)
+    const atPattern = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+    const atMatch = url.match(atPattern);
+    if (atMatch) {
+      return {
+        lat: parseFloat(atMatch[1]),
+        lng: parseFloat(atMatch[2])
+      };
+    }
+
+    // Priority 4: Simple lat,lng string (fallback)
+    const simplePattern = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
+    const simpleMatch = url.match(simplePattern);
+    if (simpleMatch && (url.includes('google.com/maps') || url.includes('goo.gl'))) {
+      return {
+        lat: parseFloat(simpleMatch[1]),
+        lng: parseFloat(simpleMatch[2])
+      };
+    }
+
+    return null;
+  }
+
+  private reverseGeocode(lat: number, lng: number): void {
+    if (!this.geocoder) {
+      this.geocoder = new google.maps.Geocoder();
+    }
+    this.geocoder.geocode({ location: { lat, lng } }, (results: any[], status: string) => {
+      this.ngZone.run(() => {
+        if (status === 'OK' && results && results.length > 0) {
+          // Try to get a meaningful POI name, then fall back to formatted address
+          const poiResult = results.find((r: any) =>
+            r.types && (r.types.includes('point_of_interest') || r.types.includes('establishment'))
+          );
+          const name = poiResult ? poiResult.name : '';
+          const address = (poiResult || results[0]).formatted_address || '';
+          const finalName = name || address;
+          // Always auto-fill with the reverse-geocoded name
+          this.form.patchValue({ name: finalName });
+        }
+      });
+    });
+  }
+
+  clearSearch(): void {
+    this.searchInputValue = '';
+    if (this.searchElementRef) {
+      this.searchElementRef.nativeElement.value = '';
+    }
   }
 
   private initAutocomplete(): void {
@@ -157,11 +313,11 @@ export class UpsertLocationDialogComponent implements OnInit {
       // Update form and marker
       const lat = place.geometry.location.lat();
       const lng = place.geometry.location.lng();
-      
+
       this.form.patchValue({
         name: place.name || this.form.get('name')?.value || '',
-        latitude: parseFloat(lat.toFixed(6)),
-        longitude: parseFloat(lng.toFixed(6))
+        latitude: lat,
+        longitude: lng
       }, { emitEvent: false });
 
       this.marker.setPosition(place.geometry.location);
@@ -174,8 +330,8 @@ export class UpsertLocationDialogComponent implements OnInit {
     const lng = latLng.lng();
 
     this.form.patchValue({
-      latitude: parseFloat(lat.toFixed(6)),
-      longitude: parseFloat(lng.toFixed(6))
+      latitude: lat,
+      longitude: lng
     }, { emitEvent: false });
 
     this.marker.setPosition(latLng);
@@ -209,8 +365,8 @@ export class UpsertLocationDialogComponent implements OnInit {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.isLocating = false;
-        const lat = parseFloat(position.coords.latitude.toFixed(6));
-        const lng = parseFloat(position.coords.longitude.toFixed(6));
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
         this.form.patchValue({ latitude: lat, longitude: lng }, { emitEvent: false });
         if (this.map && this.marker) {
           const latLng = new google.maps.LatLng(lat, lng);

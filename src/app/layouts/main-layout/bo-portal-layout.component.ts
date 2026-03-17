@@ -45,17 +45,17 @@ export class BoPortalLayoutComponent {
 
   sidebarData: SidebarData = {
     // ===== Layout =====
-    backgroundColor: 'var(--neutral-color-50)',
+    backgroundColor: 'var(--app-color-white)',
     collapseIcon: 'dsi-arrow-left-line',
     expandIcon: 'dsi-arrow-right-line',
 
-    toggleButtonBackgroundColor: 'var(--brand-600)',
-    toggleButtonIconColor: 'var(--neutral-color-10)',
+    toggleButtonBackgroundColor: 'var(--app-color-primary)',
+    toggleButtonIconColor: 'var(--app-color-white)',
     toggleButtonWidth: '32px',
     toggleButtonHeight: '32px',
     toggleButtonSize: 'sm',
 
-    closeButtonBackgroundColor: 'var(--neutral-color-50)',
+    closeButtonBackgroundColor: 'var(--app-color-white)',
     closeButtonMarginRight: '12px',
 
     // ===== DEFAULT (collapsed & expanded dùng chung) =====
@@ -63,46 +63,36 @@ export class BoPortalLayoutComponent {
     defaultHeight: '48px',
     defaultBorderRadius: '8px',
 
-    defaultColorIconLeft: 'var(--neutral-color-10)',
-    defaultColorContent: 'var(--neutral-color-600)',
+    defaultColorIconLeft: 'var(--app-color-text-muted)',
+    defaultColorContent: 'var(--app-color-text-muted)',
     defaultBackgroundColor: 'transparent',
 
     // ===== HOVER =====
-    defaultColorIconLeftHover: 'var(--brand-600)',
-    defaultColorContentHover: 'var(--brand-600)',
-    defaultBackgroundColorHover: 'var(--brand-50)',
+    defaultColorIconLeftHover: 'var(--app-color-primary)',
+    defaultColorContentHover: 'var(--app-color-primary)',
+    defaultBackgroundColorHover: 'var(--app-color-primary-alpha-8)',
 
     // ===== ACTIVE =====
-    activeColorIconLeft: 'var(--brand-500)',
-    activeColorContent: 'var(--brand-500)',
-    activeBackgroundColor: 'var(--brand-200)',
+    activeColorIconLeft: 'var(--app-color-white)',
+    activeColorContent: 'var(--app-color-white)',
+    activeBackgroundColor: 'var(--app-color-primary)',
 
     // ===== DISABLED =====
-    disabledColorIconLeft: 'var(--neutral-color-300)',
-    disabledColorContent: 'var(--neutral-color-300)',
+    disabledColorIconLeft: 'var(--app-color-text-subtle)',
+    disabledColorContent: 'var(--app-color-text-subtle)',
     disabledBackgroundColor: 'transparent',
 
     // ===== EXPANDED MODE OVERRIDE (optional) =====
-    defaultColorIconLeftExpanded: 'var(--neutral-color-400)',
-    defaultColorIconRightExpanded: 'var(--neutral-color-400)',
-    defaultColorContentExpanded: 'var(--neutral-color-400)',
+    defaultColorIconLeftExpanded: 'var(--app-color-text-muted)',
+    defaultColorIconRightExpanded: 'var(--app-color-text-muted)',
+    defaultColorContentExpanded: 'var(--app-color-text-muted)',
     defaultBackgroundColorExpanded: 'transparent',
-    defaultBackgroundColorHoverExpanded: 'var(--neutral-color-100)',
+    defaultBackgroundColorHoverExpanded: 'var(--app-color-surface-warm-100)',
 
     // =========================
     // Menu Items
     // =========================
     menuItems: [
-      {
-        iconLeft: SIDEBAR_ICONS.SETTINGS,
-        content: 'Cấu hình chung',
-        url: '/general',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.LOCK,
-        content: 'Bảo mật',
-        url: '/security',
-      },
       {
         iconLeft: SIDEBAR_ICONS.USERS,
         content: 'Ma trận phân quyền',
@@ -117,6 +107,11 @@ export class BoPortalLayoutComponent {
         iconLeft: SIDEBAR_ICONS.GLOBE,
         content: 'Địa điểm checkin',
         url: '/checkin',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.SETTINGS,
+        content: 'Cấu hình hệ thống',
+        url: '/system-settings',
       },
     ],
   };

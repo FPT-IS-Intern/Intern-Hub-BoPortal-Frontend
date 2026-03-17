@@ -57,6 +57,13 @@
   background: white;
 }
 
+.table-container--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
 .premium-table {
   width: 100%;
   height: auto;

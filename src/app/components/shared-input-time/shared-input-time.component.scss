@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
+    position: relative;
 }
 
 .label-text {
@@ -19,75 +20,106 @@
     color: var(--app-color-danger);
 }
 
-.input-wrapper {
-    position: relative;
-    width: 100%;
+.time-field {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--app-color-input-border-alpha);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--app-color-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--app-color-primary-500-alpha);
+  }
 }
 
-.custom-input {
-    width: 100%;
-    height: 36px;
-    padding: 0 12px;
-    border: 1px solid var(--app-color-input-border-alpha);
-    border-radius: 6px;
-    font-size: 14px;
-    color: var(--app-color-text-main);
-    background-color: var(--app-color-white);
-    outline: none;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
-
-    &:hover {
-        border-color: var(--app-color-primary-500-alpha);
-    }
-
-    &:focus {
-        border-color: var(--app-color-primary);
-        box-shadow: 0 0 0 2px var(--app-color-primary-alpha-10);
-    }
-
-    &::placeholder {
-        color: var(--app-color-placeholder-alpha);
-    }
-
-    &::-webkit-calendar-picker-indicator {
-        cursor: pointer;
-        filter: invert(48%) sepia(91%) saturate(2250%) hue-rotate(10deg) brightness(98%) contrast(96%);
-        position: relative;
-        z-index: 3;
-    }
-
-    // Hide native placeholder when empty and not focused
-    &:not(.has-value):not(:focus) {
-        color: transparent;
-
-        &::-webkit-datetime-edit-text,
-        &::-webkit-datetime-edit-hour-field,
-        &::-webkit-datetime-edit-minute-field,
-        &::-webkit-datetime-edit-second-field,
-        &::-webkit-datetime-edit-ampm-field {
-            color: transparent;
-        }
-    }
+.time-value {
+  font-size: 14px;
+  color: var(--app-color-text-main);
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.placeholder-overlay {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    color: var(--app-color-placeholder-alpha);
-    pointer-events: none;
-    user-select: none;
-    z-index: 3;
+.time-chevron {
+  font-size: 14px;
+  color: var(--app-color-text-muted);
+  transition: transform 0.2s ease;
+
+  &.open {
+    transform: rotate(180deg);
+  }
 }
 
-.custom-input:focus+.placeholder-overlay,
-.custom-input.has-value+.placeholder-overlay {
-    display: none;
+.time-dropdown {
+  margin-top: 8px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: max-content;
+  min-width: 220px;
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--app-color-border-soft, #f1f5f9);
+  border-radius: 12px;
+  background: var(--app-color-white);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+}
+
+.time-col {
+  max-height: 200px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 6px;
+  min-width: 72px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--app-color-surface-warm-300);
+    border-radius: 10px;
+  }
+}
+
+.time-separator-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--app-color-text-muted);
+}
+
+.time-option {
+  border: none;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--app-color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+
+  &:hover {
+    background: var(--app-color-primary-alpha-8);
+    color: var(--app-color-primary);
+  }
+
+  &.active {
+    background: #fce8d4;
+    color: var(--app-color-primary);
+    font-weight: 700;
+    box-shadow: inset 0 0 0 1px rgba(225, 131, 8, 0.25);
+  }
 }
 
 

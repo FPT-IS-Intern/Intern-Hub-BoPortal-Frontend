@@ -19,10 +19,12 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   
   activeRequests++;
   
-  if (isDataMutation) {
-    loadingService.showGlobalLoading();
-  } else {
-    loadingService.showPageLoading();
+  if (activeRequests === 1) {
+    if (isDataMutation) {
+      loadingService.showGlobalLoading();
+    } else {
+      loadingService.showPageLoading();
+    }
   }
 
   return next(req).pipe(

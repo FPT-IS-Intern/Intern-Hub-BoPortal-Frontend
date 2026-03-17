@@ -1,0 +1,297 @@
+<div class="page-body">
+  <div class="settings-wrapper">
+    <div class="sticky-action-bar compact">
+      <div class="bar-actions">
+        <button class="btn-primary-custom"
+          [disabled]="!canSave() || isInitLoading() || isLoading() || isError() || !hasData()" (click)="saveAll()">
+          <span class="custom-icon-save"></span>
+          {{ 'systemSettings.actions.saveAll' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-body">
+      @if (isInitLoading()) {
+      <div class="state-panel">
+        <app-system-settings-skeleton></app-system-settings-skeleton>
+      </div>
+      } @else if (isLoading()) {
+      <div class="state-panel loading-view">
+        <span class="custom-icon-loading spinner"></span>
+        <div class="loading-text">
+          <div class="loading-title">{{ 'systemSettings.page.loading.title' | translate }}</div>
+          <div class="loading-desc">{{ 'systemSettings.page.loading.message' | translate }}</div>
+        </div>
+      </div>
+      } @else if (isError()) {
+      <div class="state-panel">
+        <div class="error-view">
+          <app-no-data [title]="'systemSettings.page.error.title' | translate"
+            [message]="'systemSettings.page.error.message' | translate">
+            <span icon class="custom-icon-error error-icon"></span>
+            <button action class="btn-outline-custom retry-btn" (click)="fetchConfigurations()">
+              {{ 'systemSettings.page.error.retry' | translate }}
+            </button>
+          </app-no-data>
+        </div>
+      </div>
+      } @else if (!hasData()) {
+      <div class="state-panel">
+        <div class="empty-view">
+          <app-no-data [title]="'systemSettings.page.empty.title' | translate"
+            [message]="'systemSettings.page.empty.message' | translate">
+            <span icon class="custom-icon-box-iso"></span>
+          </app-no-data>
+        </div>
+      </div>
+      } @else {
+      <section class="settings-panel">
+        <div class="settings-content">
+          <div class="cards-container">
+        <!-- SYSTEM CONFIG CARD -->
+        <div class="settings-card">
+          <div class="card-header border-bottom">
+            <h2 class="card-title">
+              <span class="custom-icon-settings card-icon"></span>
+              {{ 'systemSettings.sections.system.title' | translate }}
+            </h2>
+            <p class="card-desc">{{ 'systemSettings.sections.system.desc' | translate }}</p>
+          </div>
+
+          <div class="card-body">
+          <div class="settings-grid" [formGroup]="systemForm">
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-name">{{ 'systemSettings.fields.appName' | translate }}</label>
+                <div class="setting-note">{{ 'systemSettings.help.appName' | translate }}</div>
+              </div>
+              <div class="setting-control">
+                <app-shared-input-text
+                  [placeholder]="'systemSettings.placeholders.appName' | translate"
+                  [value]="systemForm.get('appName')?.value || ''"
+                  (valueChange)="updateControl(systemForm, 'appName', $event)">
+                </app-shared-input-text>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-name">{{ 'systemSettings.fields.logoUrl' | translate }}</label>
+                <div class="setting-note">{{ 'systemSettings.help.logoUrl' | translate }}</div>
+              </div>
+              <div class="setting-control">
+                <div class="logo-preview-wrapper">
+                  <app-shared-input-text typeInput="url"
+                    [placeholder]="'systemSettings.placeholders.logoUrl' | translate"
+                    [value]="systemForm.get('logoUrl')?.value || ''"
+                    (valueChange)="updateControl(systemForm, 'logoUrl', $event)">
+                  </app-shared-input-text>
+                  @if (systemForm.get('logoUrl')?.value && !logoPreviewError()) {
+                    <div class="logo-preview">
+                      <img [src]="systemForm.get('logoUrl')?.value" alt="Logo Preview"
+                        (error)="onLogoError()" (load)="onLogoLoad()">
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-name">{{ 'systemSettings.fields.defaultLanguage' | translate }}</label>
+                <div class="setting-note">{{ 'systemSettings.help.defaultLanguage' | translate }}</div>
+              </div>
+              <div class="setting-control">
+                <app-shared-dropdown [options]="languageOptions" formControlName="defaultLanguage"
+                  [ngStyle]="{ width: '100%' }" [value]="systemForm.get('defaultLanguage')?.value">
+                </app-shared-dropdown>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-name">{{ 'systemSettings.fields.workStartTime' | translate }}</label>
+                <div class="setting-note">{{ 'systemSettings.help.workStartTime' | translate }}</div>
+              </div>
+              <div class="setting-control">
+                <app-shared-input-time [form]="systemForm" controlName="workStartTime"></app-shared-input-time>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-name">{{ 'systemSettings.fields.workEndTime' | translate }}</label>
+                <div class="setting-note">{{ 'systemSettings.help.workEndTime' | translate }}</div>
+              </div>
+              <div class="setting-control">
+                <app-shared-input-time [form]="systemForm" controlName="workEndTime"></app-shared-input-time>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label class="setting-name">{{ 'systemSettings.fields.autoCheckoutTime' | translate }}</label>
+                <div class="setting-note">{{ 'systemSettings.help.autoCheckoutTime' | translate }}</div>
+              </div>
+              <div class="setting-control">
+                <app-shared-input-time [form]="systemForm" controlName="autoCheckoutTime"></app-shared-input-time>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- SECURITY CONFIG CARD -->
+        <div class="settings-card">
+          <div class="card-header border-bottom">
+            <h2 class="card-title">
+              <span class="custom-icon-security card-icon"></span>
+              {{ 'systemSettings.sections.security.title' | translate }}
+            </h2>
+            <p class="card-desc">{{ 'systemSettings.sections.security.desc' | translate }}</p>
+          </div>
+
+          <div class="card-body">
+            <div class="settings-grid" [formGroup]="securityForm">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.minPasswordLength' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.minPasswordLength' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('minPasswordLength')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'minPasswordLength', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.chars' | translate }}</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.maxPasswordLength' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.maxPasswordLength' | translate }}</div>
+                </div>
+                <div class="setting-control">
+                  <div class="input-with-error">
+                    <div class="value-with-unit">
+                      <app-shared-input-text typeInput="number" class="inline-input"
+                        [value]="securityForm.get('maxPasswordLength')?.value ?? ''"
+                        (valueChange)="updateControl(securityForm, 'maxPasswordLength', $event)">
+                      </app-shared-input-text>
+                      <span class="unit">{{ 'systemSettings.units.chars' | translate }}</span>
+                    </div>
+                    @if (securityForm.hasError('passwordRange')) {
+                      <div class="inline-error-text">
+                        {{ 'systemSettings.validation.passwordRange' | translate }}
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.minUppercaseChars' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.minUppercaseChars' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('minUppercaseChars')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'minUppercaseChars', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.chars' | translate }}</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.minSpecialChars' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.minSpecialChars' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('minSpecialChars')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'minSpecialChars', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.chars' | translate }}</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.minNumericChars' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.minNumericChars' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('minNumericChars')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'minNumericChars', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.chars' | translate }}</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.passwordExpiryDays' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.passwordExpiryDays' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('passwordExpiryDays')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'passwordExpiryDays', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.days' | translate }}</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.allowWhitespace' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.allowWhitespace' | translate }}</div>
+                </div>
+                <div class="setting-control">
+                  <app-shared-dropdown [options]="allowWhitespaceOptions" formControlName="allowWhitespace"
+                    [ngStyle]="{ width: '100%' }" [value]="securityForm.get('allowWhitespace')?.value">
+                  </app-shared-dropdown>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.autoLogoutMinutes' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.autoLogoutMinutes' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('autoLogoutMinutes')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'autoLogoutMinutes', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.minutes' | translate }}</span>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label class="setting-name">{{ 'systemSettings.fields.maxLoginAttempts' | translate }}</label>
+                  <div class="setting-note">{{ 'systemSettings.help.maxLoginAttempts' | translate }}</div>
+                </div>
+                <div class="setting-control value-with-unit">
+                  <app-shared-input-text typeInput="number" class="inline-input"
+                    [value]="securityForm.get('maxLoginAttempts')?.value ?? ''"
+                    (valueChange)="updateControl(securityForm, 'maxLoginAttempts', $event)">
+                  </app-shared-input-text>
+                  <span class="unit">{{ 'systemSettings.units.times' | translate }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+      </section>
+      }
+    </div>
+  </div>
+</div>

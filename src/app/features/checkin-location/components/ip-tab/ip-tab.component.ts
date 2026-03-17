@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class IpTabComponent {
   ipRanges = input<IPRange[]>([]);
+  showEmptyState = input<boolean>(true);
   @Output() addIP = new EventEmitter<void>();
   @Output() editIP = new EventEmitter<IPRange>();
   @Output() deleteIP = new EventEmitter<IPRange>();
@@ -23,7 +24,7 @@ export class IpTabComponent {
 
   filteredIpRanges = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
-    const ipRanges = this.ipRanges();
+    const ipRanges = this.ipRanges() ?? [];
     if (!term) return ipRanges;
     return ipRanges.filter(range =>
       (range.name?.toLowerCase() || '').includes(term) ||
@@ -31,4 +32,6 @@ export class IpTabComponent {
       (range.description?.toLowerCase() || '').includes(term)
     );
   });
+
+  protected readonly hasIpRanges = computed(() => this.filteredIpRanges().length > 0);
 }

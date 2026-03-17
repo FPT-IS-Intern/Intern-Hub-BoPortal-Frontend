@@ -94,10 +94,11 @@
   margin-bottom: 0;
   overflow: hidden;
   border-radius: 8px;
-  border: 1px solid var(--app-color-border-alpha-soft);
   background: var(--app-color-white);
+  border: 1px solid var(--app-color-border-alpha-soft);
   box-shadow: 0 1px 3px var(--app-shadow-sm);
-  min-height: 500px; /* Prevent collapse during loading */
+  min-height: calc(100vh - 260px);
+  /* Prevent collapse during loading */
   display: flex;
   flex-direction: column;
 }

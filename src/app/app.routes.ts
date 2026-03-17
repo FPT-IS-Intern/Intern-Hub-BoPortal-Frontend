@@ -1,14 +1,12 @@
 import { Routes } from '@angular/router';
-import { GeneralConfigComponent } from './features/general-config/main-config/general-config.component';
-import { SecurityConfigComponent } from './features/security-config/security-config.component';
 import { PermissionMatrixComponent } from './features/permission-matrix/permission-matrix.component';
 import { NotificationBellComponent } from './features/notification-bell/notification-bell.component';
 import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
 import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
 import { LoginFormComponent } from './features/login/login-form.component';
 import { authGuard } from './core/guards/auth.guard';
-import { permissionGuard } from './core/guards/permission.guard';
 import { CheckinLocationComponent } from './features/checkin-location/checkin-location.component';
+import { SystemSettingsComponent } from './features/system-settings/system-settings.component';
 
 export const routes: Routes = [
   {
@@ -17,7 +15,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'general',
+    redirectTo: 'checkin',
     pathMatch: 'full',
   },
   {
@@ -25,19 +23,10 @@ export const routes: Routes = [
     component: BoPortalLayoutComponent,
     canActivate: [authGuard],
     children: [
-      // Kept for backward compatibility (login currently navigates to /main).
       {
         path: 'main',
-        redirectTo: 'general',
+        redirectTo: 'checkin',
         pathMatch: 'full',
-      },
-      {
-        path: 'general',
-        component: GeneralConfigComponent,
-      },
-      {
-        path: 'security',
-        component: SecurityConfigComponent,
       },
       {
         path: 'permissions',
@@ -50,6 +39,10 @@ export const routes: Routes = [
       {
         path: 'checkin',
         component: CheckinLocationComponent,
+      },
+      {
+        path: 'system-settings',
+        component: SystemSettingsComponent,
       },
       {
         path: '404',

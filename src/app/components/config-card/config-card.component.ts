@@ -14,8 +14,9 @@ export class ConfigCardComponent {
     @Input({ required: true }) title!: string;
     @Input({ required: true }) form!: FormGroup;
     @Input({ required: true }) controlName!: string;
-    @Input() type: 'number' | 'select' = 'number';
+    @Input() type: 'number' | 'select' | 'text' | 'time' | 'url' = 'number';
     @Input() unit?: string;
     @Input() textAlign: 'left' | 'center' | 'right' = 'left';
     @Input() options: { label: string; value: any }[] = [];
+    @Input() placeholder?: string;
 }

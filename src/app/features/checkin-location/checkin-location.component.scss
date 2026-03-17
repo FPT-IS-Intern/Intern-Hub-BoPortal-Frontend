@@ -40,6 +40,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: calc(100vh - 260px);
 }
 
 .detail-header {
@@ -136,6 +137,7 @@
 }
 
 
+
 .no-selection {
   flex: 1;
   display: flex;
@@ -157,7 +159,7 @@
 .error-icon {
   width: 64px;
   height: 64px;
-  opacity: 0.2;
+  opacity: 0.9;
 }
 
 .selection-icon {

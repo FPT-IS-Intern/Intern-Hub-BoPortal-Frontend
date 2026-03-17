@@ -1,125 +1,95 @@
 <div class="page-body">
 
 
-  @if (isError()) {
-  <app-no-data
-    [title]="'checkin.page.error.title' | translate"
-    [message]="'checkin.page.error.message' | translate">
-    <span icon class="custom-icon-error error-icon"></span>
-    <button action class="retry-btn" (click)="fetchConfigs()">
-      {{ 'checkin.page.error.retry' | translate }}
-    </button>
-  </app-no-data>
-  } @else {
   <div class="master-detail-container">
     <!-- Master: Branch List -->
-    <app-branch-sidebar 
-      [branches]="branches()" 
-      [selectedBranchId]="selectedBranch()?.id"
-      (selectBranch)="selectBranch($event)"
-      (manageBranches)="onManageBranches()">
+    <app-branch-sidebar [branches]="branches()" [selectedBranchId]="selectedBranch()?.id"
+      (selectBranch)="selectBranch($event)" (manageBranches)="onManageBranches()">
     </app-branch-sidebar>
 
     <!-- Detail: Config Tabs -->
     <main class="detail-panel">
-      @if (selectedBranch(); as branch) {
-        <div class="detail-header">
-          <div class="title-group">
-            <h2 class="detail-title">{{ branch.name }}</h2>
-            <p class="detail-desc">{{ branch.description }}</p>
-          </div>
-          <div class="status-badge" [class.inactive]="!branch.isActive">
-            {{
-              branch.isActive
-                ? ('checkin.page.status.active' | translate)
-                : ('checkin.page.status.inactive' | translate)
-            }}
+      @if (isError()) {
+      <div class="detail-no-data">
+        <app-no-data [title]="'checkin.page.error.title' | translate"
+          [message]="'checkin.page.error.message' | translate">
+          <span icon class="custom-icon-error error-icon"></span>
+          <button action class="retry-btn" (click)="fetchConfigs()">
+            {{ 'checkin.page.error.retry' | translate }}
+          </button>
+        </app-no-data>
+      </div>
+      } @else if (selectedBranch(); as branch) {
+      <div class="detail-header">
+        <div class="title-group">
+          <h2 class="detail-title">{{ branch.name }}</h2>
+          <p class="detail-desc">{{ branch.description }}</p>
+        </div>
+        <div class="status-badge" [class.inactive]="!branch.isActive">
+          {{
+          branch.isActive
+          ? ('checkin.page.status.active' | translate)
+          : ('checkin.page.status.inactive' | translate)
+          }}
+        </div>
+      </div>
+
+      <div class="custom-tabs">
+        <div class="tab-header">
+          <div class="tab-nav">
+            <button class="tab-btn" [class.active]="activeTabIndex() === 0" (click)="onTabChange(0)">
+              {{ 'checkin.tabs.location' | translate }}
+            </button>
+            <button class="tab-btn" [class.active]="activeTabIndex() === 1" (click)="onTabChange(1)">
+              {{ 'checkin.tabs.ip' | translate }}
+            </button>
           </div>
         </div>
 
-        <div class="custom-tabs">
-          <div class="tab-header">
-            <div class="tab-nav">
-              <button class="tab-btn" [class.active]="activeTabIndex() === 0" (click)="onTabChange(0)">
-                {{ 'checkin.tabs.location' | translate }}
-              </button>
-              <button class="tab-btn" [class.active]="activeTabIndex() === 1" (click)="onTabChange(1)">
-                {{ 'checkin.tabs.ip' | translate }}
-              </button>
-            </div>
-          </div>
-
-          <div class="tab-content">
-            @if (activeTabIndex() === 0) {
-              <app-location-tab 
-                [locations]="branch.attendanceLocations || []"
-                (addLocation)="openLocationModal()"
-                (editLocation)="openLocationModal($event)"
-                (deleteLocation)="confirmDeleteLocation($event)">
-              </app-location-tab>
-            } @else {
-              <app-ip-tab 
-                [ipRanges]="branch.allowedIpRanges || []"
-                (addIP)="openIPModal()"
-                (editIP)="openIPModal($event)"
-                (deleteIP)="confirmDeleteIP($event)">
-              </app-ip-tab>
-            }
-          </div>
+        <div class="tab-content">
+          @if (activeTabIndex() === 0) {
+          <app-location-tab [locations]="branch.attendanceLocations || []"
+            (addLocation)="openLocationModal()" (editLocation)="openLocationModal($event)"
+            (deleteLocation)="confirmDeleteLocation($event)">
+          </app-location-tab>
+          } @else {
+          <app-ip-tab [ipRanges]="branch.allowedIpRanges || []" (addIP)="openIPModal()"
+            (editIP)="openIPModal($event)" (deleteIP)="confirmDeleteIP($event)">
+          </app-ip-tab>
+          }
         </div>
-      } @else {
-        <div class="no-selection">
-          <app-no-data
-            [title]="'checkin.page.noSelection.title' | translate"
-            [message]="'checkin.page.noSelection.message' | translate">
-            <span icon class="custom-icon-box-iso selection-icon"></span>
-          </app-no-data>
-        </div>
+      </div>
       }
     </main>
   </div>
-  }
 
   <!-- Static Dialogs rendered on demand -->
   @if (isLocationModalVisible()) {
-    <app-upsert-location-dialog
-      [isVisible]="true"
-      (isVisibleChange)="isLocationModalVisible.set($event)"
-      [data]="selectedLocation()"
-      (save)="handleLocationSave($event)">
-    </app-upsert-location-dialog>
+  <app-upsert-location-dialog [isVisible]="true" (isVisibleChange)="isLocationModalVisible.set($event)"
+    [data]="selectedLocation()" (save)="handleLocationSave($event)">
+  </app-upsert-location-dialog>
   }
 
   @if (isIPModalVisible()) {
-    <app-upsert-ip-range-dialog
-      [isVisible]="true"
-      (isVisibleChange)="isIPModalVisible.set($event)"
-      [data]="selectedIPRange()"
-      (save)="handleIPSave($event)">
-    </app-upsert-ip-range-dialog>
+  <app-upsert-ip-range-dialog [isVisible]="true" (isVisibleChange)="isIPModalVisible.set($event)"
+    [data]="selectedIPRange()" (save)="handleIPSave($event)">
+  </app-upsert-ip-range-dialog>
   }
 
   @if (isBranchManagementVisible()) {
-    <app-branch-management-dialog
-      [isVisible]="true"
-      (isVisibleChange)="isBranchManagementVisible.set($event)"
-      [data]="{ branches: branches() }"
-      (close)="handleBranchManagementClose($event)">
-    </app-branch-management-dialog>
+  <app-branch-management-dialog [isVisible]="true" (isVisibleChange)="isBranchManagementVisible.set($event)"
+    [data]="{ branches: branches() }" (close)="handleBranchManagementClose($event)">
+  </app-branch-management-dialog>
   }
 
   @if (isDeleteConfirmVisible()) {
-    <app-confirm-popup
-      [isVisible]="true"
-      (isVisibleChange)="isDeleteConfirmVisible.set($event)"
-      [title]="'checkin.common.confirmDelete.title' | translate"
-      [message]="(deleteConfirmData()?.type === 'location' 
-        ? 'checkin.location.confirmDelete.message' 
+  <app-confirm-popup [isVisible]="true" (isVisibleChange)="isDeleteConfirmVisible.set($event)"
+    [title]="'checkin.common.confirmDelete.title' | translate" [message]="(deleteConfirmData()?.type === 'location'
+        ? 'checkin.location.confirmDelete.message'
         : 'checkin.ip.confirmDelete.message') | translate: { name: deleteConfirmData()?.data?.name }"
-      [cancelText]="'checkin.common.actions.cancel' | translate"
-      [confirmText]="'checkin.common.actions.delete' | translate"
-      (confirm)="onConfirmDelete()"
-      (cancel)="isDeleteConfirmVisible.set(false)">
-    </app-confirm-popup>
+    [cancelText]="'checkin.common.actions.cancel' | translate"
+    [confirmText]="'checkin.common.actions.delete' | translate" (confirm)="onConfirmDelete()"
+    (cancel)="isDeleteConfirmVisible.set(false)">
+  </app-confirm-popup>
   }
 </div>

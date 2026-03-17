@@ -1,7 +1,7 @@
 <div class="sidebar-wrapper" [class.expanded]="isSidebarExpanded"
-  [style.--expanded-hover-bg]="data.defaultBackgroundColorHoverExpanded || 'var(--neutral-400)'">
+  [style.--expanded-hover-bg]="data.defaultBackgroundColorHoverExpanded || 'var(--app-color-surface-warm-100)'">
   <div
-    [style.background-color]="isSidebarExpanded ? (data.backgroundColor || 'var(--neutral-color-50)') : 'var(--brand-500)'">
+    [style.background-color]="isSidebarExpanded ? (data.backgroundColor || 'var(--app-color-white)') : (data.backgroundColor || 'var(--app-color-white)')">
     <aside class="sidebar">
       @for (item of data.menuItems; track $index) {
       <div class="sidebar-item-container">
@@ -9,7 +9,7 @@
           #rla="routerLinkActive" [routerLink]="item.url" (click)="onMenuItemClick(item, $event)">
           <div class="sidebar-item-content">
             @if (item.iconLeft) {
-            <i [class]="item.iconLeft" class="icon-left"
+            <i [ngClass]="[item.iconLeft, 'icon-left']"
               [style.color]="isSidebarExpanded ? (item.colorIconLeftExpanded || data.defaultColorIconLeftExpanded || item.colorIconLeft || data.defaultColorIconLeft) : (item.colorIconLeft || data.defaultColorIconLeft)"></i>
             }
             @if (isSidebarExpanded) {
@@ -18,7 +18,7 @@
               item.content }}</span>
             }
             @if (isSidebarExpanded && item.children && item.children.length > 0) {
-            <i [class]="getRightIcon(item)" class="icon-right" (click)="toggleSubMenu(item, $event)"></i>
+            <i [ngClass]="[getRightIcon(item), 'icon-right']" (click)="toggleSubMenu(item, $event)"></i>
             }
           </div>
         </a>
@@ -32,7 +32,7 @@
             (click)="onMenuItemClick(child, $event)">
             <div class="sidebar-item-content">
               @if (child.iconLeft) {
-              <i [class]="child.iconLeft" class="icon-left"
+              <i [ngClass]="[child.iconLeft, 'icon-left']"
                 [style.color]="child.colorIconLeftExpanded || data.defaultColorIconLeftExpanded || child.colorIconLeft || data.defaultColorIconLeft"></i>
               }
               <span class="label"
