@@ -386,14 +386,14 @@
 }
 
 .params-pane {
-  align-self: start;
-  position: sticky;
-  top: calc(64px + 16px);
-  height: fit-content;
+  position: relative;
+  align-self: stretch;
 }
 
-// Let the whole card move with page scroll (no inner scroll).
+// Sticky card that follows the page scroll.
 .params-pane .params-card {
+  position: sticky;
+  top: calc(64px + 16px);
   overflow: visible;
   max-height: none;
 }
@@ -692,6 +692,7 @@
   grid-template-columns: 1fr 1.2fr;
   gap: 0;
   height: 100%;
+  min-height: 0;
 }
 
 .history-list {
@@ -701,6 +702,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-height: 0;
 }
 
 .history-item {
@@ -738,6 +740,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  overflow: auto;
+  min-height: 0;
 }
 
 .preview-title {

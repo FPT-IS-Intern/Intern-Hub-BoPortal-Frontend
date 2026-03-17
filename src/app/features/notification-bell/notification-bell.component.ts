@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
 import { SharedDropdownComponent, DropdownOption } from '../../components/shared-dropdown/shared-dropdown.component';
@@ -70,6 +70,7 @@ export class NotificationBellComponent implements OnInit {
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translate = inject(TranslateService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
 
@@ -172,7 +173,7 @@ export class NotificationBellComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => {
         if (params.get('view') === 'list' && this.viewMode !== 'list') {
-          this.backToList();
+          this.backToList(false);
         }
       });
   }
@@ -404,6 +405,7 @@ export class NotificationBellComponent implements OnInit {
     this.selectedCode = code;
     this.viewMode = 'detail';
     this.availableChannelsFromApi = null;
+    this.syncViewParam('detail');
     if (code.isNew) {
       this.selectedChannel = channel || this.getDefaultChannel(code);
       this.selectedChannelConfig = this.ensureChannelConfig(this.selectedChannel);
@@ -625,13 +627,26 @@ export class NotificationBellComponent implements OnInit {
       });
   }
 
-  backToList(): void {
+  backToList(syncUrl = true): void {
     this.viewMode = 'list';
     this.selectedCode = null;
     this.selectedChannelConfig = null;
     this.availableChannelsFromApi = null;
     this.refreshBreadcrumbs();
     this.loadTemplates();
+    if (syncUrl) {
+      this.syncViewParam('list');
+    }
+  }
+
+  private syncViewParam(view: 'list' | 'detail'): void {
+    const current = this.route.snapshot.queryParamMap.get('view');
+    if (current === view) return;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view },
+      queryParamsHandling: 'merge',
+    });
   }
 
   selectChannel(channel: ChannelType): void {
