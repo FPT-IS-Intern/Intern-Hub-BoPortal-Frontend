@@ -12,6 +12,7 @@ import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
 import { TemplateService } from '../../services/api/template.service';
 import { TemplateResponse, TemplateSummaryResponse } from '../../models/template.model';
 import { finalize } from 'rxjs';
+import { DataTableColumn, DataTableComponent } from '../../components/data-table/data-table.component';
 
 type ChannelType = 'EMAIL' | 'PUSH' | 'IN_APP';
 type ChannelFilter = 'ALL' | ChannelType;
@@ -61,6 +62,7 @@ interface NotificationCode {
     SharedSearchComponent,
     SharedDropdownComponent,
     NotificationPaginationComponent,
+    DataTableComponent,
     ModalPopup,
   ],
   templateUrl: './notification-bell.component.html',
@@ -86,6 +88,12 @@ export class NotificationBellComponent implements OnInit {
   channelFilterOptions: DropdownOption[] = [];
   formatOptions: DropdownOption[] = [];
   createChannelOptions: DropdownOption[] = [];
+  tableColumns: DataTableColumn[] = [
+    { key: 'code', label: 'notification.master.table.code', cellClass: 'code-cell' },
+    { key: 'name', label: 'notification.master.table.name', cellClass: 'name-cell' },
+    { key: 'channels', label: 'notification.master.table.channels' },
+    { key: 'actions', label: 'notification.master.table.actions', headerClass: 'col-actions', cellClass: 'col-actions', align: 'right' },
+  ];
 
   selectedCode: NotificationCode | null = null;
   selectedChannel: ChannelType = 'EMAIL';

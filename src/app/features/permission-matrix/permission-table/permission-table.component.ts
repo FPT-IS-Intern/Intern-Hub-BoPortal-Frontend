@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { NoDataComponent } from '../../../components/no-data/no-data.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaginationComponent } from '../../../components/pagination/pagination.component';
+import { DataTableColumn, DataTableComponent } from '../../../components/data-table/data-table.component';
 
 @Component({
     selector: 'app-permission-table',
     standalone: true,
-    imports: [CommonModule, FormsModule, NoDataComponent, TranslateModule, PaginationComponent],
+    imports: [CommonModule, FormsModule, NoDataComponent, TranslateModule, PaginationComponent, DataTableComponent],
     templateUrl: './permission-table.component.html',
     styleUrl: './permission-table.component.scss',
 })
@@ -47,5 +48,28 @@ export class PermissionTableComponent {
     }
     onPermissionChange(): void {
         this.permissionChange.emit(this.rows);
+    }
+
+    get tableColumns(): DataTableColumn[] {
+        const base: DataTableColumn = {
+            key: '__resource',
+            label: 'permissionMatrix.table.resource',
+            headerClass: 'col-function sticky-col',
+            cellClass: 'col-function cell-function sticky-col',
+            align: 'left',
+            width: '320px',
+            minWidth: '250px',
+        };
+        const permissions = this.columns.map(col => ({
+            key: col.key,
+            label: col.label,
+            headerClass: 'col-permission sticky-header',
+            cellClass: 'col-permission cell-checkbox',
+            align: 'center',
+            width: '120px',
+            minWidth: '100px',
+        })) as DataTableColumn[];
+
+        return [base, ...permissions];
     }
 }

@@ -1,0 +1,60 @@
+<div class="data-table-wrapper" [ngClass]="wrapperClass">
+  <table class="data-table" [ngClass]="tableClass">
+    <thead>
+      <tr>
+        @for (col of columns; track col.key) {
+        <th
+          [ngClass]="col.headerClass"
+          [style.width]="col.width"
+          [style.minWidth]="col.minWidth"
+          [style.textAlign]="col.align || 'left'">
+          @if (headerTemplate) {
+          <ng-container
+            [ngTemplateOutlet]="headerTemplate"
+            [ngTemplateOutletContext]="{ $implicit: col }">
+          </ng-container>
+          } @else {
+          {{ col.label }}
+          }
+        </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @if (rows.length > 0) {
+      @for (row of rows; track trackRow($index, row); let i = $index) {
+      <tr [class.row-alt]="enableRowAlt && i % 2 === 1" [class.row-hover]="enableRowHover">
+        @for (col of columns; track col.key) {
+        <td
+          [ngClass]="col.cellClass"
+          [style.textAlign]="col.align || 'left'">
+          @if (cellTemplate) {
+          <ng-container
+            [ngTemplateOutlet]="cellTemplate"
+            [ngTemplateOutletContext]="{ $implicit: row, col: col, rowIndex: i }">
+          </ng-container>
+          } @else {
+          {{ $any(row)?.[col.key] }}
+          }
+        </td>
+        }
+      </tr>
+      }
+      } @else {
+      <tr>
+        <td [attr.colspan]="colSpan" class="empty-cell">
+          @if (emptyTemplate) {
+          <ng-container [ngTemplateOutlet]="emptyTemplate"></ng-container>
+          }
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (showPagination && paginationTemplate) {
+  <div class="pagination-container">
+    <ng-container [ngTemplateOutlet]="paginationTemplate"></ng-container>
+  </div>
+  }
+</div>

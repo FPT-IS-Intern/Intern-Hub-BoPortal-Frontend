@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding-bottom: 20px;
 }
 
 .filter-bar {
@@ -31,37 +32,7 @@
   margin-left: auto;
 }
 
-.table-wrapper {
-  background: var(--app-color-white);
-  border: 1px solid var(--app-color-border-alpha-soft);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.pagination-container {
-  border-top: 1px solid var(--app-color-border-alpha-soft);
-  border-radius: 0 0 10px 10px;
-  overflow: hidden;
-}
-
-.master-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-
-  th,
-  td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--app-color-border-alpha-soft-2);
-    text-align: left;
-  }
-
-  th {
-    background: var(--app-color-primary-300);
-    color: var(--app-color-border-soft);
-    font-weight: 600;
-  }
-
+:host ::ng-deep .notification-table {
   .code-cell {
     font-weight: 600;
     color: var(--app-color-text-main);
