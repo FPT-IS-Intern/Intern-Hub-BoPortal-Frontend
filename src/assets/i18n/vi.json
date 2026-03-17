@@ -345,8 +345,11 @@
       "detail": {
         "title": "Mã thông báo {{code}}",
         "params": {
+          "templateInfo": "Thông tin Template",
+          "systemCode": "Mã hệ thống:",
           "title": "Tham số",
           "define": "Định nghĩa",
+          "addNew": "+ Thêm tham số mới",
           "empty": "Chưa có tham số"
         },
         "form": {

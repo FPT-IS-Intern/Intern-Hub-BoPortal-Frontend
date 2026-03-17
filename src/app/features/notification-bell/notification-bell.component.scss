@@ -183,40 +183,60 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 1px 3px var(--app-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.params-header {
-  display: flex;
-  justify-content: space-between;
+.template-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-color-text-muted);
+}
+
+.template-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--app-color-text-main);
+}
+
+.template-meta {
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
+  color: var(--app-color-text-muted);
+  font-size: 12px;
+}
+
+.template-meta-label {
+  font-weight: 600;
+}
+
+.template-badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--app-color-surface-soft);
+  font-weight: 700;
+  color: var(--app-color-text-main);
+  letter-spacing: 0.04em;
+}
+
+.template-divider {
+  height: 1px;
+  background: var(--app-color-border-alpha-soft);
+  margin: 4px 0;
 }
 
 .params-title {
-  margin-top: 12px;
-  margin-bottom: 6px;
+  margin-top: 2px;
   font-weight: 700;
   color: var(--app-color-text-main);
 }
 
-.params-code {
-  margin-top: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--app-color-text-muted);
-}
-
-.params-description {
-  margin-top: 4px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--app-color-text-muted);
-}
-
 
 .params-list {
-  margin-top: 12px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -260,6 +280,11 @@
   color: var(--app-color-text-muted);
 }
 
+.params-add-btn {
+  margin-top: 6px;
+  align-self: flex-start;
+}
+
 .channel-card {
   background: var(--app-color-white);
   border: 1px solid var(--app-color-border-alpha-soft);
@@ -286,6 +311,40 @@
 .tab-actions {
   display: flex;
   align-items: center;
+}
+
+:host ::ng-deep .add-channel-dropdown .dropdown-trigger {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--app-color-primary);
+  background: var(--app-color-primary-alpha-8);
+  color: var(--app-color-primary);
+  font-weight: 600;
+  gap: 8px;
+}
+
+:host ::ng-deep .add-channel-dropdown .dropdown-trigger:hover {
+  box-shadow: 0 0 0 3px var(--app-color-primary-alpha-8);
+}
+
+:host ::ng-deep .add-channel-dropdown .left-icon {
+  color: var(--app-color-primary);
+  opacity: 1;
+}
+
+:host ::ng-deep .add-channel-dropdown .selected-text {
+  color: var(--app-color-primary);
+  font-weight: 600;
+}
+
+:host ::ng-deep .add-channel-dropdown .selected-text.placeholder {
+  color: var(--app-color-primary);
+  font-weight: 600;
+}
+
+:host ::ng-deep .add-channel-dropdown .chevron {
+  color: var(--app-color-primary);
 }
 
 .tab {
@@ -328,11 +387,14 @@
 
 .params-pane {
   align-self: start;
+  position: sticky;
+  top: 16px;
+  height: fit-content;
 }
 
 .params-pane .params-card {
-  position: sticky;
-  top: 16px;
+  max-height: calc(100vh - 140px);
+  overflow: auto;
 }
 
 .form-preview {
