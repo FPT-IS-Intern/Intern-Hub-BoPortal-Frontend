@@ -92,16 +92,24 @@
         "title": "Xác nhận xóa"
       }
     },
-    "page": {
-      "error": {
-        "title": "Không thể tải dữ liệu",
-        "message": "Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.",
-        "retry": "Thử lại"
-      },
-      "status": {
-        "active": "Đang hoạt động",
-        "inactive": "Ngừng hoạt động"
-      },
+      "page": {
+        "error": {
+          "title": "Không thể tải dữ liệu",
+          "message": "Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.",
+          "retry": "Thử lại"
+        },
+        "loading": {
+          "title": "Đang tải cấu hình check-in",
+          "message": "Vui lòng chờ trong giây lát."
+        },
+        "empty": {
+          "title": "Chưa có cấu hình check-in",
+          "message": "Hiện chưa có chi nhánh hoặc cấu hình check-in."
+        },
+        "status": {
+          "active": "Đang hoạt động",
+          "inactive": "Ngừng hoạt động"
+        },
       "noSelection": {
         "title": "Chưa chọn chi nhánh",
         "message": "Vui lòng chọn một chi nhánh từ danh sách bên trái để quản lý cấu hình check-in."

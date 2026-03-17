@@ -92,16 +92,24 @@
         "title": "Confirm Delete"
       }
     },
-    "page": {
-      "error": {
-        "title": "Unable to load data",
-        "message": "An error occurred while loading branch configuration list.",
-        "retry": "Try again"
-      },
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive"
-      },
+      "page": {
+        "error": {
+          "title": "Unable to load data",
+          "message": "An error occurred while loading branch configuration list.",
+          "retry": "Try again"
+        },
+        "loading": {
+          "title": "Loading check-in configuration",
+          "message": "Please wait while we fetch the latest data."
+        },
+        "empty": {
+          "title": "No check-in configuration",
+          "message": "There are no branches or check-in settings available yet."
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
       "noSelection": {
         "title": "No branch selected",
         "message": "Please select a branch from the left list to manage check-in configuration."
