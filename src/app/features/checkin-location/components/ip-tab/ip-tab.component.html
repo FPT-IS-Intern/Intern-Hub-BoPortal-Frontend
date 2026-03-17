@@ -21,6 +21,7 @@
       </tr>
     </thead>
     <tbody>
+      @if (hasIpRanges()) {
       @for (ip of filteredIpRanges(); track ip.id) {
       <tr>
         <td class="font-semibold">{{ ip.name }}</td>
@@ -36,21 +37,22 @@
           </span>
         </td>
         <td class="col-actions">
-          <button class="icon-btn edit" [attr.title]="'checkin.common.actions.edit' | translate" (click)="editIP.emit(ip)">
+          <button class="icon-btn edit" [attr.title]="'checkin.common.actions.edit' | translate"
+            (click)="editIP.emit(ip)">
             <span icon class="custom-icon-edit"></span>
           </button>
-          <button class="icon-btn delete" [attr.title]="'checkin.common.actions.delete' | translate" (click)="deleteIP.emit(ip)">
+          <button class="icon-btn delete" [attr.title]="'checkin.common.actions.delete' | translate"
+            (click)="deleteIP.emit(ip)">
             <span icon class="custom-icon-close"></span>
           </button>
         </td>
       </tr>
-      } @empty {
+      }
+      } @else if (showEmptyState()) {
       <tr class="empty-row">
         <td colspan="5">
-          <app-no-data
-            [title]="'checkin.ipTab.empty.title' | translate"
-            [message]="'checkin.ipTab.empty.message' | translate"
-            [fullHeight]="false">
+          <app-no-data [title]="'checkin.ipTab.empty.title' | translate"
+            [message]="'checkin.ipTab.empty.message' | translate" [fullHeight]="false">
             <span icon class="custom-icon-settings empty-icon"></span>
           </app-no-data>
         </td>
