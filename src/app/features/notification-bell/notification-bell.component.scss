@@ -193,13 +193,24 @@
 }
 
 .params-title {
+  margin-top: 12px;
+  margin-bottom: 6px;
   font-weight: 700;
   color: var(--app-color-text-main);
 }
 
+.params-code {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--app-color-text-muted);
+}
+
 .params-description {
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--app-color-text-muted);
 }
 
@@ -230,6 +241,18 @@
     font-weight: 600;
     color: var(--app-color-text-muted);
   }
+}
+
+.param-chip.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.param-chip.clickable:hover {
+  transform: translateY(-1px);
+  border-color: var(--app-color-border-alpha-soft);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
 .params-empty {
@@ -305,6 +328,11 @@
 
 .params-pane {
   align-self: start;
+}
+
+.params-pane .params-card {
+  position: sticky;
+  top: 16px;
 }
 
 .form-preview {
@@ -669,6 +697,40 @@
 .preview-subject {
   font-weight: 600;
   color: var(--app-color-text-main);
+}
+
+.preview-format {
+  font-size: 12px;
+  color: var(--app-color-text-muted);
+}
+
+.preview-toggle {
+  display: inline-flex;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.toggle-btn {
+  border: 1px solid var(--app-color-border-alpha-soft);
+  background: var(--app-color-white);
+  color: var(--app-color-text-muted);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &.active {
+    color: var(--app-color-text-main);
+    border-color: var(--app-color-primary);
+    background: var(--app-color-surface-warm);
+  }
+}
+
+.preview-html {
+  background: var(--app-color-white);
+  border: 1px solid var(--app-color-border-alpha-soft-2);
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .preview-text {
