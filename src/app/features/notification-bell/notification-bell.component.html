@@ -57,6 +57,11 @@
               <button class="btn-outline-custom small" (click)="goToDetail(item)">
                 {{ 'notification.master.actions.configure' | translate }}
               </button>
+              @if (item.isDeletable) {
+              <button class="btn-outline-custom small danger" (click)="deleteCode(item)">
+                {{ 'notification.master.actions.delete' | translate }}
+              </button>
+              }
             </div>
           </td>
         </tr>
@@ -90,6 +95,9 @@
     <div class="params-header">
       <div>
         <div class="params-title">{{ 'notification.master.detail.params.title' | translate }}</div>
+        @if (selectedCode?.definitionDescription) {
+        <div class="params-description">{{ selectedCode?.definitionDescription }}</div>
+        }
         
       </div>
       <button class="btn-outline-custom" (click)="openParamsModal()">
@@ -268,6 +276,15 @@
   [showFooter]="false"
   (cancel)="isParamsModalOpen = false">
   <div class="modal-body">
+    <div class="form-group">
+      <label class="form-label">Mô tả</label>
+      <textarea
+        class="custom-textarea"
+        rows="3"
+        [(ngModel)]="definitionDescriptionDraft"
+        placeholder="Nhập mô tả cho tham số">
+      </textarea>
+    </div>
     <div class="params-editor">
       @for (item of paramsDraft; track $index) {
       <div class="params-row">

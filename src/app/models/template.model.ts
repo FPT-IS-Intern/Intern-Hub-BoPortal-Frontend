@@ -1,3 +1,6 @@
+export type ParamsSchemaObject = Record<string, { description?: string } | string>;
+export type ParamsSchemaPayload = ParamsSchemaObject | string;
+
 export interface TemplateResponse {
   id: string;
   code: string;
@@ -11,7 +14,7 @@ export interface TemplateResponse {
   createdAt: string;
   updatedAt: string;
   description?: string;
-  paramsSchema?: string;
+  paramsSchema?: ParamsSchemaPayload;
 }
 
 export interface TemplateSummaryResponse {
@@ -38,16 +41,19 @@ export interface TemplateChannelAvailabilityResponse {
 
 export interface TemplateDefinitionResponse {
   code: string;
-  paramsSchema?: string;
+  paramsSchema?: ParamsSchemaPayload;
+  description?: string;
 }
 
 export interface TemplateDefinitionCreateRequest {
   code: string;
-  paramsSchema?: string;
+  paramsSchema?: ParamsSchemaPayload;
+  description?: string;
 }
 
 export interface TemplateDefinitionUpdateRequest {
-  paramsSchema?: string;
+  paramsSchema?: ParamsSchemaPayload;
+  description?: string;
 }
 
 export interface TemplateUpsertRequest {
@@ -58,7 +64,7 @@ export interface TemplateUpsertRequest {
   content: string;
   format: string;
   active: boolean;
-  paramsSchema?: string;
+  paramsSchema?: ParamsSchemaPayload;
 }
 
 export interface TemplateRestoreRequest {
