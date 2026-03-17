@@ -27,7 +27,6 @@
 }
 
 .state-panel {
-  min-height: calc(100vh - 260px);
   display: flex;
   flex-direction: column;
 }
@@ -68,7 +67,7 @@
   align-items: center;
   justify-content: flex-end;
   padding: 10px 16px;
-  background: var(--app-color-surface-warm, #f8fafc);
+  background: var(--app-color-white, #ffffff);
   border: 1px solid var(--app-color-border-soft, #f1f5f9);
   border-radius: 10px;
   margin-bottom: 16px;
@@ -256,6 +255,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--app-color-white);
+  border: 1px solid var(--app-color-border-alpha-soft);
+  box-shadow: 0 1px 3px var(--app-shadow-sm);
+  min-height: calc(100vh - 260px);
 }
 
 .error-icon {
