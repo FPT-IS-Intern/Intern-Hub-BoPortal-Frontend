@@ -1,0 +1,49 @@
+<div class="pagination-bar">
+  <div class="pagination-left">
+    <span class="page-range">
+      Hiển thị {{ displayRange }}
+      <span class="info-icon" title="Thông tin hiển thị">
+        <span class="custom-icon-info"></span>
+      </span>
+    </span>
+  </div>
+
+  <div class="pagination-right-group">
+    <div class="pagination-center">
+      <button class="nav-btn" [disabled]="pageIndex <= 1" (click)="prevPage()">
+        <span class="custom-icon-arrow-left"></span>
+      </button>
+
+      <div class="page-numbers">
+        @for (page of pages; track trackPage($index, page)) {
+        @if (page === '...') {
+        <span class="ellipsis">...</span>
+        } @else {
+        <button class="page-btn" [class.active]="page === pageIndex" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+        }
+        }
+      </div>
+
+      <button class="nav-btn" [disabled]="pageIndex >= totalPages" (click)="nextPage()">
+        <span class="custom-icon-arrow-right"></span>
+      </button>
+
+      <span class="total-text">Tổng {{ total }}</span>
+    </div>
+
+    <div class="pagination-right">
+      <div class="custom-select-wrapper">
+        <select [value]="pageSize" (change)="onPageSizeChange($event)" class="custom-page-size-select">
+          @for (opt of pageSizeOptions; track opt) {
+          <option [value]="opt">{{ opt }} / trang</option>
+          }
+        </select>
+        <span class="select-arrow">
+          <span class="custom-icon-chevron-down"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
