@@ -375,24 +375,11 @@
           @if (historySelection.subject) {
           <div class="preview-subject">{{ historySelection.subject }}</div>
           }
-          <div class="preview-format">
-            {{ 'notification.master.detail.form.format' | translate }}: {{ historySelection.format }}
-          </div>
-          @if (historySelection.format === 'HTML') {
-          <div class="preview-toggle">
-            <button class="toggle-btn" [class.active]="historyPreviewMode === 'render'" (click)="historyPreviewMode = 'render'">
-              {{ 'notification.master.history.previewMode.render' | translate }}
-            </button>
-            <button class="toggle-btn" [class.active]="historyPreviewMode === 'code'" (click)="historyPreviewMode = 'code'">
-              {{ 'notification.master.history.previewMode.code' | translate }}
-            </button>
-          </div>
-          }
-          @if (historySelection.format === 'HTML' && historyPreviewMode === 'render') {
-          <div class="preview-text preview-html" [innerHTML]="historySelection.content"></div>
-          } @else {
-          <div class="preview-text">{{ historySelection.content }}</div>
-          }
+            @if (historySelection.format === 'HTML') {
+            <div class="preview-text preview-html" [innerHTML]="historySelection.content"></div>
+            } @else {
+            <div class="preview-text">{{ historySelection.content }}</div>
+            }
         </div>
         <button class="btn-primary-custom" (click)="openRestoreConfirm(historySelection)">
           {{ 'notification.master.history.restore' | translate }}

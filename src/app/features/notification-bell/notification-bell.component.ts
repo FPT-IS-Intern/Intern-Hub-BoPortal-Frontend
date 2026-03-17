@@ -108,7 +108,6 @@ export class NotificationBellComponent implements OnInit {
   dirtyByChannel: Partial<Record<ChannelType, boolean>> = {};
 
   historySelection: ChannelHistoryItem | null = null;
-  historyPreviewMode: 'render' | 'code' = 'render';
   isRestoreConfirmOpen = false;
   restoreCandidate: ChannelHistoryItem | null = null;
 
@@ -976,7 +975,6 @@ export class NotificationBellComponent implements OnInit {
 
   selectHistory(item: ChannelHistoryItem): void {
     this.historySelection = item;
-    this.historyPreviewMode = 'render';
   }
 
   openRestoreConfirm(item: ChannelHistoryItem): void {
