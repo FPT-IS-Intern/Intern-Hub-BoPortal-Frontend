@@ -368,27 +368,36 @@
         }
       </div>
 
-      <div class="history-preview">
-        @if (historySelection) {
-        <div class="preview-title">{{ 'notification.master.history.preview' | translate }}</div>
-        <div class="preview-content">
-          @if (historySelection.subject) {
-          <div class="preview-subject">{{ historySelection.subject }}</div>
-          }
-            @if (historySelection.format === 'HTML') {
-            <div class="preview-text preview-html" [innerHTML]="historySelection.content"></div>
-            } @else {
-            <div class="preview-text">{{ historySelection.content }}</div>
+        <div class="history-preview">
+          @if (historySelection) {
+          <div class="preview-title">{{ 'notification.master.history.preview' | translate }}</div>
+          <div class="preview-content">
+            @if (historySelection.subject) {
+            <div class="preview-subject-label">{{ 'notification.master.detail.form.subject' | translate }}</div>
+            <div class="preview-subject">{{ historySelection.subject }}</div>
             }
-        </div>
-        <button class="btn-primary-custom" (click)="openRestoreConfirm(historySelection)">
-          {{ 'notification.master.history.restore' | translate }}
-        </button>
-        } @else {
-        <div class="history-empty">
-          {{ 'notification.master.history.selectHint' | translate }}
-        </div>
-        }
+            <div class="preview-email-stage">
+              <div class="preview-email-paper">
+                <div class="preview-email-scale">
+                  @if (historySelection.format === 'HTML') {
+                  <div class="preview-email-content" [innerHTML]="historySelection.content"></div>
+                  } @else {
+                  <div class="preview-email-content preview-email-text">{{ historySelection.content }}</div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-actions">
+            <button class="btn-primary-custom small" (click)="openRestoreConfirm(historySelection)">
+              {{ 'notification.master.history.restore' | translate }}
+            </button>
+          </div>
+          } @else {
+          <div class="history-empty">
+            {{ 'notification.master.history.selectHint' | translate }}
+          </div>
+          }
       </div>
     </div>
   </div>

@@ -120,6 +120,12 @@
   font-size: 12px;
 }
 
+.btn-primary-custom.small {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
 .btn-outline-custom.small.danger {
   border-color: var(--app-color-danger);
   color: var(--app-color-danger);
@@ -386,9 +392,17 @@
 }
 
 .params-pane {
+  position: relative;
+  align-self: stretch;
+  height: 100%;
+}
+
+// Sticky card follows the full height of the editor column.
+.params-pane .params-card {
   position: sticky;
   top: calc(64px + 16px);
-  align-self: start;
+  overflow: visible;
+  max-height: none;
 }
 
 .form-preview {
@@ -683,7 +697,7 @@
 
 .history-body {
   display: grid;
-  grid-template-columns: 3fr 7fr;
+  grid-template-columns: 30% 70%;
   gap: 0;
   height: 100%;
   min-height: 0;
@@ -709,10 +723,22 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
 
   &.active {
-    border-color: var(--app-color-primary);
-    background: var(--app-color-surface-warm);
+    border-color: transparent;
+    background: #fff3e8;
+  }
+
+  &.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--app-color-primary);
+    border-radius: 10px 0 0 10px;
   }
 }
 
@@ -736,6 +762,7 @@
   gap: 12px;
   overflow: auto;
   min-height: 0;
+  background: #f4f6f8;
 }
 
 .preview-title {
@@ -745,19 +772,25 @@
 
 .preview-content {
   border: 1px solid var(--app-color-border-alpha-soft-2);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 12px;
-  background: var(--app-color-surface-soft);
+  background: var(--app-color-white);
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 360px;
-  overflow: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .preview-subject {
   font-weight: 600;
   color: var(--app-color-text-main);
+}
+
+.preview-subject-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--app-color-text-muted);
 }
 
 .preview-format {
@@ -798,6 +831,47 @@
   font-size: 13px;
   color: var(--app-color-text-muted);
   white-space: pre-wrap;
+}
+
+.preview-email-stage {
+  background: #f4f6f8;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-email-paper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.preview-email-scale {
+  --email-width: 600px;
+  --email-scale: min(1, calc((100% - 16px) / var(--email-width)));
+  width: var(--email-width);
+  transform: scale(1);
+  transform: scale(var(--email-scale));
+  transform-origin: top left;
+}
+
+.preview-email-content {
+  font-size: 14px;
+  color: var(--app-color-text-main);
+}
+
+.preview-email-text {
+  white-space: pre-wrap;
+}
+
+.preview-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .history-empty {
