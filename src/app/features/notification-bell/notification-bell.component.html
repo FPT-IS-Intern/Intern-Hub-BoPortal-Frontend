@@ -183,7 +183,22 @@
                 </div>
               </div>
               @if (htmlEditorMode === 'design') {
-              <div class="html-editor-canvas" contenteditable="true" (input)="onHtmlInput($event)" [innerHTML]="selectedChannelConfig.content"></div>
+              <div class="preview-email-stage editor-preview-stage">
+                <div class="preview-email-paper editor-preview-paper">
+                  <div class="html-editor-canvas" contenteditable="true" (input)="onHtmlInput($event)" [innerHTML]="selectedChannelConfig.content"></div>
+                </div>
+              </div>
+              <div class="preview-email-stage editor-preview-stage">
+                <div class="preview-email-paper editor-preview-paper">
+                  <iframe
+                    #editorPreviewIframe
+                    class="email-iframe-preview"
+                    [srcdoc]="selectedChannelConfig.content | safeHtml"
+                    sandbox="allow-same-origin"
+                    (load)="resizeIframe(editorPreviewIframe)">
+                  </iframe>
+                </div>
+              </div>
               } @else {
               <textarea class="custom-textarea html-source" [value]="selectedChannelConfig.content" (input)="onHtmlSourceInput($event)"></textarea>
               }
