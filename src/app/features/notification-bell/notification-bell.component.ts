@@ -364,8 +364,7 @@ export class NotificationBellComponent implements OnInit {
     const exists = this.notificationCodes.some(item => item.code === normalized);
     if (exists) {
       this.createCodeValue = normalized;
-      this.goToDetail(this.notificationCodes.find(item => item.code === normalized) || null);
-      this.isCreateModalOpen = false;
+      this.createErrors.code = 'notification.master.create.errors.codeExists';
       return;
     }
 

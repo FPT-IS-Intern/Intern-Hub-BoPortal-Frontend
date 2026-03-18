@@ -421,6 +421,7 @@
         "continue": "Continue",
         "errors": {
           "codeRequired": "Code is required",
+          "codeExists": "Code already exists",
           "descriptionRequired": "Description is required",
           "channelRequired": "Channel is required"
         }
