@@ -815,6 +815,7 @@
   overflow: visible;
   padding: 0;
   justify-content: flex-start;
+  flex: 0 0 auto;
 }
 
 .editor-preview-paper {
@@ -822,6 +823,7 @@
   max-width: none;
   border-radius: 0;
   box-shadow: none;
+  min-height: 0;
 }
 
 .editor-preview-paper .html-editor-canvas {
