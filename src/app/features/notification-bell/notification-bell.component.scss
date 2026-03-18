@@ -376,7 +376,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px; /* Tăng rộng lên 300px */
   gap: 24px;
-  align-items: start; /* BẮT BUỘC ĐỂ STICKY CHẠY */
+  align-items: stretch;
   min-height: 0;
 }
 
@@ -394,7 +394,12 @@
   position: sticky;
   top: 80px; /* Vị trí dính */
   z-index: 10;
-  height: fit-content; /* BẮT BUỘC ĐỂ STICKY CHẠY */
+  align-self: start;
+}
+
+.params-pane .params-card {
+  max-height: calc(100vh - 120px);
+  overflow: auto;
 }
 
 .form-preview {
