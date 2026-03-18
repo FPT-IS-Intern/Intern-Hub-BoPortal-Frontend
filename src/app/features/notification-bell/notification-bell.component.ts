@@ -776,6 +776,11 @@ export class NotificationBellComponent implements OnInit {
     return !!this.selectedChannelConfig?.id || this.historyItems.length > 0;
   }
 
+  get isRestoreDisabled(): boolean {
+    if (!this.historySelection || !this.selectedChannelConfig) return true;
+    return this.historySelection.version === this.selectedChannelConfig.version || this.isHistoryLoading;
+  }
+
   onPageIndexChange(index: number): void {
     this.pageIndex = index;
     this.loadTemplates();
