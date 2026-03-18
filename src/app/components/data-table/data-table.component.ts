@@ -1,4 +1,4 @@
-import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
+import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface DataTableColumn {
@@ -28,6 +28,9 @@ export class DataTableComponent<T = unknown> {
   @Input() tableClass: string | string[] = '';
   @Input() wrapperClass: string | string[] = '';
   @Input() emptyColspan?: number;
+  @Input() rowClickable = false;
+
+  @Output() rowClick = new EventEmitter<T>();
 
   @ContentChild('header', { read: TemplateRef }) headerTemplate?: TemplateRef<{ $implicit: DataTableColumn }>;
   @ContentChild('cell', { read: TemplateRef }) cellTemplate?: TemplateRef<{ $implicit: T; col: DataTableColumn; rowIndex: number }>;
@@ -43,5 +46,12 @@ export class DataTableComponent<T = unknown> {
 
   get colSpan(): number {
     return this.emptyColspan ?? this.columns.length;
+  }
+
+  onRowClick(row: T): void {
+    if (!this.rowClickable) {
+      return;
+    }
+    this.rowClick.emit(row);
   }
 }

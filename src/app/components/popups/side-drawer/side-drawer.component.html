@@ -1,0 +1,22 @@
+@if (isVisible) {
+  <div class="drawer-overlay" (click)="handleClose()">
+    <aside
+      class="drawer-panel"
+      [style.width]="width"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="title"
+      (click)="$event.stopPropagation()">
+      <header class="drawer-header">
+        <h2 class="drawer-title">{{ title }}</h2>
+        <button type="button" class="drawer-close-btn" (click)="handleClose()">
+          <span class="custom-icon-x"></span>
+        </button>
+      </header>
+
+      <div class="drawer-body">
+        <ng-content></ng-content>
+      </div>
+    </aside>
+  </div>
+}

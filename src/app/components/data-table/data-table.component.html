@@ -23,7 +23,14 @@
     <tbody>
       @if (rows.length > 0) {
       @for (row of rows; track trackRow($index, row); let i = $index) {
-      <tr [class.row-alt]="enableRowAlt && i % 2 === 1" [class.row-hover]="enableRowHover">
+      <tr
+        [class.row-alt]="enableRowAlt && i % 2 === 1"
+        [class.row-hover]="enableRowHover"
+        [class.row-clickable]="rowClickable"
+        [attr.tabindex]="rowClickable ? 0 : null"
+        (click)="onRowClick(row)"
+        (keyup.enter)="onRowClick(row)"
+        (keyup.space)="onRowClick(row)">
         @for (col of columns; track col.key) {
         <td
           [ngClass]="col.cellClass"

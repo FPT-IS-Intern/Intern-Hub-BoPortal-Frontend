@@ -555,6 +555,96 @@
       }
     }
   },
+  "users": {
+    "title": "User management",
+    "subtitle": "Monitor internal accounts, review profile details, and control account access.",
+    "breadcrumb": {
+      "title": "Users"
+    },
+    "filters": {
+      "title": "Search conditions",
+      "subtitle": "Filter internal accounts by keyword, status, role, or position.",
+      "keyword": "Keyword",
+      "statusLabel": "Status",
+      "roleLabel": "Role",
+      "positionLabel": "Position",
+      "searchPlaceholder": "Search by name, email, or phone number...",
+      "allStatuses": "All statuses",
+      "allRoles": "All roles",
+      "allPositions": "All positions"
+    },
+    "summary": {
+      "total": "Total users",
+      "page": "Current page",
+      "resultCount": "{{total}} user(s)"
+    },
+    "list": {
+      "title": "User list"
+    },
+      "table": {
+        "no": "No.",
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "position": "Position",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "locked": "Locked",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "search": "Search",
+      "refresh": "Refresh",
+      "reset": "Reset filters",
+      "view": "View",
+      "lock": "Lock",
+      "unlock": "Unlock",
+      "close": "Close"
+    },
+    "pagination": {
+      "empty": "0-0 / 0",
+      "range": "{{start}}-{{end}} / {{total}}"
+    },
+    "empty": {
+      "title": "No users found",
+      "message": "No account matches the current filter."
+    },
+    "error": {
+      "title": "Unable to load users",
+      "message": "An error occurred while loading the user list.",
+      "retry": "Try again"
+    },
+    "detail": {
+      "title": "User details",
+      "userId": "User ID",
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone number",
+      "role": "Role",
+      "position": "Position",
+      "status": "Status",
+      "emptyTitle": "No detail available",
+      "emptyMessage": "This user profile could not be loaded."
+    },
+    "confirm": {
+      "lockTitle": "Lock account",
+      "unlockTitle": "Unlock account",
+      "lockMessage": "Do you want to lock account {{name}}?",
+      "unlockMessage": "Do you want to unlock account {{name}}?",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "toast": {
+      "loadDetailError": "Unable to load user details",
+      "lockSuccess": "User account locked successfully",
+      "unlockSuccess": "User account unlocked successfully",
+      "lockError": "Unable to lock this account",
+      "unlockError": "Unable to unlock this account"
+    }
+  },
   "permissionMatrix": {
     "breadcrumb": {
       "systemConfig": "System Configuration",

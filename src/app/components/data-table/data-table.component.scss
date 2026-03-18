@@ -54,6 +54,15 @@
   }
 }
 
+.row-clickable {
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--app-color-primary);
+    outline-offset: -2px;
+  }
+}
+
 .empty-cell {
   padding: 0;
 }

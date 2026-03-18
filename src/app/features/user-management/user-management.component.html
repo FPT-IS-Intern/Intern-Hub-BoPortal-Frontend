@@ -1,7 +1,242 @@
 <div class="page-body">
-  <div class="state-panel">
-    <app-no-data title="Quản lý người dùng" message="Chức năng đang được phát triển.">
-      <span icon class="custom-icon-users"></span>
-    </app-no-data>
-  </div>
+  <section class="filter-panel">
+    <div class="filter-grid">
+      <div class="filter-item keyword-field">
+        <app-shared-search
+          [value]="keyword()"
+          [placeholder]="'users.filters.searchPlaceholder' | translate"
+          width="100%"
+          (valueChange)="onSearchChange($event)">
+        </app-shared-search>
+      </div>
+
+      <div class="filter-item">
+        <app-shared-dropdown
+          [options]="statusOptions"
+          [value]="selectedStatus()"
+          [ngStyle]="{ width: '100%' }"
+          (valueChange)="onStatusChange($event)">
+        </app-shared-dropdown>
+      </div>
+
+      <div class="filter-item">
+        <app-shared-dropdown
+          [options]="roleOptions()"
+          [value]="selectedRole()"
+          [ngStyle]="{ width: '100%' }"
+          (valueChange)="onRoleChange($event)">
+        </app-shared-dropdown>
+      </div>
+
+      <div class="filter-item">
+        <app-shared-dropdown
+          [options]="positionOptions()"
+          [value]="selectedPosition()"
+          [ngStyle]="{ width: '100%' }"
+          (valueChange)="onPositionChange($event)">
+        </app-shared-dropdown>
+      </div>
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn-outline-custom action-btn" (click)="resetFilters()">
+        {{ 'users.actions.reset' | translate }}
+      </button>
+      <button class="btn-primary-custom action-btn" (click)="search()">
+        <span class="custom-icon-search"></span>
+        {{ 'users.actions.search' | translate }}
+      </button>
+    </div>
+  </section>
+
+  <section class="table-panel">
+    @if (isLoading()) {
+      <div class="state-panel">
+        <app-table-skeleton
+          class="skeleton-panel"
+          [columns]="7"
+          [rows]="6"
+          [columnWidths]="['8%','24%','22%','12%','12%','12%','10%']">
+        </app-table-skeleton>
+      </div>
+    } @else if (isError()) {
+      <div class="state-panel state-card">
+        <app-no-data
+          [title]="'users.error.title' | translate"
+          [message]="'users.error.message' | translate">
+          <span icon class="custom-icon-error error-icon"></span>
+          <button action class="btn-outline-custom retry-btn" (click)="refresh()">
+            {{ 'users.error.retry' | translate }}
+          </button>
+        </app-no-data>
+      </div>
+    } @else {
+      <app-data-table
+        tableClass="users-table"
+        wrapperClass="users-table-wrapper"
+        [columns]="columns"
+        [rows]="rows()"
+        [rowTrackBy]="trackUser"
+        [rowClickable]="true"
+        [showPagination]="showPagination()"
+        [emptyColspan]="columns.length"
+        (rowClick)="openUserDetail($event.userId)">
+        <ng-template #header let-col>
+          {{ col.label | translate }}
+        </ng-template>
+
+        <ng-template #cell let-item let-col="col">
+          @if (col.key === 'user') {
+            <div class="user-cell">
+              <span class="avatar-button">
+                @if (item.avatarUrl) {
+                  <img [src]="item.avatarUrl" [alt]="safeValue(item.fullName)" class="avatar-image">
+                } @else {
+                  <span class="avatar-fallback">{{ avatarFallback(item.fullName) }}</span>
+                }
+              </span>
+              <div class="user-meta">
+                <span class="user-link">{{ safeValue(item.fullName) }}</span>
+              </div>
+            </div>
+          } @else if (col.key === 'email') {
+            <span class="text-main">{{ safeValue(item.email) }}</span>
+          } @else if (col.key === 'sysStatus') {
+            <span [class]="statusClass(item.sysStatus)">{{ statusLabel(item.sysStatus) }}</span>
+          } @else if (col.key === 'role' || col.key === 'position') {
+            <span class="text-muted">{{ safeValue($any(item)?.[col.key]) }}</span>
+          } @else if (col.key === 'actions') {
+            <div class="action-group">
+              <button
+                type="button"
+                class="btn-outline-custom small action-outline-btn"
+                (click)="$event.stopPropagation(); openUserDetail(item.userId)">
+                {{ 'users.actions.view' | translate }}
+              </button>
+              <button
+                type="button"
+                class="btn-outline-custom small action-outline-btn danger"
+                (click)="$event.stopPropagation(); requestToggleStatus(item)">
+                {{ actionLabel(item.sysStatus) }}
+              </button>
+            </div>
+          } @else {
+            {{ $any(item)?.[col.key] ?? '-' }}
+          }
+        </ng-template>
+
+        <ng-template #empty>
+          <div class="state-panel state-card inner-empty">
+            <app-no-data
+              [fullHeight]="false"
+              [title]="'users.empty.title' | translate"
+              [message]="'users.empty.message' | translate">
+              <span icon class="custom-icon-users"></span>
+            </app-no-data>
+          </div>
+        </ng-template>
+
+        <ng-template #pagination>
+          <app-pagination
+            [pageIndex]="pageIndex()"
+            [pageSize]="pageSize()"
+            [total]="totalItems()"
+            [pageSizeOptions]="pageSizeOptions"
+            [displayRange]="displayRange()"
+            (pageIndexChange)="onPageIndexChange($event)"
+            (pageSizeChange)="onPageSizeChange($event)">
+          </app-pagination>
+        </ng-template>
+      </app-data-table>
+    }
+  </section>
 </div>
+
+<app-side-drawer
+  [isVisible]="isDetailVisible()"
+  (isVisibleChange)="isDetailVisible.set($event)"
+  [title]="'users.detail.title' | translate"
+  width="480px"
+  (close)="closeDetail()">
+  <div class="detail-container">
+    @if (isDetailLoading()) {
+      <div class="detail-loading">
+        <app-table-skeleton
+          [columns]="1"
+          [rows]="6"
+          headerMode="single"
+          [columnWidths]="['100%']">
+        </app-table-skeleton>
+      </div>
+    } @else if (selectedUser()) {
+      <div class="detail-header">
+        <div class="detail-avatar">{{ avatarFallback(selectedUser()?.fullName) }}</div>
+        <div class="detail-identity">
+          <h3>{{ safeValue(selectedUser()?.fullName) }}</h3>
+          <p>{{ safeValue(selectedUser()?.email) }}</p>
+          <span [class]="statusClass(selectedUser()?.status)">{{ statusLabel(selectedUser()?.status) }}</span>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.userId' | translate }}</span>
+          <strong class="detail-value">{{ selectedUser()?.userId ?? '-' }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.status' | translate }}</span>
+          <strong class="detail-value">{{ statusLabel(selectedUser()?.status) }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.fullName' | translate }}</span>
+          <strong class="detail-value">{{ safeValue(selectedUser()?.fullName) }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.email' | translate }}</span>
+          <strong class="detail-value">{{ safeValue(selectedUser()?.email) }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.phone' | translate }}</span>
+          <strong class="detail-value">{{ safeValue(selectedUser()?.phoneNumber) }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.position' | translate }}</span>
+          <strong class="detail-value">{{ safeValue(selectedUser()?.positionCode) }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">{{ 'users.detail.role' | translate }}</span>
+          <strong class="detail-value">{{ safeValue(selectedUser()?.role) }}</strong>
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn-outline-custom" (click)="closeDetail()">
+          {{ 'users.actions.close' | translate }}
+        </button>
+        <button class="btn-primary-custom" (click)="toggleSelectedUserStatus()">
+          {{ actionLabel(selectedUser()?.status) }}
+        </button>
+      </div>
+    } @else {
+      <div class="state-panel state-card inner-empty">
+        <app-no-data
+          [fullHeight]="false"
+          [title]="'users.detail.emptyTitle' | translate"
+          [message]="'users.detail.emptyMessage' | translate">
+          <span icon class="custom-icon-user"></span>
+        </app-no-data>
+      </div>
+    }
+  </div>
+</app-side-drawer>
+
+<app-confirm-popup
+  [isVisible]="confirmVisible()"
+  (isVisibleChange)="confirmVisible.set($event)"
+  [title]="confirmTitle()"
+  [message]="confirmMessage()"
+  [cancelText]="'users.confirm.cancel' | translate"
+  [confirmText]="'users.confirm.confirm' | translate"
+  (confirm)="confirmToggleStatus()"
+  (cancel)="cancelToggleStatus()">
+</app-confirm-popup>

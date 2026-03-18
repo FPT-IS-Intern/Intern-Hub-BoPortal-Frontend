@@ -554,6 +554,96 @@
       }
     }
   },
+  "users": {
+    "title": "Quản lý người dùng",
+    "subtitle": "Theo dõi tài khoản nội bộ, xem nhanh hồ sơ và kiểm soát trạng thái truy cập.",
+    "breadcrumb": {
+      "title": "Người dùng"
+    },
+    "filters": {
+      "title": "Điều kiện tìm kiếm",
+      "subtitle": "Lọc tài khoản nội bộ theo từ khóa, trạng thái, vai trò hoặc chức danh.",
+      "keyword": "Từ khóa",
+      "statusLabel": "Trạng thái",
+      "roleLabel": "Vai trò",
+      "positionLabel": "Chức danh",
+      "searchPlaceholder": "Tìm theo họ tên, email hoặc số điện thoại...",
+      "allStatuses": "Tất cả trạng thái",
+      "allRoles": "Tất cả vai trò",
+      "allPositions": "Tất cả chức vụ"
+    },
+    "summary": {
+      "total": "Tổng người dùng",
+      "page": "Trang hiện tại",
+      "resultCount": "{{total}} người dùng"
+    },
+    "list": {
+      "title": "Danh sách người dùng"
+    },
+    "table": {
+      "no": "STT",
+      "user": "Người dùng",
+      "email": "Email",
+      "role": "Vai trò",
+      "position": "Chức vụ",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "locked": "Đã khóa",
+      "inactive": "Ngừng hoạt động"
+    },
+    "actions": {
+      "search": "Tìm kiếm",
+      "refresh": "Làm mới",
+      "reset": "Xóa bộ lọc",
+      "view": "Xem",
+      "lock": "Khóa",
+      "unlock": "Mở khóa",
+      "close": "Đóng"
+    },
+    "pagination": {
+      "empty": "0-0 / 0",
+      "range": "{{start}}-{{end}} / {{total}}"
+    },
+    "empty": {
+      "title": "Không có người dùng",
+      "message": "Không có tài khoản nào khớp với bộ lọc hiện tại."
+    },
+    "error": {
+      "title": "Không thể tải danh sách người dùng",
+      "message": "Đã xảy ra lỗi khi tải danh sách người dùng.",
+      "retry": "Thử lại"
+    },
+    "detail": {
+      "title": "Chi tiết người dùng",
+      "userId": "Mã người dùng",
+      "fullName": "Họ và tên",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "role": "Vai trò",
+      "position": "Chức vụ",
+      "status": "Trạng thái",
+      "emptyTitle": "Không có thông tin chi tiết",
+      "emptyMessage": "Không thể tải hồ sơ của người dùng này."
+    },
+    "confirm": {
+      "lockTitle": "Khóa tài khoản",
+      "unlockTitle": "Mở khóa tài khoản",
+      "lockMessage": "Bạn có muốn khóa tài khoản {{name}} không?",
+      "unlockMessage": "Bạn có muốn mở khóa tài khoản {{name}} không?",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận"
+    },
+    "toast": {
+      "loadDetailError": "Không thể tải chi tiết người dùng",
+      "lockSuccess": "Khóa tài khoản thành công",
+      "unlockSuccess": "Mở khóa tài khoản thành công",
+      "lockError": "Không thể khóa tài khoản này",
+      "unlockError": "Không thể mở khóa tài khoản này"
+    }
+  },
   "permissionMatrix": {
     "breadcrumb": {
       "systemConfig": "Cấu Hình Hệ Thống",
