@@ -2,9 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 24px;
-  background: var(--app-color-white, #fff);
-  border-radius: 12px;
 }
 
 .skeleton-title,
@@ -20,6 +17,7 @@
 }
 
 .skeleton-card {
+  background: white;
   border-radius: 12px;
   border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
   padding: 16px;

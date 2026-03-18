@@ -4,7 +4,7 @@
             <span class="custom-icon-user" style="width: 18px; height: 18px;"></span>
         </div>
         <span class="user-name">{{ data().displayName || data().userName }}</span>
-        <span class="custom-icon-chevron-down" style="width: 14px; height: 14px; transition: transform 0.2s;" [class.rotate]="isDropdownOpen"></span>
+        <span class="custom-icon-chevron-down" style="width: 14px; height: 14px; transition: transform 0.2s;" [class.is-rotated]="isDropdownOpen"></span>
     </div>
 
     <!-- Custom Dropdown Menu -->

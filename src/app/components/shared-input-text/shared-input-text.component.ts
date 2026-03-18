@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
     styleUrls: ['./shared-input-text.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SharedInputTextComponent {
+export class SharedInputTextComponent implements AfterViewInit {
     @Input() headerInput = '';
     @Input() placeholder = '';
     @Input() typeInput: 'text' | 'password' | 'number' | 'url' = 'text';
@@ -21,11 +21,38 @@ export class SharedInputTextComponent {
     @Output() valueChange = new EventEmitter<string>();
     @Output() iconClick = new EventEmitter<void>();
 
+    @ViewChild('inputEl') inputEl?: ElementRef<HTMLInputElement>;
+
+    ngAfterViewInit(): void {
+        this.syncFromDom('afterViewInit');
+        setTimeout(() => this.syncFromDom('afterViewInit+0'), 0);
+        setTimeout(() => this.syncFromDom('afterViewInit+300'), 300);
+    }
+
+    @HostListener('window:pageshow')
+    onPageShow(): void {
+        this.syncFromDom('pageshow');
+        setTimeout(() => this.syncFromDom('pageshow+300'), 300);
+    }
+
     onValueChange(newValue: string) {
         this.valueChange.emit(newValue);
     }
 
+    onAutofillStart(): void {
+        this.syncFromDom('autofill');
+    }
+
     onIconClick() {
         this.iconClick.emit();
+    }
+
+    private syncFromDom(source: string): void {
+        const el = this.inputEl?.nativeElement;
+        if (!el) return;
+        const domValue = el.value ?? '';
+        if (domValue !== (this.value ?? '')) {
+            this.valueChange.emit(String(domValue));
+        }
     }
 }

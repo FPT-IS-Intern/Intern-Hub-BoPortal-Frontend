@@ -62,6 +62,9 @@ interface NotificationCode {
     SharedSearchComponent,
     SharedDropdownComponent,
     NotificationPaginationComponent,
+    DataTableComponent,
+    TableSkeletonComponent,
+    NoDataComponent,
     ModalPopup,
     SafeHtmlPipe,
   ],
@@ -88,6 +91,12 @@ export class NotificationBellComponent implements OnInit {
   channelFilterOptions: DropdownOption[] = [];
   formatOptions: DropdownOption[] = [];
   createChannelOptions: DropdownOption[] = [];
+  tableColumns: DataTableColumn[] = [
+    { key: 'code', label: 'notification.master.table.code', cellClass: 'code-cell' },
+    { key: 'name', label: 'notification.master.table.name', cellClass: 'name-cell' },
+    { key: 'channels', label: 'notification.master.table.channels' },
+    { key: 'actions', label: 'notification.master.table.actions', headerClass: 'col-actions', cellClass: 'col-actions', align: 'right' },
+  ];
 
   selectedCode: NotificationCode | null = null;
   selectedChannel: ChannelType = 'EMAIL';
@@ -152,6 +161,7 @@ export class NotificationBellComponent implements OnInit {
   notificationCodes: NotificationCode[] = [];
   totalItems = 0;
   isLoading = false;
+  isLoadError = false;
   currentLocale = 'vi';
   availableChannelsFromApi: ChannelType[] | null = null;
   isHistoryLoading = false;
@@ -187,6 +197,7 @@ export class NotificationBellComponent implements OnInit {
 
   private loadTemplates(): void {
     this.isLoading = true;
+    this.isLoadError = false;
     const code = this.searchCode.trim();
     const channel = this.channelFilter === 'ALL' ? undefined : this.channelFilter;
     this.templateService.listTemplateSummaries({
@@ -204,6 +215,7 @@ export class NotificationBellComponent implements OnInit {
           if (response.data) {
             this.notificationCodes = this.mapSummariesToNotificationCodes(response.data.items || []);
             this.totalItems = response.data.total ?? this.notificationCodes.length;
+            this.isLoadError = false;
             const nextPage = (response.data.page ?? 0) + 1;
             if (nextPage !== this.pageIndex) {
               this.pageIndex = nextPage;
@@ -212,13 +224,19 @@ export class NotificationBellComponent implements OnInit {
           }
           this.notificationCodes = [];
           this.totalItems = 0;
+          this.isLoadError = false;
         },
         error: (error) => {
           console.error('Error loading templates:', error);
           this.notificationCodes = [];
           this.totalItems = 0;
+          this.isLoadError = true;
         }
       });
+  }
+
+  retryLoadTemplates(): void {
+    this.loadTemplates();
   }
 
   private mapSummariesToNotificationCodes(summaries: TemplateSummaryResponse[]): NotificationCode[] {

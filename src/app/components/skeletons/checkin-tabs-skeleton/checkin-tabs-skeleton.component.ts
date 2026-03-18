@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,4 +9,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './checkin-tabs-skeleton.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckinTabsSkeletonComponent {}
+export class CheckinTabsSkeletonComponent {
+  @Input() tableOnly = false;
+}
