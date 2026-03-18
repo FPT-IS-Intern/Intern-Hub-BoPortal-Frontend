@@ -502,11 +502,23 @@
 }
 
 .html-editor-canvas {
+  width: 100%;
   min-height: 220px;
   padding: 12px;
   outline: none;
   font-size: 14px;
   color: var(--app-color-text-main);
+}
+
+.html-editor-canvas table {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+.html-editor-canvas img {
+  max-width: 100%;
+  height: auto;
 }
 
 .html-source {
@@ -518,6 +530,10 @@
 
 .text-area-wrapper {
   position: relative;
+
+  .custom-textarea {
+    min-height: 200px;
+  }
 
   .text-counter {
     position: absolute;
@@ -808,8 +824,8 @@
 }
 
 .editor-preview-stage {
-  background: #f1f5f9;
-  border-top: 1px solid var(--app-color-border-alpha-soft-2);
+  background: var(--app-color-white);
+  border-top: none;
   height: auto;
   max-height: none;
   overflow: visible;
