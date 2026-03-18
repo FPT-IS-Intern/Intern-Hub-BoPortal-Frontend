@@ -3,6 +3,7 @@ export interface UserFilterRequest {
   sysStatuses?: string[];
   roles?: string[];
   positions?: string[];
+  departments?: string[];
 }
 
 export interface UserListItem {
@@ -14,6 +15,8 @@ export interface UserListItem {
   email?: string;
   role?: string;
   position?: string;
+  department?: string;
+  deleted?: boolean;
 }
 
 export interface UserDetail {
@@ -24,10 +27,39 @@ export interface UserDetail {
   positionCode?: string;
   role?: string;
   status?: string;
+  department?: string;
+  activated?: boolean;
+  deleted?: boolean;
 }
 
 export interface UserPageResponse<T> {
   items: T[];
   totalItems: number;
   totalPages: number;
+}
+
+export interface UserUpsertRequest {
+  fullName: string;
+  email: string;
+  phoneNumber?: string;
+  role: string;
+  position: string;
+  department: string;
+}
+
+export interface UserRoleUpdateRequest {
+  role: string;
+}
+
+export interface UserOrganizationUpdateRequest {
+  position: string;
+  department: string;
+}
+
+export interface UserHistoryRecord {
+  id: number;
+  title: string;
+  description: string;
+  createdAt: string;
+  actor?: string;
 }
