@@ -12,9 +12,7 @@ import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
 import { TemplateService } from '../../services/api/template.service';
 import { TemplateResponse, TemplateSummaryResponse } from '../../models/template.model';
 import { finalize } from 'rxjs';
-import { DataTableColumn, DataTableComponent } from '../../components/data-table/data-table.component';
-import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
-import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { SafeHtmlPipe } from './safe-html.pipe';
 
 type ChannelType = 'EMAIL' | 'PUSH' | 'IN_APP';
 type ChannelFilter = 'ALL' | ChannelType;
@@ -68,6 +66,7 @@ interface NotificationCode {
     TableSkeletonComponent,
     NoDataComponent,
     ModalPopup,
+    SafeHtmlPipe,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
@@ -826,12 +825,18 @@ export class NotificationBellComponent implements OnInit {
         this.markDirty();
         return;
       }
+
+      editor.focus(); // Ép focus vào lại editor
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
         const range = selection.getRangeAt(0);
         range.deleteContents();
-        range.insertNode(document.createTextNode(token));
-        range.collapse(false);
+        const textNode = document.createTextNode(token);
+        range.insertNode(textNode);
+
+        // Đẩy con trỏ chuột ra ngay sau biến vừa chèn
+        range.setStartAfter(textNode);
+        range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
       } else {
@@ -845,11 +850,13 @@ export class NotificationBellComponent implements OnInit {
     const field = this.getContentTextField();
     if (field) {
       this.insertIntoTextField(field, token);
+      field.focus(); // Focus lại vào textarea để gõ tiếp
     } else {
       this.selectedChannelConfig.content = (this.selectedChannelConfig.content || '') + token;
       this.markDirty();
     }
   }
+
 
   private getHtmlEditor(): HTMLElement | null {
     return document.querySelector('.html-editor-canvas') as HTMLElement | null;
@@ -883,6 +890,19 @@ export class NotificationBellComponent implements OnInit {
       return;
     }
     document.execCommand(command, false);
+  }
+
+  resizeIframe(iframe: HTMLIFrameElement): void {
+    try {
+      const doc = iframe.contentWindow?.document || iframe.contentDocument;
+      if (doc) {
+        const height = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+        iframe.style.height = `${height + 20}px`;
+      }
+    } catch (error) {
+      console.warn('Không thể tự động resize iframe:', error);
+      iframe.style.height = '600px';
+    }
   }
 
   hasChannelData(channel: ChannelType): boolean {
@@ -1026,7 +1046,8 @@ export class NotificationBellComponent implements OnInit {
   confirmRestoreHistory(): void {
     if (!this.restoreCandidate) return;
     this.restoreHistory(this.restoreCandidate);
-    this.closeRestoreConfirm();
+    this.closeRestoreConfirm(); // Đóng popup xác nhận
+    this.closeHistorySidebar(); // Đóng luôn sidebar để nhìn thấy nội dung đã khôi phục ở màn hình chính
   }
 
   restoreHistory(item: ChannelHistoryItem): void {
