@@ -46,6 +46,17 @@
                 animation-name: sharedInputAutoFill;
                 animation-duration: 0s;
             }
+
+            &[type='number'] {
+                -moz-appearance: textfield;
+                appearance: textfield;
+            }
+
+            &[type='number']::-webkit-outer-spin-button,
+            &[type='number']::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
         }
 
         .icon-button {
