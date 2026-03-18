@@ -47,13 +47,13 @@
             white-space: nowrap;
         }
 
-        .down-icon-svg {
+        .custom-icon-chevron-down {
             width: 14px;
             height: 14px;
             color: var(--neutral-color-400, var(--app-color-text-400));
             transition: all 0.2s ease;
 
-            &.rotate {
+            &.is-rotated {
                 transform: rotate(180deg);
             }
         }
@@ -101,8 +101,8 @@
             .role-badge {
                 display: inline-flex;
                 align-self: flex-start;
-                background: linear-gradient(135deg, var(--app-color-primary) 0%, var(--brand-600) 100%);
-                color: white;
+                background: var(--app-color-primary, #e18308) !important;
+                color: #fff !important;
                 padding: 4px 12px;
                 border-radius: 6px;
                 font-size: 11px;

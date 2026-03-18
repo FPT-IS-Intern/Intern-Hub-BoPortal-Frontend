@@ -41,6 +41,11 @@
             &::placeholder {
                 color: var(--app-color-text-subtle);
             }
+
+            &:-webkit-autofill {
+                animation-name: sharedInputAutoFill;
+                animation-duration: 0s;
+            }
         }
 
         .icon-button {
@@ -67,6 +72,15 @@
                 object-fit: contain;
             }
         }
+    }
+}
+
+@keyframes sharedInputAutoFill {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 1;
     }
 }
 

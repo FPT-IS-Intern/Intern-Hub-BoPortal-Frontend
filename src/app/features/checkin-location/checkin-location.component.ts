@@ -18,6 +18,7 @@ import { BranchSidebarComponent } from './components/branch-sidebar/branch-sideb
 import { LocationTabComponent } from './components/location-tab/location-tab.component';
 import { IpTabComponent } from './components/ip-tab/ip-tab.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
+import { CheckinTabsSkeletonComponent } from '../../components/skeletons/checkin-tabs-skeleton/checkin-tabs-skeleton.component';
 
 @Component({
   selector: 'app-checkin-location',
@@ -34,7 +35,8 @@ import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popu
     UpsertLocationDialogComponent,
     UpsertIPRangeDialogComponent,
     BranchManagementDialogComponent,
-    ConfirmPopup
+    ConfirmPopup,
+    CheckinTabsSkeletonComponent
   ],
   templateUrl: './checkin-location.component.html',
   styleUrl: './checkin-location.component.scss'
@@ -52,6 +54,10 @@ export class CheckinLocationComponent implements OnInit {
   protected readonly selectedBranch = signal<BranchCheckinConfig | null>(null);
   protected readonly isError = signal(false);
   protected readonly activeTabIndex = signal(0);
+  protected readonly isInitLoading = signal(false);
+  protected readonly isLoading = signal(false);
+  protected readonly hasLoadedOnce = signal(false);
+  protected readonly hasData = signal(false);
 
   // Dialog State Signals
   protected readonly isLocationModalVisible = signal(false);
@@ -74,11 +80,24 @@ export class CheckinLocationComponent implements OnInit {
 
   protected fetchConfigs(): void {
     this.isError.set(false);
+    if (this.hasLoadedOnce()) {
+      this.isLoading.set(true);
+    } else {
+      this.isInitLoading.set(true);
+    }
 
-    this.checkinService.getCheckinConfigs().subscribe({
+    this.checkinService.getCheckinConfigs().pipe(
+      finalize(() => {
+        this.isInitLoading.set(false);
+        this.isLoading.set(false);
+        this.hasLoadedOnce.set(true);
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
       next: (res) => {
         const freshData = res.data || [];
         this.branches.set(freshData);
+        this.hasData.set(freshData.length > 0);
 
         // Always re-sync selectedBranch with fresh data so UI reflects updates
         if (freshData.length > 0) {
@@ -87,6 +106,8 @@ export class CheckinLocationComponent implements OnInit {
             ? freshData.find((b: any) => b.id === currentId) ?? freshData[0]
             : freshData[0];
           this.selectedBranch.set(refreshed);
+        } else {
+          this.selectedBranch.set(null);
         }
 
         
@@ -94,6 +115,7 @@ export class CheckinLocationComponent implements OnInit {
       error: (err) => {
         console.error('Fetch checkin configs error:', err);
         this.isError.set(true);
+        this.hasData.set(false);
         
       }
     });

@@ -6,8 +6,79 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 0;
+  padding-bottom: 20px;
   min-height: 100%;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.state-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-panel {
+  border-radius: 8px;
+  background: var(--app-color-white);
+  padding: 12px 24px;
+}
+
+.loading-view {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 24px;
+  border-radius: 8px;
+  background: var(--app-color-white);
+  border: 1px solid var(--app-color-border-alpha-soft);
+  box-shadow: 0 1px 3px var(--app-shadow-sm);
+  min-height: calc(100vh - 260px);
+}
+
+.loading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.loading-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--app-color-text-main);
+}
+
+.loading-desc {
+  font-size: 12px;
+  color: var(--app-color-text-muted);
+}
+
+.spinner {
+  font-size: 20px;
+  color: var(--app-color-primary);
+  animation: spin 1s linear infinite;
+}
+
+.empty-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--app-color-white);
+  border: 1px solid var(--app-color-border-alpha-soft);
+  box-shadow: 0 1px 3px var(--app-shadow-sm);
+  min-height: calc(100vh - 260px);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -90,15 +161,15 @@
 }
 
 
-.table-container {
-  margin-bottom: 0;
-  overflow: hidden;
-  border-radius: 8px;
-  background: var(--app-color-white);
-  border: 1px solid var(--app-color-border-alpha-soft);
-  box-shadow: 0 1px 3px var(--app-shadow-sm);
-  min-height: calc(100vh - 260px);
-  /* Prevent collapse during loading */
-  display: flex;
-  flex-direction: column;
-}
+  .error-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--app-color-white);
+    border: 1px solid var(--app-color-border-alpha-soft);
+    box-shadow: 0 1px 3px var(--app-shadow-sm);
+    min-height: calc(100vh - 260px);
+  }
+
