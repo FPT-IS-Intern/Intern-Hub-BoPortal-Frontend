@@ -1,11 +1,12 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { Observable, finalize, tap, forkJoin, of, catchError, throwError } from 'rxjs';
+import { Observable, finalize, tap, forkJoin, of, catchError, throwError, map, shareReplay, switchMap } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { GeneralConfigService } from './general-config.service';
-import { LogoutRequest, LoginRequest, LoginResponse, BoAdminProfile } from '../../models/auth.model';
+import { LogoutRequest, LoginPayload, LoginRequest, LoginResponse, BoAdminProfile } from '../../models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { StorageUtil } from '../../core/utils/storage.util';
 import { getBaseUrl } from '../../core/config/app-config';
+import { encryptWithRsaPublicKey } from '../../core/utils/rsa.util';
 
 @Injectable({
   providedIn: 'root',
@@ -13,20 +14,39 @@ import { getBaseUrl } from '../../core/config/app-config';
 export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private readonly configService = inject(GeneralConfigService);
+  private loginPublicKey$: Observable<string> | null = null;
+  private loginPublicKeyValue: string | null = null;
 
   userProfile = signal<BoAdminProfile | null>(null);
 
   constructor() {}
 
   login(data: LoginRequest): Observable<ResponseApi<LoginResponse>> {
-    const payload: LoginRequest = {
-      ...data,
-      deviceId: data.deviceId || this.getDeviceId(),
-    };
+    if (!data.username) {
+      return throwError(() => new Error('Username is required'));
+    }
 
-    return this.httpClient.post<ResponseApi<LoginResponse>>(
-      `${getBaseUrl()}/bo-portal/auth/login`,
-      payload,
+    if (!data.password) {
+      return throwError(() => new Error('Password is required'));
+    }
+
+    const deviceId = data.deviceId || this.getDeviceId();
+    return this.getLoginPublicKey().pipe(
+      map((publicKey) => ({
+        encryptedUsername: encryptWithRsaPublicKey(data.username, publicKey),
+        encryptedPassword: encryptWithRsaPublicKey(data.password as string, publicKey),
+      })),
+      switchMap(({ encryptedUsername, encryptedPassword }) => {
+        const payload: LoginPayload = {
+          encryptedUsername,
+          encryptedPassword,
+          deviceId,
+        };
+        return this.httpClient.post<ResponseApi<LoginResponse>>(
+          `${getBaseUrl()}/bo-portal/auth/login`,
+          payload,
+        );
+      }),
     );
   }
 
@@ -99,5 +119,44 @@ export class AuthService {
       StorageUtil.setDeviceId(deviceId);
     }
     return deviceId;
+  }
+
+  private getLoginPublicKey(): Observable<string> {
+    if (this.loginPublicKeyValue) {
+      return of(this.loginPublicKeyValue);
+    }
+    if (!this.loginPublicKey$) {
+      this.loginPublicKey$ = this.httpClient
+        .get<ResponseApi<string | { publicKey?: string; key?: string }>>(`${getBaseUrl()}/bo-portal/auth/public-key`)
+        .pipe(
+          map((res) => {
+            const key = this.extractPublicKey(res.data);
+            if (!key) {
+              throw new Error('Login public key is empty');
+            }
+            this.loginPublicKeyValue = key;
+            return key;
+          }),
+          catchError((error) => {
+            this.loginPublicKey$ = null;
+            this.loginPublicKeyValue = null;
+            return throwError(() => error);
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.loginPublicKey$;
+  }
+
+  private extractPublicKey(data: string | { publicKey?: string; key?: string } | null | undefined): string {
+    if (typeof data === 'string') {
+      return data;
+    }
+
+    if (data && typeof data === 'object') {
+      return data.publicKey || data.key || '';
+    }
+
+    return '';
   }
 }

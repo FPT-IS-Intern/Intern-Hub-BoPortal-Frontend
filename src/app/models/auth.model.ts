@@ -4,7 +4,13 @@ export interface LogoutRequest {
 
 export interface LoginRequest {
   username: string;
-  password: string;
+  password?: string;
+  deviceId?: string;
+}
+
+export interface LoginPayload {
+  encryptedUsername: string;
+  encryptedPassword: string;
   deviceId?: string;
 }
 

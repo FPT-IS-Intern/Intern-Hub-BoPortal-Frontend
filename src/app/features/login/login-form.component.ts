@@ -76,6 +76,7 @@ export class LoginFormComponent implements AfterViewInit {
                 this.error.set(this.errorMessageService.resolve(res.status?.code));
             }
         } catch (err) {
+            console.error('Login request failed before completion:', err);
             this.error.set(this.resolveHttpError(err));
         } finally {
 
