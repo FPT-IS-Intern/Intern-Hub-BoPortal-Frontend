@@ -421,6 +421,7 @@
         "continue": "Tiếp tục",
         "errors": {
           "codeRequired": "Vui lòng nhập mã",
+          "codeExists": "Mã đã tồn tại",
           "descriptionRequired": "Vui lòng nhập mô tả",
           "channelRequired": "Vui lòng chọn kênh"
         }
