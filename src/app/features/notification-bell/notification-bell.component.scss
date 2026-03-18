@@ -791,6 +791,21 @@
   white-space: pre-wrap;
 }
 
+.editor-preview-stage {
+  background: #f1f5f9;
+  border-top: 1px solid var(--app-color-border-alpha-soft-2);
+  max-height: min(70vh, 720px);
+}
+
+.editor-preview-paper {
+  width: 100%;
+}
+
+.editor-preview-paper .html-editor-canvas {
+  padding: 0;
+  min-height: 600px;
+}
+
 .email-iframe-preview {
   width: 100%;
   border: none;
