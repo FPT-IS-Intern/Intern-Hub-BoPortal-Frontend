@@ -449,6 +449,7 @@ export class NotificationBellComponent implements OnInit {
     this.templateService.listTemplates({
       code,
       locale,
+      active: true,
       page: 0,
       size: 100
     })
@@ -475,7 +476,27 @@ export class NotificationBellComponent implements OnInit {
   private updateSelectedCodeWithTemplates(templates: TemplateResponse[]): void {
     if (!this.selectedCode) return;
 
-    this.selectedCode.channels = templates.map(template => this.mapTemplateToChannelConfig(template));
+    const configs: ChannelConfig[] = [];
+    const grouped = new Map<ChannelType, TemplateResponse[]>();
+
+    templates.forEach(template => {
+      const normalized = this.normalizeChannels([template.channel])[0];
+      if (!normalized) return;
+      const existing = grouped.get(normalized) || [];
+      existing.push(template);
+      grouped.set(normalized, existing);
+    });
+
+    grouped.forEach((items) => {
+      if (!items.length) return;
+      const activeItem = items.find(item => item.active);
+      const latest = items.reduce((picked, item) => (
+        item.templateVersion > picked.templateVersion ? item : picked
+      ), items[0]);
+      configs.push(this.mapTemplateToChannelConfig(activeItem ?? latest));
+    });
+
+    this.selectedCode.channels = configs;
   }
 
   private loadTemplateDefinition(code: string): void {
