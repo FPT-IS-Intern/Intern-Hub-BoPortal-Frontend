@@ -120,8 +120,8 @@
     <div class="channel-form">
       <div class="editor-pane">
         <div class="form-preview">
-          <div class="form-grid">
-            <div class="field">
+          <div class="form-header-row">
+            <div class="field subject-field">
               <label>{{ 'notification.master.detail.form.subject' | translate }}</label>
               <input
                 class="custom-input"
@@ -130,12 +130,12 @@
                 [placeholder]="'notification.master.detail.form.subjectPlaceholder' | translate">
             </div>
 
-            <div class="field">
+            <div class="field format-field">
               <label>{{ 'notification.master.detail.form.format' | translate }}</label>
               <app-shared-dropdown
                 [options]="formatOptions"
                 [(value)]="selectedChannelConfig.format"
-                width="160px"
+                width="100%"
                 (valueChange)="markDirty()">
               </app-shared-dropdown>
               @if (isFormatNonOptimal) {
@@ -368,37 +368,36 @@
         }
       </div>
 
-        <div class="history-preview">
+        <div class="history-preview-container">
           @if (historySelection) {
-          <div class="preview-title">{{ 'notification.master.history.preview' | translate }}</div>
-          <div class="preview-content">
-            @if (historySelection.subject) {
-            <div class="preview-subject-label">{{ 'notification.master.detail.form.subject' | translate }}</div>
-            <div class="preview-subject">{{ historySelection.subject }}</div>
-            }
-            <div class="preview-email-stage">
-              <div class="preview-email-paper">
-                <div class="preview-email-scale">
-                  @if (historySelection.format === 'HTML') {
-                  <div class="preview-email-content" [innerHTML]="historySelection.content"></div>
-                  } @else {
-                  <div class="preview-email-content preview-email-text">{{ historySelection.content }}</div>
-                  }
-                </div>
-              </div>
+          <div class="preview-info-bar">
+            <div class="preview-subject-label">Tiêu đề:</div>
+            <div class="preview-subject-value">{{ historySelection.subject }}</div>
+          </div>
+          <div class="preview-email-stage">
+            <div class="preview-email-paper">
+              @if (historySelection.format === 'HTML') {
+              <iframe
+                #previewIframe
+                class="email-iframe-preview"
+                [srcdoc]="historySelection.content | safeHtml"
+                sandbox="allow-same-origin"
+                (load)="resizeIframe(previewIframe)">
+              </iframe>
+              } @else {
+              <div class="preview-email-text">{{ historySelection.content }}</div>
+              }
             </div>
           </div>
-          <div class="preview-actions">
-            <button class="btn-primary-custom small" (click)="openRestoreConfirm(historySelection)">
+          <div class="preview-actions-footer">
+            <button class="btn-primary-custom" (click)="openRestoreConfirm(historySelection)">
               {{ 'notification.master.history.restore' | translate }}
             </button>
           </div>
           } @else {
-          <div class="history-empty">
-            {{ 'notification.master.history.selectHint' | translate }}
-          </div>
+          <div class="history-empty-hint">Chọn một phiên bản để xem trước nội dung</div>
           }
-      </div>
+        </div>
     </div>
   </div>
 </div>
