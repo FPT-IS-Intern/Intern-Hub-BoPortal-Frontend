@@ -401,8 +401,6 @@ export class NotificationBellComponent implements OnInit {
     };
 
     this.isCreateModalOpen = false;
-    this.goToDetail(newItem, this.createChannelValue);
-
     this.isLoading = true;
     this.templateService.createTemplateDefinition({ code: normalized })
       .pipe(
@@ -411,6 +409,7 @@ export class NotificationBellComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
+          this.goToDetail(newItem, this.createChannelValue);
           if (!this.selectedCode || this.selectedCode.code !== normalized) return;
           this.selectedCode.definitionExists = true;
           if (response.data?.paramsSchema) {
