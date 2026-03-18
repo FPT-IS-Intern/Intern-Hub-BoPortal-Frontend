@@ -9,8 +9,17 @@
     }
 
     <div class="input-wrapper">
-        <input [type]="typeInput" [placeholder]="placeholder" [required]="required" [ngModel]="value"
-            (ngModelChange)="onValueChange($event)" class="custom-input" />
+        <input
+            #inputEl
+            [type]="typeInput"
+            [placeholder]="placeholder"
+            [required]="required"
+            [ngModel]="value"
+            (ngModelChange)="onValueChange($event)"
+            (input)="onValueChange($event.target.value)"
+            (change)="onValueChange($event.target.value)"
+            (animationstart)="onAutofillStart()"
+            class="custom-input" />
 
         @if (icon) {
         <button type="button" class="icon-button" (click)="onIconClick()">

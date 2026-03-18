@@ -4,10 +4,10 @@
     <div class="toolbar-left">
       <app-role-selector [roles]="roles()" [selectedRole]="selectedRoleId()" (roleChange)="onRoleChange($event)">
       </app-role-selector>
-      
+
       <div class="search-wrapper">
         <span class="custom-icon-search search-icon"></span>
-        <input type="text" class="search-input" [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate" 
+        <input type="text" class="search-input" [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate"
           [ngModel]="searchQuery()" (ngModelChange)="onSearchQueryChange($event)">
       </div>
     </div>
@@ -19,7 +19,7 @@
       <button class="btn-secondary-custom" (click)="isCreateResourceVisible = true">
         <span class="custom-icon-package-plus"></span> {{ 'permissionMatrix.toolbar.addResource' | translate }}
       </button>
-      
+
       <div class="divider"></div>
 
       <button class="btn-primary-custom apply-btn" [disabled]="isLoading" (click)="onSubmit()">
@@ -29,7 +29,16 @@
   </div>
 
   <div class="table-container">
-    @if (isError()) {
+    @if (isInitLoading()) {
+      <div class="state-panel">
+        <app-table-skeleton
+          class="skeleton-panel"
+          [columns]="6"
+          [rows]="5"
+          [columnWidths]="['30%','10%','10%','10%','10%','10%']">
+        </app-table-skeleton>
+      </div>
+    } @else if (isError()) {
       <div class="error-view">
         <app-no-data [title]="'permissionMatrix.error.title' | translate"
           [message]="'permissionMatrix.error.message' | translate">
@@ -40,15 +49,8 @@
         </app-no-data>
       </div>
     } @else {
-      @if (filteredRows().length > 0) {
-        <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
-          (permissionChange)="permissionRows.set($event)"></app-permission-table>
-      } @else if (!isInitLoading()) {
-        <app-no-data [title]="'permissionMatrix.table.empty.title' | translate"
-          [message]="'permissionMatrix.table.empty.message' | translate">
-          <span icon class="custom-icon-box-iso selection-icon"></span>
-        </app-no-data>
-      }
+      <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
+        (permissionChange)="permissionRows.set($event)"></app-permission-table>
     }
   </div>
 

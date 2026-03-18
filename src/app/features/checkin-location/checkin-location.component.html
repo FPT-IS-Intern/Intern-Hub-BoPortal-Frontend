@@ -4,12 +4,15 @@
   <div class="master-detail-container">
     <!-- Master: Branch List -->
     <app-branch-sidebar [branches]="branches()" [selectedBranchId]="selectedBranch()?.id"
+      [isLoading]="isInitLoading()"
       (selectBranch)="selectBranch($event)" (manageBranches)="onManageBranches()">
     </app-branch-sidebar>
 
     <!-- Detail: Config Tabs -->
     <main class="detail-panel">
-      @if (isError()) {
+      @if (isInitLoading()) {
+      <app-checkin-tabs-skeleton></app-checkin-tabs-skeleton>
+      } @else if (isError()) {
       <div class="detail-no-data">
         <app-no-data [title]="'checkin.page.error.title' | translate"
           [message]="'checkin.page.error.message' | translate">
@@ -17,6 +20,13 @@
           <button action class="retry-btn" (click)="fetchConfigs()">
             {{ 'checkin.page.error.retry' | translate }}
           </button>
+        </app-no-data>
+      </div>
+      } @else if (!hasData()) {
+      <div class="detail-no-data">
+        <app-no-data [title]="'checkin.page.empty.title' | translate"
+          [message]="'checkin.page.empty.message' | translate">
+          <span icon class="custom-icon-box-iso selection-icon"></span>
         </app-no-data>
       </div>
       } @else if (selectedBranch(); as branch) {
@@ -47,7 +57,15 @@
         </div>
 
         <div class="tab-content">
-          @if (activeTabIndex() === 0) {
+          @if (isLoading()) {
+          <div class="detail-loading">
+            <span class="custom-icon-loading spinner"></span>
+            <div class="loading-text">
+              <div class="loading-title">{{ 'checkin.page.loading.title' | translate }}</div>
+              <div class="loading-desc">{{ 'checkin.page.loading.message' | translate }}</div>
+            </div>
+          </div>
+          } @else if (activeTabIndex() === 0) {
           <app-location-tab [locations]="branch.attendanceLocations || []"
             (addLocation)="openLocationModal()" (editLocation)="openLocationModal($event)"
             (deleteLocation)="confirmDeleteLocation($event)">

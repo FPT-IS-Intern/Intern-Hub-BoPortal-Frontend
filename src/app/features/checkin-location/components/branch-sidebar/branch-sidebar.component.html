@@ -1,4 +1,7 @@
 <aside class="master-panel">
+  @if (isLoading()) {
+  <app-checkin-sidebar-skeleton></app-checkin-sidebar-skeleton>
+  } @else {
   <div class="search-box">
     <app-shared-search [value]="searchQuery()" (valueChange)="onSearch($event)"
       [placeholder]="'checkin.sidebar.searchPlaceholder' | translate" variant="filled" width="100%"></app-shared-search>
@@ -31,4 +34,5 @@
     <div class="empty-list">{{ 'checkin.sidebar.empty' | translate }}</div>
     }
   </div>
+  }
 </aside>

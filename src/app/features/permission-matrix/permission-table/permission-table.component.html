@@ -1,43 +1,50 @@
-<div class="matrix-wrapper">
-    <table class="permission-table">
-        <thead>
-            <tr>
-                <th class="col-function sticky-col">{{ 'permissionMatrix.table.resource' | translate }}</th>
-                @for (col of columns; track col.key) {
-                <th class="col-permission sticky-header">
-                    <div class="header-content">
-                        <span>{{ col.label | translate }}</span>
-                    </div>
-                </th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @if (rows.length > 0) {
-            @for (row of rows; track row.function; let i = $index) {
-            <tr [class.row-alt]="i % 2 === 1" class="row-hover">
-                <td class="col-function cell-function sticky-col">{{ row.function }}</td>
-                @for (col of columns; track col.key) {
-                <td class="col-permission cell-checkbox">
-                    <label class="custom-checkbox">
-                        <input type="checkbox" [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()">
-                        <span class="checkmark"></span>
-                    </label>
-                </td>
-                }
-            </tr>
-            }
-            } @else {
-            <tr>
-                <td [attr.colspan]="columns.length + 1" class="empty-cell">
-                    <app-no-data [title]="'permissionMatrix.table.empty.title' | translate"
-                        [message]="'permissionMatrix.table.empty.message' | translate"
-                        [fullHeight]="false">
-                        <span icon class="custom-icon-users permission-users-icon"></span>
-                    </app-no-data>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<app-data-table
+    tableClass="permission-table"
+    wrapperClass="matrix-wrapper"
+    [columns]="tableColumns"
+    [rows]="pagedRows"
+    [enableRowAlt]="true"
+    [enableRowHover]="true"
+    [showPagination]="rows.length > pageSize"
+    [emptyColspan]="tableColumns.length">
+    <ng-template #header let-col>
+        @if (col.key === '__resource') {
+        {{ col.label | translate }}
+        } @else {
+        <div class="header-content">
+            <span>{{ col.label | translate }}</span>
+        </div>
+        }
+    </ng-template>
+
+    <ng-template #cell let-row let-col="col">
+        @if (col.key === '__resource') {
+        {{ row.function }}
+        } @else {
+        <label class="custom-checkbox">
+            <input type="checkbox" [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()">
+            <span class="checkmark"></span>
+        </label>
+        }
+    </ng-template>
+
+    <ng-template #empty>
+        <app-no-data
+            [title]="'permissionMatrix.table.empty.title' | translate"
+            [message]="'permissionMatrix.table.empty.message' | translate"
+            [fullHeight]="false">
+            <span icon class="custom-icon-shield-plus permission-users-icon"></span>
+        </app-no-data>
+    </ng-template>
+
+    <ng-template #pagination>
+        <app-pagination
+            [pageIndex]="pageIndex"
+            [pageSize]="pageSize"
+            [total]="total"
+            [displayRange]="displayRange"
+            (pageIndexChange)="onPageIndexChange($event)"
+            (pageSizeChange)="onPageSizeChange($event)">
+        </app-pagination>
+    </ng-template>
+</app-data-table>

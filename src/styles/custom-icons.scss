@@ -86,6 +86,11 @@
 .custom-icon-info {
   @include custom-icon-file('/assets/icons/info-circle.svg', 1rem);
 }
+.custom-icon-shield-plus {
+  @include custom-icon-file('/assets/icons/shield-plus.svg', 1rem);
+  width: 24px;
+  height: 20px;
+}
 
 .custom-icon-chevron-down {
   @include custom-icon-file('/assets/icons/chevron-down.svg', 1rem);

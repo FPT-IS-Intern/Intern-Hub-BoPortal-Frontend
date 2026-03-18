@@ -28,67 +28,82 @@
     </div>
   </div>
 
-  <div class="table-wrapper">
-    <table class="master-table">
-      <thead>
-        <tr>
-          <th>{{ 'notification.master.table.code' | translate }}</th>
-          <th>{{ 'notification.master.table.name' | translate }}</th>
-          <th>{{ 'notification.master.table.channels' | translate }}</th>
-          <th class="col-actions">{{ 'notification.master.table.actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of listOfData; track item.code) {
-        <tr>
-          <td class="code-cell">{{ item.code }}</td>
-          <td class="name-cell">{{ item.name }}</td>
-          <td>
-            <div class="channel-chips">
-              @for (channel of item.channels; track channel.channel) {
-              @if (channel.active) {
-              <span class="chip">{{ channel.channel }}</span>
-              }
-              }
-            </div>
-          </td>
-          <td class="col-actions">
-            <div class="action-buttons">
-              <button class="btn-outline-custom small" (click)="goToDetail(item)">
-                {{ 'notification.master.actions.configure' | translate }}
-              </button>
-              @if (item.isDeletable) {
-              <button class="btn-outline-custom small danger" (click)="openDeleteConfirm(item)">
-                {{ 'notification.master.actions.delete' | translate }}
-              </button>
-              }
-            </div>
-          </td>
-        </tr>
-        } @empty {
-        <tr>
-          <td colspan="4">
-            <div class="empty-state">
-              <span class="empty-title">{{ 'notification.master.empty.title' | translate }}</span>
-              <span class="empty-subtitle">{{ 'notification.master.empty.subtitle' | translate }}</span>
-            </div>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
+  @if (isLoading) {
+  <app-table-skeleton
+    class="skeleton-panel"
+    [columns]="4"
+    [rows]="6"
+    [columnWidths]="['20%','40%','20%','10%']">
+  </app-table-skeleton>
+  } @else if (isLoadError) {
+  <div class="error-view">
+    <app-no-data
+      [title]="'notification.master.error.title' | translate"
+      [message]="'notification.master.error.message' | translate"
+      [showAction]="true"
+      (actionClicked)="retryLoadTemplates()">
+    </app-no-data>
   </div>
+  } @else {
+  <app-data-table
+    tableClass="notification-table"
+    [columns]="tableColumns"
+    [rows]="listOfData"
+    [enableRowAlt]="true"
+    [enableRowHover]="true"
+    [showPagination]="total > pageSize"
+    [emptyColspan]="tableColumns.length">
+    <ng-template #header let-col>
+      {{ col.label | translate }}
+    </ng-template>
 
-  @if (total > 0) {
-  <app-notification-pagination
-    [pageIndex]="pageIndex"
-    [pageSize]="pageSize"
-    [total]="total"
-    [pageSizeOptions]="pageSizeOptions"
-    [displayRange]="displayRange"
-    (pageIndexChange)="onPageIndexChange($event)"
-    (pageSizeChange)="onPageSizeChange($event)">
-  </app-notification-pagination>
+    <ng-template #cell let-item let-col="col">
+      @if (col.key === 'code') {
+      <span class="code-cell">{{ item.code }}</span>
+      } @else if (col.key === 'name') {
+      <span class="name-cell">{{ item.name }}</span>
+      } @else if (col.key === 'channels') {
+      <div class="channel-chips">
+        @for (channel of item.channels; track channel.channel) {
+        @if (channel.active) {
+        <span class="chip">{{ channel.channel }}</span>
+        }
+        }
+      </div>
+      } @else if (col.key === 'actions') {
+      <div class="action-buttons">
+        <button class="btn-outline-custom small" (click)="goToDetail(item)">
+          {{ 'notification.master.actions.configure' | translate }}
+        </button>
+        @if (item.isDeletable) {
+        <button class="btn-outline-custom small danger" (click)="openDeleteConfirm(item)">
+          {{ 'notification.master.actions.delete' | translate }}
+        </button>
+        }
+      </div>
+      }
+    </ng-template>
+
+    <ng-template #empty>
+      <app-no-data
+        [fullHeight]="false"
+        [title]="'notification.master.empty.title' | translate"
+        [message]="'notification.master.empty.subtitle' | translate">
+      </app-no-data>
+    </ng-template>
+
+    <ng-template #pagination>
+      <app-notification-pagination
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [total]="total"
+        [pageSizeOptions]="pageSizeOptions"
+        [displayRange]="displayRange"
+        (pageIndexChange)="onPageIndexChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-notification-pagination>
+    </ng-template>
+  </app-data-table>
   }
   } @else {
   <div class="channel-card">
@@ -240,6 +255,7 @@
   }
 </div>
 
+@if (isCreateModalOpen) {
 <app-modal-popup
   [(isVisible)]="isCreateModalOpen"
   [title]="'notification.master.create.title' | translate"
@@ -294,7 +310,9 @@
     </div>
   </div>
 </app-modal-popup>
+}
 
+@if (isParamsModalOpen) {
 <app-modal-popup
   [(isVisible)]="isParamsModalOpen"
   [title]="'notification.master.params.title' | translate"
@@ -340,6 +358,7 @@
     </div>
   </div>
 </app-modal-popup>
+}
 
 @if (isHistoryOpen) {
 <div class="history-overlay" (click)="closeHistorySidebar()">
@@ -403,6 +422,7 @@
 </div>
 }
 
+@if (isDeleteConfirmOpen) {
 <app-modal-popup
   [(isVisible)]="isDeleteConfirmOpen"
   [title]="'notification.master.deleteConfirm.title' | translate"
@@ -422,7 +442,9 @@
     </div>
   </div>
 </app-modal-popup>
+}
 
+@if (isRestoreConfirmOpen) {
 <app-modal-popup
   [(isVisible)]="isRestoreConfirmOpen"
   [title]="'notification.master.history.restoreConfirm.title' | translate"
@@ -442,3 +464,4 @@
     </div>
   </div>
 </app-modal-popup>
+}

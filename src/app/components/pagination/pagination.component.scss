@@ -1,0 +1,138 @@
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--app-color-border-alpha-soft);
+  background: var(--app-color-white);
+  min-height: 56px;
+}
+
+.pagination-left {
+  display: flex;
+  align-items: center;
+}
+
+.pagination-right-group {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  min-width: 0;
+}
+
+.page-range {
+  font-size: 12px;
+  color: var(--app-color-text-muted);
+  display: flex;
+  align-items: center;
+
+  .info-icon {
+    margin-left: 4px;
+    display: inline-flex;
+    cursor: help;
+    color: var(--app-color-text-subtle);
+  }
+}
+
+.pagination-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-btn,
+.nav-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--app-shadow-lg);
+  background: var(--app-color-white);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--app-color-text-muted);
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background: var(--app-color-surface-muted);
+  }
+
+  &.active {
+    background: var(--app-color-primary);
+    border-color: var(--app-color-primary);
+    color: var(--app-color-white);
+  }
+
+  &:not(.active):not(:disabled):hover {
+    border-color: var(--app-color-primary);
+    color: var(--app-color-primary);
+    background: var(--app-color-surface-warm);
+  }
+}
+
+.ellipsis {
+  font-size: 14px;
+  color: var(--app-color-text-subtle);
+  padding: 0 4px;
+}
+
+.total-text {
+  font-size: 12px;
+  color: var(--app-color-text-muted);
+  margin-left: 8px;
+}
+
+.pagination-right {
+  display: flex;
+  align-items: center;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  width: 110px;
+
+  .custom-page-size-select {
+    width: 100%;
+    padding: 6px 30px 6px 10px;
+    font-size: 12px;
+    border: 1px solid var(--app-shadow-lg);
+    border-radius: 6px;
+    background: var(--app-color-white);
+    appearance: none;
+    cursor: pointer;
+    color: var(--app-color-text-main);
+
+    &:hover {
+      border-color: var(--app-color-primary);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--app-color-primary);
+      box-shadow: 0 0 0 2px var(--app-color-primary-alpha-10);
+    }
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--app-color-text-subtle);
+    display: flex;
+  }
+}

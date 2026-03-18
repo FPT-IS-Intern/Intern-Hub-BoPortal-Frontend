@@ -1,0 +1,136 @@
+.checkin-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+}
+
+.skeleton-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.skeleton-title,
+.skeleton-subtitle,
+.skeleton-badge,
+.skeleton-tab,
+.skeleton-section-title,
+.skeleton-search,
+.skeleton-button,
+.skeleton-col {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--app-color-surface-warm-100, #f1f5f9);
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 35%;
+}
+
+.skeleton-subtitle {
+  height: 14px;
+  width: 45%;
+}
+
+.skeleton-badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 20px;
+  width: 120px;
+}
+
+.skeleton-tabs {
+  display: flex;
+  gap: 16px;
+}
+
+.skeleton-tab {
+  height: 14px;
+  width: 110px;
+}
+
+.skeleton-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.skeleton-section-title {
+  height: 16px;
+  width: 220px;
+}
+
+.skeleton-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skeleton-search {
+  height: 32px;
+  width: 260px;
+}
+
+.skeleton-button {
+  height: 32px;
+  width: 120px;
+}
+
+.skeleton-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-table-header,
+.skeleton-table-row {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1.5fr 1.5fr 1fr;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--app-color-surface-warm-100, #f1f5f9);
+}
+
+.skeleton-table-row {
+  background: var(--app-color-white, #fff);
+  border: 1px solid var(--app-color-surface-warm-100, #f1f5f9);
+}
+
+.skeleton-col {
+  height: 12px;
+}
+
+.skeleton-title::after,
+.skeleton-subtitle::after,
+.skeleton-badge::after,
+.skeleton-tab::after,
+.skeleton-section-title::after,
+.skeleton-search::after,
+.skeleton-button::after,
+.skeleton-col::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
