@@ -798,10 +798,11 @@
 .editor-preview-stage {
   background: #f1f5f9;
   border-top: 1px solid var(--app-color-border-alpha-soft-2);
-  height: min(70vh, 720px);
-  overflow-y: auto;
+  height: auto;
+  max-height: none;
+  overflow: visible;
   padding: 0;
-  justify-content: stretch;
+  justify-content: flex-start;
 }
 
 .editor-preview-paper {
