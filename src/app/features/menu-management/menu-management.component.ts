@@ -148,7 +148,7 @@ export class MenuManagementComponent {
   });
 
   protected readonly formTitle = computed(() =>
-    this.formMode() === 'create' ? this.translateService.instant('menus.dialog.createTitle') : this.translateService.instant('menus.dialog.editTitle'),
+    this.formMode() === 'create' ? 'menus.dialog.createTitle' : 'menus.dialog.editTitle',
   );
 
   constructor() {

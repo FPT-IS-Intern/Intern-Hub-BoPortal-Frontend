@@ -183,7 +183,7 @@
 </div>
 
 <!-- ── Create / Edit Modal ──────────────────────────────────────── -->
-<app-modal-popup [isVisible]="formVisible()" (isVisibleChange)="formVisible.set($event)" [title]="formTitle()"
+<app-modal-popup [isVisible]="formVisible()" (isVisibleChange)="formVisible.set($event)" [title]="formTitle() | translate"
   [saveText]="'menus.dialog.actions.save' | translate" [cancelText]="'menus.dialog.actions.cancel' | translate"
   maxWidth="720px" (save)="saveForm()" (cancel)="closeForm()">
   <div class="form-grid">
