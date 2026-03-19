@@ -1,244 +1,278 @@
 <div class="page-body">
+  <!-- ── Filter / Toolbar ──────────────────────────────────────── -->
   <section class="filter-panel">
     <div class="filter-row">
       <div class="filter-item keyword-field">
-        <app-shared-search
-          [value]="keyword()"
-          [placeholder]="'menus.actions.searchPlaceholder' | translate"
-          width="100%"
-          (valueChange)="onSearchChange($event)">
+        <app-shared-search [value]="keyword()" [placeholder]="'menus.actions.searchPlaceholder' | translate"
+          width="100%" (valueChange)="onSearchChange($event)">
         </app-shared-search>
       </div>
 
       <div class="toolbar-actions">
-        <button type="button" class="btn-ghost-custom action-btn" (click)="expandAll()">
-          <span class="custom-icon-arrow-right expand-icon"></span>
+        <button
+          type="button"
+          class="btn-ghost-custom action-btn"
+          [appTooltip]="'menus.actions.expandAll' | translate"
+          (click)="expandAll()">
+          <span class="custom-icon-arrow-down expand-icon"></span>
           {{ 'menus.actions.expandAll' | translate }}
         </button>
-        <button type="button" class="btn-ghost-custom action-btn" (click)="collapseAll()">
-          <span class="custom-icon-arrow-left collapse-icon"></span>
+        <button
+          type="button"
+          class="btn-ghost-custom action-btn"
+          [appTooltip]="'menus.actions.collapseAll' | translate"
+          (click)="collapseAll()">
+          <span class="custom-icon-arrow-right collapse-icon"></span>
           {{ 'menus.actions.collapseAll' | translate }}
         </button>
-        <button type="button" class="btn-primary-custom action-btn" (click)="openCreateModal()">
+        <button
+          type="button"
+          class="btn-primary-custom action-btn"
+          [appTooltip]="'menus.actions.add' | translate"
+          (click)="openCreateModal()">
           <span class="custom-icon-package-plus"></span>
-          Tạo mới
+          {{ 'menus.actions.add' | translate }}
         </button>
       </div>
     </div>
+
+    <!-- Hint bar -->
+    <div class="filter-hint">
+      <span class="custom-icon-info hint-icon"></span>
+      <span>{{ 'menus.hint.table' | translate }}</span>
+    </div>
   </section>
 
+  <!-- ── Table / States ────────────────────────────────────────── -->
   <section class="table-panel">
     @if (isLoading()) {
-      <div class="state-panel">
-        <app-table-skeleton
-          class="skeleton-panel"
-          [columns]="8"
-          [rows]="6"
-          [columnWidths]="['5%','12%','22%','15%','10%','8%','12%','16%']">
-        </app-table-skeleton>
-      </div>
+    <div class="state-panel">
+      <app-table-skeleton class="skeleton-panel" [columns]="8" [rows]="6"
+        [columnWidths]="['5%','12%','22%','15%','10%','8%','12%','16%']">
+      </app-table-skeleton>
+    </div>
     } @else if (isError()) {
-      <div class="state-panel state-card">
-        <app-no-data
-          title="Không thể tải dữ liệu"
-          message="Đã có lỗi xảy ra khi tải danh sách menu.">
-          <span icon class="custom-icon-error error-icon"></span>
-          <button action class="btn-outline-custom retry-btn" (click)="loadMenus()">
-            Thử lại
-          </button>
-        </app-no-data>
+    <div class="state-panel state-card">
+      <app-no-data [title]="'menus.page.error.title' | translate" [message]="'menus.page.error.message' | translate">
+        <span icon class="custom-icon-error error-icon"></span>
+        <button action class="btn-outline-custom retry-btn" (click)="loadMenus()">
+          {{ 'menus.page.error.retry' | translate }}
+        </button>
+      </app-no-data>
+    </div>
+    } @else if (menus().length === 0) {
+    <!-- True empty: no menus at all -->
+    <div class="state-panel state-card empty-guide">
+      <div class="empty-guide-body">
+        <span class="custom-icon-layout-left empty-icon"></span>
+        <h3 class="empty-title">{{ 'menus.empty.title' | translate }}</h3>
+        <p class="empty-msg">{{ 'menus.empty.message' | translate }}</p>
+        <button type="button" class="btn-primary-custom" (click)="openCreateModal()">
+          <span class="custom-icon-package-plus"></span>
+          {{ 'menus.actions.add' | translate }}
+        </button>
       </div>
+    </div>
     } @else if (flatRows().length === 0) {
-      <div class="state-panel state-card">
-        <app-no-data
-          [fullHeight]="false"
-          [title]="'menus.empty.title' | translate"
-          [message]="'menus.empty.message' | translate">
-          <span icon class="custom-icon-news"></span>
-        </app-no-data>
-      </div>
+    <!-- Filter returned no results -->
+    <div class="state-panel state-card">
+      <app-no-data [fullHeight]="false" [title]="'menus.search.noResult.title' | translate"
+        [message]="'menus.search.noResult.message' | translate">
+        <span icon class="custom-icon-search"></span>
+      </app-no-data>
+    </div>
     } @else {
-      <div class="tree-table-wrapper">
-        <table class="tree-table">
-          <thead>
-            <tr>
-              <th class="col-no">{{ 'menus.table.no' | translate }}</th>
-              <th class="col-code">{{ 'menus.table.code' | translate }}</th>
-              <th class="col-title">{{ 'menus.table.title' | translate }}</th>
-              <th class="col-path">{{ 'menus.table.path' | translate }}</th>
-              <th class="col-icon">{{ 'menus.table.icon' | translate }}</th>
-              <th class="col-order">{{ 'menus.table.order' | translate }}</th>
-              <th class="col-roles">{{ 'menus.table.roles' | translate }}</th>
-              <th class="col-status">{{ 'menus.table.status' | translate }}</th>
-              <th class="col-actions">{{ 'menus.table.actions' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of flatRows(); track row.menu.id; let i = $index) {
-              <tr class="tree-row" [class.depth-1]="row.depth === 1" [class.depth-2]="row.depth >= 2">
-                <td class="col-no">{{ i + 1 }}</td>
-                <td class="col-code">
-                  <div class="tree-cell" [style.padding-left.px]="row.depth * 28">
-                    @if (row.hasChildren) {
-                      <button type="button" class="expand-btn" (click)="toggleExpand(row.menu.id)">
-                        <span class="chevron" [class.expanded]="row.expanded">▸</span>
-                      </button>
-                    } @else {
-                      <span class="expand-spacer"></span>
-                    }
-                    <span class="code-text">{{ row.menu.code }}</span>
-                  </div>
-                </td>
-                <td class="col-title">
-                  <div class="title-cell">
-                    @if (row.menu.icon) {
-                      <span [class]="row.menu.icon + ' menu-icon'"></span>
-                    }
-                    <span class="title-text">{{ row.menu.title }}</span>
-                  </div>
-                </td>
-                <td class="col-path">
-                  <span class="path-text">{{ row.menu.path || '—' }}</span>
-                </td>
-                <td class="col-icon">
-                  <span class="icon-name">{{ row.menu.icon || '—' }}</span>
-                </td>
-                <td class="col-order">{{ row.menu.sortOrder ?? 0 }}</td>
-                <td class="col-roles">
-                  <span class="roles-text">{{ rolesText(row.menu.roleCodes) }}</span>
-                </td>
-                <td class="col-status">
-                  <span [class]="statusClass(row.menu.status)">{{ statusLabel(row.menu.status) }}</span>
-                </td>
-                <td class="col-actions">
-                  <div class="action-group">
-                    <button
-                      type="button"
-                      class="btn-outline-custom small action-outline-btn"
-                      title="Chỉnh sửa"
-                      (click)="openEditModal(row.menu)">
-                      <span class="custom-icon-edit action-icon"></span>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn-outline-custom small action-outline-btn danger-outline"
-                      title="Xóa"
-                      (click)="requestDelete(row.menu, $event)">
-                      <span class="custom-icon-error action-icon"></span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    <div class="tree-table-wrapper">
+      <table class="tree-table" role="treegrid">
+        <thead>
+          <tr>
+            <th class="col-no">{{ 'menus.table.no' | translate }}</th>
+            <th class="col-code">{{ 'menus.table.code' | translate }}</th>
+            <th class="col-title">{{ 'menus.table.title' | translate }}</th>
+            <th class="col-path">{{ 'menus.table.path' | translate }}</th>
+            <th class="col-icon">{{ 'menus.table.icon' | translate }}</th>
+            <th class="col-order">{{ 'menus.table.order' | translate }}</th>
+            <th class="col-roles">{{ 'menus.table.roles' | translate }}</th>
+            <th class="col-status">{{ 'menus.table.status' | translate }}</th>
+            <th class="col-actions">{{ 'menus.table.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of flatRows(); track row.menu.id; let i = $index) {
+          <tr class="tree-row" [class.row-root]="row.depth === 0" [class.row-child]="row.depth === 1"
+            [class.row-grandchild]="row.depth >= 2">
+            <td class="col-no">{{ i + 1 }}</td>
+            <td class="col-code">
+              <div class="tree-cell" [style.padding-left.px]="row.depth * 24">
+                @if (row.hasChildren) {
+                <button type="button" class="expand-btn"
+                  [appTooltip]="(row.expanded ? 'menus.actions.collapseAll' : 'menus.actions.expandAll') | translate"
+                  (click)="toggleExpand(row.menu.id)">
+                  <span class="chevron" [class.expanded]="row.expanded">▸</span>
+                </button>
+                } @else {
+                <span class="expand-spacer"></span>
+                }
+                <span class="code-badge">{{ row.menu.code }}</span>
+              </div>
+            </td>
+            <td class="col-title">
+              <div class="title-cell">
+                @if (row.menu.icon) {
+                <span [class]="row.menu.icon + ' menu-icon'" [title]="row.menu.icon"></span>
+                }
+                <span class="title-text">{{ row.menu.title }}</span>
+                @if (row.hasChildren) {
+                <span class="child-count" [title]="'menus.hint.children' | translate">
+                  {{ row.menu.children?.length }}
+                </span>
+                }
+              </div>
+            </td>
+            <td class="col-path">
+              @if (row.menu.path) {
+              <code class="path-badge">{{ row.menu.path }}</code>
+              } @else {
+              <span class="empty-dash">—</span>
+              }
+            </td>
+            <td class="col-icon">
+              @if (row.menu.icon) {
+              <span class="icon-preview-cell">
+                <span [class]="row.menu.icon + ' icon-preview'"></span>
+                <span class="icon-name-small">{{ row.menu.icon }}</span>
+              </span>
+              } @else {
+              <span class="empty-dash">—</span>
+              }
+            </td>
+            <td class="col-order">
+              <span class="order-badge">{{ row.menu.sortOrder ?? 0 }}</span>
+            </td>
+            <td class="col-roles">
+              @if (row.menu.roleCodes?.length) {
+              <div class="role-chips">
+                @for (r of row.menu.roleCodes!; track r) {
+                <span class="role-chip" [title]="r">{{ r.replace('ROLE_', '') }}</span>
+                }
+              </div>
+              } @else {
+              <span class="public-badge" [title]="'menus.hint.publicAccess' | translate">
+                🌐 {{ 'menus.hint.public' | translate }}
+              </span>
+              }
+            </td>
+            <td class="col-status">
+              <span [class]="statusClass(row.menu.status)">{{ statusLabel(row.menu.status) }}</span>
+            </td>
+            <td class="col-actions">
+              <div class="action-group">
+                <button type="button" class="action-btn-icon" [appTooltip]="'checkin.common.actions.edit' | translate"
+                  (click)="openEditModal(row.menu)">
+                  <span class="custom-icon-edit"></span>
+                </button>
+                <button type="button" class="action-btn-icon danger"
+                  [appTooltip]="'checkin.common.actions.delete' | translate" tooltipPosition="top"
+                  (click)="requestDelete(row.menu, $event)">
+                  <span class="custom-icon-trash"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
   </section>
 </div>
 
-<!-- Create / Edit Modal -->
-<app-modal-popup
-  [isVisible]="formVisible()"
-  (isVisibleChange)="formVisible.set($event)"
-  [title]="formTitle()"
-  [saveText]="'menus.dialog.actions.save' | translate"
-  [cancelText]="'menus.dialog.actions.cancel' | translate"
-  maxWidth="720px"
-  (save)="saveForm()"
-  (cancel)="closeForm()">
+<!-- ── Create / Edit Modal ──────────────────────────────────────── -->
+<app-modal-popup [isVisible]="formVisible()" (isVisibleChange)="formVisible.set($event)" [title]="formTitle()"
+  [saveText]="'menus.dialog.actions.save' | translate" [cancelText]="'menus.dialog.actions.cancel' | translate"
+  maxWidth="720px" (save)="saveForm()" (cancel)="closeForm()">
   <div class="form-grid">
     <div class="form-field">
       <label>{{ 'menus.dialog.form.code.label' | translate }} <span class="required">*</span></label>
-      <app-shared-input-text
-        [value]="formState().code"
-        [placeholder]="'menus.dialog.form.code.placeholder' | translate"
+      <app-shared-input-text [value]="formState().code" [placeholder]="'menus.dialog.form.code.placeholder' | translate"
         (valueChange)="updateFormField('code', $event)">
       </app-shared-input-text>
+      <p class="field-hint">{{ 'menus.hint.codeField' | translate }}</p>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.title.label' | translate }} <span class="required">*</span></label>
-      <app-shared-input-text
-        [value]="formState().title"
+      <app-shared-input-text [value]="formState().title"
         [placeholder]="'menus.dialog.form.title.placeholder' | translate"
         (valueChange)="updateFormField('title', $event)">
       </app-shared-input-text>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.path.label' | translate }}</label>
-      <app-shared-input-text
-        [value]="formState().path"
-        [placeholder]="'menus.dialog.form.path.placeholder' | translate"
+      <app-shared-input-text [value]="formState().path" [placeholder]="'menus.dialog.form.path.placeholder' | translate"
         (valueChange)="updateFormField('path', $event)">
       </app-shared-input-text>
+      <p class="field-hint">{{ 'menus.hint.pathField' | translate }}</p>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.icon.label' | translate }}</label>
-      <app-shared-input-text
-        [value]="formState().icon"
-        [placeholder]="'menus.dialog.form.icon.placeholder' | translate"
+      <app-shared-input-text [value]="formState().icon" [placeholder]="'menus.dialog.form.icon.placeholder' | translate"
         (valueChange)="updateFormField('icon', $event)">
       </app-shared-input-text>
+      <p class="field-hint">{{ 'menus.hint.iconField' | translate }}</p>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.parentId.label' | translate }}</label>
-      <app-shared-dropdown
-        [options]="parentOptions()"
-        [value]="formState().parentId ? '' + formState().parentId : ''"
-        [ngStyle]="{ width: '100%' }"
-        (valueChange)="updateFormField('parentId', $event ? +$event : null)">
+      <app-shared-dropdown [options]="parentOptions()" [value]="formState().parentId ? '' + formState().parentId : ''"
+        [ngStyle]="{ width: '100%' }" (valueChange)="updateFormField('parentId', $event ? +$event : null)">
       </app-shared-dropdown>
+      <p class="field-hint">{{ 'menus.hint.parentField' | translate }}</p>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.sortOrder.label' | translate }}</label>
-      <app-shared-input-text
-        [value]="'' + formState().sortOrder"
-        placeholder="0"
+      <app-shared-input-text [value]="'' + formState().sortOrder" placeholder="0"
         (valueChange)="updateFormField('sortOrder', +$event || 0)">
       </app-shared-input-text>
+      <p class="field-hint">{{ 'menus.hint.sortOrderField' | translate }}</p>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.status.label' | translate }}</label>
-      <app-shared-dropdown
-        [options]="statusOptions"
-        [value]="formState().status"
-        [ngStyle]="{ width: '100%' }"
+      <app-shared-dropdown [options]="statusOptions" [value]="formState().status" [ngStyle]="{ width: '100%' }"
         (valueChange)="updateFormField('status', $event)">
       </app-shared-dropdown>
+      <p class="field-hint">{{ 'menus.hint.statusField' | translate }}</p>
     </div>
     <div class="form-field full-width">
       <label>{{ 'menus.dialog.form.roleCodes.label' | translate }}</label>
       <div class="role-tags-input">
         <div class="role-tags">
           @for (role of formState().roleCodes; track role) {
-            <span class="role-tag">
-              {{ role }}
-              <button type="button" class="role-tag-remove" (click)="removeRoleCode(role)">×</button>
-            </span>
+          <span class="role-tag">
+            {{ role }}
+            <button type="button" class="role-tag-remove" [title]="'menus.hint.removeRole' | translate"
+              (click)="removeRoleCode(role)">×</button>
+          </span>
+          }
+          @if (!formState().roleCodes.length) {
+          <span class="role-placeholder-hint">{{ 'menus.hint.noRoles' | translate }}</span>
           }
         </div>
         <div class="role-input-row">
-          <app-shared-input-text
-            [value]="roleCodeInput()"
+          <app-shared-input-text [value]="roleCodeInput()"
             [placeholder]="'menus.dialog.form.roleCodes.placeholder' | translate"
-            (valueChange)="onRoleCodeInputChange($event)"
-            (keydown)="onRoleCodeKeydown($event)">
+            (valueChange)="onRoleCodeInputChange($event)" (keydown)="onRoleCodeKeydown($event)">
           </app-shared-input-text>
-          <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">{{ 'checkin.common.actions.add' | translate }}</button>
+          <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">{{
+            'checkin.common.actions.add' | translate }}</button>
         </div>
       </div>
+      <p class="field-hint">{{ 'menus.dialog.form.roleCodes.help' | translate }}</p>
     </div>
   </div>
 </app-modal-popup>
 
-<!-- Delete Confirmation -->
-<app-confirm-popup
-  [isVisible]="confirmVisible()"
-  (isVisibleChange)="confirmVisible.set($event)"
-  [title]="'menus.confirmDelete.title' | translate"
-  [message]="confirmMessage()"
-  [cancelText]="'menus.dialog.actions.cancel' | translate"
-  [confirmText]="'checkin.common.actions.delete' | translate"
-  (confirm)="confirmDelete()"
-  (cancel)="cancelDelete()">
+<!-- ── Delete Confirmation ────────────────────────────────────── -->
+<app-confirm-popup [isVisible]="confirmVisible()" (isVisibleChange)="confirmVisible.set($event)"
+  [title]="'menus.confirmDelete.title' | translate" [message]="confirmMessage()"
+  [cancelText]="'menus.dialog.actions.cancel' | translate" [confirmText]="'checkin.common.actions.delete' | translate"
+  (confirm)="confirmDelete()" (cancel)="cancelDelete()">
 </app-confirm-popup>

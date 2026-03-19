@@ -906,8 +906,38 @@
       "message": "Are you sure you want to delete menu <b>{{title}}</b>? All child menus (if any) will also be deleted."
     },
     "empty": {
-      "title": "No data",
-      "message": "No menus have been configured yet."
+      "title": "No menus yet",
+      "message": "Create your first menu to start configuring the navigation for your users. Press the button below."
+    },
+    "search": {
+      "noResult": {
+        "title": "No menus found",
+        "message": "No menu matches the keyword you entered. Please check or clear the search filter."
+      }
+    },
+    "page": {
+      "error": {
+        "title": "Unable to load menu list",
+        "message": "A server error occurred. Please try again later.",
+        "retry": "Try again"
+      }
+    },
+    "hint": {
+      "table": "To nest menus, set a Parent Menu when creating. Click \u25b8 to expand/collapse a branch.",
+      "code": "Unique identifier for this menu. Use UPPERCASE_UNDERSCORE. e.g., USER_MANAGEMENT",
+      "path": "Frontend URL path for this module. e.g., /users",
+      "roles": "Menu is visible only to users with these role codes. Empty = visible to all.",
+      "children": "Number of direct child menus",
+      "publicAccess": "This menu is visible to all users (no role restriction set)",
+      "public": "Public",
+      "codeField": "Uppercase, no spaces. Used as internal reference.",
+      "pathField": "Must start with /. Leave empty if this is a group menu without its own page.",
+      "iconField": "CSS class name of the icon in the theme. e.g., custom-icon-users, custom-icon-home.",
+      "parentField": "Select a parent to nest this menu under. Leave empty for root-level.",
+      "sortOrderField": "Lower numbers appear first. Default is 0.",
+      "statusField": "Hidden menus are not shown in the client UI but their config is preserved.",
+      "noRoles": "No roles assigned \u2014 all users can see this menu",
+      "removeRole": "Remove this role"
     }
   }
 }

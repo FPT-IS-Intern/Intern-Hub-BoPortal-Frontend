@@ -18,6 +18,7 @@ import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
 import { PortalMenuService } from '../../services/api/portal-menu.service';
 import { PortalMenuItem, PortalMenuRequest } from '../../models/portal-menu.model';
+import { TooltipDirective } from '../../directives/tooltip.directive';
 
 type FormMode = 'create' | 'edit';
 
@@ -63,6 +64,7 @@ interface FlatRow {
     TableSkeletonComponent,
     ConfirmPopup,
     ModalPopup,
+    TooltipDirective,
   ],
   templateUrl: './menu-management.component.html',
   styleUrl: './menu-management.component.scss',

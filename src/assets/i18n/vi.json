@@ -905,8 +905,38 @@
       "message": "Bạn có chắc chắn muốn xóa menu <b>{{title}}</b>? Toàn bộ menu con (nếu có) cũng sẽ bị xóa theo."
     },
     "empty": {
-      "title": "Không có dữ liệu",
-      "message": "Chưa có menu nào được cấu hình."
+      "title": "Chưa có menu nào",
+      "message": "Hãy tạo menu đầu tiên để bắt đầu cấu hình hiển thị cho người dùng. Nhấn nút bên dưới để bắt đầu."
+    },
+    "search": {
+      "noResult": {
+        "title": "Không tìm thấy menu",
+        "message": "Không có menu nào khớp với từ khóa “{{keyword}}”. Vui lòng kiểm tra lại hoặc xóa bộ lọc."
+      }
+    },
+    "page": {
+      "error": {
+        "title": "Không thể tải danh sách menu",
+        "message": "Đã xảy ra lỗi khi kết nối tới máy chủ. Vui lòng thử lại sau.",
+        "retry": "Thử lại"
+      }
+    },
+    "hint": {
+      "table": "Để xếp mạng phân cấp, hãy đặt Menu cha khi tạo mới. Nhấn vào ▸ để mở/đóng nhánh con.",
+      "code": "Mã menu là định danh duy nhất, viết hoa, không dấu cách. VD: USER_MANAGEMENT",
+      "path": "Đường dẫn URL của module frontend tương ứng. VD: /users",
+      "roles": "Menu chỉ hiển thị cho user có Role Code này. Nếu trống → mọi user đều thấy.",
+      "children": "Số menu con trực tiếp",
+      "publicAccess": "Menu này hiển thị với mọi người dùng (chưa gán vai trò)",
+      "public": "Công khai",
+      "codeField": "Viết hoa, không dấu cách. Mã này dùng để tra cứu nội bộ.",
+      "pathField": "Bắt đầu bằng /. Bỏ trống nếu menu chỉ là nhóm con, không có trang riêng.",
+      "iconField": "Tên class CSS của icon trong theme. VD: custom-icon-users, custom-icon-home.",
+      "parentField": "Chọn mục cha để lồng menu này vào trong. Để trống nếu là menu gốc (root).",
+      "sortOrderField": "Số nhỏ được hiển thị trước. Mặc định là 0.",
+      "statusField": "Tạm ẩn sẽ giấu menu khỏi UI client nhưng không xóa cấu hình.",
+      "noRoles": "Chưa có vai trò nào — mọi người dùng sẽ thấy menu này",
+      "removeRole": "Gỡ bỏ vai trò này"
     }
   }
 }
