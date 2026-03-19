@@ -193,22 +193,31 @@
       @if (titleErrorKey()) {
       <p class="field-error">{{ titleErrorKey() | translate }}</p>
       }
-    </div>
-    <div class="form-field">
-      <label [appTooltip]="'menus.hint.pathField' | translate">{{ 'menus.dialog.form.path.label' | translate }}</label>
-      <app-shared-input-text [value]="formState().path" [placeholder]="'menus.dialog.form.path.placeholder' | translate"
-        (valueChange)="updateFormField('path', $event)">
-      </app-shared-input-text>
-      @if (pathValidationErrorKey()) {
-      <p class="field-error">{{ pathValidationErrorKey() | translate }}</p>
-      }
-    </div>
-    <div class="form-field">
-      <label [appTooltip]="'menus.hint.iconField' | translate">{{ 'menus.dialog.form.icon.label' | translate }}</label>
-      <app-shared-input-text [value]="formState().icon" [placeholder]="'menus.dialog.form.icon.placeholder' | translate"
-        (valueChange)="updateFormField('icon', $event)">
-      </app-shared-input-text>
-    </div>
+      </div>
+      <div class="form-field">
+        <label [appTooltip]="'menus.hint.pathField' | translate">
+          {{ 'menus.dialog.form.path.label' | translate }}
+          @if (formMode() === 'create') { <span class="required">*</span> }
+        </label>
+        <app-shared-input-text [value]="formState().path" [placeholder]="'menus.dialog.form.path.placeholder' | translate"
+          (valueChange)="updateFormField('path', $event)">
+        </app-shared-input-text>
+        @if (pathValidationErrorKey()) {
+        <p class="field-error">{{ pathValidationErrorKey() | translate }}</p>
+        }
+      </div>
+      <div class="form-field">
+        <label [appTooltip]="'menus.hint.iconField' | translate">
+          {{ 'menus.dialog.form.icon.label' | translate }}
+          @if (formMode() === 'create') { <span class="required">*</span> }
+        </label>
+        <app-shared-input-text [value]="formState().icon" [placeholder]="'menus.dialog.form.icon.placeholder' | translate"
+          (valueChange)="updateFormField('icon', $event)">
+        </app-shared-input-text>
+        @if (iconValidationErrorKey()) {
+        <p class="field-error">{{ iconValidationErrorKey() | translate }}</p>
+        }
+      </div>
     <div class="form-field">
       <label [appTooltip]="'menus.hint.parentField' | translate">{{ 'menus.dialog.form.parentId.label' | translate }}</label>
       <app-shared-dropdown [options]="parentOptions()" [value]="formState().parentId ? '' + formState().parentId : ''"

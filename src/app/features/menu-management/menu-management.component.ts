@@ -211,11 +211,17 @@ export class MenuManagementComponent {
 
   protected readonly pathValidationErrorKey = computed<string | null>(() => {
     const path = this.formState().path.trim();
-    if (!path) return null;
+    if (!path) return this.formMode() === 'create' ? 'menus.validation.pathRequired' : null;
     // Allow Angular-like routes: /a, /a/b, /a/:id, etc. No spaces.
     if (!path.startsWith('/') || /\s/.test(path) || !/^\/[A-Za-z0-9\-._~/:]*$/.test(path)) {
       return 'menus.validation.pathFormat';
     }
+    return null;
+  });
+
+  protected readonly iconValidationErrorKey = computed<string | null>(() => {
+    const icon = this.formState().icon.trim();
+    if (!icon) return this.formMode() === 'create' ? 'menus.validation.iconRequired' : null;
     return null;
   });
 
@@ -317,6 +323,7 @@ export class MenuManagementComponent {
     !this.codeValidationErrorKey() &&
     !this.titleValidationErrorKey() &&
     !this.pathValidationErrorKey() &&
+    !this.iconValidationErrorKey() &&
     !this.sortOrderValidationErrorKey() &&
     !this.roleCodesValidationErrorKey(),
   );
@@ -535,6 +542,7 @@ export class MenuManagementComponent {
       this.codeValidationErrorKey() ||
       this.titleValidationErrorKey() ||
       this.pathValidationErrorKey() ||
+      this.iconValidationErrorKey() ||
       // sortOrderDuplicate is handled as a smart flow below (swap/suggest)
       (this.sortOrderValidationErrorKey() === 'menus.validation.sortOrderDuplicate' ? null : this.sortOrderValidationErrorKey()) ||
       this.roleCodesValidationErrorKey() ||
