@@ -259,17 +259,33 @@
       @if (sortOrderValidationErrorKey()) {
       <p class="field-error">{{ sortOrderValidationErrorKey() | translate }}</p>
       }
-    </div>
-    <div class="form-field">
-      <label [appTooltip]="'menus.hint.statusField' | translate">{{ 'menus.dialog.form.status.label' | translate }}</label>
-      <app-shared-dropdown [options]="statusOptions" [value]="formState().status" [ngStyle]="{ width: '100%' }"
-        (valueChange)="updateFormField('status', $event)">
-      </app-shared-dropdown>
-    </div>
-    <div class="form-field full-width">
-      <label [appTooltip]="'menus.dialog.form.roleCodes.help' | translate">{{ 'menus.dialog.form.roleCodes.label' | translate }}</label>
-      <div class="role-codes">
-        <div class="role-codes__block role-codes__pick">
+      </div>
+      <div class="form-field">
+        <label [appTooltip]="'menus.hint.statusField' | translate">{{ 'menus.dialog.form.status.label' | translate }}</label>
+        @if (formMode() === 'edit') {
+          <div class="status-toggle">
+            <label class="custom-switch">
+              <input type="checkbox" [checked]="formState().status === 'ACTIVE'" (change)="onStatusToggle($event)" />
+              <span class="slider"></span>
+            </label>
+            <span class="status-text" [class.active]="formState().status === 'ACTIVE'">
+              {{
+                (formState().status === 'ACTIVE'
+                  ? 'menus.dialog.form.status.active'
+                  : 'menus.dialog.form.status.inactive') | translate
+              }}
+            </span>
+          </div>
+        } @else {
+          <app-shared-dropdown [options]="statusOptions" [value]="formState().status" [ngStyle]="{ width: '100%' }"
+            (valueChange)="updateFormField('status', $event)">
+          </app-shared-dropdown>
+        }
+      </div>
+      <div class="form-field full-width">
+        <label [appTooltip]="'menus.dialog.form.roleCodes.help' | translate">{{ 'menus.dialog.form.roleCodes.label' | translate }}</label>
+        <div class="role-codes">
+          <div class="role-codes__block role-codes__pick">
           <div class="role-codes__block-title">
             {{ 'menus.dialog.form.roleCodes.pickTitle' | translate }}
           </div>

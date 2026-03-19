@@ -394,6 +394,11 @@ export class MenuManagementComponent {
     return roleCodes.map(r => r.replace('ROLE_', '')).join(', ');
   }
 
+  protected onStatusToggle(event: Event): void {
+    const checked = (event.target as HTMLInputElement | null)?.checked ?? false;
+    this.updateFormField('status', checked ? 'ACTIVE' : 'INACTIVE');
+  }
+
   // ── Form: Create ──
   protected openCreateModal(): void {
     this.formMode.set('create');
