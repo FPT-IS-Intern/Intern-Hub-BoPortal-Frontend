@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationStart } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { HeaderData } from '../../components/header/header.component';
 import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
 import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
@@ -19,6 +20,7 @@ import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 export class BoPortalLayoutComponent {
   protected readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   constructor() {
     // Clear breadcrumbs immediately on any navigation start to avoid stale titles
@@ -28,6 +30,15 @@ export class BoPortalLayoutComponent {
     ).subscribe(() => {
       this.breadcrumbService.clearBreadcrumbs();
     });
+
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.sidebarData = {
+          ...this.sidebarData,
+          menuItems: this.buildSidebarMenuItems(),
+        };
+      });
   }
   // Mobile sidebar state
   isMobileSidebarOpen = false;
@@ -58,7 +69,7 @@ export class BoPortalLayoutComponent {
     closeButtonBackgroundColor: 'var(--app-color-white)',
     closeButtonMarginRight: '12px',
 
-    // ===== DEFAULT (collapsed & expanded dÃ¹ng chung) =====
+    // ===== DEFAULT (collapsed & expanded dùng chung) =====
     defaultWidth: '100%',
     defaultHeight: '48px',
     defaultBorderRadius: '8px',
@@ -92,38 +103,7 @@ export class BoPortalLayoutComponent {
     // =========================
     // Menu Items
     // =========================
-    menuItems: [
-      {
-        iconLeft: SIDEBAR_ICONS.USERS,
-        content: 'Quáº£n lÃ½ ngÆ°á»i dÃ¹ng',
-        url: '/users',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.SHIELD_PLUS,
-        content: 'Ma tráº­n phÃ¢n quyá»n',
-        url: '/permissions',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.BELL,
-        content: 'ChuÃ´ng thÃ´ng bÃ¡o',
-        url: '/notifications',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.GLOBE,
-        content: 'Äá»‹a Ä‘iá»ƒm checkin',
-        url: '/checkin',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.MENU,
-        content: 'Quản lý menu',
-        url: '/menus',
-      },
-      {
-        iconLeft: SIDEBAR_ICONS.SETTINGS,
-        content: 'Cáº¥u hÃ¬nh há»‡ thá»‘ng',
-        url: '/system-settings',
-      },
-    ],
+    menuItems: this.buildSidebarMenuItems(),
   };
 
   toggleButtonIconConfig = SIDEBAR_ICONS.ARROW_RIGHT;
@@ -141,5 +121,40 @@ export class BoPortalLayoutComponent {
 
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
+  }
+
+  private buildSidebarMenuItems(): SidebarData['menuItems'] {
+    return [
+      {
+        iconLeft: SIDEBAR_ICONS.USERS,
+        content: this.translate.instant('layout.menu.users'),
+        url: '/users',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.SHIELD_PLUS,
+        content: this.translate.instant('layout.menu.permissions'),
+        url: '/permissions',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.BELL,
+        content: this.translate.instant('layout.menu.notifications'),
+        url: '/notifications',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.GLOBE,
+        content: this.translate.instant('layout.menu.checkin'),
+        url: '/checkin',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.MENU,
+        content: this.translate.instant('layout.menu.menus'),
+        url: '/menus',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.SETTINGS,
+        content: this.translate.instant('layout.menu.systemSettings'),
+        url: '/system-settings',
+      },
+    ];
   }
 }

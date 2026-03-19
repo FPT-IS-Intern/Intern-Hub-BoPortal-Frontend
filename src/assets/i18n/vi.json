@@ -32,6 +32,16 @@
       "refresh_token_duplicate": "Phiên đăng nhập đã tồn tại. Vui lòng đăng nhập lại"
     }
   },
+  "layout": {
+    "menu": {
+      "users": "Quản lý người dùng",
+      "permissions": "Ma trận phân quyền",
+      "notifications": "Chuông thông báo",
+      "checkin": "Địa điểm checkin",
+      "menus": "Quản lý menu",
+      "systemSettings": "Cấu hình hệ thống"
+    }
+  },
   "login": {
     "title": "Đăng nhập",
     "username": {

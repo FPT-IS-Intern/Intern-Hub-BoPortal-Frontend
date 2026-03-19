@@ -32,6 +32,16 @@
       "refresh_token_duplicate": "A session already exists. Please sign in again"
     }
   },
+  "layout": {
+    "menu": {
+      "users": "User management",
+      "permissions": "Permission matrix",
+      "notifications": "Notification bell",
+      "checkin": "Check-in locations",
+      "menus": "Menu management",
+      "systemSettings": "System settings"
+    }
+  },
   "login": {
     "title": "Sign in",
     "username": {
