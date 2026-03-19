@@ -1,4 +1,4 @@
-﻿import { Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationStart } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -112,6 +112,11 @@ export class BoPortalLayoutComponent {
         iconLeft: SIDEBAR_ICONS.GLOBE,
         content: 'Äá»‹a Ä‘iá»ƒm checkin',
         url: '/checkin',
+      },
+      {
+        iconLeft: SIDEBAR_ICONS.MENU,
+        content: 'Quản lý menu',
+        url: '/menus',
       },
       {
         iconLeft: SIDEBAR_ICONS.SETTINGS,

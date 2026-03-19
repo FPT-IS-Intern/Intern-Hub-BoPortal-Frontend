@@ -1,0 +1,244 @@
+<div class="page-body">
+  <section class="filter-panel">
+    <div class="filter-row">
+      <div class="filter-item keyword-field">
+        <app-shared-search
+          [value]="keyword()"
+          placeholder="Tìm kiếm theo code, tên, path..."
+          width="100%"
+          (valueChange)="onSearchChange($event)">
+        </app-shared-search>
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn-ghost-custom action-btn" (click)="expandAll()">
+          <span class="custom-icon-arrow-right expand-icon"></span>
+          Mở rộng
+        </button>
+        <button type="button" class="btn-ghost-custom action-btn" (click)="collapseAll()">
+          <span class="custom-icon-arrow-left collapse-icon"></span>
+          Thu gọn
+        </button>
+        <button type="button" class="btn-primary-custom action-btn" (click)="openCreateModal()">
+          <span class="custom-icon-package-plus"></span>
+          Tạo mới
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="table-panel">
+    @if (isLoading()) {
+      <div class="state-panel">
+        <app-table-skeleton
+          class="skeleton-panel"
+          [columns]="8"
+          [rows]="6"
+          [columnWidths]="['5%','12%','22%','15%','10%','8%','12%','16%']">
+        </app-table-skeleton>
+      </div>
+    } @else if (isError()) {
+      <div class="state-panel state-card">
+        <app-no-data
+          title="Không thể tải dữ liệu"
+          message="Đã có lỗi xảy ra khi tải danh sách menu.">
+          <span icon class="custom-icon-error error-icon"></span>
+          <button action class="btn-outline-custom retry-btn" (click)="loadMenus()">
+            Thử lại
+          </button>
+        </app-no-data>
+      </div>
+    } @else if (flatRows().length === 0) {
+      <div class="state-panel state-card">
+        <app-no-data
+          [fullHeight]="false"
+          title="Chưa có menu nào"
+          message="Nhấn nút 'Tạo mới' để bắt đầu cấu hình menu cho hệ thống.">
+          <span icon class="custom-icon-news"></span>
+        </app-no-data>
+      </div>
+    } @else {
+      <div class="tree-table-wrapper">
+        <table class="tree-table">
+          <thead>
+            <tr>
+              <th class="col-no">#</th>
+              <th class="col-code">Code</th>
+              <th class="col-title">Tên menu</th>
+              <th class="col-path">Path</th>
+              <th class="col-icon">Icon</th>
+              <th class="col-order">Thứ tự</th>
+              <th class="col-roles">Vai trò</th>
+              <th class="col-status">Trạng thái</th>
+              <th class="col-actions">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of flatRows(); track row.menu.id; let i = $index) {
+              <tr class="tree-row" [class.depth-1]="row.depth === 1" [class.depth-2]="row.depth >= 2">
+                <td class="col-no">{{ i + 1 }}</td>
+                <td class="col-code">
+                  <div class="tree-cell" [style.padding-left.px]="row.depth * 28">
+                    @if (row.hasChildren) {
+                      <button type="button" class="expand-btn" (click)="toggleExpand(row.menu.id)">
+                        <span class="chevron" [class.expanded]="row.expanded">▸</span>
+                      </button>
+                    } @else {
+                      <span class="expand-spacer"></span>
+                    }
+                    <span class="code-text">{{ row.menu.code }}</span>
+                  </div>
+                </td>
+                <td class="col-title">
+                  <div class="title-cell">
+                    @if (row.menu.icon) {
+                      <span [class]="row.menu.icon + ' menu-icon'"></span>
+                    }
+                    <span class="title-text">{{ row.menu.title }}</span>
+                  </div>
+                </td>
+                <td class="col-path">
+                  <span class="path-text">{{ row.menu.path || '—' }}</span>
+                </td>
+                <td class="col-icon">
+                  <span class="icon-name">{{ row.menu.icon || '—' }}</span>
+                </td>
+                <td class="col-order">{{ row.menu.sortOrder ?? 0 }}</td>
+                <td class="col-roles">
+                  <span class="roles-text">{{ rolesText(row.menu.roleCodes) }}</span>
+                </td>
+                <td class="col-status">
+                  <span [class]="statusClass(row.menu.status)">{{ statusLabel(row.menu.status) }}</span>
+                </td>
+                <td class="col-actions">
+                  <div class="action-group">
+                    <button
+                      type="button"
+                      class="btn-outline-custom small action-outline-btn"
+                      title="Chỉnh sửa"
+                      (click)="openEditModal(row.menu)">
+                      <span class="custom-icon-edit action-icon"></span>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-outline-custom small action-outline-btn danger-outline"
+                      title="Xóa"
+                      (click)="requestDelete(row.menu, $event)">
+                      <span class="custom-icon-error action-icon"></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>
+
+<!-- Create / Edit Modal -->
+<app-modal-popup
+  [isVisible]="formVisible()"
+  (isVisibleChange)="formVisible.set($event)"
+  [title]="formTitle()"
+  saveText="Lưu"
+  cancelText="Hủy"
+  maxWidth="720px"
+  (save)="saveForm()"
+  (cancel)="closeForm()">
+  <div class="form-grid">
+    <div class="form-field">
+      <label>Code <span class="required">*</span></label>
+      <app-shared-input-text
+        [value]="formState().code"
+        placeholder="VD: DASHBOARD, USERS"
+        (valueChange)="updateFormField('code', $event)">
+      </app-shared-input-text>
+    </div>
+    <div class="form-field">
+      <label>Tên menu <span class="required">*</span></label>
+      <app-shared-input-text
+        [value]="formState().title"
+        placeholder="VD: Bảng điều khiển"
+        (valueChange)="updateFormField('title', $event)">
+      </app-shared-input-text>
+    </div>
+    <div class="form-field">
+      <label>Đường dẫn (Path)</label>
+      <app-shared-input-text
+        [value]="formState().path"
+        placeholder="VD: /dashboard"
+        (valueChange)="updateFormField('path', $event)">
+      </app-shared-input-text>
+    </div>
+    <div class="form-field">
+      <label>Icon</label>
+      <app-shared-input-text
+        [value]="formState().icon"
+        placeholder="VD: custom-icon-home"
+        (valueChange)="updateFormField('icon', $event)">
+      </app-shared-input-text>
+    </div>
+    <div class="form-field">
+      <label>Menu cha</label>
+      <app-shared-dropdown
+        [options]="parentOptions()"
+        [value]="formState().parentId ? '' + formState().parentId : ''"
+        [ngStyle]="{ width: '100%' }"
+        (valueChange)="updateFormField('parentId', $event ? +$event : null)">
+      </app-shared-dropdown>
+    </div>
+    <div class="form-field">
+      <label>Thứ tự sắp xếp</label>
+      <app-shared-input-text
+        [value]="'' + formState().sortOrder"
+        placeholder="0"
+        (valueChange)="updateFormField('sortOrder', +$event || 0)">
+      </app-shared-input-text>
+    </div>
+    <div class="form-field">
+      <label>Trạng thái</label>
+      <app-shared-dropdown
+        [options]="statusOptions"
+        [value]="formState().status"
+        [ngStyle]="{ width: '100%' }"
+        (valueChange)="updateFormField('status', $event)">
+      </app-shared-dropdown>
+    </div>
+    <div class="form-field full-width">
+      <label>Vai trò (Role Codes)</label>
+      <div class="role-tags-input">
+        <div class="role-tags">
+          @for (role of formState().roleCodes; track role) {
+            <span class="role-tag">
+              {{ role }}
+              <button type="button" class="role-tag-remove" (click)="removeRoleCode(role)">×</button>
+            </span>
+          }
+        </div>
+        <div class="role-input-row">
+          <app-shared-input-text
+            [value]="roleCodeInput()"
+            placeholder="Nhập role code, nhấn Enter để thêm..."
+            (valueChange)="onRoleCodeInputChange($event)"
+            (keydown)="onRoleCodeKeydown($event)">
+          </app-shared-input-text>
+          <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">Thêm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal-popup>
+
+<!-- Delete Confirmation -->
+<app-confirm-popup
+  [isVisible]="confirmVisible()"
+  (isVisibleChange)="confirmVisible.set($event)"
+  title="Xóa menu"
+  [message]="confirmMessage()"
+  cancelText="Hủy"
+  confirmText="Xóa"
+  (confirm)="confirmDelete()"
+  (cancel)="cancelDelete()">
+</app-confirm-popup>

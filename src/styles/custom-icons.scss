@@ -31,6 +31,10 @@
   @include custom-icon-file('/assets/icons/news.svg');
 }
 
+.custom-icon-layout-left {
+  @include custom-icon-file('/assets/icons/layout-left.svg');
+}
+
 .custom-icon-arrow-left {
   @include custom-icon-file('/assets/icons/arrow-left.svg', 1rem);
 }

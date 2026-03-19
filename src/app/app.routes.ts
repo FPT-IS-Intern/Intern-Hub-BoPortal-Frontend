@@ -8,6 +8,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { CheckinLocationComponent } from './features/checkin-location/checkin-location.component';
 import { SystemSettingsComponent } from './features/system-settings/system-settings.component';
 import { UserManagementComponent } from './features/user-management/user-management.component';
+import { MenuManagementComponent } from './features/menu-management/menu-management.component';
 
 export const routes: Routes = [
   {
@@ -44,6 +45,10 @@ export const routes: Routes = [
       {
         path: 'checkin',
         component: CheckinLocationComponent,
+      },
+      {
+        path: 'menus',
+        component: MenuManagementComponent,
       },
       {
         path: 'system-settings',
