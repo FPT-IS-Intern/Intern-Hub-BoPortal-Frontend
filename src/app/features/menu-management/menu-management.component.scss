@@ -45,22 +45,6 @@
   white-space: nowrap;
 }
 
-/* ── Hint bar ── */
-.filter-hint {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--app-color-text-muted);
-  padding: 6px 4px 2px;
-}
-
-.hint-icon {
-  font-size: 14px;
-  flex-shrink: 0;
-  opacity: 0.7;
-}
-
 .btn-ghost-custom {
   display: inline-flex;
   align-items: center;
