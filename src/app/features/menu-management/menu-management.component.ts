@@ -211,7 +211,7 @@ export class MenuManagementComponent {
 
   protected readonly pathValidationErrorKey = computed<string | null>(() => {
     const path = this.formState().path.trim();
-    if (!path) return this.formMode() === 'create' ? 'menus.validation.pathRequired' : null;
+    if (!path) return this.formMode() === 'create' && this.formSubmitted() ? 'menus.validation.pathRequired' : null;
     // Allow Angular-like routes: /a, /a/b, /a/:id, etc. No spaces.
     if (!path.startsWith('/') || /\s/.test(path) || !/^\/[A-Za-z0-9\-._~/:]*$/.test(path)) {
       return 'menus.validation.pathFormat';
@@ -221,7 +221,7 @@ export class MenuManagementComponent {
 
   protected readonly iconValidationErrorKey = computed<string | null>(() => {
     const icon = this.formState().icon.trim();
-    if (!icon) return this.formMode() === 'create' ? 'menus.validation.iconRequired' : null;
+    if (!icon) return this.formMode() === 'create' && this.formSubmitted() ? 'menus.validation.iconRequired' : null;
     return null;
   });
 
