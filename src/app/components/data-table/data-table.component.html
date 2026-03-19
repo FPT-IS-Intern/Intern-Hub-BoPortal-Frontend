@@ -59,7 +59,7 @@
     </tbody>
   </table>
 
-  @if (showPagination && paginationTemplate) {
+  @if (resolvedShowPagination && paginationTemplate) {
   <div class="pagination-container">
     <ng-container [ngTemplateOutlet]="paginationTemplate"></ng-container>
   </div>

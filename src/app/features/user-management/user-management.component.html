@@ -75,7 +75,10 @@
         [rows]="rows()"
         [rowTrackBy]="trackUser"
         [rowClickable]="true"
-        [showPagination]="showPagination()"
+        [paginationAuto]="true"
+        [paginationSticky]="true"
+        [paginationTotal]="totalItems()"
+        [paginationPageSize]="pageSize()"
         [emptyColspan]="columns.length"
         (rowClick)="openUserDetail($event.userId)">
         <ng-template #header let-col>

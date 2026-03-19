@@ -116,10 +116,6 @@ export class UserManagementComponent {
   protected readonly isLoading = signal(true);
   protected readonly isError = signal(false);
 
-  // Sticky pagination-bar: show it only after the list ever exceeded 1 page,
-  // then keep it visible (so users can switch page size back) until list is empty.
-  protected readonly paginationSticky = signal(false);
-
   protected readonly drawerVisible = signal(false);
   protected readonly drawerMode = signal<DrawerMode>('detail');
   protected readonly drawerLoading = signal(false);
@@ -174,11 +170,6 @@ export class UserManagementComponent {
     return `${start}-${end} / ${total}`;
   });
 
-  protected readonly showPagination = computed(() => {
-    const total = this.totalItems();
-    if (total <= 0) return false;
-    return this.paginationSticky() || total > this.pageSize();
-  });
   protected readonly drawerTitle = computed(() => {
     if (this.drawerMode() === 'activity') return 'L\u1ECBch s\u1EED ho\u1EA1t \u0111\u1ED9ng';
     if (this.drawerMode() === 'login') return 'L\u1ECBch s\u1EED \u0111\u0103ng nh\u1EADp';
@@ -583,13 +574,7 @@ export class UserManagementComponent {
       .subscribe({
         next: (res) => {
           this.rows.set(res.data?.items ?? []);
-          const totalItems = res.data?.totalItems ?? 0;
-          this.totalItems.set(totalItems);
-          if (totalItems <= 0) {
-            this.paginationSticky.set(false);
-          } else if (totalItems > this.pageSize()) {
-            this.paginationSticky.set(true);
-          }
+          this.totalItems.set(res.data?.totalItems ?? 0);
           this.updateDynamicFilterOptions(res.data?.items ?? []);
         },
         error: () => {
