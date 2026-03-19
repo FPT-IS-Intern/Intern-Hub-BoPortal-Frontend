@@ -320,7 +320,14 @@ export class MenuManagementComponent {
   }
 
   protected updateFormField<K extends keyof MenuFormState>(key: K, value: MenuFormState[K]): void {
-    this.formState.update(state => ({ ...state, [key]: value }));
+    let nextValue: MenuFormState[K] = value;
+
+    // Auto-normalize menu code while typing.
+    if (key === 'code' && typeof nextValue === 'string') {
+      nextValue = nextValue.toUpperCase() as MenuFormState[K];
+    }
+
+    this.formState.update(state => ({ ...state, [key]: nextValue }));
   }
 
   // Role codes tag input
