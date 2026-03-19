@@ -170,7 +170,9 @@ export class UserManagementComponent {
     return `${start}-${end} / ${total}`;
   });
 
-  protected readonly showPagination = computed(() => this.totalItems() > this.pageSize());
+  // Keep the pagination bar visible as long as there is data, so users can always
+  // change page size even when results fit in a single page.
+  protected readonly showPagination = computed(() => this.totalItems() > 0);
   protected readonly drawerTitle = computed(() => {
     if (this.drawerMode() === 'activity') return 'L\u1ECBch s\u1EED ho\u1EA1t \u0111\u1ED9ng';
     if (this.drawerMode() === 'login') return 'L\u1ECBch s\u1EED \u0111\u0103ng nh\u1EADp';
