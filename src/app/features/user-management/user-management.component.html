@@ -41,7 +41,7 @@
     <div class="toolbar-actions">
       <button class="btn-primary-custom action-btn" (click)="openCreateModal()">
         <span class="custom-icon-package-plus"></span>
-        Tao moi
+        T&#7841;o m&#7899;i
       </button>
     </div>
   </section>
@@ -120,30 +120,30 @@
 
               @if (actionMenuUserId() === item.userId) {
                 <div class="action-menu" (click)="$event.stopPropagation()">
-                  <button type="button" class="action-menu-item" (click)="openEditModal(item, $event)">Chinh sua</button>
-                  <button type="button" class="action-menu-item" (click)="openRoleModal(item, $event)">Gan / doi vai tro</button>
-                  <button type="button" class="action-menu-item" (click)="openOrganizationModal(item, $event)">Cap nhat chuc danh / phong ban</button>
-                  <button type="button" class="action-menu-item" (click)="openHistory(item, 'activity', $event)">Lich su hoat dong</button>
-                  <button type="button" class="action-menu-item" (click)="openHistory(item, 'login', $event)">Lich su dang nhap</button>
+                  <button type="button" class="action-menu-item" (click)="openEditModal(item, $event)">Ch&#7881;nh s&#7917;a</button>
+                  <button type="button" class="action-menu-item" (click)="openRoleModal(item, $event)">G&#225;n / &#273;&#7893;i vai tr&#242;</button>
+                  <button type="button" class="action-menu-item" (click)="openOrganizationModal(item, $event)">C&#7853;p nh&#7853;t ch&#7913;c danh / ph&#242;ng ban</button>
+                  <button type="button" class="action-menu-item" (click)="openHistory(item, 'activity', $event)">L&#7883;ch s&#7917; ho&#7841;t &#273;&#7897;ng</button>
+                  <button type="button" class="action-menu-item" (click)="openHistory(item, 'login', $event)">L&#7883;ch s&#7917; &#273;&#259;ng nh&#7853;p</button>
 
                   @if (!isDeleted(item)) {
                     @if (isLocked(item)) {
-                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'unlock', $event)">Mo khoa</button>
+                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'unlock', $event)">M&#7903; kh&#243;a</button>
                     } @else {
-                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'lock', $event)">Khoa</button>
+                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'lock', $event)">Kh&#243;a</button>
                     }
 
                     @if (isInactive(item)) {
-                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'activate', $event)">Kich hoat</button>
+                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'activate', $event)">K&#237;ch ho&#7841;t</button>
                     } @else {
-                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'deactivate', $event)">Vo hieu hoa</button>
+                      <button type="button" class="action-menu-item" (click)="requestAction(item, 'deactivate', $event)">V&#244; hi&#7879;u h&#243;a</button>
                     }
 
-                    <button type="button" class="action-menu-item" (click)="requestAction(item, 'reset-password', $event)">Reset mat khau</button>
-                    <button type="button" class="action-menu-item" (click)="requestAction(item, 'resend-activation', $event)">Gui lai email kich hoat</button>
-                    <button type="button" class="action-menu-item danger" (click)="requestAction(item, 'delete', $event)">Xoa</button>
+                    <button type="button" class="action-menu-item" (click)="requestAction(item, 'reset-password', $event)">Reset m&#7853;t kh&#7849;u</button>
+                    <button type="button" class="action-menu-item" (click)="requestAction(item, 'resend-activation', $event)">G&#7917;i l&#7841;i email k&#237;ch ho&#7841;t</button>
+                    <button type="button" class="action-menu-item danger" (click)="requestAction(item, 'delete', $event)">X&#243;a</button>
                   } @else {
-                    <button type="button" class="action-menu-item" (click)="requestAction(item, 'restore', $event)">Khoi phuc</button>
+                    <button type="button" class="action-menu-item" (click)="requestAction(item, 'restore', $event)">Kh&#244;i ph&#7909;c</button>
                   }
                 </div>
               }
@@ -208,28 +208,28 @@
 
       <div class="detail-grid">
         <div class="detail-item">
-          <span class="detail-label">Ma nguoi dung</span>
+          <span class="detail-label">M&#227; ng&#432;&#7901;i d&#249;ng</span>
           <strong class="detail-value">{{ selectedUser()?.userId ?? '-' }}</strong>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Vai tro</span>
+          <span class="detail-label">Vai tr&#242;</span>
           <strong class="detail-value">{{ safeValue(selectedUser()?.role) }}</strong>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Chuc danh</span>
+          <span class="detail-label">Ch&#7913;c danh</span>
           <strong class="detail-value">{{ safeValue(selectedUser()?.positionCode) }}</strong>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Phong ban</span>
+          <span class="detail-label">Ph&#242;ng ban</span>
           <strong class="detail-value">{{ safeValue(selectedUser()?.department) }}</strong>
         </div>
         <div class="detail-item">
-          <span class="detail-label">So dien thoai</span>
+          <span class="detail-label">S&#7889; &#273;i&#7879;n tho&#7841;i</span>
           <strong class="detail-value">{{ safeValue(selectedUser()?.phoneNumber) }}</strong>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Kich hoat</span>
-          <strong class="detail-value">{{ selectedUser()?.activated ? 'Da kich hoat' : 'Chua kich hoat' }}</strong>
+          <span class="detail-label">K&#237;ch ho&#7841;t</span>
+          <strong class="detail-value">{{ selectedUser()?.activated ? activatedText : notActivatedText }}</strong>
         </div>
       </div>
     } @else {
@@ -238,11 +238,11 @@
           <div class="history-item">
             <div class="history-title">{{ record.title }}</div>
             <div class="history-description">{{ record.description }}</div>
-            <div class="history-meta">{{ record.actor || 'System' }} • {{ record.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div class="history-meta">{{ record.actor || 'System' }} &bull; {{ record.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
           </div>
         } @empty {
           <div class="state-panel state-card inner-empty">
-            <app-no-data [fullHeight]="false" title="Khong co du lieu lich su" message="Chua phat sinh lich su cho nguoi dung nay.">
+            <app-no-data [fullHeight]="false" title="Kh&#244;ng c&#243; d&#7919; li&#7879;u l&#7883;ch s&#7917;" message="Ch&#432;a ph&#225;t sinh l&#7883;ch s&#7917; cho ng&#432;&#7901;i d&#249;ng n&#224;y.">
               <span icon class="custom-icon-users-edit"></span>
             </app-no-data>
           </div>
@@ -256,15 +256,15 @@
   [isVisible]="formVisible()"
   (isVisibleChange)="formVisible.set($event)"
   [title]="formTitle()"
-  saveText="Luu"
-  cancelText="Huy"
+  saveText="L&#432;u"
+  cancelText="H&#7911;y"
   maxWidth="680px"
   (save)="saveForm()"
   (cancel)="closeForm()">
   <div class="form-grid">
     @if (formMode() === 'create' || formMode() === 'edit') {
       <div class="form-field">
-        <label>Ho va ten</label>
+        <label>H&#7885; v&#224; t&#234;n</label>
         <app-shared-input-text [value]="formState().fullName" (valueChange)="updateFormField('fullName', $event)"></app-shared-input-text>
       </div>
       <div class="form-field">
@@ -272,14 +272,14 @@
         <app-shared-input-text [value]="formState().email" (valueChange)="updateFormField('email', $event)"></app-shared-input-text>
       </div>
       <div class="form-field">
-        <label>So dien thoai</label>
+        <label>S&#7889; &#273;i&#7879;n tho&#7841;i</label>
         <app-shared-input-text [value]="formState().phoneNumber" (valueChange)="updateFormField('phoneNumber', $event)"></app-shared-input-text>
       </div>
     }
 
     @if (formMode() === 'create' || formMode() === 'edit' || formMode() === 'role') {
       <div class="form-field">
-        <label>Vai tro</label>
+        <label>Vai tr&#242;</label>
         <app-shared-dropdown
           [options]="formRoleOptions()"
           [value]="formState().role"
@@ -291,7 +291,7 @@
 
     @if (formMode() === 'create' || formMode() === 'edit' || formMode() === 'organization') {
       <div class="form-field">
-        <label>Chuc danh</label>
+        <label>Ch&#7913;c danh</label>
         <app-shared-dropdown
           [options]="formPositionOptions()"
           [value]="formState().position"
@@ -301,7 +301,7 @@
       </div>
 
       <div class="form-field">
-        <label>Phong ban</label>
+        <label>Ph&#242;ng ban</label>
         <app-shared-dropdown
           [options]="formDepartmentOptions()"
           [value]="formState().department"
@@ -318,8 +318,9 @@
   (isVisibleChange)="confirmVisible.set($event)"
   [title]="confirmTitle()"
   [message]="confirmMessage()"
-  cancelText="Huy"
-  confirmText="Xac nhan"
+  cancelText="H&#7911;y"
+  confirmText="X&#225;c nh&#7853;n"
   (confirm)="confirmPendingAction()"
   (cancel)="cancelPendingAction()">
 </app-confirm-popup>
+

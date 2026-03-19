@@ -134,29 +134,31 @@ export class UserManagementComponent {
 
   protected readonly actionMenuUserId = signal<number | null>(null);
 
-  protected readonly roleOptions = signal<DropdownOption[]>([{ label: 'Tất cả vai trò', value: '' }]);
-  protected readonly positionOptions = signal<DropdownOption[]>([{ label: 'Tất cả chức vụ', value: '' }]);
-  protected readonly departmentOptions = signal<DropdownOption[]>([{ label: 'Tất cả phòng ban', value: '' }]);
+  protected readonly roleOptions = signal<DropdownOption[]>([{ label: 'T\u1EA5t c\u1EA3 vai tr\u00F2', value: '' }]);
+  protected readonly positionOptions = signal<DropdownOption[]>([{ label: 'T\u1EA5t c\u1EA3 ch\u1EE9c v\u1EE5', value: '' }]);
+  protected readonly departmentOptions = signal<DropdownOption[]>([{ label: 'T\u1EA5t c\u1EA3 ph\u00F2ng ban', value: '' }]);
 
   protected readonly formRoleOptions = computed(() =>
-    this.withPlaceholder(this.roleOptions(), 'Chọn vai trò'),
+    this.withPlaceholder(this.roleOptions(), 'Ch\u1ECDn vai tr\u00F2'),
   );
 
   protected readonly formPositionOptions = computed(() =>
-    this.withPlaceholder(this.positionOptions(), 'Chọn chức danh'),
+    this.withPlaceholder(this.positionOptions(), 'Ch\u1ECDn ch\u1EE9c danh'),
   );
 
   protected readonly formDepartmentOptions = computed(() =>
-    this.withPlaceholder(this.departmentOptions(), 'Chọn phòng ban'),
+    this.withPlaceholder(this.departmentOptions(), 'Ch\u1ECDn ph\u00F2ng ban'),
   );
 
   protected readonly statusOptions: DropdownOption[] = [
-    { label: 'Tất cả trạng thái', value: '' },
-    { label: 'Đang hoạt động', value: 'ACTIVE' },
-    { label: 'Đã khóa', value: 'LOCKED' },
-    { label: 'Vô hiệu hóa', value: 'INACTIVE' },
-    { label: 'Đã xóa', value: 'DELETED' },
+    { label: 'T\u1EA5t c\u1EA3 tr\u1EA1ng th\u00E1i', value: '' },
+    { label: '\u0110ang ho\u1EA1t \u0111\u1ED9ng', value: 'ACTIVE' },
+    { label: '\u0110\u00E3 kh\u00F3a', value: 'LOCKED' },
+    { label: 'V\u00F4 hi\u1EC7u h\u00F3a', value: 'INACTIVE' },
+    { label: '\u0110\u00E3 x\u00F3a', value: 'DELETED' },
   ];
+  protected readonly activatedText = '\u0110\u00E3 k\u00EDch ho\u1EA1t';
+  protected readonly notActivatedText = 'Ch\u01B0a k\u00EDch ho\u1EA1t';
 
   protected readonly displayRange = computed(() => {
     const total = this.totalItems();
@@ -170,68 +172,68 @@ export class UserManagementComponent {
 
   protected readonly showPagination = computed(() => this.totalItems() > this.pageSize());
   protected readonly drawerTitle = computed(() => {
-    if (this.drawerMode() === 'activity') return 'Lịch sử hoạt động';
-    if (this.drawerMode() === 'login') return 'Lịch sử đăng nhập';
-    return 'Chi tiết người dùng';
+    if (this.drawerMode() === 'activity') return 'L\u1ECBch s\u1EED ho\u1EA1t \u0111\u1ED9ng';
+    if (this.drawerMode() === 'login') return 'L\u1ECBch s\u1EED \u0111\u0103ng nh\u1EADp';
+    return 'Chi ti\u1EBFt ng\u01B0\u1EDDi d\u00F9ng';
   });
 
   protected readonly formTitle = computed(() => {
     switch (this.formMode()) {
       case 'create':
-        return 'Tạo mới user';
+        return 'T\u1EA1o m\u1EDBi user';
       case 'edit':
-        return 'Chỉnh sửa user';
+        return 'Ch\u1EC9nh s\u1EEDa user';
       case 'role':
-        return 'Gán / đổi vai trò';
+        return 'G\u00E1n / \u0111\u1ED5i vai tr\u00F2';
       case 'organization':
-        return 'Cập nhật chức danh / phòng ban';
+        return 'C\u1EADp nh\u1EADt ch\u1EE9c danh / ph\u00F2ng ban';
     }
   });
 
   protected readonly confirmTitle = computed(() => {
     switch (this.pendingAction()) {
       case 'lock':
-        return 'Khóa tài khoản';
+        return 'Kh\u00F3a t\u00E0i kho\u1EA3n';
       case 'unlock':
-        return 'Mở khóa tài khoản';
+        return 'M\u1EDF kh\u00F3a t\u00E0i kho\u1EA3n';
       case 'activate':
-        return 'Kích hoạt tài khoản';
+        return 'K\u00EDch ho\u1EA1t t\u00E0i kho\u1EA3n';
       case 'deactivate':
-        return 'Vô hiệu hóa tài khoản';
+        return 'V\u00F4 hi\u1EC7u h\u00F3a t\u00E0i kho\u1EA3n';
       case 'delete':
-        return 'Xóa tài khoản';
+        return 'X\u00F3a t\u00E0i kho\u1EA3n';
       case 'restore':
-        return 'Khôi phục tài khoản';
+        return 'Kh\u00F4i ph\u1EE5c t\u00E0i kho\u1EA3n';
       case 'reset-password':
-        return 'Reset mật khẩu';
+        return 'Reset m\u1EADt kh\u1EA9u';
       case 'resend-activation':
-        return 'Gửi lại email kích hoạt';
+        return 'G\u1EEDi l\u1EA1i email k\u00EDch ho\u1EA1t';
       default:
-        return 'Xác nhận thao tác';
+        return 'X\u00E1c nh\u1EADn thao t\u00E1c';
     }
   });
 
   protected readonly confirmMessage = computed(() => {
-    const userName = this.pendingUser()?.fullName || 'người dùng này';
+    const userName = this.pendingUser()?.fullName || 'ng\u01B0\u1EDDi d\u00F9ng n\u00E0y';
     switch (this.pendingAction()) {
       case 'lock':
-        return `Bạn có chắc muốn khóa ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n kh\u00F3a ${userName}?`;
       case 'unlock':
-        return `Bạn có chắc muốn mở khóa ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n m\u1EDF kh\u00F3a ${userName}?`;
       case 'activate':
-        return `Bạn có chắc muốn kích hoạt ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n k\u00EDch ho\u1EA1t ${userName}?`;
       case 'deactivate':
-        return `Bạn có chắc muốn vô hiệu hóa ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n v\u00F4 hi\u1EC7u h\u00F3a ${userName}?`;
       case 'delete':
-        return `Bạn có chắc muốn xóa ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n x\u00F3a ${userName}?`;
       case 'restore':
-        return `Bạn có chắc muốn khôi phục ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n kh\u00F4i ph\u1EE5c ${userName}?`;
       case 'reset-password':
-        return `Bạn có chắc muốn reset mật khẩu của ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n reset m\u1EADt kh\u1EA9u c\u1EE7a ${userName}?`;
       case 'resend-activation':
-        return `Bạn có chắc muốn gửi lại email kích hoạt cho ${userName}?`;
+        return `B\u1EA1n c\u00F3 ch\u1EAFc mu\u1ED1n g\u1EEDi l\u1EA1i email k\u00EDch ho\u1EA1t cho ${userName}?`;
       default:
-        return 'Xác nhận thao tác.';
+        return 'X\u00E1c nh\u1EADn thao t\u00E1c.';
     }
   });
 
@@ -322,10 +324,10 @@ export class UserManagementComponent {
 
   protected statusLabel(status?: string | null): string {
     const normalized = `${status || ''}`.toUpperCase();
-    if (normalized === 'LOCKED') return 'Đã khóa';
-    if (normalized === 'INACTIVE') return 'Vô hiệu hóa';
-    if (normalized === 'DELETED') return 'Đã xóa';
-    return 'Đang hoạt động';
+    if (normalized === 'LOCKED') return '\u0110\u00E3 kh\u00F3a';
+    if (normalized === 'INACTIVE') return 'V\u00F4 hi\u1EC7u h\u00F3a';
+    if (normalized === 'DELETED') return '\u0110\u00E3 x\u00F3a';
+    return '\u0110ang ho\u1EA1t \u0111\u1ED9ng';
   }
 
   protected statusClass(status?: string | null): string {
@@ -408,12 +410,12 @@ export class UserManagementComponent {
 
       request$.subscribe({
         next: () => {
-          this.toastService.success(mode === 'create' ? 'Tạo mới user thành công' : 'Cập nhật user thành công');
+          this.toastService.success(mode === 'create' ? 'T\u1EA1o m\u1EDBi user th\u00E0nh c\u00F4ng' : 'C\u1EADp nh\u1EADt user th\u00E0nh c\u00F4ng');
           this.closeForm();
           this.loadMetaOptions();
           this.loadUsers(false);
         },
-        error: () => this.toastService.error('Không thể lưu thông tin user'),
+        error: () => this.toastService.error('Kh\u00F4ng th\u1EC3 l\u01B0u th\u00F4ng tin user'),
       });
       return;
     }
@@ -426,12 +428,12 @@ export class UserManagementComponent {
       const payload: UserRoleUpdateRequest = { role: state.role };
       this.userManagementService.assignRole(userId, payload).subscribe({
         next: () => {
-          this.toastService.success('Cập nhật vai trò thành công');
+          this.toastService.success('C\u1EADp nh\u1EADt vai tr\u00F2 th\u00E0nh c\u00F4ng');
           this.closeForm();
           this.loadMetaOptions();
           this.loadUsers(false);
         },
-        error: () => this.toastService.error('Không thể cập nhật vai trò'),
+        error: () => this.toastService.error('Kh\u00F4ng th\u1EC3 c\u1EADp nh\u1EADt vai tr\u00F2'),
       });
       return;
     }
@@ -442,12 +444,12 @@ export class UserManagementComponent {
     };
     this.userManagementService.updateOrganization(userId, payload).subscribe({
       next: () => {
-        this.toastService.success('Cập nhật chức danh / phòng ban thành công');
+        this.toastService.success('C\u1EADp nh\u1EADt ch\u1EE9c danh / ph\u00F2ng ban th\u00E0nh c\u00F4ng');
         this.closeForm();
         this.loadMetaOptions();
         this.loadUsers(false);
       },
-      error: () => this.toastService.error('Không thể cập nhật chức danh / phòng ban'),
+      error: () => this.toastService.error('Kh\u00F4ng th\u1EC3 c\u1EADp nh\u1EADt ch\u1EE9c danh / ph\u00F2ng ban'),
     });
   }
 
@@ -460,7 +462,7 @@ export class UserManagementComponent {
       .pipe(finalize(() => this.drawerLoading.set(false)))
       .subscribe({
         next: (res) => this.selectedUser.set(res.data ?? null),
-        error: () => this.toastService.error('Không thể tải chi tiết người dùng'),
+        error: () => this.toastService.error('Kh\u00F4ng th\u1EC3 t\u1EA3i chi ti\u1EBFt ng\u01B0\u1EDDi d\u00F9ng'),
       });
   }
 
@@ -488,7 +490,7 @@ export class UserManagementComponent {
             this.loginHistory.set(res.data ?? []);
           }
         },
-        error: () => this.toastService.error('Không thể tải lịch sử'),
+        error: () => this.toastService.error('Kh\u00F4ng th\u1EC3 t\u1EA3i l\u1ECBch s\u1EED'),
       });
     this.closeActionMenu();
   }
@@ -529,7 +531,7 @@ export class UserManagementComponent {
         this.toastService.success(this.successMessage(action));
         this.loadUsers(false);
       },
-      error: () => this.toastService.error('Không thể thực hiện thao tác'),
+      error: () => this.toastService.error('Kh\u00F4ng th\u1EC3 th\u1EF1c hi\u1EC7n thao t\u00E1c'),
     });
 
     this.pendingUser.set(null);
@@ -588,9 +590,9 @@ export class UserManagementComponent {
     this.userManagementService.getMetaOptions().subscribe({
       next: (res) => {
         const data = res.data;
-        this.roleOptions.set(this.mapMetaOptions(data?.roles ?? [], 'Tất cả vai trò'));
-        this.positionOptions.set(this.mapMetaOptions(data?.positions ?? [], 'Tất cả chức vụ'));
-        this.departmentOptions.set(this.mapMetaOptions(data?.departments ?? [], 'Tất cả phòng ban'));
+        this.roleOptions.set(this.mapMetaOptions(data?.roles ?? [], 'T\u1EA5t c\u1EA3 vai tr\u00F2'));
+        this.positionOptions.set(this.mapMetaOptions(data?.positions ?? [], 'T\u1EA5t c\u1EA3 ch\u1EE9c v\u1EE5'));
+        this.departmentOptions.set(this.mapMetaOptions(data?.departments ?? [], 'T\u1EA5t c\u1EA3 ph\u00F2ng ban'));
       },
     });
   }
@@ -620,8 +622,8 @@ export class UserManagementComponent {
   }
 
   private updateDynamicFilterOptions(items: UserListItem[]): void {
-    this.roleOptions.set(this.toDynamicOptions(items.map((item) => item.role), 'Tất cả vai trò', this.selectedRole()));
-    this.positionOptions.set(this.toDynamicOptions(items.map((item) => item.position), 'Tất cả chức vụ', this.selectedPosition()));
+    this.roleOptions.set(this.toDynamicOptions(items.map((item) => item.role), 'T\u1EA5t c\u1EA3 vai tr\u00F2', this.selectedRole()));
+    this.positionOptions.set(this.toDynamicOptions(items.map((item) => item.position), 'T\u1EA5t c\u1EA3 ch\u1EE9c v\u1EE5', this.selectedPosition()));
   }
 
   private toDynamicOptions(values: Array<string | undefined>, allLabel: string, selectedValue = ''): DropdownOption[] {
@@ -656,21 +658,22 @@ export class UserManagementComponent {
   private successMessage(action: RowConfirmAction): string {
     switch (action) {
       case 'lock':
-        return 'Khóa tài khoản thành công';
+        return 'Kh\u00F3a t\u00E0i kho\u1EA3n th\u00E0nh c\u00F4ng';
       case 'unlock':
-        return 'Mở khóa tài khoản thành công';
+        return 'M\u1EDF kh\u00F3a t\u00E0i kho\u1EA3n th\u00E0nh c\u00F4ng';
       case 'activate':
-        return 'Kích hoạt tài khoản thành công';
+        return 'K\u00EDch ho\u1EA1t t\u00E0i kho\u1EA3n th\u00E0nh c\u00F4ng';
       case 'deactivate':
-        return 'Vô hiệu hóa tài khoản thành công';
+        return 'V\u00F4 hi\u1EC7u h\u00F3a t\u00E0i kho\u1EA3n th\u00E0nh c\u00F4ng';
       case 'delete':
-        return 'Xóa tài khoản thành công';
+        return 'X\u00F3a t\u00E0i kho\u1EA3n th\u00E0nh c\u00F4ng';
       case 'restore':
-        return 'Khôi phục tài khoản thành công';
+        return 'Kh\u00F4i ph\u1EE5c t\u00E0i kho\u1EA3n th\u00E0nh c\u00F4ng';
       case 'reset-password':
-        return 'Reset mật khẩu thành công';
+        return 'Reset m\u1EADt kh\u1EA9u th\u00E0nh c\u00F4ng';
       case 'resend-activation':
-        return 'Đã gửi lại email kích hoạt';
+        return '\u0110\u00E3 g\u1EEDi l\u1EA1i email k\u00EDch ho\u1EA1t';
     }
   }
 }
+
