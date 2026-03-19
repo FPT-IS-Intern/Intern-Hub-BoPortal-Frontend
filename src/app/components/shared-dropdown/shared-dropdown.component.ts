@@ -62,10 +62,13 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
   @Input() placeholder: string = 'Ch\u1ECDn m\u1ED9t m\u1EE5c';
   @Input() icon: string = '';
   @Input() width: string = '100%';
+  @Input() direction: 'auto' | 'up' | 'down' = 'auto';
 
   @Output() valueChange = new EventEmitter<any>();
 
   protected isOpen = false;
+  protected overlayReady = false;
+  protected overlayStyle: Record<string, string> = {};
   protected internalValue: any = null;
 
   // ControlValueAccessor methods
@@ -114,11 +117,21 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
       this.coordinator.notifyOpened(this.instanceId);
     }
     this.isOpen = nextState;
+    if (this.isOpen) {
+      this.overlayReady = false;
+      this.cdr.markForCheck();
+      setTimeout(() => {
+        this.updateOverlayPosition();
+        this.overlayReady = true;
+        this.cdr.markForCheck();
+      }, 0);
+    }
   }
 
   protected selectOption(opt: DropdownOption): void {
     this.internalValue = opt.value;
     this.isOpen = false;
+    this.overlayReady = false;
     this.valueChange.emit(this.internalValue);
     this.onChange(this.internalValue);
     this.onTouched();
@@ -129,8 +142,64 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       if (this.isOpen) {
         this.isOpen = false;
+        this.overlayReady = false;
         this.cdr.markForCheck();
       }
     }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (!this.isOpen) return;
+    this.updateOverlayPosition();
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (!this.isOpen) return;
+    this.updateOverlayPosition();
+  }
+
+  private updateOverlayPosition(): void {
+    const hostEl = this.elementRef.nativeElement as HTMLElement;
+    const triggerEl = hostEl.querySelector('.dropdown-trigger') as HTMLElement | null;
+    if (!triggerEl) return;
+
+    const rect = triggerEl.getBoundingClientRect();
+    const gap = 6;
+    const viewportH = window.innerHeight || document.documentElement.clientHeight;
+    const viewportW = window.innerWidth || document.documentElement.clientWidth;
+
+    const availableBelow = Math.max(0, viewportH - rect.bottom - gap - 8);
+    const availableAbove = Math.max(0, rect.top - gap - 8);
+
+    const wantUp =
+      this.direction === 'up' ? true :
+      this.direction === 'down' ? false :
+      (availableBelow < 220 && availableAbove > availableBelow);
+
+    const maxOverlay = 300;
+    const maxHeight = Math.max(140, Math.min(maxOverlay, wantUp ? availableAbove : availableBelow));
+
+    const minLeft = 8;
+    const maxLeft = Math.max(minLeft, viewportW - minLeft - rect.width);
+    const left = Math.min(Math.max(rect.left, minLeft), maxLeft);
+    const width = Math.min(rect.width, viewportW - minLeft * 2);
+
+    const style: Record<string, string> = {
+      left: `${left}px`,
+      width: `${width}px`,
+      maxHeight: `${maxHeight}px`,
+    };
+
+    if (wantUp) {
+      style['bottom'] = `${viewportH - rect.top + gap}px`;
+      style['top'] = 'auto';
+    } else {
+      style['top'] = `${rect.bottom + gap}px`;
+      style['bottom'] = 'auto';
+    }
+
+    this.overlayStyle = style;
   }
 }
