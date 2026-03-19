@@ -223,9 +223,40 @@
       @if (sortOrderValidationErrorKey()) {
       <p class="field-error">{{ sortOrderValidationErrorKey() | translate }}</p>
       }
-      @if (sortOrderValidationErrorKey() === 'menus.validation.sortOrderDuplicate') {
-      <p class="field-error field-error-sub">{{ 'menus.validation.sortOrderSuggested' | translate:{ value: suggestedSortOrder() } }}</p>
+      @if (sortOrderBlockedMenu()) {
+      <div class="order-conflict">
+        <div class="order-conflict-main">
+          <div class="order-conflict-text">
+            <span class="order-conflict-title">{{ 'menus.order.conflictTitle' | translate }}</span>
+            <span class="order-conflict-sub">
+              {{ 'menus.order.conflictMessage' | translate:{ value: sortOrderBlockedValue(), code: sortOrderBlockedMenu()?.code, title: sortOrderBlockedMenu()?.title } }}
+            </span>
+          </div>
+          <button type="button" class="btn-outline-custom small" (click)="attemptSwapBlockedSortOrder()">
+            {{ 'menus.validation.sortOrderSwapConfirm' | translate }}
+          </button>
+        </div>
+        <div class="order-conflict-hint">
+          {{ 'menus.validation.sortOrderSuggested' | translate:{ value: suggestedSortOrder() } }}
+        </div>
+      </div>
       }
+
+      <div class="order-preview">
+        <div class="order-preview-header">
+          <span class="order-preview-title">{{ 'menus.order.levelTitle' | translate }}</span>
+          <span class="order-preview-sub">{{ 'menus.order.levelHint' | translate }}</span>
+        </div>
+        <div class="order-preview-list">
+          @for (item of levelMenusPreview(); track item.id) {
+          <div class="order-preview-item" [class.is-blocked]="item.isBlocked" [class.is-current]="item.isCurrent">
+            <span class="order-preview-no">#{{ item.sortOrder }}</span>
+            <span class="order-preview-code">{{ item.code }}</span>
+            <span class="order-preview-name">{{ item.title }}</span>
+          </div>
+          }
+        </div>
+      </div>
     </div>
     <div class="form-field">
       <label [appTooltip]="'menus.hint.statusField' | translate">{{ 'menus.dialog.form.status.label' | translate }}</label>

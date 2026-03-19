@@ -557,6 +557,129 @@
   color: rgba(220, 38, 38, 0.85);
 }
 
+/* ── Smart Sort Order ── */
+.order-conflict {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  background: rgba(220, 38, 38, 0.06);
+}
+
+.order-conflict-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.order-conflict-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.order-conflict-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(220, 38, 38, 0.92);
+}
+
+.order-conflict-sub {
+  font-size: 12px;
+  color: rgba(71, 85, 105, 0.95);
+  line-height: 1.35;
+}
+
+.order-conflict-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: rgba(71, 85, 105, 0.85);
+}
+
+.order-preview {
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px dashed var(--app-color-border-alpha-soft);
+  background: var(--app-color-surface-soft, #f8fafc);
+  padding: 10px 12px;
+}
+
+.order-preview-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.order-preview-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--app-color-text-main);
+}
+
+.order-preview-sub {
+  font-size: 11px;
+  color: var(--app-color-text-muted);
+}
+
+.order-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 180px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.order-preview-item {
+  display: grid;
+  grid-template-columns: 48px 140px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.order-preview-item.is-current {
+  border-color: rgba(225, 131, 8, 0.22);
+  background: rgba(225, 131, 8, 0.08);
+}
+
+.order-preview-item.is-blocked {
+  border-color: rgba(220, 38, 38, 0.25);
+  background: rgba(220, 38, 38, 0.06);
+}
+
+.order-preview-no {
+  font-family: 'Fira Code', 'Source Code Pro', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--app-color-text-muted);
+}
+
+.order-preview-code {
+  font-family: 'Fira Code', 'Source Code Pro', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--app-color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-preview-name {
+  font-size: 12px;
+  color: var(--app-color-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .required {
   color: var(--app-color-danger, #dc2626);
 }

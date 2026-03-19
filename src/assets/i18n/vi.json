@@ -862,6 +862,12 @@
       "roleCodeDuplicate": "Role đã được thêm.",
       "roleCodeNotFound": "Role không tồn tại trong danh sách."
     },
+    "order": {
+      "levelTitle": "Menu trong cùng cấp",
+      "levelHint": "Dựa theo menu cha đã chọn",
+      "conflictTitle": "Thứ tự hiển thị đã có",
+      "conflictMessage": "Thứ tự {{value}} đang thuộc về {{code}} ({{title}})."
+    },
     "dialog": {
       "createTitle": "Thêm mới Menu",
       "editTitle": "Cập nhật Menu",

@@ -863,6 +863,12 @@
       "roleCodeDuplicate": "This role was already added.",
       "roleCodeNotFound": "Role not found in roles list."
     },
+    "order": {
+      "levelTitle": "Menus in this level",
+      "levelHint": "Based on the selected parent menu",
+      "conflictTitle": "Sort order is already taken",
+      "conflictMessage": "Order {{value}} is used by {{code}} ({{title}})."
+    },
     "dialog": {
       "createTitle": "Add New Menu",
       "editTitle": "Update Menu",
