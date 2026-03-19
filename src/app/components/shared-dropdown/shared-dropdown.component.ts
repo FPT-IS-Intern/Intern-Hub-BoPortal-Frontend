@@ -137,15 +137,29 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
     this.onTouched();
   }
 
+  @HostListener('document:mousedown', ['$event'])
+  onMouseDownOutside(event: MouseEvent): void {
+    this.closeIfOutside(event.target);
+  }
+
+  @HostListener('document:touchstart', ['$event'])
+  onTouchStartOutside(event: TouchEvent): void {
+    this.closeIfOutside(event.target);
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      if (this.isOpen) {
-        this.isOpen = false;
-        this.overlayReady = false;
-        this.cdr.markForCheck();
-      }
-    }
+    // Fallback in case some parents stop mousedown propagation.
+    this.closeIfOutside(event.target);
+  }
+
+  private closeIfOutside(target: EventTarget | null): void {
+    if (!target) return;
+    if (this.elementRef.nativeElement.contains(target)) return;
+    if (!this.isOpen) return;
+    this.isOpen = false;
+    this.overlayReady = false;
+    this.cdr.markForCheck();
   }
 
   @HostListener('window:resize')
