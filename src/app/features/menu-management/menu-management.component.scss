@@ -111,6 +111,10 @@
   border: 1px solid var(--app-color-border-alpha-soft);
   border-radius: 8px;
   box-shadow: 0 1px 3px var(--app-shadow-sm);
+  overflow: hidden;
+}
+
+.tree-table-scroll {
   overflow-x: auto;
 }
 
@@ -893,7 +897,8 @@
 }
 
 .empty-icon {
-  font-size: 48px;
+  font-size: 64px;
+  line-height: 1;
   opacity: 0.2;
 }
 

@@ -13,6 +13,7 @@ import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
+import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
@@ -66,6 +67,7 @@ interface FlatRow {
     TableSkeletonComponent,
     ConfirmPopup,
     ModalPopup,
+    PaginationComponent,
     TooltipDirective,
   ],
   templateUrl: './menu-management.component.html',
@@ -86,6 +88,10 @@ export class MenuManagementComponent {
   protected readonly isError = signal(false);
   protected readonly keyword = signal('');
   protected readonly expandedIds = signal<Set<number>>(new Set());
+
+  // Pagination (paginate by root menu; each root keeps its expanded children together)
+  protected readonly pageIndex = signal(1);
+  protected readonly pageSize = signal(10);
 
   // Form state
   protected readonly formVisible = signal(false);
@@ -163,6 +169,56 @@ export class MenuManagementComponent {
 
     flatten(this.menus(), 0);
     return rows;
+  });
+
+  private readonly groupedFlatRows = computed<FlatRow[][]>(() => {
+    const rows = this.flatRows();
+    const groups: FlatRow[][] = [];
+    let current: FlatRow[] = [];
+
+    for (const row of rows) {
+      if (row.depth === 0) {
+        if (current.length) groups.push(current);
+        current = [row];
+      } else {
+        current.push(row);
+      }
+    }
+    if (current.length) groups.push(current);
+
+    return groups;
+  });
+
+  protected readonly totalRoots = computed(() => this.groupedFlatRows().length);
+
+  private readonly totalPages = computed(() => {
+    const size = this.pageSize();
+    const total = this.totalRoots();
+    return Math.ceil(total / size) || 0;
+  });
+
+  private readonly effectivePageIndex = computed(() => {
+    const total = this.totalPages();
+    if (total <= 0) return 1;
+    return Math.min(Math.max(this.pageIndex(), 1), total);
+  });
+
+  protected readonly pagedRows = computed<FlatRow[]>(() => {
+    const groups = this.groupedFlatRows();
+    const page = this.effectivePageIndex();
+    const size = this.pageSize();
+    const start = (page - 1) * size;
+    return groups.slice(start, start + size).flat();
+  });
+
+  protected readonly displayRange = computed(() => {
+    const total = this.totalRoots();
+    if (!total) return '';
+    const page = this.effectivePageIndex();
+    const size = this.pageSize();
+    const start = (page - 1) * size + 1;
+    const end = Math.min(page * size, total);
+    return `${start}-${end}/${total}`;
   });
 
   protected readonly formTitle = computed(() =>
@@ -346,10 +402,14 @@ export class MenuManagementComponent {
         this.loadingService.hidePageLoading();
       }))
       .subscribe({
-        next: (res) => this.menus.set(res.data ?? []),
+        next: (res) => {
+          this.menus.set(res.data ?? []);
+          this.pageIndex.set(1);
+        },
         error: () => {
           this.menus.set([]);
           this.isError.set(true);
+          this.pageIndex.set(1);
         },
       });
   }
@@ -357,6 +417,16 @@ export class MenuManagementComponent {
   // ── Search ──
   protected onSearchChange(value: string): void {
     this.keyword.set(value);
+    this.pageIndex.set(1);
+  }
+
+  protected onPageIndexChange(next: number): void {
+    this.pageIndex.set(next);
+  }
+
+  protected onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.pageIndex.set(1);
   }
 
   // ── Tree expand/collapse ──

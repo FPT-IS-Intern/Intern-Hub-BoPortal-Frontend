@@ -61,6 +61,7 @@
     </div>
     } @else {
     <div class="tree-table-wrapper">
+      <div class="tree-table-scroll">
       <table class="tree-table" role="treegrid">
         <thead>
           <tr>
@@ -76,7 +77,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of flatRows(); track row.menu.id; let i = $index) {
+          @for (row of pagedRows(); track row.menu.id; let i = $index) {
           <tr class="tree-row" [class.row-root]="row.depth === 0" [class.row-child]="row.depth === 1"
             [class.row-grandchild]="row.depth >= 2">
             <td class="col-no">{{ i + 1 }}</td>
@@ -163,6 +164,18 @@
           }
         </tbody>
       </table>
+      </div>
+
+      @if (totalRoots() > pageSize()) {
+      <app-pagination
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [total]="totalRoots()"
+        [displayRange]="displayRange()"
+        (pageIndexChange)="onPageIndexChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
+      }
     </div>
     }
   </section>
