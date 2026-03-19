@@ -406,11 +406,11 @@
       align-items: center;
       padding: 2px 8px;
       border-radius: 5px;
-      background: var(--app-color-surface-warm-100);
-      border: 1px solid var(--app-color-surface-warm-200);
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.2);
       font-size: 11px;
       font-weight: 600;
-      color: var(--app-color-text-main);
+      color: #4338ca;
       max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -810,9 +810,9 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.02em;
-    background: var(--app-color-surface-warm-200);
-    border: 1px solid var(--app-color-surface-warm-300);
-    color: var(--app-color-text-main);
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.22);
+    color: #4338ca;
   }
 
 .role-tags {
@@ -847,9 +847,9 @@
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
-    background: var(--app-color-surface-warm-100);
-    color: var(--app-color-text-main);
-    border: 1px solid var(--app-color-surface-warm-200);
+    background: rgba(99, 102, 241, 0.1);
+    color: #4338ca;
+    border: 1px solid rgba(99, 102, 241, 0.25);
   }
 
 .role-tag-remove {
@@ -863,7 +863,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 700;
-    color: var(--app-color-text-muted);
+    color: #4338ca;
   border-radius: 50%;
   transition: all 0.12s ease;
   padding: 0;
