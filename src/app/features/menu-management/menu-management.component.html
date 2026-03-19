@@ -38,27 +38,6 @@
         </button>
       </app-no-data>
     </div>
-    } @else if (menus().length === 0) {
-    <!-- True empty: no menus at all -->
-    <div class="state-panel state-card empty-guide">
-      <div class="empty-guide-body">
-        <span class="custom-icon-layout-left empty-icon"></span>
-        <h3 class="empty-title">{{ 'menus.empty.title' | translate }}</h3>
-        <p class="empty-msg">{{ 'menus.empty.message' | translate }}</p>
-        <button type="button" class="btn-primary-custom" (click)="openCreateModal()">
-          <span class="custom-icon-package-plus"></span>
-          {{ 'menus.actions.add' | translate }}
-        </button>
-      </div>
-    </div>
-    } @else if (flatRows().length === 0) {
-    <!-- Filter returned no results -->
-    <div class="state-panel state-card">
-      <app-no-data [fullHeight]="false" [title]="'menus.search.noResult.title' | translate"
-        [message]="'menus.search.noResult.message' | translate">
-        <span icon class="custom-icon-search"></span>
-      </app-no-data>
-    </div>
     } @else {
     <div class="tree-table-wrapper">
       <div class="tree-table-scroll">
@@ -77,6 +56,7 @@
           </tr>
         </thead>
         <tbody>
+          @if (pagedRows().length) {
           @for (row of pagedRows(); track row.menu.id; let i = $index) {
           <tr class="tree-row" [class.row-root]="row.depth === 0" [class.row-child]="row.depth === 1"
             [class.row-grandchild]="row.depth >= 2">
@@ -159,6 +139,27 @@
                   <span class="custom-icon-close"></span>
                 </button>
               </div>
+            </td>
+          </tr>
+          }
+          } @else {
+          <tr class="tree-row empty-row">
+            <td class="empty-table-cell" colspan="9">
+              @if (menus().length === 0) {
+              <div class="empty-result-body">
+                <app-no-data [fullHeight]="false" [title]="'menus.empty.title' | translate"
+                  [message]="'menus.empty.message' | translate">
+                  <span icon class="custom-icon-layout-left"></span>
+                </app-no-data>
+              </div>
+              } @else {
+              <div class="empty-result-body">
+                <app-no-data [fullHeight]="false" [title]="'menus.search.noResult.title' | translate"
+                  [message]="'menus.search.noResult.message' | translate">
+                  <span icon class="custom-icon-search"></span>
+                </app-no-data>
+              </div>
+              }
             </td>
           </tr>
           }

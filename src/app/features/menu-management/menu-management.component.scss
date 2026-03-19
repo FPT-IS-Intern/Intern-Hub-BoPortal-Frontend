@@ -886,20 +886,23 @@
   justify-content: center;
 }
 
-.empty-guide-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 48px 24px;
-  text-align: center;
-  max-width: 400px;
+// Empty state is rendered via <app-no-data> inside the table.
+
+.tree-table .empty-row td {
+  padding: 0;
+  border-bottom: none;
 }
 
-.empty-icon {
-  font-size: 64px;
-  line-height: 1;
-  opacity: 0.2;
+.tree-row.empty-row:hover {
+  background: transparent;
+}
+
+.empty-table-cell {
+  padding: 0;
+}
+
+.empty-result-body {
+  padding: 40px 24px;
 }
 
 .empty-title {

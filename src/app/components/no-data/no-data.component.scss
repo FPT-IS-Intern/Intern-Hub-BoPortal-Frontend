@@ -20,6 +20,8 @@
             ::ng-deep [icon] {
                 width: 32px !important;
                 height: 32px !important;
+                font-size: 32px !important;
+                line-height: 1 !important;
             }
         }
 
@@ -52,6 +54,8 @@
     ::ng-deep [icon] {
         width: 64px !important;
         height: 64px !important;
+        font-size: 64px !important;
+        line-height: 1 !important;
     }
 }
 
@@ -68,29 +72,6 @@
     color: var(--app-color-text-muted);
     line-height: 1.6;
     margin-bottom: 24px;
-}
-
-.action-btn {
-    padding: 10px 24px;
-    background: var(--app-color-primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(225, 131, 8, 0.2);
-
-    &:hover {
-        background: var(--app-color-primary-hover);
-        box-shadow: 0 6px 16px rgba(225, 131, 8, 0.3);
-    }
-
-    &:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 8px rgba(225, 131, 8, 0.2);
-    }
 }
 
 @keyframes fade-in-up {

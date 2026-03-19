@@ -9,7 +9,7 @@
         <h3 class="no-data-title">{{ title() }}</h3>
         <p class="no-data-message">{{ message() }}</p>
         <div class="no-data-actions" *ngIf="showAction()">
-            <button (click)="actionClicked.emit()" class="action-btn">
+            <button (click)="actionClicked.emit()" class="btn-outline-custom retry-btn-sec retry-btn">
                 {{ actionText() }}
             </button>
         </div>
