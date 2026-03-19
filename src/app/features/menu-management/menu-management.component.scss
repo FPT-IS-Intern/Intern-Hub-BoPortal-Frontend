@@ -350,9 +350,9 @@
   border: 1px solid var(--app-color-border-alpha-soft);
   font-family: 'Fira Code', 'Source Code Pro', monospace;
   font-size: 11px;
-  color: #5b7fa6;
-  word-break: break-all;
-}
+    color: var(--app-color-text-muted);
+    word-break: break-all;
+  }
 
 .icon-name {
   color: var(--app-color-text-muted);
@@ -402,20 +402,20 @@
 }
 
 .role-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: 5px;
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  font-size: 11px;
-  font-weight: 600;
-  color: #4338ca;
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background: var(--app-color-primary-alpha-8, rgba(225, 131, 8, 0.08));
+    border: 1px solid rgba(225, 131, 8, 0.22);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--app-color-primary);
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
 .public-badge {
   display: inline-flex;
@@ -810,10 +810,10 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  background: rgba(2, 132, 199, 0.12);
-  border: 1px solid rgba(2, 132, 199, 0.22);
-  color: rgba(2, 132, 199, 0.95);
-}
+    background: var(--app-color-primary-alpha-8, rgba(225, 131, 8, 0.08));
+    border: 1px solid rgba(225, 131, 8, 0.22);
+    color: var(--app-color-primary);
+  }
 
 .role-tags {
   display: flex;
