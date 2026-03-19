@@ -121,14 +121,6 @@ export class MenuManagementComponent {
   protected readonly confirmVisible = signal(false);
   protected readonly pendingDeleteMenu = signal<PortalMenuItem | null>(null);
 
-  // Status options
-  protected get statusOptions(): DropdownOption[] {
-    return [
-      { label: this.translateService.instant('menus.status.active'), value: 'ACTIVE' },
-      { label: this.translateService.instant('menus.status.inactive'), value: 'INACTIVE' },
-    ];
-  }
-
   // Parent dropdown
   protected readonly parentOptions = computed<DropdownOption[]>(() => {
     const editingId = this.editingMenuId();
