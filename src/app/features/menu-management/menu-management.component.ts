@@ -101,6 +101,7 @@ export class MenuManagementComponent {
   protected readonly roleCodeInputErrorKey = signal<string | null>(null);
   protected readonly formSubmitted = signal(false);
   private sortOrderTouched = false;
+  private statusTouched = false;
   private originalParentId: number | null = null;
   private originalSortOrder: number = 0;
 
@@ -457,6 +458,7 @@ export class MenuManagementComponent {
   }
 
   protected onStatusToggle(event: Event): void {
+    this.statusTouched = true;
     const checked = (event.target as HTMLInputElement | null)?.checked ?? false;
     this.updateFormField('status', checked ? 'ACTIVE' : 'INACTIVE');
   }
@@ -468,11 +470,14 @@ export class MenuManagementComponent {
     this.formState.set({
       ...EMPTY_FORM,
       sortOrder: String(lastSortOrder(this.menus(), null, null)),
+      // If admin does not select any role codes, default to hidden.
+      status: 'INACTIVE',
     });
     this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
     this.sortOrderTouched = false;
+    this.statusTouched = false;
     this.loadRolesIfNeeded();
     this.originalParentId = null;
     this.originalSortOrder = 0;
@@ -500,6 +505,7 @@ export class MenuManagementComponent {
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
     this.sortOrderTouched = false;
+    this.statusTouched = false;
     this.loadRolesIfNeeded();
     this.orderDropdownOpen.set(false);
     this.formVisible.set(true);
@@ -593,12 +599,24 @@ export class MenuManagementComponent {
       return;
     }
 
-    this.updateFormField('roleCodes', [...current, roleName]);
+    const nextRoles = [...current, roleName];
+    this.updateFormField('roleCodes', nextRoles);
+
+    // Create-mode smart default: roles selected => show by default (unless admin manually changed status).
+    if (this.formMode() === 'create' && !this.statusTouched) {
+      this.updateFormField('status', nextRoles.length ? 'ACTIVE' : 'INACTIVE');
+    }
     this.selectedRoleName.set('');
   }
 
   protected removeRoleCode(code: string): void {
-    this.updateFormField('roleCodes', this.formState().roleCodes.filter(r => r !== code));
+    const nextRoles = this.formState().roleCodes.filter(r => r !== code);
+    this.updateFormField('roleCodes', nextRoles);
+
+    // Create-mode smart default: no roles => hidden (unless admin manually changed status).
+    if (this.formMode() === 'create' && !this.statusTouched) {
+      this.updateFormField('status', nextRoles.length ? 'ACTIVE' : 'INACTIVE');
+    }
   }
 
   protected saveForm(): void {
