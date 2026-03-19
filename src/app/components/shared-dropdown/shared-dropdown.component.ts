@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, HostListener, forwardRef, ElementRef, inject, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, forwardRef, ElementRef, inject, ChangeDetectorRef, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface DropdownOption {
   label: string;
@@ -11,6 +12,7 @@ export interface DropdownOption {
 
 import { TranslateModule } from '@ngx-translate/core';
 import { NoDataComponent } from '../no-data/no-data.component';
+import { SharedDropdownCoordinatorService } from './shared-dropdown-coordinator.service';
 
 @Component({
   selector: 'app-shared-dropdown',
@@ -29,9 +31,22 @@ import { NoDataComponent } from '../no-data/no-data.component';
 export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
   private elementRef = inject(ElementRef);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+  private coordinator = inject(SharedDropdownCoordinatorService);
+
+  private static nextInstanceId = 1;
+  private readonly instanceId = `shared-dropdown-${SharedDropdownComponent.nextInstanceId++}`;
 
   ngOnInit(): void {
     // console.log('SharedDropdownComponent initialized with options:', this.options);
+    this.coordinator.opened$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((openedId) => {
+        if (openedId !== this.instanceId && this.isOpen) {
+          this.isOpen = false;
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   @Input() set options(val: DropdownOption[]) {
@@ -44,7 +59,7 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
   }
   private _options: DropdownOption[] = [];
 
-  @Input() placeholder: string = 'Chọn một mục';
+  @Input() placeholder: string = 'Ch\u1ECDn m\u1ED9t m\u1EE5c';
   @Input() icon: string = '';
   @Input() width: string = '100%';
 
@@ -94,7 +109,11 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
 
   protected toggle(event: MouseEvent): void {
     event.stopPropagation();
-    this.isOpen = !this.isOpen;
+    const nextState = !this.isOpen;
+    if (nextState) {
+      this.coordinator.notifyOpened(this.instanceId);
+    }
+    this.isOpen = nextState;
   }
 
   protected selectOption(opt: DropdownOption): void {
