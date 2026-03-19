@@ -1,4 +1,7 @@
 :host ::ng-deep .matrix-wrapper {
+  border-radius: 8px;
+  // Clip sticky header/background so the 8px radius is visible.
+  overflow: hidden;
   overflow-x: auto;
   overflow-y: hidden;
 }

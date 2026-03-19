@@ -55,6 +55,7 @@
   border-radius: 8px;
   border: 1px solid var(--app-color-surface-warm-100);
   background: white;
+  overflow: hidden; // clip table header/row backgrounds to show rounded corners
 }
 
 .table-container--empty {
