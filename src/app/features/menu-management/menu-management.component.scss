@@ -553,10 +553,50 @@
 }
 
 /* ── Role Tags Input ── */
-.role-tags-input {
+
+.role-codes {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.85), rgba(255, 255, 255, 0.9));
+}
+
+.role-codes__block {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+}
+
+.role-codes__block-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--app-color-text-muted);
+}
+
+.role-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: rgba(2, 132, 199, 0.12);
+  border: 1px solid rgba(2, 132, 199, 0.22);
+  color: rgba(2, 132, 199, 0.95);
 }
 
 .role-tags {
@@ -564,6 +604,15 @@
   flex-wrap: wrap;
   gap: 6px;
   min-height: 8px;
+}
+
+.role-codes__selected .role-tags {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  min-height: 42px;
+  align-content: flex-start;
 }
 
 .role-placeholder-hint {
@@ -608,16 +657,6 @@
 .role-tag-remove:hover {
   background: rgba(220, 38, 38, 0.15);
   color: var(--app-color-danger, #dc2626);
-}
-
-.role-input-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.role-input-row app-shared-input-text {
-  flex: 1;
 }
 
 /* ── Empty Guide (first time) ── */
@@ -679,6 +718,10 @@
   }
 
   .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-codes {
     grid-template-columns: 1fr;
   }
 

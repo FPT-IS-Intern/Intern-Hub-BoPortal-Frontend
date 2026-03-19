@@ -847,14 +847,15 @@
       "active": "Hoạt động",
       "inactive": "Tạm ẩn"
     },
-    "validation": {
-      "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
-      "codeDuplicate": "Mã menu đã tồn tại.",
-      "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
-      "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
-      "roleCodeFormat": "Role code phải dạng ROLE_ADMIN (viết HOA, có dấu _).",
-      "roleCodeDuplicate": "Role code đã được thêm."
-    },
+      "validation": {
+        "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
+        "codeDuplicate": "Mã menu đã tồn tại.",
+        "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
+        "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
+        "roleCodeFormat": "Mã role không hợp lệ.",
+        "roleCodeDuplicate": "Role đã được thêm.",
+        "roleCodeNotFound": "Role không tồn tại trong danh sách."
+      },
     "dialog": {
       "createTitle": "Thêm mới Menu",
       "editTitle": "Cập nhật Menu",
@@ -887,8 +888,13 @@
         },
         "roleCodes": {
           "label": "Mã quyền (Role Codes) truy cập",
+          "pickTitle": "Chọn role",
+          "selectedTitle": "Role đã chọn",
+          "selectPlaceholder": "Chọn role...",
+          "loading": "Đang tải danh sách role...",
+          "loadError": "Không thể tải danh sách role.",
           "placeholder": "Nhập mã quyền và nhấn Enter (VD: ROLE_ADMIN)...",
-          "help": "Nhấn Enter hoặc phẩy để thêm nhiều mã. Nếu để trống, mọi user đều có thể thấy."
+          "help": "Chọn role ở dropdown để thêm vào danh sách. Nếu để trống, mọi user đều có thể thấy."
         },
         "status": {
           "label": "Trạng thái hiển thị",

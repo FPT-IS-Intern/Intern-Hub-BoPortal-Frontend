@@ -234,34 +234,54 @@
     </div>
     <div class="form-field full-width">
       <label [appTooltip]="'menus.dialog.form.roleCodes.help' | translate">{{ 'menus.dialog.form.roleCodes.label' | translate }}</label>
-      <div class="role-tags-input">
-        <div class="role-tags">
-          @for (role of formState().roleCodes; track role) {
-          <span class="role-tag">
-            {{ role }}
-            <button type="button" class="role-tag-remove" [title]="'menus.hint.removeRole' | translate"
-              (click)="removeRoleCode(role)">×</button>
-          </span>
+      <div class="role-codes">
+        <div class="role-codes__block role-codes__pick">
+          <div class="role-codes__block-title">
+            {{ 'menus.dialog.form.roleCodes.pickTitle' | translate }}
+          </div>
+          <app-shared-dropdown
+            [options]="roleOptions()"
+            [value]="selectedRoleName()"
+            [placeholder]="'menus.dialog.form.roleCodes.selectPlaceholder'"
+            width="100%"
+            (valueChange)="onRoleSelect($event)">
+          </app-shared-dropdown>
+
+          @if (rolesLoading()) {
+            <p class="field-error field-error-sub">{{ 'menus.dialog.form.roleCodes.loading' | translate }}</p>
           }
-          @if (!formState().roleCodes.length) {
-          <span class="role-placeholder-hint">{{ 'menus.hint.noRoles' | translate }}</span>
+          @if (rolesLoadError()) {
+            <p class="field-error">{{ 'menus.dialog.form.roleCodes.loadError' | translate }}</p>
           }
         </div>
-        <div class="role-input-row">
-          <app-shared-input-text [value]="roleCodeInput()"
-            [placeholder]="'menus.dialog.form.roleCodes.placeholder' | translate"
-            (valueChange)="onRoleCodeInputChange($event)" (keydown)="onRoleCodeKeydown($event)">
-          </app-shared-input-text>
-          <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">{{
-            'checkin.common.actions.add' | translate }}</button>
+
+        <div class="role-codes__block role-codes__selected">
+          <div class="role-codes__block-title">
+            {{ 'menus.dialog.form.roleCodes.selectedTitle' | translate }}
+            <span class="role-count-badge">{{ formState().roleCodes.length }}</span>
+          </div>
+
+          <div class="role-tags">
+            @for (role of formState().roleCodes; track role) {
+              <span class="role-tag">
+                {{ role }}
+                <button type="button" class="role-tag-remove" [title]="'menus.hint.removeRole' | translate"
+                  (click)="removeRoleCode(role)">&times;</button>
+              </span>
+            }
+            @if (!formState().roleCodes.length) {
+              <span class="role-placeholder-hint">{{ 'menus.hint.noRoles' | translate }}</span>
+            }
+          </div>
         </div>
-        @if (roleCodeInputErrorKey()) {
-        <p class="field-error">{{ roleCodeInputErrorKey() | translate }}</p>
-        }
-        @if (formSubmitted() && roleCodesValidationErrorKey()) {
-        <p class="field-error">{{ roleCodesValidationErrorKey() | translate }}</p>
-        }
       </div>
+
+      @if (roleCodeInputErrorKey()) {
+        <p class="field-error">{{ roleCodeInputErrorKey() | translate }}</p>
+      }
+      @if (formSubmitted() && roleCodesValidationErrorKey()) {
+        <p class="field-error">{{ roleCodesValidationErrorKey() | translate }}</p>
+      }
     </div>
   </div>
 </app-modal-popup>

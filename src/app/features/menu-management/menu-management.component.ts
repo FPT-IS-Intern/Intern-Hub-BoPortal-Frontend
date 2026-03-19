@@ -16,8 +16,10 @@ import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
+import { AuthzService } from '../../services/api/authz.service';
 import { PortalMenuService } from '../../services/api/portal-menu.service';
 import { PortalMenuItem, PortalMenuRequest } from '../../models/portal-menu.model';
+import { AuthzRole } from '../../models/authz.model';
 import { TooltipDirective } from '../../directives/tooltip.directive';
 
 type FormMode = 'create' | 'edit';
@@ -72,6 +74,7 @@ interface FlatRow {
 })
 export class MenuManagementComponent {
   private readonly menuService = inject(PortalMenuService);
+  private readonly authzService = inject(AuthzService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translateService = inject(TranslateService);
   private readonly loadingService = inject(LoadingService);
@@ -89,9 +92,19 @@ export class MenuManagementComponent {
   protected readonly formMode = signal<FormMode>('create');
   protected readonly editingMenuId = signal<number | null>(null);
   protected readonly formState = signal<MenuFormState>({ ...EMPTY_FORM });
-  protected readonly roleCodeInput = signal('');
   protected readonly roleCodeInputErrorKey = signal<string | null>(null);
   protected readonly formSubmitted = signal(false);
+
+  protected readonly selectedRoleName = signal('');
+  protected readonly roles = signal<AuthzRole[]>([]);
+  protected readonly rolesLoading = signal(false);
+  protected readonly rolesLoadError = signal(false);
+
+  protected readonly roleOptions = computed<DropdownOption[]>(() =>
+    (this.roles() ?? [])
+      .filter((r) => (r.name || '').trim())
+      .map((r) => ({ label: r.name, value: r.name })),
+  );
 
   // Confirm state
   protected readonly confirmVisible = signal(false);
@@ -204,8 +217,16 @@ export class MenuManagementComponent {
 
   protected readonly roleCodesValidationErrorKey = computed<string | null>(() => {
     const roleCodes = this.formState().roleCodes;
+    const roleNames = new Set(this.roles().map((r) => (r.name || '').trim()));
+    if (roleNames.size) {
+      for (const code of roleCodes) {
+        if (!roleNames.has((code || '').trim())) return 'menus.validation.roleCodeNotFound';
+      }
+      return null;
+    }
+
     for (const code of roleCodes) {
-      if (!isValidRoleCode(code)) return 'menus.validation.roleCodeFormat';
+      if (!isReasonableRoleCode(code)) return 'menus.validation.roleCodeFormat';
     }
     return null;
   });
@@ -289,9 +310,10 @@ export class MenuManagementComponent {
     this.formMode.set('create');
     this.editingMenuId.set(null);
     this.formState.set({ ...EMPTY_FORM });
-    this.roleCodeInput.set('');
+    this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
+    this.loadRolesIfNeeded();
     this.formVisible.set(true);
   }
 
@@ -309,9 +331,10 @@ export class MenuManagementComponent {
       sortOrder: String(item.sortOrder ?? 0),
       status: item.status || 'ACTIVE',
     });
-    this.roleCodeInput.set('');
+    this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
+    this.loadRolesIfNeeded();
     this.formVisible.set(true);
   }
 
@@ -330,39 +353,43 @@ export class MenuManagementComponent {
     this.formState.update(state => ({ ...state, [key]: nextValue }));
   }
 
-  // Role codes tag input
-  protected onRoleCodeInputChange(value: string): void {
-    this.roleCodeInput.set(value);
-    this.roleCodeInputErrorKey.set(null);
+  // Role codes selection
+  private loadRolesIfNeeded(): void {
+    if (this.rolesLoading()) return;
+    if (this.roles().length) return;
+
+    this.rolesLoadError.set(false);
+    this.rolesLoading.set(true);
+    this.authzService.getRoles()
+      .pipe(finalize(() => this.rolesLoading.set(false)))
+      .subscribe({
+        next: (res) => this.roles.set(res.data ?? []),
+        error: () => this.rolesLoadError.set(true),
+      });
   }
 
-  protected addRoleCode(): void {
-    const code = this.roleCodeInput().trim().toUpperCase();
-    if (!code) return;
-    if (!isValidRoleCode(code)) {
-      this.roleCodeInputErrorKey.set('menus.validation.roleCodeFormat');
-      return;
-    }
+  protected onRoleSelect(value: string): void {
+    this.selectedRoleName.set(value || '');
+    this.roleCodeInputErrorKey.set(null);
+    if (value) this.addSelectedRole();
+  }
 
-    const current = this.formState().roleCodes.map((c) => c.trim().toUpperCase());
-    if (current.includes(code)) {
+  private addSelectedRole(): void {
+    const roleName = (this.selectedRoleName() || '').trim();
+    if (!roleName) return;
+
+    const current = this.formState().roleCodes.map((c) => (c || '').trim());
+    if (current.includes(roleName)) {
       this.roleCodeInputErrorKey.set('menus.validation.roleCodeDuplicate');
       return;
     }
 
-    this.updateFormField('roleCodes', [...current, code]);
-    this.roleCodeInput.set('');
+    this.updateFormField('roleCodes', [...current, roleName]);
+    this.selectedRoleName.set('');
   }
 
   protected removeRoleCode(code: string): void {
     this.updateFormField('roleCodes', this.formState().roleCodes.filter(r => r !== code));
-  }
-
-  protected onRoleCodeKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === ',') {
-      event.preventDefault();
-      this.addRoleCode();
-    }
   }
 
   protected saveForm(): void {
@@ -464,8 +491,9 @@ function allMenus(items: PortalMenuItem[]): PortalMenuItem[] {
   return out;
 }
 
-function isValidRoleCode(code: string): boolean {
-  const v = (code ?? '').trim().toUpperCase();
-  // Keep it strict because placeholder/hints are ROLE_XXX.
-  return /^ROLE_[A-Z0-9_]+$/.test(v);
+function isReasonableRoleCode(code: string): boolean {
+  const v = (code ?? '').trim();
+  // Fallback validation when roles list is not available.
+  // Allow common role name/code formats without spaces.
+  return !!v && /^[A-Za-z0-9_:\-./]+$/.test(v);
 }

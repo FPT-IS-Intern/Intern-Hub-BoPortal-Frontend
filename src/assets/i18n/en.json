@@ -848,14 +848,15 @@
       "active": "Active",
       "inactive": "Hidden"
     },
-    "validation": {
-      "codeFormat": "Menu code must be UPPERCASE and contain only letters, numbers, underscore (e.g., USER_MANAGEMENT).",
-      "codeDuplicate": "Menu code already exists.",
-      "pathFormat": "Path must start with / and contain no spaces.",
-      "sortOrderFormat": "Sort order must be a non-negative integer.",
-      "roleCodeFormat": "Role code must be like ROLE_ADMIN (UPPERCASE with underscore).",
-      "roleCodeDuplicate": "This role code was already added."
-    },
+      "validation": {
+        "codeFormat": "Menu code must be UPPERCASE and contain only letters, numbers, underscore (e.g., USER_MANAGEMENT).",
+        "codeDuplicate": "Menu code already exists.",
+        "pathFormat": "Path must start with / and contain no spaces.",
+        "sortOrderFormat": "Sort order must be a non-negative integer.",
+        "roleCodeFormat": "Invalid role.",
+        "roleCodeDuplicate": "This role was already added.",
+        "roleCodeNotFound": "Role not found in roles list."
+      },
     "dialog": {
       "createTitle": "Add New Menu",
       "editTitle": "Update Menu",
@@ -888,8 +889,13 @@
         },
         "roleCodes": {
           "label": "Access Role Codes",
+          "pickTitle": "Pick Role",
+          "selectedTitle": "Selected Roles",
+          "selectPlaceholder": "Select a role...",
+          "loading": "Loading roles...",
+          "loadError": "Unable to load roles list.",
           "placeholder": "Enter role code and press Enter (e.g., ROLE_ADMIN)...",
-          "help": "Press Enter or comma to add multiple roles. Leave empty to allow all users."
+          "help": "Select roles from the dropdown to add them. Leave empty to allow all users."
         },
         "status": {
           "label": "Display Status",
