@@ -101,6 +101,7 @@
 
 .skeleton-panel {
   border-radius: 8px;
+  padding: 24px;
   background: var(--app-color-white);
 }
 
@@ -170,15 +171,45 @@
 }
 
 /* Column widths */
-.col-no { width: 50px; text-align: center; }
-.col-code { min-width: 160px; }
-.col-title { min-width: 200px; }
-.col-path { min-width: 150px; }
-.col-icon { min-width: 130px; }
-.col-order { width: 80px; text-align: center; }
-.col-roles { min-width: 150px; }
-.col-status { width: 130px; text-align: center; }
-.col-actions { width: 120px; text-align: center; }
+.col-no {
+  width: 50px;
+  text-align: center;
+}
+
+.col-code {
+  min-width: 160px;
+}
+
+.col-title {
+  min-width: 200px;
+}
+
+.col-path {
+  min-width: 150px;
+}
+
+.col-icon {
+  min-width: 130px;
+}
+
+.col-order {
+  width: 80px;
+  text-align: center;
+}
+
+.col-roles {
+  min-width: 150px;
+}
+
+.col-status {
+  width: 130px;
+  text-align: center;
+}
+
+.col-actions {
+  width: 120px;
+  text-align: center;
+}
 
 /* ── Tree Cell ── */
 .tree-cell {

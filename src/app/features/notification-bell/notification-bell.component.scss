@@ -35,7 +35,7 @@
 :host ::ng-deep .skeleton-panel {
   border-radius: 8px;
   background: var(--app-color-white);
-  padding: 12px 24px;
+  padding: 24px;
 }
 
 :host ::ng-deep .notification-table {
@@ -374,7 +374,8 @@
 .channel-form {
   padding: 16px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px; /* Tăng rộng lên 300px */
+  grid-template-columns: minmax(0, 1fr) 300px;
+  /* Tăng rộng lên 300px */
   gap: 24px;
   align-items: stretch;
   min-height: 0;
@@ -392,7 +393,8 @@
 
 .params-pane {
   position: sticky;
-  top: 80px; /* Vị trí dính */
+  top: 80px;
+  /* Vị trí dính */
   z-index: 10;
   align-self: start;
 }
@@ -413,9 +415,11 @@
 /* CSS mới cho hàng Header */
 .form-header-row {
   display: grid;
-  grid-template-columns: 1fr 160px; /* Tiêu đề co giãn, Định dạng fix 160px */
+  grid-template-columns: 1fr 160px;
+  /* Tiêu đề co giãn, Định dạng fix 160px */
   gap: 16px;
-  align-items: flex-end; /* Căn mép dưới cho input và dropdown bằng nhau */
+  align-items: flex-end;
+  /* Căn mép dưới cho input và dropdown bằng nhau */
 }
 
 .field {
@@ -601,11 +605,11 @@
     transition: 0.2s;
   }
 
-  input:checked + .slider {
+  input:checked+.slider {
     background-color: var(--app-color-primary);
   }
 
-  input:checked + .slider::before {
+  input:checked+.slider::before {
     transform: translateX(22px);
   }
 }
