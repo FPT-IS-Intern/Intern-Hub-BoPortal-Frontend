@@ -249,6 +249,9 @@
   width: 22px;
   height: 22px;
   flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -265,7 +268,7 @@
 .chevron-icon {
   width: 14px;
   height: 14px;
-  display: inline-block;
+  display: block;
   transition: transform 0.2s ease, opacity 0.15s ease;
   opacity: 0.75;
   transform: rotate(-90deg); /* collapsed: point right */
@@ -279,6 +282,7 @@
 .expand-spacer {
   display: inline-block;
   width: 22px;
+  height: 22px;
   flex-shrink: 0;
 }
 

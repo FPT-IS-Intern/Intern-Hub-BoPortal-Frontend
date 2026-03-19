@@ -82,6 +82,7 @@
             <td class="col-no">{{ i + 1 }}</td>
             <td class="col-code">
               <div class="tree-cell" [style.padding-left.px]="row.depth * 24">
+                <span class="code-badge">{{ row.menu.code }}</span>
                 @if (row.hasChildren) {
                 <button type="button" class="expand-btn"
                   [appTooltip]="(row.expanded ? 'menus.tree.collapse' : 'menus.tree.expand') | translate"
@@ -93,10 +94,7 @@
                     alt=""
                     aria-hidden="true" />
                 </button>
-                } @else {
-                <span class="expand-spacer"></span>
                 }
-                <span class="code-badge">{{ row.menu.code }}</span>
               </div>
             </td>
             <td class="col-title">
