@@ -816,5 +816,97 @@
       "autoLogoutMinutes": "Tự động đăng xuất khi không hoạt động.",
       "maxLoginAttempts": "Khóa sau số lần đăng nhập sai."
     }
+  },
+  "menus": {
+    "title": "Quản lý menu",
+    "subtitle": "Cấu hình phân cấp danh mục và quyền truy cập cho cổng quản trị.",
+    "breadcrumb": {
+      "title": "Danh sách Menu"
+    },
+    "actions": {
+      "searchPlaceholder": "Tìm kiếm theo code, tên, path...",
+      "expandAll": "Mở rộng",
+      "collapseAll": "Thu gọn",
+      "refresh": "Làm mới",
+      "add": "Tạo mới menu"
+    },
+    "table": {
+      "no": "STT",
+      "code": "Mã Menu",
+      "title": "Tên Menu",
+      "path": "Đường dẫn (Path)",
+      "icon": "Icon",
+      "order": "Thứ tự",
+      "roles": "Quyền truy cập",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Tạm ẩn"
+    },
+    "dialog": {
+      "createTitle": "Thêm mới Menu",
+      "editTitle": "Cập nhật Menu",
+      "form": {
+        "code": {
+          "label": "Mã Menu",
+          "placeholder": "VD: USER_MANAGEMENT",
+          "error": "Vui lòng nhập mã menu"
+        },
+        "title": {
+          "label": "Tên Menu",
+          "placeholder": "VD: Quản lý người dùng",
+          "error": "Vui lòng nhập tên menu"
+        },
+        "path": {
+          "label": "Đường dẫn (Path)",
+          "placeholder": "VD: /users"
+        },
+        "icon": {
+          "label": "Icon (Tên class CSS)",
+          "placeholder": "VD: custom-icon-users"
+        },
+        "parentId": {
+          "label": "Menu cha",
+          "placeholder": "Chọn menu cha (Root nếu để trống)"
+        },
+        "sortOrder": {
+          "label": "Thứ tự hiển thị",
+          "placeholder": "VD: 1"
+        },
+        "roleCodes": {
+          "label": "Mã quyền (Role Codes) truy cập",
+          "placeholder": "Nhập mã quyền và nhấn Enter (VD: ROLE_ADMIN)...",
+          "help": "Nhấn Enter hoặc phẩy để thêm nhiều mã. Nếu để trống, mọi user đều có thể thấy."
+        },
+        "status": {
+          "label": "Trạng thái hiển thị",
+          "active": "Đang hoạt động",
+          "inactive": "Tạm ẩn"
+        }
+      },
+      "actions": {
+        "cancel": "Hủy bỏ",
+        "save": "Lưu cấu hình"
+      }
+    },
+    "toast": {
+      "loadError": "Không thể tải danh sách menu",
+      "createSuccess": "Thêm mới menu thành công",
+      "createError": "Có lỗi xảy ra khi tạo menu",
+      "updateSuccess": "Cập nhật menu thành công",
+      "updateError": "Có lỗi xảy ra khi cập nhật menu",
+      "deleteSuccess": "Đã xóa menu thành công",
+      "deleteError": "Không thể xóa menu"
+    },
+    "confirmDelete": {
+      "title": "Xóa menu?",
+      "message": "Bạn có chắc chắn muốn xóa menu <b>{{title}}</b>? Toàn bộ menu con (nếu có) cũng sẽ bị xóa theo."
+    },
+    "empty": {
+      "title": "Không có dữ liệu",
+      "message": "Chưa có menu nào được cấu hình."
+    }
   }
 }

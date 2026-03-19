@@ -817,5 +817,97 @@
       "autoLogoutMinutes": "Inactive session auto-logout time.",
       "maxLoginAttempts": "Lock after this many failed attempts."
     }
+  },
+  "menus": {
+    "title": "Menu Management",
+    "subtitle": "Configure hierarchy and access rights for the admin portal menus.",
+    "breadcrumb": {
+      "title": "Menu List"
+    },
+    "actions": {
+      "searchPlaceholder": "Search by code, title, path...",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all",
+      "refresh": "Refresh",
+      "add": "Add Menu"
+    },
+    "table": {
+      "no": "No.",
+      "code": "Menu Code",
+      "title": "Menu Title",
+      "path": "Path",
+      "icon": "Icon",
+      "order": "Sort Order",
+      "roles": "Access Roles",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Hidden"
+    },
+    "dialog": {
+      "createTitle": "Add New Menu",
+      "editTitle": "Update Menu",
+      "form": {
+        "code": {
+          "label": "Menu Code",
+          "placeholder": "e.g., USER_MANAGEMENT",
+          "error": "Please enter menu code"
+        },
+        "title": {
+          "label": "Menu Title",
+          "placeholder": "e.g., User Management",
+          "error": "Please enter menu title"
+        },
+        "path": {
+          "label": "Path",
+          "placeholder": "e.g., /users"
+        },
+        "icon": {
+          "label": "Icon (CSS Class)",
+          "placeholder": "e.g., custom-icon-users"
+        },
+        "parentId": {
+          "label": "Parent Menu",
+          "placeholder": "Select parent menu (Root if empty)"
+        },
+        "sortOrder": {
+          "label": "Sort Order",
+          "placeholder": "e.g., 1"
+        },
+        "roleCodes": {
+          "label": "Access Role Codes",
+          "placeholder": "Enter role code and press Enter (e.g., ROLE_ADMIN)...",
+          "help": "Press Enter or comma to add multiple roles. Leave empty to allow all users."
+        },
+        "status": {
+          "label": "Display Status",
+          "active": "Active",
+          "inactive": "Hidden"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save Configuration"
+      }
+    },
+    "toast": {
+      "loadError": "Unable to load menu list",
+      "createSuccess": "Menu created successfully",
+      "createError": "An error occurred while creating menu",
+      "updateSuccess": "Menu updated successfully",
+      "updateError": "An error occurred while updating menu",
+      "deleteSuccess": "Menu deleted successfully",
+      "deleteError": "Unable to delete menu"
+    },
+    "confirmDelete": {
+      "title": "Delete menu?",
+      "message": "Are you sure you want to delete menu <b>{{title}}</b>? All child menus (if any) will also be deleted."
+    },
+    "empty": {
+      "title": "No data",
+      "message": "No menus have been configured yet."
+    }
   }
 }

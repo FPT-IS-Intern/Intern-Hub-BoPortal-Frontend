@@ -4,7 +4,7 @@
       <div class="filter-item keyword-field">
         <app-shared-search
           [value]="keyword()"
-          placeholder="Tìm kiếm theo code, tên, path..."
+          [placeholder]="'menus.actions.searchPlaceholder' | translate"
           width="100%"
           (valueChange)="onSearchChange($event)">
         </app-shared-search>
@@ -13,11 +13,11 @@
       <div class="toolbar-actions">
         <button type="button" class="btn-ghost-custom action-btn" (click)="expandAll()">
           <span class="custom-icon-arrow-right expand-icon"></span>
-          Mở rộng
+          {{ 'menus.actions.expandAll' | translate }}
         </button>
         <button type="button" class="btn-ghost-custom action-btn" (click)="collapseAll()">
           <span class="custom-icon-arrow-left collapse-icon"></span>
-          Thu gọn
+          {{ 'menus.actions.collapseAll' | translate }}
         </button>
         <button type="button" class="btn-primary-custom action-btn" (click)="openCreateModal()">
           <span class="custom-icon-package-plus"></span>
@@ -52,8 +52,8 @@
       <div class="state-panel state-card">
         <app-no-data
           [fullHeight]="false"
-          title="Chưa có menu nào"
-          message="Nhấn nút 'Tạo mới' để bắt đầu cấu hình menu cho hệ thống.">
+          [title]="'menus.empty.title' | translate"
+          [message]="'menus.empty.message' | translate">
           <span icon class="custom-icon-news"></span>
         </app-no-data>
       </div>
@@ -62,15 +62,15 @@
         <table class="tree-table">
           <thead>
             <tr>
-              <th class="col-no">#</th>
-              <th class="col-code">Code</th>
-              <th class="col-title">Tên menu</th>
-              <th class="col-path">Path</th>
-              <th class="col-icon">Icon</th>
-              <th class="col-order">Thứ tự</th>
-              <th class="col-roles">Vai trò</th>
-              <th class="col-status">Trạng thái</th>
-              <th class="col-actions">Thao tác</th>
+              <th class="col-no">{{ 'menus.table.no' | translate }}</th>
+              <th class="col-code">{{ 'menus.table.code' | translate }}</th>
+              <th class="col-title">{{ 'menus.table.title' | translate }}</th>
+              <th class="col-path">{{ 'menus.table.path' | translate }}</th>
+              <th class="col-icon">{{ 'menus.table.icon' | translate }}</th>
+              <th class="col-order">{{ 'menus.table.order' | translate }}</th>
+              <th class="col-roles">{{ 'menus.table.roles' | translate }}</th>
+              <th class="col-status">{{ 'menus.table.status' | translate }}</th>
+              <th class="col-actions">{{ 'menus.table.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -142,46 +142,46 @@
   [isVisible]="formVisible()"
   (isVisibleChange)="formVisible.set($event)"
   [title]="formTitle()"
-  saveText="Lưu"
-  cancelText="Hủy"
+  [saveText]="'menus.dialog.actions.save' | translate"
+  [cancelText]="'menus.dialog.actions.cancel' | translate"
   maxWidth="720px"
   (save)="saveForm()"
   (cancel)="closeForm()">
   <div class="form-grid">
     <div class="form-field">
-      <label>Code <span class="required">*</span></label>
+      <label>{{ 'menus.dialog.form.code.label' | translate }} <span class="required">*</span></label>
       <app-shared-input-text
         [value]="formState().code"
-        placeholder="VD: DASHBOARD, USERS"
+        [placeholder]="'menus.dialog.form.code.placeholder' | translate"
         (valueChange)="updateFormField('code', $event)">
       </app-shared-input-text>
     </div>
     <div class="form-field">
-      <label>Tên menu <span class="required">*</span></label>
+      <label>{{ 'menus.dialog.form.title.label' | translate }} <span class="required">*</span></label>
       <app-shared-input-text
         [value]="formState().title"
-        placeholder="VD: Bảng điều khiển"
+        [placeholder]="'menus.dialog.form.title.placeholder' | translate"
         (valueChange)="updateFormField('title', $event)">
       </app-shared-input-text>
     </div>
     <div class="form-field">
-      <label>Đường dẫn (Path)</label>
+      <label>{{ 'menus.dialog.form.path.label' | translate }}</label>
       <app-shared-input-text
         [value]="formState().path"
-        placeholder="VD: /dashboard"
+        [placeholder]="'menus.dialog.form.path.placeholder' | translate"
         (valueChange)="updateFormField('path', $event)">
       </app-shared-input-text>
     </div>
     <div class="form-field">
-      <label>Icon</label>
+      <label>{{ 'menus.dialog.form.icon.label' | translate }}</label>
       <app-shared-input-text
         [value]="formState().icon"
-        placeholder="VD: custom-icon-home"
+        [placeholder]="'menus.dialog.form.icon.placeholder' | translate"
         (valueChange)="updateFormField('icon', $event)">
       </app-shared-input-text>
     </div>
     <div class="form-field">
-      <label>Menu cha</label>
+      <label>{{ 'menus.dialog.form.parentId.label' | translate }}</label>
       <app-shared-dropdown
         [options]="parentOptions()"
         [value]="formState().parentId ? '' + formState().parentId : ''"
@@ -190,7 +190,7 @@
       </app-shared-dropdown>
     </div>
     <div class="form-field">
-      <label>Thứ tự sắp xếp</label>
+      <label>{{ 'menus.dialog.form.sortOrder.label' | translate }}</label>
       <app-shared-input-text
         [value]="'' + formState().sortOrder"
         placeholder="0"
@@ -198,7 +198,7 @@
       </app-shared-input-text>
     </div>
     <div class="form-field">
-      <label>Trạng thái</label>
+      <label>{{ 'menus.dialog.form.status.label' | translate }}</label>
       <app-shared-dropdown
         [options]="statusOptions"
         [value]="formState().status"
@@ -207,7 +207,7 @@
       </app-shared-dropdown>
     </div>
     <div class="form-field full-width">
-      <label>Vai trò (Role Codes)</label>
+      <label>{{ 'menus.dialog.form.roleCodes.label' | translate }}</label>
       <div class="role-tags-input">
         <div class="role-tags">
           @for (role of formState().roleCodes; track role) {
@@ -220,11 +220,11 @@
         <div class="role-input-row">
           <app-shared-input-text
             [value]="roleCodeInput()"
-            placeholder="Nhập role code, nhấn Enter để thêm..."
+            [placeholder]="'menus.dialog.form.roleCodes.placeholder' | translate"
             (valueChange)="onRoleCodeInputChange($event)"
             (keydown)="onRoleCodeKeydown($event)">
           </app-shared-input-text>
-          <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">Thêm</button>
+          <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">{{ 'checkin.common.actions.add' | translate }}</button>
         </div>
       </div>
     </div>
@@ -235,10 +235,10 @@
 <app-confirm-popup
   [isVisible]="confirmVisible()"
   (isVisibleChange)="confirmVisible.set($event)"
-  title="Xóa menu"
+  [title]="'menus.confirmDelete.title' | translate"
   [message]="confirmMessage()"
-  cancelText="Hủy"
-  confirmText="Xóa"
+  [cancelText]="'menus.dialog.actions.cancel' | translate"
+  [confirmText]="'checkin.common.actions.delete' | translate"
   (confirm)="confirmDelete()"
   (cancel)="cancelDelete()">
 </app-confirm-popup>

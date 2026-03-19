@@ -94,15 +94,17 @@ export class MenuManagementComponent {
   protected readonly pendingDeleteMenu = signal<PortalMenuItem | null>(null);
 
   // Status options
-  protected readonly statusOptions: DropdownOption[] = [
-    { label: 'Hoạt động', value: 'ACTIVE' },
-    { label: 'Vô hiệu hóa', value: 'INACTIVE' },
-  ];
+  protected get statusOptions(): DropdownOption[] {
+    return [
+      { label: this.translateService.instant('menus.status.active'), value: 'ACTIVE' },
+      { label: this.translateService.instant('menus.status.inactive'), value: 'INACTIVE' },
+    ];
+  }
 
   // Parent dropdown
   protected readonly parentOptions = computed<DropdownOption[]>(() => {
     const editingId = this.editingMenuId();
-    const opts: DropdownOption[] = [{ label: '— Không có (Menu gốc) —', value: '' }];
+    const opts: DropdownOption[] = [{ label: this.translateService.instant('menus.dialog.form.parentId.placeholder'), value: '' }];
     const addOptions = (items: PortalMenuItem[], prefix = '') => {
       for (const item of items) {
         // Prevent selecting self or own children as parent
@@ -144,7 +146,7 @@ export class MenuManagementComponent {
   });
 
   protected readonly formTitle = computed(() =>
-    this.formMode() === 'create' ? 'Tạo mới menu' : 'Chỉnh sửa menu',
+    this.formMode() === 'create' ? this.translateService.instant('menus.dialog.createTitle') : this.translateService.instant('menus.dialog.editTitle'),
   );
 
   constructor() {
@@ -154,7 +156,7 @@ export class MenuManagementComponent {
       .subscribe((title) => {
         this.breadcrumbService.setBreadcrumbs([
           { label: this.translateService.instant('checkin.breadcrumb.home'), icon: 'custom-icon-home', url: '/main' },
-          { label: title || 'Quản lý menu', active: true },
+          { label: title || this.translateService.instant('menus.breadcrumb.title'), active: true },
         ]);
       });
 
@@ -219,7 +221,7 @@ export class MenuManagementComponent {
 
   // ── Status helpers ──
   protected statusLabel(status?: string): string {
-    return status?.toUpperCase() === 'ACTIVE' ? 'Hoạt động' : 'Vô hiệu hóa';
+    return status?.toUpperCase() === 'ACTIVE' ? this.translateService.instant('menus.status.active') : this.translateService.instant('menus.status.inactive');
   }
 
   protected statusClass(status?: string): string {
@@ -295,7 +297,7 @@ export class MenuManagementComponent {
   protected saveForm(): void {
     const state = this.formState();
     if (!state.code.trim() || !state.title.trim()) {
-      this.toastService.error('Code và Tên menu là bắt buộc');
+      this.toastService.error(`${this.translateService.instant('menus.dialog.form.code.error')} / ${this.translateService.instant('menus.dialog.form.title.error')}`);
       return;
     }
 
@@ -317,11 +319,11 @@ export class MenuManagementComponent {
 
     request$.subscribe({
       next: () => {
-        this.toastService.success(mode === 'create' ? 'Tạo mới menu thành công' : 'Cập nhật menu thành công');
+        this.toastService.success(this.translateService.instant(mode === 'create' ? 'menus.toast.createSuccess' : 'menus.toast.updateSuccess'));
         this.closeForm();
         this.loadMenus();
       },
-      error: () => this.toastService.error('Không thể lưu menu'),
+      error: () => this.toastService.error(this.translateService.instant(mode === 'create' ? 'menus.toast.createError' : 'menus.toast.updateError')),
     });
   }
 
@@ -344,17 +346,17 @@ export class MenuManagementComponent {
     this.confirmVisible.set(false);
     this.menuService.deleteMenu(item.id).subscribe({
       next: () => {
-        this.toastService.success('Xóa menu thành công');
+        this.toastService.success(this.translateService.instant('menus.toast.deleteSuccess'));
         this.pendingDeleteMenu.set(null);
         this.loadMenus();
       },
-      error: () => this.toastService.error('Không thể xóa menu'),
+      error: () => this.toastService.error(this.translateService.instant('menus.toast.deleteError')),
     });
   }
 
   protected readonly confirmMessage = computed(() => {
-    const name = this.pendingDeleteMenu()?.title || 'menu này';
-    return `Bạn có chắc muốn xóa "${name}"? Các menu con cũng sẽ bị xóa.`;
+    const name = this.pendingDeleteMenu()?.title || this.translateService.instant('menus.table.title');
+    return this.translateService.instant('menus.confirmDelete.message', { title: name });
   });
 }
 
