@@ -867,7 +867,10 @@
       "levelTitle": "Menus in this level",
       "levelHint": "Based on the selected parent menu",
       "conflictTitle": "Sort order is already taken",
-      "conflictMessage": "Order {{value}} is used by {{code}} ({{title}})."
+      "conflictMessage": "Order {{value}} is used by {{code}} ({{title}}).",
+      "useSuggested": "Use suggested",
+      "swapHint": "On save, the two menus will swap their sort order.",
+      "swapDownHint": "On save, the existing menu will move to the last position (#{{value}})."
     },
     "dialog": {
       "createTitle": "Add New Menu",

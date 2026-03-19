@@ -866,7 +866,10 @@
       "levelTitle": "Menu trong cùng cấp",
       "levelHint": "Dựa theo menu cha đã chọn",
       "conflictTitle": "Thứ tự hiển thị đã có",
-      "conflictMessage": "Thứ tự {{value}} đang thuộc về {{code}} ({{title}})."
+      "conflictMessage": "Thứ tự {{value}} đang thuộc về {{code}} ({{title}}).",
+      "useSuggested": "Dùng gợi ý",
+      "swapHint": "Khi lưu, 2 menu sẽ hoán đổi thứ tự hiển thị.",
+      "swapDownHint": "Khi lưu, menu đang chiếm thứ tự sẽ chuyển xuống cuối (#{{value}})."
     },
     "dialog": {
       "createTitle": "Thêm mới Menu",

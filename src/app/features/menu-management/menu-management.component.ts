@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -114,6 +114,8 @@ export class MenuManagementComponent {
   );
   protected readonly sortOrderBlockedValue = signal<number | null>(null);
   protected readonly sortOrderBlockedMenu = signal<PortalMenuItem | null>(null);
+  protected readonly orderDropdownOpen = signal(false);
+  @ViewChild('sortOrderWrap') private sortOrderWrap?: ElementRef<HTMLElement>;
 
   // Confirm state
   protected readonly confirmVisible = signal(false);
@@ -224,10 +226,34 @@ export class MenuManagementComponent {
     return null;
   });
 
+  protected readonly sortOrderConflictMenu = computed<PortalMenuItem | null>(() => {
+    const raw = (this.formState().sortOrder ?? '').trim();
+    const val = raw === '' ? 0 : Number(raw);
+    if (!Number.isInteger(val) || val < 0) return null;
+
+    const parentId = normalizeParentId(this.formState().parentId);
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const siblings = siblingsByParent(this.menus(), parentId, excludeId);
+    return siblings.find((m) => Number(m.sortOrder ?? 0) === val) ?? null;
+  });
+
+  private shouldSwapWithConflict(): boolean {
+    if (this.formMode() !== 'edit') return false;
+    const parentId = normalizeParentId(this.formState().parentId);
+    return parentId === this.originalParentId && !!this.editingMenuId() && !!this.sortOrderConflictMenu();
+  }
+
+  protected readonly sortOrderWillSwap = computed(() => this.shouldSwapWithConflict());
+
+  protected readonly sortOrderSwapDownTarget = computed<number>(() => {
+    const parentId = normalizeParentId(this.formState().parentId);
+    return lastSortOrder(this.menus(), parentId, null);
+  });
+
   protected readonly levelMenusPreview = computed(() => {
     const parentId = normalizeParentId(this.formState().parentId);
     const currentId = this.formMode() === 'edit' ? this.editingMenuId() : null;
-    const blockedMenu = this.sortOrderBlockedMenu();
+    const blockedMenu = this.sortOrderConflictMenu();
 
     const siblings = siblingsByParent(this.menus(), parentId, null);
     const rows = siblings
@@ -262,7 +288,7 @@ export class MenuManagementComponent {
     // Swap only makes sense when staying in the same level (same parent).
     if (parentId !== this.originalParentId) return false;
 
-    return !!this.sortOrderBlockedMenu();
+    return !!this.sortOrderConflictMenu();
   }
 
   protected readonly suggestedSortOrder = computed<number>(() => {
@@ -367,7 +393,7 @@ export class MenuManagementComponent {
     this.editingMenuId.set(null);
     this.formState.set({
       ...EMPTY_FORM,
-      sortOrder: String(nextAvailableSortOrder(this.menus(), null, null)),
+      sortOrder: String(lastSortOrder(this.menus(), null, null)),
     });
     this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
@@ -376,8 +402,7 @@ export class MenuManagementComponent {
     this.loadRolesIfNeeded();
     this.originalParentId = null;
     this.originalSortOrder = 0;
-    this.sortOrderBlockedValue.set(null);
-    this.sortOrderBlockedMenu.set(null);
+    this.orderDropdownOpen.set(false);
     this.formVisible.set(true);
   }
 
@@ -402,13 +427,23 @@ export class MenuManagementComponent {
     this.formSubmitted.set(false);
     this.sortOrderTouched = false;
     this.loadRolesIfNeeded();
-    this.sortOrderBlockedValue.set(null);
-    this.sortOrderBlockedMenu.set(null);
+    this.orderDropdownOpen.set(false);
     this.formVisible.set(true);
   }
 
   protected closeForm(): void {
     this.formVisible.set(false);
+    this.orderDropdownOpen.set(false);
+  }
+
+  @HostListener('document:mousedown', ['$event'])
+  onDocumentMouseDown(event: MouseEvent): void {
+    if (!this.orderDropdownOpen()) return;
+    const host = this.sortOrderWrap?.nativeElement;
+    const target = event.target as Node | null;
+    if (!host || !target) return;
+    if (host.contains(target)) return;
+    this.orderDropdownOpen.set(false);
   }
 
   protected updateFormField<K extends keyof MenuFormState>(key: K, value: MenuFormState[K]): void {
@@ -427,27 +462,12 @@ export class MenuManagementComponent {
 
       // Allow invalid intermediate values so the user can edit; format validation will show inline.
       if (!Number.isInteger(num) || num < 0) {
-        this.sortOrderBlockedValue.set(null);
-        this.sortOrderBlockedMenu.set(null);
         this.formState.update((state) => ({ ...state, sortOrder: String(nextValue ?? '') }));
+        this.orderDropdownOpen.set(false);
         return;
       }
-
-      const parentId = normalizeParentId(this.formState().parentId);
-      const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
-      const siblings = siblingsByParent(this.menus(), parentId, excludeId);
-      const conflict = siblings.find((m) => Number(m.sortOrder ?? 0) === num) ?? null;
-
-      if (conflict) {
-        // Block setting duplicate order; expose conflict item pinned in UI and allow swapping.
-        this.sortOrderBlockedValue.set(num);
-        this.sortOrderBlockedMenu.set(conflict);
-        return;
-      }
-
-      this.sortOrderBlockedValue.set(null);
-      this.sortOrderBlockedMenu.set(null);
       this.formState.update((state) => ({ ...state, sortOrder: String(num) }));
+      this.orderDropdownOpen.set(!!this.sortOrderConflictMenu());
       return;
     }
 
@@ -458,11 +478,10 @@ export class MenuManagementComponent {
         return {
           ...state,
           parentId: parentId,
-          sortOrder: String(nextAvailableSortOrder(this.menus(), parentId, this.formMode() === 'edit' ? this.editingMenuId() : null)),
+          sortOrder: String(lastSortOrder(this.menus(), parentId, this.formMode() === 'edit' ? this.editingMenuId() : null)),
         };
       });
-      this.sortOrderBlockedValue.set(null);
-      this.sortOrderBlockedMenu.set(null);
+      this.orderDropdownOpen.set(false);
       return;
     }
 
@@ -519,17 +538,10 @@ export class MenuManagementComponent {
       // sortOrderDuplicate is handled as a smart flow below (swap/suggest)
       (this.sortOrderValidationErrorKey() === 'menus.validation.sortOrderDuplicate' ? null : this.sortOrderValidationErrorKey()) ||
       this.roleCodesValidationErrorKey() ||
-      this.roleCodeInputErrorKey() ||
-      (this.sortOrderBlockedMenu() ? 'menus.validation.sortOrderDuplicate' : null);
+      this.roleCodeInputErrorKey();
 
     if (firstHardErrorKey) {
       this.toastService.error(this.translateService.instant(firstHardErrorKey));
-      return;
-    }
-
-    // If user attempted a duplicate order, keep the field unchanged and show the conflict panel instead.
-    if (this.sortOrderBlockedMenu()) {
-      this.toastService.error(this.translateService.instant('menus.validation.sortOrderDuplicate'));
       return;
     }
 
@@ -545,9 +557,21 @@ export class MenuManagementComponent {
     };
 
     const mode = this.formMode();
-    const request$ = mode === 'create'
+    const conflict = this.sortOrderConflictMenu();
+    const parentId = normalizeParentId(state.parentId);
+    const desiredSortOrder = payload.sortOrder ?? 0;
+
+    const apply$ = () => mode === 'create'
       ? this.menuService.createMenu(payload)
       : this.menuService.updateMenu(this.editingMenuId()!, payload);
+
+    const request$ = conflict
+      ? (this.shouldSwapWithConflict()
+        ? this.swapSortOrderWithConflict$(conflict, desiredSortOrder)
+        : this.menuService
+          .updateMenu(conflict.id, { ...buildRequestFromMenuItem(conflict), sortOrder: lastSortOrder(this.menus(), parentId, null) })
+          .pipe(concatMap(() => apply$())))
+      : apply$();
 
     request$.subscribe({
       next: () => {
@@ -562,6 +586,50 @@ export class MenuManagementComponent {
   protected cancelSwapSortOrder(): void {
     this.swapConfirmVisible.set(false);
     this.swapTargetMenu.set(null);
+  }
+
+  private swapSortOrderWithConflict$(conflict: PortalMenuItem, desiredSortOrder: number) {
+    const currentId = this.editingMenuId();
+    if (!currentId) return throwError(() => new Error('Missing editingMenuId'));
+
+    const state = this.formState();
+    const parentId = normalizeParentId(state.parentId);
+    if (parentId !== this.originalParentId) {
+      return throwError(() => new Error('Swap is only supported within the same level'));
+    }
+
+    // Use a temporary order to avoid backend unique constraints during swap.
+    const temp = nextAvailableSortOrder(this.menus(), parentId, currentId /* exclude current only */);
+
+    const currentPayload: PortalMenuRequest = {
+      code: state.code.trim(),
+      title: state.title.trim(),
+      path: state.path.trim() || undefined,
+      icon: state.icon.trim() || undefined,
+      parentId: state.parentId || undefined,
+      roleCodes: state.roleCodes.length ? state.roleCodes : undefined,
+      sortOrder: desiredSortOrder,
+      status: state.status,
+    };
+
+    const targetPayloadBase = buildRequestFromMenuItem(conflict);
+    const moveTargetToTemp: PortalMenuRequest = {
+      ...targetPayloadBase,
+      sortOrder: temp,
+      parentId: conflict.parentId ?? undefined,
+    };
+    const moveTargetToOldCurrent: PortalMenuRequest = {
+      ...targetPayloadBase,
+      sortOrder: this.originalSortOrder,
+      parentId: conflict.parentId ?? undefined,
+    };
+
+    this.loadingService.showPageLoading();
+    return this.menuService.updateMenu(conflict.id, moveTargetToTemp).pipe(
+      concatMap(() => this.menuService.updateMenu(currentId, currentPayload)),
+      concatMap(() => this.menuService.updateMenu(conflict.id, moveTargetToOldCurrent)),
+      finalize(() => this.loadingService.hidePageLoading()),
+    );
   }
 
   protected confirmSwapSortOrder(): void {
@@ -625,26 +693,9 @@ export class MenuManagementComponent {
     });
   }
 
-  protected attemptSwapBlockedSortOrder(): void {
-    const blockedMenu = this.sortOrderBlockedMenu();
-    const blockedValue = this.sortOrderBlockedValue();
-    if (!blockedMenu || blockedValue == null) return;
-
-    if (!this.canSwapSortOrder()) {
-      // If swap isn't applicable (create or changing parent), guide user to a free slot.
-      const suggested = this.suggestedSortOrder();
-      this.formState.update((s) => ({ ...s, sortOrder: String(suggested) }));
-      this.sortOrderBlockedValue.set(null);
-      this.sortOrderBlockedMenu.set(null);
-      return;
-    }
-
-    // Bypass updateFormField('sortOrder') blocking logic.
-    this.formState.update((s) => ({ ...s, sortOrder: String(blockedValue) }));
-    this.swapTargetMenu.set(blockedMenu);
-    this.sortOrderBlockedValue.set(null);
-    this.sortOrderBlockedMenu.set(null);
-    this.swapConfirmVisible.set(true);
+  protected acceptSuggestedSortOrder(): void {
+    const suggested = this.suggestedSortOrder();
+    this.formState.update((s) => ({ ...s, sortOrder: String(suggested) }));
   }
 
   // ── Delete ──
@@ -740,6 +791,20 @@ function nextAvailableSortOrder(
   let candidate = 0;
   while (used.has(candidate)) candidate++;
   return candidate;
+}
+
+function lastSortOrder(
+  roots: PortalMenuItem[],
+  parentId: number | null,
+  excludeId: number | null,
+): number {
+  const siblings = siblingsByParent(roots, parentId, excludeId);
+  let max = -1;
+  for (const s of siblings) {
+    const n = Number(s.sortOrder ?? -1);
+    if (Number.isFinite(n) && n > max) max = n;
+  }
+  return max + 1;
 }
 
 function buildRequestFromMenuItem(item: PortalMenuItem): PortalMenuRequest {
