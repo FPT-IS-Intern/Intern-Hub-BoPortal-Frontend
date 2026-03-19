@@ -855,6 +855,10 @@
       "sortOrderFormat": "Sort order must be a non-negative integer.",
       "sortOrderDuplicate": "Sort order is already used in this level.",
       "sortOrderSuggested": "Suggested: {{value}}",
+      "sortOrderSwapTitle": "Swap sort order?",
+      "sortOrderSwapMessage": "Sort order <b>{{value}}</b> is currently used by <b>{{code}}</b> ({{title}}). Do you want to swap positions?",
+      "sortOrderSwapConfirm": "Swap",
+      "sortOrderSwapped": "Sort order swapped successfully.",
       "roleCodeFormat": "Invalid role.",
       "roleCodeDuplicate": "This role was already added.",
       "roleCodeNotFound": "Role not found in roles list."

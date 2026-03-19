@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signa
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { finalize } from 'rxjs';
+import { catchError, concatMap, finalize, of, throwError } from 'rxjs';
 import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
 import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
 import {
@@ -95,6 +95,12 @@ export class MenuManagementComponent {
   protected readonly roleCodeInputErrorKey = signal<string | null>(null);
   protected readonly formSubmitted = signal(false);
   private sortOrderTouched = false;
+  private originalParentId: number | null = null;
+  private originalSortOrder: number = 0;
+
+  protected readonly swapConfirmVisible = signal(false);
+  protected readonly swapTargetMenu = signal<PortalMenuItem | null>(null);
+  private swapInProgress = false;
 
   protected readonly selectedRoleName = signal('');
   protected readonly roles = signal<AuthzRole[]>([]);
@@ -223,6 +229,29 @@ export class MenuManagementComponent {
     return null;
   });
 
+  protected readonly sortOrderConflictMenu = computed<PortalMenuItem | null>(() => {
+    const raw = (this.formState().sortOrder ?? '').trim();
+    const val = raw === '' ? 0 : Number(raw);
+    if (!Number.isInteger(val) || val < 0) return null;
+
+    const parentId = normalizeParentId(this.formState().parentId);
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const siblings = siblingsByParent(this.menus(), parentId, excludeId);
+    return siblings.find((m) => Number(m.sortOrder ?? 0) === val) ?? null;
+  });
+
+  private canSwapSortOrder(): boolean {
+    if (this.formMode() !== 'edit') return false;
+    const currentId = this.editingMenuId();
+    if (!currentId) return false;
+
+    const parentId = normalizeParentId(this.formState().parentId);
+    // Swap only makes sense when staying in the same level (same parent).
+    if (parentId !== this.originalParentId) return false;
+
+    return !!this.sortOrderConflictMenu();
+  }
+
   protected readonly suggestedSortOrder = computed<number>(() => {
     const parentId = normalizeParentId(this.formState().parentId);
     const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
@@ -332,6 +361,8 @@ export class MenuManagementComponent {
     this.formSubmitted.set(false);
     this.sortOrderTouched = false;
     this.loadRolesIfNeeded();
+    this.originalParentId = null;
+    this.originalSortOrder = 0;
     this.formVisible.set(true);
   }
 
@@ -339,6 +370,8 @@ export class MenuManagementComponent {
   protected openEditModal(item: PortalMenuItem): void {
     this.formMode.set('edit');
     this.editingMenuId.set(item.id);
+    this.originalParentId = normalizeParentId(item.parentId);
+    this.originalSortOrder = Number(item.sortOrder ?? 0) || 0;
     this.formState.set({
       code: item.code || '',
       title: item.title || '',
@@ -432,16 +465,33 @@ export class MenuManagementComponent {
     this.formSubmitted.set(true);
     const state = this.formState();
 
-    const firstErrorKey =
+    const firstHardErrorKey =
       this.codeValidationErrorKey() ||
       this.titleValidationErrorKey() ||
       this.pathValidationErrorKey() ||
-      this.sortOrderValidationErrorKey() ||
+      // sortOrderDuplicate is handled as a smart flow below (swap/suggest)
+      (this.sortOrderValidationErrorKey() === 'menus.validation.sortOrderDuplicate' ? null : this.sortOrderValidationErrorKey()) ||
       this.roleCodesValidationErrorKey() ||
       this.roleCodeInputErrorKey();
 
-    if (firstErrorKey) {
-      this.toastService.error(this.translateService.instant(firstErrorKey));
+    if (firstHardErrorKey) {
+      this.toastService.error(this.translateService.instant(firstHardErrorKey));
+      return;
+    }
+
+    // Smart sortOrder: if duplicated within the same level, offer a swap (edit same parent) or suggest an available value.
+    if (this.sortOrderValidationErrorKey() === 'menus.validation.sortOrderDuplicate') {
+      const conflict = this.sortOrderConflictMenu();
+      if (conflict && this.canSwapSortOrder()) {
+        this.swapTargetMenu.set(conflict);
+        this.swapConfirmVisible.set(true);
+        return;
+      }
+
+      // If we can't swap (create or moving parent), do not allow duplicate; suggest a safe value.
+      const suggested = this.suggestedSortOrder();
+      this.updateFormField('sortOrder', String(suggested) as any);
+      this.toastService.error(this.translateService.instant('menus.validation.sortOrderDuplicate'));
       return;
     }
 
@@ -468,6 +518,72 @@ export class MenuManagementComponent {
         this.loadMenus();
       },
       error: () => this.toastService.error(this.translateService.instant(mode === 'create' ? 'menus.toast.createError' : 'menus.toast.updateError')),
+    });
+  }
+
+  protected cancelSwapSortOrder(): void {
+    this.swapConfirmVisible.set(false);
+    this.swapTargetMenu.set(null);
+  }
+
+  protected confirmSwapSortOrder(): void {
+    if (this.swapInProgress) return;
+    const currentId = this.editingMenuId();
+    const target = this.swapTargetMenu();
+    if (!currentId || !target) return;
+
+    const state = this.formState();
+    const desiredSortOrder = parseInt(state.sortOrder.trim() || '0', 10) || 0;
+    const parentId = normalizeParentId(state.parentId);
+    if (parentId !== this.originalParentId) return;
+
+    // Use a temporary order to avoid backend unique constraints during swap.
+    const temp = nextAvailableSortOrder(this.menus(), parentId, currentId /* exclude current only */);
+    const currentPayload: PortalMenuRequest = {
+      code: state.code.trim(),
+      title: state.title.trim(),
+      path: state.path.trim() || undefined,
+      icon: state.icon.trim() || undefined,
+      parentId: state.parentId || undefined,
+      roleCodes: state.roleCodes.length ? state.roleCodes : undefined,
+      sortOrder: desiredSortOrder,
+      status: state.status,
+    };
+
+    const targetPayloadBase = buildRequestFromMenuItem(target);
+    const moveTargetToTemp: PortalMenuRequest = { ...targetPayloadBase, sortOrder: temp, parentId: target.parentId || undefined };
+    const moveTargetToOldCurrent: PortalMenuRequest = {
+      ...targetPayloadBase,
+      sortOrder: this.originalSortOrder,
+      parentId: target.parentId || undefined,
+    };
+
+    this.swapInProgress = true;
+    this.swapConfirmVisible.set(false);
+
+    this.loadingService.showPageLoading();
+    this.menuService.updateMenu(target.id, moveTargetToTemp).pipe(
+      concatMap(() => this.menuService.updateMenu(currentId, currentPayload)),
+      concatMap(() => this.menuService.updateMenu(target.id, moveTargetToOldCurrent)),
+      catchError((err) => {
+        // Best-effort: reload UI; backend state might be partial.
+        return throwError(() => err);
+      }),
+      finalize(() => {
+        this.swapInProgress = false;
+        this.swapTargetMenu.set(null);
+        this.loadingService.hidePageLoading();
+      }),
+    ).subscribe({
+      next: () => {
+        this.toastService.success(this.translateService.instant('menus.validation.sortOrderSwapped'));
+        this.closeForm();
+        this.loadMenus();
+      },
+      error: () => {
+        this.toastService.error(this.translateService.instant('menus.toast.updateError'));
+        this.loadMenus();
+      },
     });
   }
 
@@ -564,4 +680,17 @@ function nextAvailableSortOrder(
   let candidate = 0;
   while (used.has(candidate)) candidate++;
   return candidate;
+}
+
+function buildRequestFromMenuItem(item: PortalMenuItem): PortalMenuRequest {
+  return {
+    code: (item.code || '').trim(),
+    title: (item.title || '').trim(),
+    path: item.path?.trim() || undefined,
+    icon: item.icon?.trim() || undefined,
+    parentId: item.parentId ?? undefined,
+    roleCodes: item.roleCodes?.length ? item.roleCodes : undefined,
+    sortOrder: Number(item.sortOrder ?? 0) || 0,
+    status: item.status || 'ACTIVE',
+  };
 }

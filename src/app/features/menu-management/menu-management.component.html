@@ -293,3 +293,15 @@
   [cancelText]="'menus.dialog.actions.cancel' | translate" [confirmText]="'checkin.common.actions.delete' | translate"
   (confirm)="confirmDelete()" (cancel)="cancelDelete()">
 </app-confirm-popup>
+
+<!-- ── Sort Order Swap Confirmation ───────────────────────────── -->
+<app-confirm-popup
+  [isVisible]="swapConfirmVisible()"
+  (isVisibleChange)="swapConfirmVisible.set($event)"
+  [title]="'menus.validation.sortOrderSwapTitle' | translate"
+  [message]="('menus.validation.sortOrderSwapMessage' | translate:{ code: swapTargetMenu()?.code, title: swapTargetMenu()?.title, value: formState().sortOrder })"
+  [cancelText]="'menus.dialog.actions.cancel' | translate"
+  [confirmText]="'menus.validation.sortOrderSwapConfirm' | translate"
+  (confirm)="confirmSwapSortOrder()"
+  (cancel)="cancelSwapSortOrder()">
+</app-confirm-popup>

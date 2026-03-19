@@ -854,6 +854,10 @@
       "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
       "sortOrderDuplicate": "Thứ tự hiển thị đã được dùng trong cùng cấp.",
       "sortOrderSuggested": "Gợi ý: {{value}}",
+      "sortOrderSwapTitle": "Hoán đổi thứ tự hiển thị?",
+      "sortOrderSwapMessage": "Thứ tự <b>{{value}}</b> đang được dùng bởi <b>{{code}}</b> ({{title}}). Bạn có muốn hoán đổi vị trí không?",
+      "sortOrderSwapConfirm": "Hoán đổi",
+      "sortOrderSwapped": "Hoán đổi thứ tự hiển thị thành công.",
       "roleCodeFormat": "Mã role không hợp lệ.",
       "roleCodeDuplicate": "Role đã được thêm.",
       "roleCodeNotFound": "Role không tồn tại trong danh sách."
