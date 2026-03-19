@@ -29,8 +29,9 @@
 }
 
 .keyword-field {
-  flex: 1;
-  min-width: 280px;
+  flex: 1 1 420px;
+  max-width: 520px;
+  min-width: 260px;
 }
 
 .toolbar-actions {
@@ -38,6 +39,7 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .action-btn {
