@@ -826,10 +826,12 @@
     },
     "actions": {
       "searchPlaceholder": "Search by code, title, path...",
-      "expandAll": "Expand all",
-      "collapseAll": "Collapse all",
       "refresh": "Refresh",
       "add": "Add Menu"
+    },
+    "tree": {
+      "expand": "Expand",
+      "collapse": "Collapse"
     },
     "table": {
       "no": "No.",

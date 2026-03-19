@@ -825,10 +825,12 @@
     },
     "actions": {
       "searchPlaceholder": "Tìm kiếm theo code, tên, path...",
-      "expandAll": "Mở rộng",
-      "collapseAll": "Thu gọn",
       "refresh": "Làm mới",
       "add": "Tạo mới menu"
+    },
+    "tree": {
+      "expand": "Mở rộng",
+      "collapse": "Thu gọn"
     },
     "table": {
       "no": "STT",

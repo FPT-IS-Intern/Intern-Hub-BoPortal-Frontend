@@ -11,22 +11,6 @@
       <div class="toolbar-actions">
         <button
           type="button"
-          class="btn-ghost-custom action-btn"
-          [appTooltip]="'menus.actions.expandAll' | translate"
-          (click)="expandAll()">
-          <span class="custom-icon-arrow-down expand-icon"></span>
-          {{ 'menus.actions.expandAll' | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn-ghost-custom action-btn"
-          [appTooltip]="'menus.actions.collapseAll' | translate"
-          (click)="collapseAll()">
-          <span class="custom-icon-arrow-right collapse-icon"></span>
-          {{ 'menus.actions.collapseAll' | translate }}
-        </button>
-        <button
-          type="button"
           class="btn-primary-custom action-btn"
           [appTooltip]="'menus.actions.add' | translate"
           (click)="openCreateModal()">
@@ -101,7 +85,7 @@
               <div class="tree-cell" [style.padding-left.px]="row.depth * 24">
                 @if (row.hasChildren) {
                 <button type="button" class="expand-btn"
-                  [appTooltip]="(row.expanded ? 'menus.actions.collapseAll' : 'menus.actions.expandAll') | translate"
+                  [appTooltip]="(row.expanded ? 'menus.tree.collapse' : 'menus.tree.expand') | translate"
                   (click)="toggleExpand(row.menu.id)">
                   <span class="chevron" [class.expanded]="row.expanded">▸</span>
                 </button>

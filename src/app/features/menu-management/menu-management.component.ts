@@ -203,24 +203,6 @@ export class MenuManagementComponent {
     });
   }
 
-  protected expandAll(): void {
-    const ids = new Set<number>();
-    const collect = (items: PortalMenuItem[]) => {
-      items.forEach(item => {
-        if (item.children?.length) {
-          ids.add(item.id);
-          collect(item.children);
-        }
-      });
-    };
-    collect(this.menus());
-    this.expandedIds.set(ids);
-  }
-
-  protected collapseAll(): void {
-    this.expandedIds.set(new Set());
-  }
-
   // ── Status helpers ──
   protected statusLabel(status?: string): string {
     return status?.toUpperCase() === 'ACTIVE' ? this.translateService.instant('menus.status.active') : this.translateService.instant('menus.status.inactive');
