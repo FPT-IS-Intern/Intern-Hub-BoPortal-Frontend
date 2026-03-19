@@ -174,22 +174,33 @@
     <div class="form-field">
       <label>{{ 'menus.dialog.form.code.label' | translate }} <span class="required">*</span></label>
       <app-shared-input-text [value]="formState().code" [placeholder]="'menus.dialog.form.code.placeholder' | translate"
+        [required]="true"
         (valueChange)="updateFormField('code', $event)">
       </app-shared-input-text>
+      @if (codeErrorKey()) {
+      <p class="field-error">{{ codeErrorKey() | translate }}</p>
+      }
       <p class="field-hint">{{ 'menus.hint.codeField' | translate }}</p>
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.title.label' | translate }} <span class="required">*</span></label>
       <app-shared-input-text [value]="formState().title"
         [placeholder]="'menus.dialog.form.title.placeholder' | translate"
+        [required]="true"
         (valueChange)="updateFormField('title', $event)">
       </app-shared-input-text>
+      @if (titleErrorKey()) {
+      <p class="field-error">{{ titleErrorKey() | translate }}</p>
+      }
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.path.label' | translate }}</label>
       <app-shared-input-text [value]="formState().path" [placeholder]="'menus.dialog.form.path.placeholder' | translate"
         (valueChange)="updateFormField('path', $event)">
       </app-shared-input-text>
+      @if (pathValidationErrorKey()) {
+      <p class="field-error">{{ pathValidationErrorKey() | translate }}</p>
+      }
       <p class="field-hint">{{ 'menus.hint.pathField' | translate }}</p>
     </div>
     <div class="form-field">
@@ -208,9 +219,12 @@
     </div>
     <div class="form-field">
       <label>{{ 'menus.dialog.form.sortOrder.label' | translate }}</label>
-      <app-shared-input-text [value]="'' + formState().sortOrder" placeholder="0"
-        (valueChange)="updateFormField('sortOrder', +$event || 0)">
+      <app-shared-input-text [value]="formState().sortOrder" placeholder="0"
+        (valueChange)="updateFormField('sortOrder', $event)" [typeInput]="'number'">
       </app-shared-input-text>
+      @if (sortOrderValidationErrorKey()) {
+      <p class="field-error">{{ sortOrderValidationErrorKey() | translate }}</p>
+      }
       <p class="field-hint">{{ 'menus.hint.sortOrderField' | translate }}</p>
     </div>
     <div class="form-field">
@@ -243,6 +257,12 @@
           <button type="button" class="btn-outline-custom small add-role-btn" (click)="addRoleCode()">{{
             'checkin.common.actions.add' | translate }}</button>
         </div>
+        @if (roleCodeInputErrorKey()) {
+        <p class="field-error">{{ roleCodeInputErrorKey() | translate }}</p>
+        }
+        @if (formSubmitted() && roleCodesValidationErrorKey()) {
+        <p class="field-error">{{ roleCodesValidationErrorKey() | translate }}</p>
+        }
       </div>
       <p class="field-hint">{{ 'menus.dialog.form.roleCodes.help' | translate }}</p>
     </div>

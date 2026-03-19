@@ -29,7 +29,7 @@ interface MenuFormState {
   icon: string;
   parentId: number | null;
   roleCodes: string[];
-  sortOrder: number;
+  sortOrder: string;
   status: string;
 }
 
@@ -40,7 +40,7 @@ const EMPTY_FORM: MenuFormState = {
   icon: '',
   parentId: null,
   roleCodes: [],
-  sortOrder: 0,
+  sortOrder: '0',
   status: 'ACTIVE',
 };
 
@@ -90,6 +90,8 @@ export class MenuManagementComponent {
   protected readonly editingMenuId = signal<number | null>(null);
   protected readonly formState = signal<MenuFormState>({ ...EMPTY_FORM });
   protected readonly roleCodeInput = signal('');
+  protected readonly roleCodeInputErrorKey = signal<string | null>(null);
+  protected readonly formSubmitted = signal(false);
 
   // Confirm state
   protected readonly confirmVisible = signal(false);
@@ -149,6 +151,71 @@ export class MenuManagementComponent {
 
   protected readonly formTitle = computed(() =>
     this.formMode() === 'create' ? 'menus.dialog.createTitle' : 'menus.dialog.editTitle',
+  );
+
+  protected readonly codeValidationErrorKey = computed<string | null>(() => {
+    const code = this.formState().code.trim();
+    if (!code) return 'menus.dialog.form.code.error';
+    if (!/^[A-Z][A-Z0-9_]*$/.test(code)) return 'menus.validation.codeFormat';
+
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const exists = allMenus(this.menus()).some((m) => {
+      if (excludeId && m.id === excludeId) return false;
+      return (m.code || '').trim().toUpperCase() === code.toUpperCase();
+    });
+
+    return exists ? 'menus.validation.codeDuplicate' : null;
+  });
+
+  protected readonly codeErrorKey = computed<string | null>(() => {
+    const err = this.codeValidationErrorKey();
+    if (!err) return null;
+    if (err === 'menus.dialog.form.code.error') return this.formSubmitted() ? err : null;
+    return err;
+  });
+
+  protected readonly titleValidationErrorKey = computed<string | null>(() => {
+    const title = this.formState().title.trim();
+    return title ? null : 'menus.dialog.form.title.error';
+  });
+
+  protected readonly titleErrorKey = computed<string | null>(() => {
+    const err = this.titleValidationErrorKey();
+    if (!err) return null;
+    return this.formSubmitted() ? err : null;
+  });
+
+  protected readonly pathValidationErrorKey = computed<string | null>(() => {
+    const path = this.formState().path.trim();
+    if (!path) return null;
+    // Allow Angular-like routes: /a, /a/b, /a/:id, etc. No spaces.
+    if (!path.startsWith('/') || /\s/.test(path) || !/^\/[A-Za-z0-9\-._~/:]*$/.test(path)) {
+      return 'menus.validation.pathFormat';
+    }
+    return null;
+  });
+
+  protected readonly sortOrderValidationErrorKey = computed<string | null>(() => {
+    const raw = (this.formState().sortOrder ?? '').trim();
+    const val = raw === '' ? 0 : Number(raw);
+    if (!Number.isInteger(val) || val < 0) return 'menus.validation.sortOrderFormat';
+    return null;
+  });
+
+  protected readonly roleCodesValidationErrorKey = computed<string | null>(() => {
+    const roleCodes = this.formState().roleCodes;
+    for (const code of roleCodes) {
+      if (!isValidRoleCode(code)) return 'menus.validation.roleCodeFormat';
+    }
+    return null;
+  });
+
+  protected readonly isFormValid = computed(() =>
+    !this.codeValidationErrorKey() &&
+    !this.titleValidationErrorKey() &&
+    !this.pathValidationErrorKey() &&
+    !this.sortOrderValidationErrorKey() &&
+    !this.roleCodesValidationErrorKey(),
   );
 
   constructor() {
@@ -223,6 +290,8 @@ export class MenuManagementComponent {
     this.editingMenuId.set(null);
     this.formState.set({ ...EMPTY_FORM });
     this.roleCodeInput.set('');
+    this.roleCodeInputErrorKey.set(null);
+    this.formSubmitted.set(false);
     this.formVisible.set(true);
   }
 
@@ -237,10 +306,12 @@ export class MenuManagementComponent {
       icon: item.icon || '',
       parentId: item.parentId ?? null,
       roleCodes: [...(item.roleCodes || [])],
-      sortOrder: item.sortOrder ?? 0,
+      sortOrder: String(item.sortOrder ?? 0),
       status: item.status || 'ACTIVE',
     });
     this.roleCodeInput.set('');
+    this.roleCodeInputErrorKey.set(null);
+    this.formSubmitted.set(false);
     this.formVisible.set(true);
   }
 
@@ -255,15 +326,24 @@ export class MenuManagementComponent {
   // Role codes tag input
   protected onRoleCodeInputChange(value: string): void {
     this.roleCodeInput.set(value);
+    this.roleCodeInputErrorKey.set(null);
   }
 
   protected addRoleCode(): void {
-    const code = this.roleCodeInput().trim();
+    const code = this.roleCodeInput().trim().toUpperCase();
     if (!code) return;
-    const current = this.formState().roleCodes;
-    if (!current.includes(code)) {
-      this.updateFormField('roleCodes', [...current, code]);
+    if (!isValidRoleCode(code)) {
+      this.roleCodeInputErrorKey.set('menus.validation.roleCodeFormat');
+      return;
     }
+
+    const current = this.formState().roleCodes.map((c) => c.trim().toUpperCase());
+    if (current.includes(code)) {
+      this.roleCodeInputErrorKey.set('menus.validation.roleCodeDuplicate');
+      return;
+    }
+
+    this.updateFormField('roleCodes', [...current, code]);
     this.roleCodeInput.set('');
   }
 
@@ -279,9 +359,19 @@ export class MenuManagementComponent {
   }
 
   protected saveForm(): void {
+    this.formSubmitted.set(true);
     const state = this.formState();
-    if (!state.code.trim() || !state.title.trim()) {
-      this.toastService.error(`${this.translateService.instant('menus.dialog.form.code.error')} / ${this.translateService.instant('menus.dialog.form.title.error')}`);
+
+    const firstErrorKey =
+      this.codeValidationErrorKey() ||
+      this.titleValidationErrorKey() ||
+      this.pathValidationErrorKey() ||
+      this.sortOrderValidationErrorKey() ||
+      this.roleCodesValidationErrorKey() ||
+      this.roleCodeInputErrorKey();
+
+    if (firstErrorKey) {
+      this.toastService.error(this.translateService.instant(firstErrorKey));
       return;
     }
 
@@ -292,7 +382,7 @@ export class MenuManagementComponent {
       icon: state.icon.trim() || undefined,
       parentId: state.parentId || undefined,
       roleCodes: state.roleCodes.length ? state.roleCodes : undefined,
-      sortOrder: state.sortOrder,
+      sortOrder: parseInt(state.sortOrder.trim() || '0', 10) || 0,
       status: state.status,
     };
 
@@ -353,4 +443,22 @@ function matchesKeyword(item: PortalMenuItem, kw: string): boolean {
     return true;
   }
   return item.children?.some(child => matchesKeyword(child, kw)) ?? false;
+}
+
+function allMenus(items: PortalMenuItem[]): PortalMenuItem[] {
+  const out: PortalMenuItem[] = [];
+  const walk = (list: PortalMenuItem[]) => {
+    for (const it of list) {
+      out.push(it);
+      if (it.children?.length) walk(it.children);
+    }
+  };
+  walk(items);
+  return out;
+}
+
+function isValidRoleCode(code: string): boolean {
+  const v = (code ?? '').trim().toUpperCase();
+  // Keep it strict because placeholder/hints are ROLE_XXX.
+  return /^ROLE_[A-Z0-9_]+$/.test(v);
 }

@@ -847,6 +847,14 @@
       "active": "Hoạt động",
       "inactive": "Tạm ẩn"
     },
+    "validation": {
+      "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
+      "codeDuplicate": "Mã menu đã tồn tại.",
+      "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
+      "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
+      "roleCodeFormat": "Role code phải dạng ROLE_ADMIN (viết HOA, có dấu _).",
+      "roleCodeDuplicate": "Role code đã được thêm."
+    },
     "dialog": {
       "createTitle": "Thêm mới Menu",
       "editTitle": "Cập nhật Menu",

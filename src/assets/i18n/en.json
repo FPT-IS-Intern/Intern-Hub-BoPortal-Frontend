@@ -848,6 +848,14 @@
       "active": "Active",
       "inactive": "Hidden"
     },
+    "validation": {
+      "codeFormat": "Menu code must be UPPERCASE and contain only letters, numbers, underscore (e.g., USER_MANAGEMENT).",
+      "codeDuplicate": "Menu code already exists.",
+      "pathFormat": "Path must start with / and contain no spaces.",
+      "sortOrderFormat": "Sort order must be a non-negative integer.",
+      "roleCodeFormat": "Role code must be like ROLE_ADMIN (UPPERCASE with underscore).",
+      "roleCodeDuplicate": "This role code was already added."
+    },
     "dialog": {
       "createTitle": "Add New Menu",
       "editTitle": "Update Menu",
