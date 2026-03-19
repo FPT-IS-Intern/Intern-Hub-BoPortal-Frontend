@@ -117,7 +117,7 @@
 .tree-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .tree-table thead {
@@ -262,15 +262,18 @@
   color: var(--app-color-primary);
 }
 
-.chevron {
+.chevron-icon {
+  width: 14px;
+  height: 14px;
   display: inline-block;
-  transition: transform 0.2s ease;
-  font-size: 14px;
-  line-height: 1;
+  transition: transform 0.2s ease, opacity 0.15s ease;
+  opacity: 0.75;
+  transform: rotate(-90deg); /* collapsed: point right */
 }
 
-.chevron.expanded {
-  transform: rotate(90deg);
+.chevron-icon.expanded {
+  opacity: 1;
+  transform: rotate(0deg); /* expanded: point down */
 }
 
 .expand-spacer {
@@ -290,17 +293,27 @@
 .code-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: 5px;
-  border: 1px solid rgba(225, 131, 8, 0.3);
-  background: rgba(225, 131, 8, 0.07);
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(225, 131, 8, 0.26);
+  background: linear-gradient(180deg, rgba(225, 131, 8, 0.14), rgba(225, 131, 8, 0.06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
   font-family: 'Fira Code', 'Source Code Pro', monospace;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--app-color-primary);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: all;
 }
 
+.tree-row:hover .code-badge {
+  border-color: rgba(225, 131, 8, 0.42);
+  background: linear-gradient(180deg, rgba(225, 131, 8, 0.18), rgba(225, 131, 8, 0.08));
+}
+  
 /* ── Title Cell ── */
 .title-cell {
   display: flex;

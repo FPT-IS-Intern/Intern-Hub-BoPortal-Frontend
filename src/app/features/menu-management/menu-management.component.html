@@ -86,7 +86,12 @@
                 <button type="button" class="expand-btn"
                   [appTooltip]="(row.expanded ? 'menus.tree.collapse' : 'menus.tree.expand') | translate"
                   (click)="toggleExpand(row.menu.id)">
-                  <span class="chevron" [class.expanded]="row.expanded">▸</span>
+                  <img
+                    class="chevron-icon"
+                    [class.expanded]="row.expanded"
+                    src="assets/icons/chevron-down.svg"
+                    alt=""
+                    aria-hidden="true" />
                 </button>
                 } @else {
                 <span class="expand-spacer"></span>
