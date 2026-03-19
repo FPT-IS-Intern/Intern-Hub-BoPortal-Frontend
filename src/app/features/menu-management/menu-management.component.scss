@@ -552,6 +552,11 @@
   line-height: 1.35;
 }
 
+.field-error.field-error-sub {
+  font-size: 11px;
+  color: rgba(220, 38, 38, 0.85);
+}
+
 .required {
   color: var(--app-color-danger, #dc2626);
 }

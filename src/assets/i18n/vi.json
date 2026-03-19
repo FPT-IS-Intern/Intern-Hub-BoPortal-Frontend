@@ -847,15 +847,17 @@
       "active": "Hoạt động",
       "inactive": "Tạm ẩn"
     },
-      "validation": {
-        "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
-        "codeDuplicate": "Mã menu đã tồn tại.",
-        "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
-        "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
-        "roleCodeFormat": "Mã role không hợp lệ.",
-        "roleCodeDuplicate": "Role đã được thêm.",
-        "roleCodeNotFound": "Role không tồn tại trong danh sách."
-      },
+    "validation": {
+      "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
+      "codeDuplicate": "Mã menu đã tồn tại.",
+      "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
+      "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
+      "sortOrderDuplicate": "Thứ tự hiển thị đã được dùng trong cùng cấp.",
+      "sortOrderSuggested": "Gợi ý: {{value}}",
+      "roleCodeFormat": "Mã role không hợp lệ.",
+      "roleCodeDuplicate": "Role đã được thêm.",
+      "roleCodeNotFound": "Role không tồn tại trong danh sách."
+    },
     "dialog": {
       "createTitle": "Thêm mới Menu",
       "editTitle": "Cập nhật Menu",

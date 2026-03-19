@@ -223,6 +223,9 @@
       @if (sortOrderValidationErrorKey()) {
       <p class="field-error">{{ sortOrderValidationErrorKey() | translate }}</p>
       }
+      @if (sortOrderValidationErrorKey() === 'menus.validation.sortOrderDuplicate') {
+      <p class="field-error field-error-sub">{{ 'menus.validation.sortOrderSuggested' | translate:{ value: suggestedSortOrder() } }}</p>
+      }
     </div>
     <div class="form-field">
       <label [appTooltip]="'menus.hint.statusField' | translate">{{ 'menus.dialog.form.status.label' | translate }}</label>

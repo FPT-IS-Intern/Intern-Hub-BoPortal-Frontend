@@ -94,6 +94,7 @@ export class MenuManagementComponent {
   protected readonly formState = signal<MenuFormState>({ ...EMPTY_FORM });
   protected readonly roleCodeInputErrorKey = signal<string | null>(null);
   protected readonly formSubmitted = signal(false);
+  private sortOrderTouched = false;
 
   protected readonly selectedRoleName = signal('');
   protected readonly roles = signal<AuthzRole[]>([]);
@@ -212,7 +213,20 @@ export class MenuManagementComponent {
     const raw = (this.formState().sortOrder ?? '').trim();
     const val = raw === '' ? 0 : Number(raw);
     if (!Number.isInteger(val) || val < 0) return 'menus.validation.sortOrderFormat';
+
+    const parentId = normalizeParentId(this.formState().parentId);
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const siblings = siblingsByParent(this.menus(), parentId, excludeId);
+    const used = new Set(siblings.map((m) => Number(m.sortOrder ?? 0)));
+    if (used.has(val)) return 'menus.validation.sortOrderDuplicate';
+
     return null;
+  });
+
+  protected readonly suggestedSortOrder = computed<number>(() => {
+    const parentId = normalizeParentId(this.formState().parentId);
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    return nextAvailableSortOrder(this.menus(), parentId, excludeId);
   });
 
   protected readonly roleCodesValidationErrorKey = computed<string | null>(() => {
@@ -309,10 +323,14 @@ export class MenuManagementComponent {
   protected openCreateModal(): void {
     this.formMode.set('create');
     this.editingMenuId.set(null);
-    this.formState.set({ ...EMPTY_FORM });
+    this.formState.set({
+      ...EMPTY_FORM,
+      sortOrder: String(nextAvailableSortOrder(this.menus(), null, null)),
+    });
     this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
+    this.sortOrderTouched = false;
     this.loadRolesIfNeeded();
     this.formVisible.set(true);
   }
@@ -334,6 +352,7 @@ export class MenuManagementComponent {
     this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
+    this.sortOrderTouched = false;
     this.loadRolesIfNeeded();
     this.formVisible.set(true);
   }
@@ -348,6 +367,23 @@ export class MenuManagementComponent {
     // Auto-normalize menu code while typing.
     if (key === 'code' && typeof nextValue === 'string') {
       nextValue = nextValue.toUpperCase() as MenuFormState[K];
+    }
+
+    if (key === 'sortOrder') {
+      this.sortOrderTouched = true;
+    }
+
+    if (key === 'parentId') {
+      const parentId = normalizeParentId(nextValue as unknown as number | null);
+      this.formState.update((state) => {
+        if (this.sortOrderTouched) return { ...state, parentId: parentId };
+        return {
+          ...state,
+          parentId: parentId,
+          sortOrder: String(nextAvailableSortOrder(this.menus(), parentId, this.formMode() === 'edit' ? this.editingMenuId() : null)),
+        };
+      });
+      return;
     }
 
     this.formState.update(state => ({ ...state, [key]: nextValue }));
@@ -496,4 +532,36 @@ function isReasonableRoleCode(code: string): boolean {
   // Fallback validation when roles list is not available.
   // Allow common role name/code formats without spaces.
   return !!v && /^[A-Za-z0-9_:\-./]+$/.test(v);
+}
+
+function normalizeParentId(parentId: number | null | undefined): number | null {
+  return parentId == null ? null : parentId;
+}
+
+function siblingsByParent(
+  roots: PortalMenuItem[],
+  parentId: number | null,
+  excludeId: number | null,
+): PortalMenuItem[] {
+  const flat = allMenus(roots);
+  return flat.filter((m) => {
+    if (excludeId && m.id === excludeId) return false;
+    return normalizeParentId(m.parentId) === parentId;
+  });
+}
+
+function nextAvailableSortOrder(
+  roots: PortalMenuItem[],
+  parentId: number | null,
+  excludeId: number | null,
+): number {
+  const siblings = siblingsByParent(roots, parentId, excludeId);
+  const used = new Set<number>();
+  for (const s of siblings) {
+    const n = Number(s.sortOrder ?? 0);
+    if (Number.isInteger(n) && n >= 0) used.add(n);
+  }
+  let candidate = 0;
+  while (used.has(candidate)) candidate++;
+  return candidate;
 }
