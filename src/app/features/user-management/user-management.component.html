@@ -22,10 +22,10 @@
 
     @if (isLoading()) {
     <div class="state-wrap">
-      <app-table-skeleton [columns]="1" [rows]="8" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
+      <app-table-skeleton [columns]="6" [rows]="7" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
     </div>
     } @else if (isError()) {
-    <div class="state-wrap">
+      <div class="error-view">
       <app-no-data [title]="'users.error.title' | translate" [message]="'users.error.message' | translate">
         <span icon class="custom-icon-error error-icon"></span>
         <button action class="btn-outline-custom retry-btn" (click)="refresh()">
@@ -35,11 +35,11 @@
     </div>
     } @else if (rows().length === 0) {
     <div class="state-wrap">
-      <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
-        [message]="'users.empty.message' | translate">
-        <span icon class="custom-icon-users"></span>
-      </app-no-data>
-    </div>
+        <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
+          [message]="'users.empty.message' | translate">
+          <span icon class="custom-icon-users"></span>
+        </app-no-data>
+      </div>
     } @else {
     <app-data-table class="user-table" [columns]="columns" [rows]="rows()" [rowTrackBy]="trackUser"
       [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)">
