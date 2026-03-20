@@ -30,6 +30,7 @@ export class LoginFormComponent implements AfterViewInit {
     username = signal('');
     password = signal('');
     error = signal<string | null>(null);
+    isLoading = signal(false);
 
     showPassword = signal(false);
 
@@ -49,10 +50,10 @@ export class LoginFormComponent implements AfterViewInit {
     }
 
     async handleSubmit() {
-        if (this.checkInputRequired()) return;
+        if (this.checkInputRequired() || this.isLoading()) return;
 
         this.error.set(null);
-
+        this.isLoading.set(true);
 
         try {
             const request: LoginRequest = {
@@ -79,9 +80,10 @@ export class LoginFormComponent implements AfterViewInit {
             console.error('Login request failed before completion:', err);
             this.error.set(this.resolveHttpError(err));
         } finally {
-
+            this.isLoading.set(false);
         }
     }
+
 
     togglePassword() {
         this.showPassword.update((v: boolean) => !v);

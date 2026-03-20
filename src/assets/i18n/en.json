@@ -53,7 +53,7 @@
       "placeholder": "Enter password"
     },
     "button": "Sign in",
-    "loading": "Processing...",
+    "button_loading": "Signing in...",
     "errors": {
       "required": "Please enter username and password."
     }

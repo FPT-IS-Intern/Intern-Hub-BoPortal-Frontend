@@ -41,10 +41,18 @@
             <button
                 type="submit"
                 class="btn-login"
-                [class.is-disabled]="checkInputRequired()"
-                [disabled]="checkInputRequired()">
-                {{ 'login.button' | translate }}
+                [class.is-disabled]="checkInputRequired() || isLoading()"
+                [disabled]="checkInputRequired() || isLoading()">
+                @if (isLoading()) {
+                    <span class="btn-content">
+                        <span class="spinner-small"></span>
+                        {{ 'login.button_loading' | translate }}
+                    </span>
+                } @else {
+                    {{ 'login.button' | translate }}
+                }
             </button>
+
         </form>
 
     </div>

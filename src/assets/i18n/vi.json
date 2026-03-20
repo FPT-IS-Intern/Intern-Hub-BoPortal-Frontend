@@ -53,7 +53,7 @@
       "placeholder": "Nhập mật khẩu"
     },
     "button": "Đăng nhập",
-    "loading": "Đang xử lý...",
+    "button_loading": "Đang đăng nhập...",
     "errors": {
       "required": "Vui lòng nhập Tên đăng nhập và Mật khẩu."
     }
