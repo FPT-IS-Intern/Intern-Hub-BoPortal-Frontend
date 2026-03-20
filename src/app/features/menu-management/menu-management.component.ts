@@ -153,7 +153,10 @@ export class MenuManagementComponent {
     const rows: FlatRow[] = [];
 
     const flatten = (items: PortalMenuItem[], depth: number) => {
-      for (const item of items) {
+      // Sort items by sortOrder ascending before processing
+      const sortedItems = [...items].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
+      for (const item of sortedItems) {
         const hasChildren = !!(item.children?.length);
         const isExpanded = expanded.has(item.id);
 
