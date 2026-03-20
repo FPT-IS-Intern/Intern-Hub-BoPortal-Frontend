@@ -9,6 +9,8 @@ import {
   notifyTokenRefreshed,
 } from './core/utils/storage.util';
 import { TokenStorageService } from './services/common/token-storage.service';
+import { LoadingService } from './services/common/loading.service';
+import { ToastService } from './services/common/toast.service';
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
 import { ToastContainer } from './components/toast-container/toast-container';
@@ -73,6 +75,8 @@ export class App implements OnInit, OnDestroy {
   }
 
   private readonly tokenService = inject(TokenStorageService);
+  protected readonly loadingService = inject(LoadingService);
+  protected readonly toastService = inject(ToastService);
   private readonly onWindowFocus = this.checkSessionValidity.bind(this);
 
   ngOnInit(): void {
