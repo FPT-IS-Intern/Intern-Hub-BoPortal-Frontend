@@ -24,9 +24,11 @@ export interface UserDetail {
   email?: string;
   fullName?: string;
   phoneNumber?: string;
+  avatarUrl?: string;
   positionCode?: string;
   role?: string;
   status?: string;
+  loginStatus?: string;
   department?: string;
   activated?: boolean;
   deleted?: boolean;

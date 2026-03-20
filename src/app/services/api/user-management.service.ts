@@ -5,14 +5,10 @@ import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { getBaseUrl } from '../../core/config/app-config';
 import { SKIP_API_ERROR_TOAST } from '../../core/interceptors/api-error.interceptor';
 import {
-  UserHistoryRecord,
   UserDetail,
   UserFilterRequest,
   UserListItem,
-  UserOrganizationUpdateRequest,
   UserPageResponse,
-  UserRoleUpdateRequest,
-  UserUpsertRequest,
 } from '../../models/user-management.model';
 
 @Injectable({
@@ -62,77 +58,5 @@ export class UserManagementService {
       `${this.baseUrl}/meta`,
       { context: this.noGlobalToastCtx },
     );
-  }
-
-  createUser(request: UserUpsertRequest): Observable<ResponseApi<UserDetail>> {
-    return this.http.post<ResponseApi<UserDetail>>(this.baseUrl, request, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  updateUser(userId: number, request: UserUpsertRequest): Observable<ResponseApi<UserDetail>> {
-    return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}`, request, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  activateUser(userId: number): Observable<ResponseApi<UserDetail>> {
-    return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/activate`, {}, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  deactivateUser(userId: number): Observable<ResponseApi<UserDetail>> {
-    return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/deactivate`, {}, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  deleteUser(userId: number): Observable<ResponseApi<UserDetail>> {
-    return this.http.delete<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}`, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  restoreUser(userId: number): Observable<ResponseApi<UserDetail>> {
-    return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/restore`, {}, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  assignRole(userId: number, request: UserRoleUpdateRequest): Observable<ResponseApi<UserDetail>> {
-    return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/role`, request, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  updateOrganization(userId: number, request: UserOrganizationUpdateRequest): Observable<ResponseApi<UserDetail>> {
-    return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/organization`, request, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  resetPassword(userId: number): Observable<ResponseApi<UserDetail>> {
-    return this.http.post<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/reset-password`, {}, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  resendActivationEmail(userId: number): Observable<ResponseApi<UserDetail>> {
-    return this.http.post<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/resend-activation`, {}, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  getActivityHistory(userId: number): Observable<ResponseApi<UserHistoryRecord[]>> {
-    return this.http.get<ResponseApi<UserHistoryRecord[]>>(`${this.baseUrl}/${userId}/activity-history`, {
-      context: this.noGlobalToastCtx,
-    });
-  }
-
-  getLoginHistory(userId: number): Observable<ResponseApi<UserHistoryRecord[]>> {
-    return this.http.get<ResponseApi<UserHistoryRecord[]>>(`${this.baseUrl}/${userId}/login-history`, {
-      context: this.noGlobalToastCtx,
-    });
   }
 }
