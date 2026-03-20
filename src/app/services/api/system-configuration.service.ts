@@ -25,8 +25,8 @@ export class SystemConfigurationService {
     return this.http.get<ResponseApi<SystemConfiguration>>(this.baseUrl, { context: this.noGlobalToastCtx });
   }
 
-  updateSystemConfig(payload: SystemConfigUpdateRequest): Observable<ResponseApi<GeneralConfig>> {
-    return this.http.put<ResponseApi<GeneralConfig>>(`${this.baseUrl}/system`, payload, {
+  updateSystemConfig(payload: SystemConfigUpdateRequest): Observable<ResponseApi<SystemConfiguration>> {
+    return this.http.put<ResponseApi<SystemConfiguration>>(`${this.baseUrl}/system`, payload, {
       context: this.noGlobalToastCtx,
     });
   }

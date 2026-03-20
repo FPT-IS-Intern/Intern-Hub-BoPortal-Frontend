@@ -126,13 +126,14 @@ export class SystemSettingsComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          const systemConfig = res.data?.systemConfig ?? null;
+          const uiClientConfig = res.data?.uiClientConfig ?? null;
+          const workingTimeConfig = res.data?.workingTimeConfig ?? null;
           const securityConfig = res.data?.securityConfig ?? null;
-          const hasData = !!systemConfig || !!securityConfig;
+          const hasData = !!uiClientConfig || !!workingTimeConfig || !!securityConfig;
           this.hasData.set(hasData);
           if (!hasData) return;
-          if (systemConfig) {
-            this.patchSystemConfig(systemConfig);
+          if (uiClientConfig || workingTimeConfig) {
+            this.patchSystemConfig(uiClientConfig, workingTimeConfig);
           }
           if (securityConfig) {
             this.patchSecurityConfig(securityConfig);
@@ -190,7 +191,7 @@ export class SystemSettingsComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res.data) {
-            this.patchSystemConfig(res.data);
+            this.patchSystemConfig(res.data.uiClientConfig, res.data.workingTimeConfig);
           }
           this.systemService
             .updateSecurityConfig(securityPayload)
@@ -244,15 +245,15 @@ export class SystemSettingsComponent implements OnInit {
     this.logoPreviewError.set(false);
   }
 
-  private patchSystemConfig(config: any): void {
+  private patchSystemConfig(uiClientConfig: any, workingTimeConfig: any): void {
     this.systemForm.patchValue(
       {
-        appName: config.appName ?? '',
-        logoUrl: config.logoUrl ?? '',
-        defaultLanguage: config.defaultLanguage ?? 'vi',
-        workStartTime: this.toInputTime(config.workStartTime),
-        workEndTime: this.toInputTime(config.workEndTime),
-        autoCheckoutTime: this.toInputTime(config.autoCheckoutTime),
+        appName: uiClientConfig?.appName ?? '',
+        logoUrl: uiClientConfig?.logoUrl ?? '',
+        defaultLanguage: uiClientConfig?.defaultLanguage ?? 'vi',
+        workStartTime: this.toInputTime(workingTimeConfig?.workStartTime),
+        workEndTime: this.toInputTime(workingTimeConfig?.workEndTime),
+        autoCheckoutTime: this.toInputTime(workingTimeConfig?.autoCheckoutTime),
       }
     );
     this.systemForm.markAsPristine();
