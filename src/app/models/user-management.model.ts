@@ -65,3 +65,38 @@ export interface UserHistoryRecord {
   createdAt: string;
   actor?: string;
 }
+
+export interface UserProfileUpdateRequest {
+  fullName?: string;
+  phoneNumber?: string;
+  positionCode?: string;
+  department?: string;
+}
+
+export interface UserRejectRequest {
+  reason: string;
+}
+
+export interface UserSuspendRequest {
+  reason: string;
+}
+
+export interface AuthzRole {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+}
+
+export interface UserRoleResponse {
+  userId: number;
+  roles: AuthzRole[];
+}
+
+export interface AssignRoleRequest {
+  roleId: string;
+}
+
+export interface DetachRoleRequest {
+  roleId: string;
+}

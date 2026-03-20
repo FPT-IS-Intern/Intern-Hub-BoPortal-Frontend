@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { DataTableColumn, DataTableComponent } from '../../components/data-table/data-table.component';
-import {
-  DropdownOption,
-  SharedDropdownComponent,
-} from '../../components/shared-dropdown/shared-dropdown.component';
+import { DropdownOption, SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
 import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
@@ -19,19 +17,23 @@ import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
 import { UserManagementService } from '../../services/api/user-management.service';
 import {
+  AuthzRole,
   UserDetail,
   UserFilterRequest,
+  UserHistoryRecord,
   UserListItem,
 } from '../../models/user-management.model';
 
-type RowConfirmAction = 'lock' | 'unlock';
-type DrawerTab = 'info' | 'login';
+type DrawerTab = 'profile' | 'access' | 'trace';
+type ConfirmAction = 'lock' | 'unlock' | 'reset-password' | 'approve' | 'reactivate' | 'assign-role';
+type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     TranslateModule,
     SharedSearchComponent,
     SharedDropdownComponent,
@@ -55,21 +57,22 @@ export class UserManagementComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly columns: DataTableColumn[] = [
-    { key: 'no', label: 'users.table.no', width: '72px', align: 'center' },
-    { key: 'user', label: 'users.table.user', minWidth: '240px' },
-    { key: 'email', label: 'users.table.email', minWidth: '220px' },
-    { key: 'sysStatus', label: 'users.table.status', width: '160px', align: 'center' },
-    { key: 'role', label: 'users.table.role', minWidth: '160px' },
-    { key: 'position', label: 'users.table.position', minWidth: '160px' },
-    { key: 'actions', label: 'users.table.actions', width: '140px', align: 'center' },
+    { key: 'no', label: 'STT', width: '60px', align: 'center' },
+    { key: 'user', label: 'Người dùng', minWidth: '220px' },
+    { key: 'email', label: 'Email', minWidth: '200px' },
+    { key: 'role', label: 'Vai trò', minWidth: '130px' },
+    { key: 'position', label: 'Chức danh', minWidth: '150px' },
+    { key: 'sysStatus', label: 'Trạng thái', width: '130px', align: 'center' },
+    { key: 'actions', label: 'Thao tác', width: '110px', align: 'center' },
   ];
 
+
+  // --- List state ---
   protected readonly rows = signal<UserListItem[]>([]);
   protected readonly totalItems = signal(0);
   protected readonly pageIndex = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly pageSizeOptions = [10, 20, 50];
-
   protected readonly keyword = signal('');
   protected readonly selectedStatus = signal('');
   protected readonly selectedRole = signal('');
@@ -78,23 +81,48 @@ export class UserManagementComponent {
   protected readonly appliedStatus = signal('');
   protected readonly appliedRole = signal('');
   protected readonly appliedPosition = signal('');
-
   protected readonly isLoading = signal(true);
   protected readonly isError = signal(false);
 
+  // --- Drawer state ---
   protected readonly drawerVisible = signal(false);
   protected readonly drawerLoading = signal(false);
-  protected readonly drawerTab = signal<DrawerTab>('info');
+  protected readonly drawerTab = signal<DrawerTab>('profile');
   protected readonly selectedUser = signal<UserDetail | null>(null);
+  protected readonly activityHistory = signal<UserHistoryRecord[]>([]);
+  protected readonly loginHistory = signal<UserHistoryRecord[]>([]);
 
+  // --- Role state ---
+  protected readonly userRoles = signal<AuthzRole[]>([]);
+  protected readonly allRoles = signal<AuthzRole[]>([]);
+  protected readonly rolesLoading = signal(false);
+  protected readonly roleChangeOptions = computed<DropdownOption[]>(() =>
+    this.allRoles().map((r) => ({ label: r.name, value: r.id.toString() })),
+  );
+
+  // --- Confirm dialog ---
   protected readonly confirmVisible = signal(false);
-  protected readonly pendingAction = signal<RowConfirmAction | null>(null);
-  protected readonly pendingUser = signal<UserListItem | UserDetail | null>(null);
-  protected readonly actionMenuUserId = signal<number | null>(null);
+  protected readonly pendingAction = signal<ConfirmAction| null>(null);
+  protected readonly pendingActionRoleId = signal<string | null>(null);
 
+  // --- Modal (reject/suspend/edit/assign-role) ---
+  protected readonly modalVisible = signal(false);
+  protected readonly pendingModal = signal<ModalAction | null>(null);
+  protected readonly modalReason = signal('');
+  protected readonly modalReasonError = signal('');
+
+  // --- Profile edit ---
+  protected readonly editFullName = signal('');
+  protected readonly editPhone = signal('');
+  protected readonly editPosition = signal('');
+  protected readonly editDepartment = signal('');
+
+  // --- Assign role ---
+  protected readonly selectedNewRoleId = signal<string | null>(null);
+
+  // --- Metadata dropdowns ---
   protected readonly roleOptions = signal<DropdownOption[]>([{ label: 'Tất cả vai trò', value: '' }]);
-  protected readonly positionOptions = signal<DropdownOption[]>([{ label: 'Tất cả chức vụ', value: '' }]);
-
+  protected readonly positionOptions = signal<DropdownOption[]>([{ label: 'Tất cả chức danh', value: '' }]);
   protected readonly statusOptions: DropdownOption[] = [
     { label: 'Tất cả trạng thái', value: '' },
     { label: 'Chờ duyệt', value: 'PENDING' },
@@ -103,31 +131,78 @@ export class UserManagementComponent {
     { label: 'Tạm dừng', value: 'SUSPENDED' },
   ];
 
+  // --- Computed ---
   protected readonly displayRange = computed(() => {
     const total = this.totalItems();
-    if (total === 0) {
-      return '0-0 / 0';
-    }
+    if (total === 0) return '0-0 / 0';
     const start = (this.pageIndex() - 1) * this.pageSize() + 1;
     const end = Math.min(this.pageIndex() * this.pageSize(), total);
     return `${start}-${end} / ${total}`;
   });
 
-  protected readonly drawerTitle = computed(() => {
+  protected readonly drawerTitle = computed(() => this.selectedUser()?.fullName || 'Chi tiết người dùng');
+
+  protected readonly summaryItems = computed(() => {
     const user = this.selectedUser();
-    return user ? user.fullName || 'Chi tiết người dùng' : 'Chi tiết người dùng';
+    if (!user) return [];
+    return [
+      { label: 'Mã hồ sơ', value: `${user.userId}` },
+      { label: 'Email', value: this.safeValue(user.email) },
+      { label: 'Điện thoại', value: this.safeValue(user.phoneNumber) },
+      { label: 'Vai trò', value: this.safeValue(user.role) },
+      { label: 'Chức danh', value: this.safeValue(user.positionCode) },
+      { label: 'Phòng ban', value: this.safeValue(user.department) },
+    ];
   });
 
-  protected readonly confirmTitle = computed(() =>
-    this.pendingAction() === 'unlock' ? 'Mở khóa đăng nhập' : 'Khóa đăng nhập',
+  protected readonly mergedTrace = computed(() =>
+    [...this.activityHistory(), ...this.loginHistory()]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
   );
 
-  protected readonly confirmMessage = computed(() => {
-    const userName = this.pendingUser()?.fullName || 'người dùng này';
-    return this.pendingAction() === 'unlock'
-      ? `Bạn có chắc muốn mở khóa đăng nhập cho ${userName}?`
-      : `Bạn có chắc muốn khóa đăng nhập của ${userName}?`;
+  protected readonly confirmTitle = computed(() => {
+    switch (this.pendingAction()) {
+      case 'unlock': return 'Mở khóa đăng nhập';
+      case 'reset-password': return 'Reset mật khẩu';
+      case 'approve': return 'Duyệt người dùng';
+      case 'reactivate': return 'Kích hoạt lại người dùng';
+      case 'assign-role': return 'Thay đổi vai trò';
+      default: return 'Khóa đăng nhập';
+    }
   });
+
+  protected readonly confirmMessage = computed(() => {
+    const name = this.selectedUser()?.fullName || 'người dùng này';
+    const action = this.pendingAction();
+    
+    if (action === 'assign-role') {
+      const currentRole = this.userRoles()[0]?.name || 'Chưa gán';
+      const newRole = this.allRoles().find(r => r.id === this.pendingActionRoleId())?.name || 'mới';
+      return `Bạn có chắc muốn đổi vai trò cho ${name} từ [${currentRole}] sang [${newRole}] không?`;
+    }
+
+    switch (action) {
+      case 'unlock': return `Bạn có chắc muốn mở khóa đăng nhập cho ${name}?`;
+      case 'reset-password': return `Bạn có chắc muốn reset mật khẩu của ${name}?`;
+      case 'approve': return `Bạn có chắc muốn duyệt hồ sơ của ${name}?`;
+      case 'reactivate': return `Bạn có chắc muốn kích hoạt lại ${name}?`;
+      default: return `Bạn có chắc muốn khóa đăng nhập của ${name}?`;
+    }
+  });
+
+  protected readonly modalTitle = computed(() => {
+    switch (this.pendingModal()) {
+      case 'reject': return 'Từ chối hồ sơ';
+      case 'suspend': return 'Tạm dừng người dùng';
+      case 'edit-profile': return 'Cập nhật hồ sơ';
+      case 'assign-role': return 'Gán vai trò';
+      default: return '';
+    }
+  });
+
+  protected readonly assignableRoles = computed(() =>
+    this.allRoles().filter((r) => !this.userRoles().find((ur) => ur.id === r.id)),
+  );
 
   constructor() {
     this.translateService
@@ -144,23 +219,13 @@ export class UserManagementComponent {
     this.loadUsers();
   }
 
-  protected onSearchChange(value: string): void {
-    this.keyword.set(value);
-  }
+  // --- Filter handlers ---
+  protected onSearchChange(value: string): void { this.keyword.set(value); }
+  protected onStatusChange(value: string): void { this.selectedStatus.set(value); }
+  protected onRoleChange(value: string): void { this.selectedRole.set(value); }
+  protected onPositionChange(value: string): void { this.selectedPosition.set(value); }
 
-  protected onStatusChange(value: string): void {
-    this.selectedStatus.set(value);
-  }
-
-  protected onRoleChange(value: string): void {
-    this.selectedRole.set(value);
-  }
-
-  protected onPositionChange(value: string): void {
-    this.selectedPosition.set(value);
-  }
-
-  protected search(): void {
+  protected applyFilters(): void {
     this.pageIndex.set(1);
     this.appliedKeyword.set(this.keyword().trim());
     this.appliedStatus.set(this.selectedStatus());
@@ -169,7 +234,7 @@ export class UserManagementComponent {
     this.loadUsers();
   }
 
-  protected resetFilters(): void {
+  protected clearFilters(): void {
     this.keyword.set('');
     this.selectedStatus.set('');
     this.selectedRole.set('');
@@ -182,25 +247,237 @@ export class UserManagementComponent {
     this.loadUsers();
   }
 
-  protected refresh(): void {
-    this.loadUsers();
+  protected refresh(): void { this.loadUsers(); }
+  protected onPageIndexChange(page: number): void { this.pageIndex.set(page); this.loadUsers(false); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.pageIndex.set(1); this.loadUsers(false); }
+  protected trackUser(_index: number, row: UserListItem): number { return row.userId; }
+  protected trackTrace(_index: number, row: UserHistoryRecord): number { return row.id; }
+
+  // --- Drawer ---
+  protected openDetail(userId: number): void {
+    this.drawerVisible.set(true);
+    this.drawerLoading.set(true);
+    this.drawerTab.set('profile');
+    this.selectedUser.set(null);
+    this.userRoles.set([]);
+    this.activityHistory.set([]);
+    this.loginHistory.set([]);
+
+    this.userManagementService.getUserById(userId)
+      .pipe(finalize(() => this.drawerLoading.set(false)))
+      .subscribe({
+        next: (res) => {
+          this.selectedUser.set(res.data ?? null);
+          this.loadTrace(userId);
+          this.loadUserRoles(userId);
+          if (this.allRoles().length === 0) this.loadAllRoles();
+        },
+        error: () => this.toastService.error('Không thể tải chi tiết người dùng'),
+      });
   }
 
-  protected onPageIndexChange(page: number): void {
-    this.pageIndex.set(page);
-    this.loadUsers(false);
+  protected closeDrawer(): void { this.drawerVisible.set(false); }
+
+  // --- Confirm actions (no extra input) ---
+  protected requestAction(action: ConfirmAction, user?: UserListItem | UserDetail | null, event?: Event): void {
+    event?.stopPropagation();
+    if (user) {
+      if ('sysStatus' in user) {
+        // Map UserListItem to a minimal UserDetail-like object for compatibility
+        const item = user as UserListItem;
+        this.selectedUser.set({
+          userId: item.userId,
+          fullName: item.fullName,
+          email: item.email,
+          status: item.sysStatus,
+          role: item.role,
+          positionCode: item.position,
+        } as UserDetail);
+      } else {
+        this.selectedUser.set(user as UserDetail);
+      }
+    }
+    if (!this.selectedUser()) return;
+    this.pendingAction.set(action);
+    this.confirmVisible.set(true);
   }
 
-  protected onPageSizeChange(size: number): void {
-    this.pageSize.set(size);
-    this.pageIndex.set(1);
-    this.loadUsers(false);
+  protected cancelAction(): void { 
+    this.confirmVisible.set(false); 
+    this.pendingAction.set(null); 
+    this.pendingActionRoleId.set(null);
   }
 
-  protected trackUser(_index: number, row: UserListItem): number {
-    return row.userId;
+  protected confirmAction(): void {
+    const action = this.pendingAction();
+    const user = this.selectedUser();
+    if (!action || !user) { this.cancelAction(); return; }
+
+    this.confirmVisible.set(false);
+    this.pendingAction.set(null);
+
+    if (action === 'assign-role') {
+      const roleId = this.pendingActionRoleId();
+      this.pendingActionRoleId.set(null);
+      if (!roleId) return;
+
+      this.loadingService.showPageLoading();
+      this.userManagementService.assignRoleById(user.userId, { roleId })
+        .pipe(finalize(() => this.loadingService.hidePageLoading()))
+        .subscribe({
+          next: (res) => {
+            this.userRoles.set(res.data?.roles ?? []);
+            this.toastService.success('Thay đổi vai trò thành công');
+            this.loadTrace(user.userId);
+            this.loadUsers(false);
+          },
+          error: () => this.toastService.error('Không thể thay đổi vai trò'),
+        });
+      return;
+    }
+
+    let request$;
+    switch (action) {
+      case 'unlock': request$ = this.userManagementService.unlockUser(user.userId); break;
+      case 'reset-password': request$ = this.userManagementService.resetPassword(user.userId); break;
+      case 'approve': request$ = this.userManagementService.approveUser(user.userId); break;
+      case 'reactivate': request$ = this.userManagementService.reactivateUser(user.userId); break;
+      default: request$ = this.userManagementService.lockUser(user.userId);
+    }
+
+    this.loadingService.showPageLoading();
+    request$
+      .pipe(finalize(() => this.loadingService.hidePageLoading()))
+      .subscribe({
+        next: (res: any) => {
+          if (res.data) this.selectedUser.set(res.data);
+          this.toastService.success(this.successMessage(action as any));
+          this.loadUsers(false);
+          this.loadTrace(user.userId);
+        },
+        error: () => this.toastService.error('Không thể thực hiện thao tác'),
+      });
   }
 
+  // --- Modal actions (require additional input) ---
+  protected openModal(action: ModalAction, user?: UserListItem | UserDetail | null, event?: Event): void {
+    event?.stopPropagation();
+    if (user) {
+      if ('sysStatus' in user) {
+        const item = user as UserListItem;
+        this.selectedUser.set({
+          userId: item.userId,
+          fullName: item.fullName,
+          email: item.email,
+          status: item.sysStatus,
+          role: item.role,
+          positionCode: item.position,
+        } as UserDetail);
+      } else {
+        this.selectedUser.set(user as UserDetail);
+      }
+    }
+    if (!this.selectedUser()) return;
+    this.pendingModal.set(action);
+    this.modalReason.set('');
+    this.modalReasonError.set('');
+
+    if (action === 'edit-profile') {
+      const user = this.selectedUser()!;
+      this.editFullName.set(user.fullName ?? '');
+      this.editPhone.set(user.phoneNumber ?? '');
+      this.editPosition.set(user.positionCode ?? '');
+      this.editDepartment.set(user.department ?? '');
+    }
+
+    if (action === 'assign-role') {
+      this.selectedNewRoleId.set(null);
+      if (this.allRoles().length === 0) this.loadAllRoles();
+    }
+
+    this.modalVisible.set(true);
+  }
+
+  protected cancelModal(): void {
+    this.modalVisible.set(false);
+    this.pendingModal.set(null);
+  }
+
+  protected confirmModal(): void {
+    const modal = this.pendingModal();
+    const user = this.selectedUser();
+    if (!modal || !user) { this.cancelModal(); return; }
+
+    if ((modal === 'reject' || modal === 'suspend') && !this.modalReason().trim()) {
+      this.modalReasonError.set('Vui lòng nhập lý do');
+      return;
+    }
+
+    this.modalVisible.set(false);
+    this.pendingModal.set(null);
+    this.loadingService.showPageLoading();
+
+    let request$;
+    switch (modal) {
+      case 'reject':
+        request$ = this.userManagementService.rejectUser(user.userId, { reason: this.modalReason().trim() });
+        break;
+      case 'suspend':
+        request$ = this.userManagementService.suspendUser(user.userId, { reason: this.modalReason().trim() });
+        break;
+      case 'edit-profile':
+        request$ = this.userManagementService.updateProfile(user.userId, {
+          fullName: this.editFullName().trim() || undefined,
+          phoneNumber: this.editPhone().trim() || undefined,
+          positionCode: this.editPosition().trim() || undefined,
+          department: this.editDepartment().trim() || undefined,
+        });
+        break;
+      case 'assign-role': {
+        const roleId = this.selectedNewRoleId();
+        if (!roleId) { this.loadingService.hidePageLoading(); return; }
+        this.userManagementService.assignRoleById(user.userId, { roleId })
+          .pipe(finalize(() => this.loadingService.hidePageLoading()))
+          .subscribe({
+            next: (res) => {
+              this.userRoles.set(res.data?.roles ?? []);
+              this.toastService.success('Gán vai trò thành công');
+              this.loadTrace(user.userId);
+              this.loadUsers(false);
+            },
+            error: () => this.toastService.error('Không thể gán vai trò'),
+          });
+        return;
+      }
+    }
+
+    request$!
+      .pipe(finalize(() => this.loadingService.hidePageLoading()))
+      .subscribe({
+        next: (res) => {
+          if (res.data) this.selectedUser.set(res.data);
+          this.toastService.success(this.modalSuccessMessage(modal));
+          this.loadUsers(false);
+          this.loadTrace(user.userId);
+        },
+        error: () => this.toastService.error('Không thể thực hiện thao tác'),
+      });
+  }
+
+
+  protected onRoleDirectChange(newRoleId: string): void {
+    const user = this.selectedUser();
+    if (!user || !newRoleId) return;
+    
+    const currentRoleId = this.userRoles()[0]?.id?.toString();
+    if (newRoleId === currentRoleId) return;
+
+    this.pendingActionRoleId.set(newRoleId);
+    this.pendingAction.set('assign-role');
+    this.confirmVisible.set(true);
+  }
+
+  // --- Status helpers ---
   protected safeValue(value?: string | null): string {
     return value && value.trim().length > 0 ? value : '-';
   }
@@ -208,144 +485,77 @@ export class UserManagementComponent {
   protected avatarFallback(name?: string | null): string {
     const normalized = `${name || ''}`.trim();
     if (!normalized) return '?';
-    const [first = '', second = ''] = normalized.split(/\s+/);
-    return `${first.charAt(0)}${second.charAt(0)}`.trim().toUpperCase() || normalized.charAt(0).toUpperCase();
+    const parts = normalized.split(/\s+/).slice(0, 2);
+    return parts.map((part) => part.charAt(0)).join('').toUpperCase();
   }
 
   protected businessStatusLabel(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
-      case 'PENDING':
-        return 'Chờ duyệt';
-      case 'APPROVED':
-        return 'Đã duyệt';
-      case 'REJECTED':
-        return 'Từ chối';
-      case 'SUSPENDED':
-        return 'Tạm dừng';
-      default:
-        return 'Chưa xác định';
+      case 'PENDING': return 'Chờ duyệt';
+      case 'APPROVED': return 'Đã duyệt';
+      case 'REJECTED': return 'Từ chối';
+      case 'SUSPENDED': return 'Tạm dừng';
+      default: return 'Chưa xác định';
     }
   }
 
   protected businessStatusClass(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
-      case 'PENDING':
-        return 'status-chip pending';
-      case 'APPROVED':
-        return 'status-chip approved';
-      case 'REJECTED':
-        return 'status-chip rejected';
-      case 'SUSPENDED':
-        return 'status-chip suspended';
-      default:
-        return 'status-chip inactive';
+      case 'PENDING': return 'status-chip pending';
+      case 'APPROVED': return 'status-chip approved';
+      case 'REJECTED': return 'status-chip rejected';
+      case 'SUSPENDED': return 'status-chip suspended';
+      default: return 'status-chip inactive';
     }
   }
 
   protected loginStatusLabel(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
-      case 'ACTIVE':
-        return 'Cho phép đăng nhập';
-      case 'INACTIVE':
-        return 'Ngừng truy cập';
-      case 'SUSPENDED':
-        return 'Đã khóa đăng nhập';
-      default:
-        return 'Chưa xác định';
+      case 'ACTIVE': return 'Cho phép đăng nhập';
+      case 'INACTIVE': return 'Ngừng truy cập';
+      case 'SUSPENDED': return 'Đã khóa đăng nhập';
+      default: return 'Chưa xác định';
     }
   }
 
   protected loginStatusClass(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
-      case 'ACTIVE':
-        return 'status-chip active';
-      case 'SUSPENDED':
-        return 'status-chip locked';
-      case 'INACTIVE':
-        return 'status-chip inactive';
-      default:
-        return 'status-chip inactive';
+      case 'ACTIVE': return 'status-chip active';
+      case 'INACTIVE': return 'status-chip inactive';
+      case 'SUSPENDED': return 'status-chip locked';
+      default: return 'status-chip inactive';
     }
   }
 
-  protected isLoginLocked(user: UserListItem | UserDetail | null | undefined): boolean {
-    if (!user) return false;
-    const status = 'loginStatus' in user ? user.loginStatus : undefined;
-    return `${status || ''}`.toUpperCase() === 'SUSPENDED';
+  protected isLoginLocked(): boolean {
+    return `${this.selectedUser()?.loginStatus || ''}`.toUpperCase() === 'SUSPENDED';
   }
 
-  protected toggleActionMenu(userId: number, event: Event): void {
-    event.stopPropagation();
-    this.actionMenuUserId.set(this.actionMenuUserId() === userId ? null : userId);
+  protected canApprove(user?: UserListItem | UserDetail | null): boolean {
+    const u = user || this.selectedUser();
+    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    return `${status}`.toUpperCase() === 'PENDING';
   }
 
-  protected closeActionMenu(): void {
-    this.actionMenuUserId.set(null);
+  protected canReject(user?: UserListItem | UserDetail | null): boolean {
+    const u = user || this.selectedUser();
+    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    return `${status}`.toUpperCase() === 'PENDING';
   }
 
-  protected openUserDetail(userId: number): void {
-    this.drawerTab.set('info');
-    this.drawerVisible.set(true);
-    this.drawerLoading.set(true);
-    this.selectedUser.set(null);
-    this.closeActionMenu();
-
-    this.userManagementService.getUserById(userId)
-      .pipe(finalize(() => this.drawerLoading.set(false)))
-      .subscribe({
-        next: (res) => this.selectedUser.set(res.data ?? null),
-        error: () => this.toastService.error('Không thể tải chi tiết người dùng'),
-      });
+  protected canSuspend(user?: UserListItem | UserDetail | null): boolean {
+    const u = user || this.selectedUser();
+    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    return `${status}`.toUpperCase() === 'APPROVED';
   }
 
-  protected closeDrawer(): void {
-    this.drawerVisible.set(false);
+  protected canReactivate(user?: UserListItem | UserDetail | null): boolean {
+    const u = user || this.selectedUser();
+    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    return `${status}`.toUpperCase() === 'SUSPENDED';
   }
 
-  protected requestAction(user: UserListItem | UserDetail, action: RowConfirmAction, event?: Event): void {
-    event?.stopPropagation();
-    this.pendingUser.set(user);
-    this.pendingAction.set(action);
-    this.confirmVisible.set(true);
-    this.closeActionMenu();
-  }
-
-  protected cancelPendingAction(): void {
-    this.confirmVisible.set(false);
-    this.pendingUser.set(null);
-    this.pendingAction.set(null);
-  }
-
-  protected confirmPendingAction(): void {
-    const action = this.pendingAction();
-    const user = this.pendingUser();
-    if (!action || !user) {
-      this.cancelPendingAction();
-      return;
-    }
-
-    const request$ = action === 'unlock'
-      ? this.userManagementService.unlockUser(user.userId)
-      : this.userManagementService.lockUser(user.userId);
-
-    this.confirmVisible.set(false);
-    request$.subscribe({
-      next: (res) => {
-        if (this.selectedUser()?.userId === user.userId) {
-          this.selectedUser.set(res.data ?? null);
-        }
-        this.toastService.success(action === 'unlock'
-          ? 'Mở khóa đăng nhập thành công'
-          : 'Khóa đăng nhập thành công');
-        this.loadUsers(false);
-      },
-      error: () => this.toastService.error('Không thể thực hiện thao tác'),
-    });
-
-    this.pendingUser.set(null);
-    this.pendingAction.set(null);
-  }
-
+  // --- Data loaders ---
   private loadUsers(showLoading = true): void {
     const request: UserFilterRequest = {
       keyword: this.appliedKeyword() || undefined,
@@ -355,28 +565,13 @@ export class UserManagementComponent {
     };
 
     this.isError.set(false);
-    if (showLoading) {
-      this.isLoading.set(true);
-      this.loadingService.showPageLoading();
-    }
+    if (showLoading) { this.isLoading.set(true); this.loadingService.showPageLoading(); }
 
     this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize())
-      .pipe(finalize(() => {
-        if (showLoading) {
-          this.isLoading.set(false);
-          this.loadingService.hidePageLoading();
-        }
-      }))
+      .pipe(finalize(() => { if (showLoading) { this.isLoading.set(false); this.loadingService.hidePageLoading(); } }))
       .subscribe({
-        next: (res) => {
-          this.rows.set(res.data?.items ?? []);
-          this.totalItems.set(res.data?.totalItems ?? 0);
-        },
-        error: () => {
-          this.rows.set([]);
-          this.totalItems.set(0);
-          this.isError.set(true);
-        },
+        next: (res) => { this.rows.set(res.data?.items ?? []); this.totalItems.set(res.data?.totalItems ?? 0); },
+        error: () => { this.rows.set([]); this.totalItems.set(0); this.isError.set(true); },
       });
   }
 
@@ -384,12 +579,60 @@ export class UserManagementComponent {
     this.userManagementService.getMetaOptions().subscribe({
       next: (res) => {
         this.roleOptions.set(this.toOptions(res.data?.roles ?? [], 'Tất cả vai trò'));
-        this.positionOptions.set(this.toOptions(res.data?.positions ?? [], 'Tất cả chức vụ'));
+        this.positionOptions.set(this.toOptions(res.data?.positions ?? [], 'Tất cả chức danh'));
       },
+    });
+  }
+
+  private loadTrace(userId: number): void {
+    this.userManagementService.getActivityHistory(userId).subscribe({
+      next: (res) => this.activityHistory.set(res.data ?? []),
+      error: () => this.activityHistory.set([]),
+    });
+    this.userManagementService.getLoginHistory(userId).subscribe({
+      next: (res) => this.loginHistory.set(res.data ?? []),
+      error: () => this.loginHistory.set([]),
+    });
+  }
+
+  private loadUserRoles(userId: number): void {
+    this.rolesLoading.set(true);
+    this.userManagementService.getUserRoles(userId)
+      .pipe(finalize(() => this.rolesLoading.set(false)))
+      .subscribe({
+        next: (res) => this.userRoles.set(res.data?.roles ?? []),
+        error: () => this.userRoles.set([]),
+      });
+  }
+
+  private loadAllRoles(): void {
+    this.userManagementService.getAuthzRoles().subscribe({
+      next: (res) => this.allRoles.set(res.data ?? []),
+      error: () => this.allRoles.set([]),
     });
   }
 
   private toOptions(values: string[], allLabel: string): DropdownOption[] {
     return [{ label: allLabel, value: '' }, ...values.map((value) => ({ label: value, value }))];
+  }
+
+  private successMessage(action: ConfirmAction): string {
+    switch (action) {
+      case 'unlock': return 'Mở khóa đăng nhập thành công';
+      case 'reset-password': return 'Reset mật khẩu thành công';
+      case 'approve': return 'Duyệt người dùng thành công';
+      case 'reactivate': return 'Kích hoạt lại thành công';
+      case 'assign-role': return 'Thay đổi vai trò thành công';
+      default: return 'Khóa đăng nhập thành công';
+    }
+  }
+
+  private modalSuccessMessage(modal: ModalAction): string {
+    switch (modal) {
+      case 'reject': return 'Từ chối hồ sơ thành công';
+      case 'suspend': return 'Tạm dừng người dùng thành công';
+      case 'edit-profile': return 'Cập nhật hồ sơ thành công';
+      case 'assign-role': return 'Gán vai trò thành công';
+    }
   }
 }

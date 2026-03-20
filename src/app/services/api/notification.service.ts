@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { getBaseUrl } from '../../core/config/app-config';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { NotificationRecord } from '../../models/notification.model';

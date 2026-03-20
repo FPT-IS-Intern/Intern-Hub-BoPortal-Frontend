@@ -8,4 +8,3 @@ export const environment = {
     return (window.__env && window.__env.GOOGLE_MAPS_API_KEY) || '';
   }
 };
-

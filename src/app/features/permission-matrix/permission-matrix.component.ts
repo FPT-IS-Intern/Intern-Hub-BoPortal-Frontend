@@ -58,7 +58,7 @@ export class PermissionMatrixComponent implements OnInit {
   protected readonly allResources = signal<AuthzResource[]>([]);
   protected readonly selectedRoleId = signal<string | null>(null);
   protected readonly permissionRows = signal<PermissionRow[]>([]);
-  
+
   protected readonly isEmpty = computed(() => {
     return !this.isInitLoading() && !this.isError() && (this.roles().length === 0 || this.allResources().length === 0);
   });
@@ -74,7 +74,7 @@ export class PermissionMatrixComponent implements OnInit {
     const query = this.searchQuery().toLowerCase().trim();
     const rows = this.permissionRows();
     if (!query) return rows;
-    return rows.filter(row => 
+    return rows.filter(row =>
       row.function.toLowerCase().includes(query)
     );
   });
@@ -210,7 +210,6 @@ export class PermissionMatrixComponent implements OnInit {
     this.cdr.markForCheck();
 
     this.cdr.markForCheck();
-
     this.authzService
       .getRolePermissions(roleId)
       .pipe(finalize(() => {

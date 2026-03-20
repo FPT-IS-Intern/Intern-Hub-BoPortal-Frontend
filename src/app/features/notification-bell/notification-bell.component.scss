@@ -28,16 +28,15 @@
   flex-wrap: wrap;
 }
 
-.filter-right {
-  margin-left: auto;
-}
-
 :host ::ng-deep .skeleton-panel {
   border-radius: 8px;
   background: var(--app-color-white);
   padding: 24px;
 }
 
+.filter-right {
+  margin-left: auto;
+}
 :host ::ng-deep .notification-table {
   .code-cell {
     font-weight: 600;

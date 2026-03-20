@@ -1,283 +1,363 @@
-<div class="page-body">
-  <section class="filter-panel">
-    <div class="filter-grid">
-      <div class="filter-item keyword-field">
-        <app-shared-search
-          [value]="keyword()"
-          [placeholder]="'users.filters.searchPlaceholder' | translate"
-          width="100%"
-          (valueChange)="onSearchChange($event)">
-        </app-shared-search>
-      </div>
+<div class="user-page">
+  <section class="filter-bar">
+    <app-shared-search [value]="keyword()" [placeholder]="'Tìm theo tên hoặc email'" width="100%"
+      (valueChange)="onSearchChange($event)">
+    </app-shared-search>
 
-      <div class="filter-item">
-        <app-shared-dropdown
-          [options]="statusOptions"
-          [value]="selectedStatus()"
-          [ngStyle]="{ width: '100%' }"
-          (valueChange)="onStatusChange($event)">
-        </app-shared-dropdown>
-      </div>
+    <app-shared-dropdown [options]="statusOptions" [value]="selectedStatus()" [ngStyle]="{ width: '100%' }"
+      (valueChange)="onStatusChange($event)">
+    </app-shared-dropdown>
 
-      <div class="filter-item">
-        <app-shared-dropdown
-          [options]="roleOptions()"
-          [value]="selectedRole()"
-          [ngStyle]="{ width: '100%' }"
-          (valueChange)="onRoleChange($event)">
-        </app-shared-dropdown>
-      </div>
+    <app-shared-dropdown [options]="roleOptions()" [value]="selectedRole()" [ngStyle]="{ width: '100%' }"
+      (valueChange)="onRoleChange($event)">
+    </app-shared-dropdown>
 
-      <div class="filter-item">
-        <app-shared-dropdown
-          [options]="positionOptions()"
-          [value]="selectedPosition()"
-          [ngStyle]="{ width: '100%' }"
-          (valueChange)="onPositionChange($event)">
-        </app-shared-dropdown>
-      </div>
-    </div>
+    <app-shared-dropdown [options]="positionOptions()" [value]="selectedPosition()" [ngStyle]="{ width: '100%' }"
+      (valueChange)="onPositionChange($event)">
+    </app-shared-dropdown>
 
-    <div class="toolbar-actions">
-      <button class="btn-outline-custom action-btn" (click)="resetFilters()">
-        Đặt lại
-      </button>
-      <button class="btn-primary-custom action-btn" (click)="search()">
-        Tìm kiếm
-      </button>
-    </div>
+
   </section>
 
-  <section class="table-panel">
+  <section class="table-shell">
+
+
     @if (isLoading()) {
-      <div class="state-panel">
-        <app-table-skeleton
-          class="skeleton-panel"
-          [columns]="7"
-          [rows]="6"
-          [columnWidths]="['8%','24%','22%','14%','12%','12%','8%']">
-        </app-table-skeleton>
-      </div>
+    <div class="state-wrap">
+      <app-table-skeleton [columns]="1" [rows]="8" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
+    </div>
     } @else if (isError()) {
-      <div class="state-panel state-card">
-        <app-no-data
-          [title]="'users.error.title' | translate"
-          [message]="'users.error.message' | translate">
-          <span icon class="custom-icon-error error-icon"></span>
-          <button action class="btn-outline-custom retry-btn" (click)="refresh()">
-            {{ 'users.error.retry' | translate }}
-          </button>
-        </app-no-data>
-      </div>
+    <div class="state-wrap">
+      <app-no-data [title]="'users.error.title' | translate" [message]="'users.error.message' | translate">
+        <span icon class="custom-icon-error error-icon"></span>
+        <button action class="btn-outline-custom retry-btn" (click)="refresh()">
+          {{ 'users.error.retry' | translate }}
+        </button>
+      </app-no-data>
+    </div>
+    } @else if (rows().length === 0) {
+    <div class="state-wrap">
+      <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
+        [message]="'users.empty.message' | translate">
+        <span icon class="custom-icon-users"></span>
+      </app-no-data>
+    </div>
     } @else {
-      <app-data-table
-        tableClass="users-table"
-        wrapperClass="users-table-wrapper"
-        [columns]="columns"
-        [rows]="rows()"
-        [rowTrackBy]="trackUser"
-        [rowClickable]="true"
-        [paginationAuto]="true"
-        [paginationSticky]="true"
-        [paginationTotal]="totalItems()"
-        [paginationPageSize]="pageSize()"
-        [emptyColspan]="columns.length"
-        (rowClick)="openUserDetail($event.userId)">
-        <ng-template #header let-col>
-          {{ col.label | translate }}
-        </ng-template>
+    <app-data-table class="user-table" [columns]="columns" [rows]="rows()" [rowTrackBy]="trackUser"
+      [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)">
 
-        <ng-template #cell let-item let-col="col">
-          @if (col.key === 'user') {
-            <div class="user-cell">
-              <span class="avatar-button">
-                @if (item.avatarUrl) {
-                  <img [src]="item.avatarUrl" [alt]="safeValue(item.fullName)" class="avatar-image">
-                } @else {
-                  <span class="avatar-fallback">{{ avatarFallback(item.fullName) }}</span>
-                }
-              </span>
-              <div class="user-meta">
-                <span class="user-link">{{ safeValue(item.fullName) }}</span>
-                <span class="user-department">ID: {{ item.userId }}</span>
-              </div>
-            </div>
-          } @else if (col.key === 'email') {
-            <span class="text-main">{{ safeValue(item.email) }}</span>
-          } @else if (col.key === 'sysStatus') {
-            <span [class]="businessStatusClass(item.sysStatus)">{{ businessStatusLabel(item.sysStatus) }}</span>
-          } @else if (col.key === 'role' || col.key === 'position') {
-            <span class="text-muted">{{ safeValue($any(item)?.[col.key]) }}</span>
-          } @else if (col.key === 'actions') {
-            <div class="action-group">
-              <button
-                type="button"
-                class="btn-outline-custom small action-outline-btn"
-                (click)="$event.stopPropagation(); openUserDetail(item.userId)">
-                <span class="custom-icon-edit action-icon"></span>
-              </button>
-              <button
-                type="button"
-                class="btn-outline-custom small action-outline-btn"
-                (click)="toggleActionMenu(item.userId, $event)">
-                <span class="custom-icon-settings action-icon"></span>
-              </button>
-
-              @if (actionMenuUserId() === item.userId) {
-                <div class="action-menu" (click)="$event.stopPropagation()">
-                  <button type="button" class="action-menu-item" (click)="openUserDetail(item.userId)">Xem chi tiết</button>
-                </div>
-              }
-            </div>
-          } @else {
-            {{ $any(item)?.[col.key] ?? '-' }}
-          }
-        </ng-template>
-
-        <ng-template #empty>
-          <div class="state-panel state-card inner-empty">
-            <app-no-data
-              [fullHeight]="false"
-              [title]="'users.empty.title' | translate"
-              [message]="'users.empty.message' | translate">
-              <span icon class="custom-icon-users"></span>
-            </app-no-data>
+      <ng-template #cell let-row let-col="col">
+        @switch (col.key) {
+        @case ('no') {
+        <span class="row-no">{{ row.no || '-' }}</span>
+        }
+        @case ('user') {
+        <div class="user-cell">
+          <div class="user-avatar">
+            @if (row.avatarUrl) {
+            <img [src]="row.avatarUrl" [alt]="safeValue(row.fullName)" class="avatar-image">
+            } @else {
+            <span>{{ avatarFallback(row.fullName) }}</span>
+            }
           </div>
-        </ng-template>
+          <div class="user-meta">
+            <strong>{{ safeValue(row.fullName) }}</strong>
+            <span>{{ safeValue(row.department) }}</span>
+          </div>
+        </div>
+        }
+        @case ('email') {
+        <span class="email-cell">{{ safeValue(row.email) }}</span>
+        }
+        @case ('role') {
+        <span class="role-badge">{{ safeValue(row.role) }}</span>
+        }
+        @case ('position') {
+        <span class="text-ellipsis">{{ safeValue(row.position) }}</span>
+        }
+        @case ('sysStatus') {
+        <span [class]="businessStatusClass(row.sysStatus)">{{ businessStatusLabel(row.sysStatus) }}</span>
+        }
+        @case ('actions') {
+        <div class="table-actions">
+          <button type="button" class="btn-table-action edit" (click)="openModal('edit-profile', row, $event)"
+            title="Chỉnh sửa">
+            <span class="custom-icon-edit"></span>
+          </button>
 
-        <ng-template #pagination>
-          <app-pagination
-            [pageIndex]="pageIndex()"
-            [pageSize]="pageSize()"
-            [total]="totalItems()"
-            [pageSizeOptions]="pageSizeOptions"
-            [displayRange]="displayRange()"
-            (pageIndexChange)="onPageIndexChange($event)"
-            (pageSizeChange)="onPageSizeChange($event)">
-          </app-pagination>
-        </ng-template>
-      </app-data-table>
+          <button type="button" class="btn-table-action detail" (click)="openDetail(row.userId)" title="Chi tiết">
+            <span class="custom-icon-eye"></span>
+          </button>
+        </div>
+        }
+        @default {
+        <span>{{ safeValue($any(row)?.[col.key]) }}</span>
+        }
+        }
+      </ng-template>
+    </app-data-table>
+
+    <div class="pagination-wrap">
+      <app-pagination [pageIndex]="pageIndex()" [pageSize]="pageSize()" [total]="totalItems()"
+        [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange()"
+        (pageIndexChange)="onPageIndexChange($event)" (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
+    </div>
     }
   </section>
 </div>
 
-<app-side-drawer
-  [isVisible]="drawerVisible()"
-  (isVisibleChange)="drawerVisible.set($event)"
-  [title]="drawerTitle()"
-  width="520px"
-  (close)="closeDrawer()">
-  <div class="detail-container">
-    @if (drawerLoading()) {
-      <div class="detail-loading">
-        <app-table-skeleton [columns]="1" [rows]="6" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
-      </div>
-    } @else if (selectedUser()) {
-      <div class="drawer-profile-header">
-        <div class="profile-info">
-          <div class="profile-avatar">
-            @if (selectedUser()?.avatarUrl) {
-              <img [src]="selectedUser()?.avatarUrl" [alt]="safeValue(selectedUser()?.fullName)" class="avatar-image">
-            } @else {
-              {{ avatarFallback(selectedUser()?.fullName) }}
-            }
-          </div>
-          <div class="profile-identity">
-            <h3>{{ safeValue(selectedUser()?.fullName) }}</h3>
-            <p>{{ safeValue(selectedUser()?.email) }}</p>
-            <div class="profile-statuses">
-              <span [class]="businessStatusClass(selectedUser()?.status)">{{ businessStatusLabel(selectedUser()?.status) }}</span>
-              <span [class]="loginStatusClass(selectedUser()?.loginStatus)">{{ loginStatusLabel(selectedUser()?.loginStatus) }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+<!-- ========== SIDE DRAWER ========== -->
+<app-side-drawer [isVisible]="drawerVisible()" (isVisibleChange)="drawerVisible.set($event)" (close)="closeDrawer()"
+  [title]="drawerTitle()" width="480px">
 
-      <div class="drawer-tabs">
-        <button class="tab-item" [class.active]="drawerTab() === 'info'" (click)="drawerTab.set('info')">Thông tin</button>
-        <button class="tab-item" [class.active]="drawerTab() === 'login'" (click)="drawerTab.set('login')">Đăng nhập</button>
-      </div>
+  @if (drawerLoading()) {
+  <div class="drawer-state">
+    <app-table-skeleton [columns]="1" [rows]="6" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
+  </div>
+  } @else if (selectedUser()) {
 
-      <div class="drawer-content-scroll">
-        @if (drawerTab() === 'info') {
-          <div class="detail-section">
-            <h4 class="section-title">Thông tin cơ bản</h4>
-            <div class="detail-grid">
-              <div class="detail-item">
-                <div class="item-icon"><span class="custom-icon-users"></span></div>
-                <div class="item-content">
-                  <span class="detail-label">Mã người dùng</span>
-                  <strong class="detail-value">{{ selectedUser()?.userId ?? '-' }}</strong>
-                </div>
-              </div>
-              <div class="detail-item">
-                <div class="item-icon"><span class="custom-icon-settings"></span></div>
-                <div class="item-content">
-                  <span class="detail-label">Số điện thoại</span>
-                  <strong class="detail-value">{{ safeValue(selectedUser()?.phoneNumber) }}</strong>
-                </div>
-              </div>
-              <div class="detail-item">
-                <div class="item-icon"><span class="custom-icon-users-edit"></span></div>
-                <div class="item-content">
-                  <span class="detail-label">Vai trò</span>
-                  <strong class="detail-value">{{ safeValue(selectedUser()?.role) }}</strong>
-                </div>
-              </div>
-              <div class="detail-item">
-                <div class="item-icon"><span class="custom-icon-edit"></span></div>
-                <div class="item-content">
-                  <span class="detail-label">Chức danh</span>
-                  <strong class="detail-value">{{ safeValue(selectedUser()?.positionCode) }}</strong>
-                </div>
-              </div>
-            </div>
-          </div>
+  <!-- Redesigned Header -->
+  <section class="drawer-header-new">
+    <div class="header-main">
+      <div class="header-avatar">
+        @if (selectedUser()?.avatarUrl) {
+        <img [src]="selectedUser()?.avatarUrl" [alt]="safeValue(selectedUser()?.fullName)" class="avatar-img">
         } @else {
-          <div class="detail-section">
-            <h4 class="section-title">Trạng thái truy cập</h4>
-            <div class="history-card">
-              <div class="history-card-header">
-                <span class="history-card-title">Đăng nhập hệ thống</span>
-                <span [class]="loginStatusClass(selectedUser()?.loginStatus)">{{ loginStatusLabel(selectedUser()?.loginStatus) }}</span>
-              </div>
-              <div class="history-card-content">
-                {{ isLoginLocked(selectedUser()) ? 'Tài khoản hiện đang bị khóa đăng nhập tại Auth Service.' : 'Tài khoản hiện đang có thể đăng nhập bình thường.' }}
-              </div>
-            </div>
-
-            <div class="detail-section">
-              <h4 class="section-title">Hành động bảo mật</h4>
-              <div class="security-grid">
-                <button
-                  class="security-action-card"
-                  (click)="requestAction(selectedUser()!, isLoginLocked(selectedUser()) ? 'unlock' : 'lock', $event)">
-                  <div class="action-icon" [class.locked]="isLoginLocked(selectedUser())">
-                    <span [class]="isLoginLocked(selectedUser()) ? 'custom-icon-lock-open' : 'custom-icon-lock'"></span>
-                  </div>
-                  <div class="action-info">
-                    <span class="action-name">{{ isLoginLocked(selectedUser()) ? 'Mở khóa đăng nhập' : 'Khóa đăng nhập' }}</span>
-                    <span class="action-desc">
-                      {{ isLoginLocked(selectedUser()) ? 'Cho phép người dùng đăng nhập lại' : 'Ngăn người dùng đăng nhập vào hệ thống' }}
-                    </span>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
+        <span class="avatar-placeholder">{{ avatarFallback(selectedUser()?.fullName) }}</span>
         }
       </div>
+      <div class="header-info">
+        <h3 class="user-name">{{ safeValue(selectedUser()?.fullName) }}</h3>
+        <p class="user-email">{{ safeValue(selectedUser()?.email) }}</p>
+      </div>
+      <div class="header-badges">
+        <span [class]="'status-badge ' + businessStatusClass(selectedUser()?.status)">
+          <span class="custom-icon-check"
+            *ngIf="selectedUser()?.status === 'APPROVED' || selectedUser()?.status === 'ACTIVE'"></span>
+          <span class="custom-icon-close"
+            *ngIf="selectedUser()?.status === 'REJECTED' || selectedUser()?.status === 'LOCKED'"></span>
+          {{ businessStatusLabel(selectedUser()?.status) }}
+        </span>
+        <span [class]="'status-badge ' + loginStatusClass(selectedUser()?.loginStatus)">
+          {{ loginStatusLabel(selectedUser()?.loginStatus) }}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Actions migrated to Table Thao tác column -->
+
+  <!-- Redesigned Tabs Switcher -->
+  <nav class="drawer-tabs-new">
+    <button type="button" class="tab-item" [class.active]="drawerTab() === 'profile'"
+      (click)="drawerTab.set('profile')">Thông tin</button>
+    <button type="button" class="tab-item" [class.active]="drawerTab() === 'access'"
+      (click)="drawerTab.set('access')">Bảo mật & Quyền</button>
+    <button type="button" class="tab-item" [class.active]="drawerTab() === 'trace'"
+      (click)="drawerTab.set('trace')">Lịch sử hoạt động</button>
+  </nav>
+
+  <div class="drawer-content-scroll">
+    <!-- Tab Content: Profile -->
+    @if (drawerTab() === 'profile') {
+    <div class="content-panel profile-panel">
+      <div class="info-list">
+        @for (item of summaryItems(); track item.label) {
+        <div class="info-item">
+          <span class="info-label">{{ item.label }}</span>
+          <span class="info-value">{{ item.value || '-' }}</span>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Tab Content: Access -->
+    @if (drawerTab() === 'access') {
+    <div class="content-panel access-panel-new">
+      <div class="section-group">
+        <h4 class="section-title">Cài đặt đăng nhập</h4>
+        <div class="access-row">
+          <div class="row-left">
+            <span class="row-label">Trạng thái đăng nhập</span>
+            <span [class]="'status-badge-sm ' + loginStatusClass(selectedUser()?.loginStatus)">
+              {{ loginStatusLabel(selectedUser()?.loginStatus) }}
+            </span>
+          </div>
+          <button type="button" class="btn-row-action"
+            [title]="isLoginLocked() ? 'Mở khóa tài khoản cho người dùng' : 'Khóa đăng nhập tạm thời'"
+            (click)="requestAction(isLoginLocked() ? 'unlock' : 'lock')">
+            {{ isLoginLocked() ? 'Mở khóa' : 'Khóa' }}
+          </button>
+        </div>
+        <div class="access-row">
+          <div class="row-left">
+            <span class="row-label">Cấp lại mật khẩu</span>
+          </div>
+          <button type="button" class="btn-row-action" title="Gửi email mật khẩu mới cho người dùng"
+            (click)="requestAction('reset-password')">Cấp lại</button>
+        </div>
+        @if (canApprove() || canReject() || canSuspend() || canReactivate()) {
+        <div class="access-row">
+          <div class="row-left">
+            <span class="row-label">Trạng thái hồ sơ</span>
+            <span [class]="'status-badge-sm ' + businessStatusClass(selectedUser()?.status)">
+              {{ businessStatusLabel(selectedUser()?.status) }}
+            </span>
+          </div>
+          <div class="row-actions-group">
+            @if (canApprove()) { <button type="button" class="btn-row-action approve" (click)="requestAction('approve')">Duyệt</button> }
+            @if (canReject()) { <button type="button" class="btn-row-action reject" (click)="openModal('reject')">Từ chối</button> }
+            @if (canSuspend()) { <button type="button" class="btn-row-action" (click)="openModal('suspend')">Tạm dừng</button> }
+            @if (canReactivate()) { <button type="button" class="btn-row-action" (click)="requestAction('reactivate')">Khôi phục</button> }
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="section-group role-group">
+        <div class="section-header-row">
+          <h4 class="section-title">Vai trò hệ thống</h4>
+          @if (!rolesLoading()) {
+          <div class="role-selector-inline">
+            <app-shared-dropdown [options]="roleChangeOptions()" [value]="userRoles()[0]?.id?.toString() || ''"
+              width="200px" (valueChange)="onRoleDirectChange($event)">
+            </app-shared-dropdown>
+          </div>
+          }
+        </div>
+
+        @if (rolesLoading()) {
+        <p class="roles-loading">Đang tải...</p>
+        } @else {
+        <div class="selected-role-item-premium">
+          <div class="role-icon-box">
+            <span class="custom-icon-lock"></span>
+          </div>
+          <div class="role-meta">
+            <label class="role-label">Vai trò đang áp dụng</label>
+            <span class="role-name">{{ userRoles()[0]?.name || 'Chưa gán' }}</span>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Tab Content: Trace -->
+    @if (drawerTab() === 'trace') {
+    <div class="content-panel trace-panel-new">
+      @if (mergedTrace().length === 0) {
+      <div class="no-data-text centered">Không có dữ liệu lịch sử</div>
+      } @else {
+      <div class="timeline-wrap">
+        @for (record of mergedTrace(); track trackTrace($index, record)) {
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="tm-header">
+              <span class="tm-title">{{ record.title }}</span>
+              <span class="tm-time">{{ record.createdAt | date:'dd/MM HH:mm' }}</span>
+            </div>
+            <p class="tm-desc">{{ record.description }}</p>
+            @if (record.actor) {
+            <span class="tm-actor">Bởi: {{ record.actor }}</span>
+            }
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
     }
   </div>
+  }
 </app-side-drawer>
 
-<app-confirm-popup
-  [isVisible]="confirmVisible()"
-  (isVisibleChange)="confirmVisible.set($event)"
-  [title]="confirmTitle()"
-  [message]="confirmMessage()"
-  cancelText="Hủy"
-  confirmText="Xác nhận"
-  (confirm)="confirmPendingAction()"
-  (cancel)="cancelPendingAction()">
+<!-- ========== CONFIRM POPUP ========== -->
+<app-confirm-popup [isVisible]="confirmVisible()" (isVisibleChange)="confirmVisible.set($event)"
+  [title]="confirmTitle()" [message]="confirmMessage()" cancelText="Hủy" confirmText="Xác nhận"
+  (confirm)="confirmAction()" (cancel)="cancelAction()">
 </app-confirm-popup>
+
+<!-- ========== MODAL OVERLAY (Reject / Suspend / Edit Profile / Assign Role) ========== -->
+@if (modalVisible()) {
+<div class="modal-overlay" (click)="cancelModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h3>{{ modalTitle() }}</h3>
+      <button type="button" class="modal-close" (click)="cancelModal()">×</button>
+    </header>
+
+    <div class="modal-body">
+      <!-- Reject / Suspend -->
+      @if (pendingModal() === 'reject' || pendingModal() === 'suspend') {
+      <label class="field-label">
+        Lý do <span class="required-star">*</span>
+      </label>
+      <textarea class="modal-textarea" rows="4"
+        [placeholder]="pendingModal() === 'reject' ? 'Nhập lý do từ chối...' : 'Nhập lý do tạm dừng...'"
+        [ngModel]="modalReason()" (ngModelChange)="modalReason.set($event); modalReasonError.set('')">
+          </textarea>
+      @if (modalReasonError()) {
+      <p class="field-error">{{ modalReasonError() }}</p>
+      }
+      @if (pendingModal() === 'suspend') {
+      <div class="modal-info-box">
+        <span class="custom-icon-info"></span>
+        <p>Tạm dừng người dùng sẽ ngăn chặn các hoạt động nghiệp vụ của tài khoản này (chấm công, gửi yêu cầu...) nhưng vẫn giữ lại thông tin hồ sơ và dữ liệu lịch sử. Bạn có thể kích hoạt lại tài khoản bất cứ lúc nào.</p>
+      </div>
+      }
+      }
+
+      <!-- Edit Profile -->
+      @if (pendingModal() === 'edit-profile') {
+      <div class="form-grid">
+        <label class="field-label">Họ và tên</label>
+        <input type="text" class="modal-input" [ngModel]="editFullName()" (ngModelChange)="editFullName.set($event)"
+          placeholder="Họ và tên">
+
+        <label class="field-label">Số điện thoại</label>
+        <input type="text" class="modal-input" [ngModel]="editPhone()" (ngModelChange)="editPhone.set($event)"
+          placeholder="Số điện thoại">
+
+        <label class="field-label">Chức danh</label>
+        <input type="text" class="modal-input" [ngModel]="editPosition()" (ngModelChange)="editPosition.set($event)"
+          placeholder="Chức danh">
+
+        <label class="field-label">Phòng ban</label>
+        <input type="text" class="modal-input" [ngModel]="editDepartment()" (ngModelChange)="editDepartment.set($event)"
+          placeholder="Phòng ban">
+      </div>
+      }
+
+      <!-- Assign Role -->
+      @if (pendingModal() === 'assign-role') {
+      <label class="field-label">Chọn vai trò</label>
+      @if (assignableRoles().length === 0) {
+      <p class="no-roles">Không có vai trò nào khả dụng</p>
+      } @else {
+      <div class="role-options">
+        @for (role of assignableRoles(); track role.id) {
+        <label class="role-option" [class.selected]="selectedNewRoleId() === role.id"
+          (click)="selectedNewRoleId.set(role.id)">
+          <span class="role-option-name">{{ role.name }}</span>
+          <span class="role-option-code">{{ role.code }}</span>
+        </label>
+        }
+      </div>
+      }
+      }
+    </div>
+
+    <footer class="modal-footer">
+      <button type="button" class="btn-outline-custom" (click)="cancelModal()">Hủy</button>
+      <button type="button" class="btn-primary-custom"
+        [disabled]="pendingModal() === 'assign-role' && !selectedNewRoleId()" (click)="confirmModal()">
+        Xác nhận
+      </button>
+    </footer>
+  </div>
+</div>
+}

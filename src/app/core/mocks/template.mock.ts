@@ -1,0 +1,86 @@
+import { TemplateSummaryPageResponse } from '../../models/template.model';
+
+export const TEMPLATE_SUMMARY_PAGE_MOCK: TemplateSummaryPageResponse = {
+  items: [
+    {
+      channels: ['EMAIL'],
+      code: 'OTP',
+      description: 'Mã xác thực OTP',
+      isDeletable: false,
+      updatedAt: new Date(1772385310797).toISOString(),
+    },
+    {
+      channels: ['EMAIL'],
+      code: 'SEND_PASSWORD',
+      description: 'Thông báo cấp phát tài khoản',
+      isDeletable: false,
+      updatedAt: new Date(1772385310435).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+    {
+      channels: ['IN_APP', 'PUSH'],
+      code: 'NEW_COURSE',
+      description: 'Thông báo khai giảng khóa học',
+      isDeletable: false,
+      updatedAt: new Date(1772385310000).toISOString(),
+    },
+  ],
+  page: 0,
+  size: 10,
+  total: 3,
+};
