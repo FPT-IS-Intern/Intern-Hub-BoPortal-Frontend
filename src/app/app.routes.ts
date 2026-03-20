@@ -52,10 +52,14 @@ export const routes: Routes = [
       },
       {
         path: 'system-settings',
-        component: SystemSettingsComponent,
+        loadComponent: () => import('./features/system-settings/system-settings.component').then((m) => m.SystemSettingsComponent),
       },
       {
-        path: '404',
+        path: 'audit-log',
+        loadComponent: () => import('./features/audit-log/audit-log.component').then((m) => m.AuditLogComponent),
+      },
+      {
+        path: '',
         component: Error404LayoutComponent,
       },
       {

@@ -37,9 +37,10 @@
       "users": "User management",
       "permissions": "Permission matrix",
       "notifications": "Notification bell",
-      "checkin": "Check-in locations",
-      "menus": "Menu management",
-      "systemSettings": "System settings"
+      "checkin": "Check-in Configuration",
+      "menus": "Menu Management",
+      "systemSettings": "System Settings",
+      "auditLog": "Audit Log"
     }
   },
   "login": {
@@ -102,24 +103,24 @@
         "title": "Confirm Delete"
       }
     },
-      "page": {
-        "error": {
-          "title": "Unable to load data",
-          "message": "An error occurred while loading branch configuration list.",
-          "retry": "Try again"
-        },
-        "loading": {
-          "title": "Loading check-in configuration",
-          "message": "Please wait while we fetch the latest data."
-        },
-        "empty": {
-          "title": "No check-in configuration",
-          "message": "There are no branches or check-in settings available yet."
-        },
-        "status": {
-          "active": "Active",
-          "inactive": "Inactive"
-        },
+    "page": {
+      "error": {
+        "title": "Unable to load data",
+        "message": "An error occurred while loading branch configuration list.",
+        "retry": "Try again"
+      },
+      "loading": {
+        "title": "Loading check-in configuration",
+        "message": "Please wait while we fetch the latest data."
+      },
+      "empty": {
+        "title": "No check-in configuration",
+        "message": "There are no branches or check-in settings available yet."
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
       "noSelection": {
         "title": "No branch selected",
         "message": "Please select a branch from the left list to manage check-in configuration."
@@ -591,12 +592,12 @@
     "list": {
       "title": "User list"
     },
-      "table": {
-        "no": "No.",
-        "user": "User",
-        "email": "Email",
-        "role": "Role",
-        "position": "Position",
+    "table": {
+      "no": "No.",
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "position": "Position",
       "status": "Status",
       "actions": "Actions"
     },
@@ -858,16 +859,16 @@
       "active": "Active",
       "inactive": "Hidden"
     },
-      "validation": {
-        "codeFormat": "Menu code must be UPPERCASE and contain only letters, numbers, underscore (e.g., USER_MANAGEMENT).",
-        "codeDuplicate": "Menu code already exists.",
-        "pathRequired": "Please enter Path.",
-        "pathFormat": "Path must start with / and contain no spaces.",
-        "iconRequired": "Please enter Icon (CSS class name).",
-        "sortOrderFormat": "Sort order must be a non-negative integer.",
-        "sortOrderDuplicate": "Sort order is already used in this level.",
-        "sortOrderSuggested": "Suggested: {{value}}",
-        "sortOrderSwapTitle": "Swap sort order?",
+    "validation": {
+      "codeFormat": "Menu code must be UPPERCASE and contain only letters, numbers, underscore (e.g., USER_MANAGEMENT).",
+      "codeDuplicate": "Menu code already exists.",
+      "pathRequired": "Please enter Path.",
+      "pathFormat": "Path must start with / and contain no spaces.",
+      "iconRequired": "Please enter Icon (CSS class name).",
+      "sortOrderFormat": "Sort order must be a non-negative integer.",
+      "sortOrderDuplicate": "Sort order is already used in this level.",
+      "sortOrderSuggested": "Suggested: {{value}}",
+      "sortOrderSwapTitle": "Swap sort order?",
       "sortOrderSwapMessage": "Sort order <b>{{value}}</b> is currently used by <b>{{code}}</b> ({{title}}). Do you want to swap positions?",
       "sortOrderSwapConfirm": "Swap",
       "sortOrderSwapped": "Sort order swapped successfully.",
@@ -981,6 +982,16 @@
       "statusField": "Hidden menus are not shown in the client UI but their config is preserved.",
       "noRoles": "No roles assigned \u2014 all users can see this menu",
       "removeRole": "Remove this role"
+    }
+  },
+  "auditLog": {
+    "title": "Audit Log",
+    "breadcrumb": {
+      "title": "Audit Log"
+    },
+    "empty": {
+      "title": "No audit logs",
+      "message": "System logs will be displayed here."
     }
   }
 }

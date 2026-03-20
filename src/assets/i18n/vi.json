@@ -37,9 +37,10 @@
       "users": "Quản lý người dùng",
       "permissions": "Ma trận phân quyền",
       "notifications": "Chuông thông báo",
-      "checkin": "Địa điểm checkin",
-      "menus": "Quản lý menu",
-      "systemSettings": "Cấu hình hệ thống"
+      "checkin": "Cấu hình Check-in",
+      "menus": "Quản lý Menu",
+      "systemSettings": "Cấu hình hệ thống",
+      "auditLog": "Nhật ký hệ thống"
     }
   },
   "login": {
@@ -102,24 +103,24 @@
         "title": "Xác nhận xóa"
       }
     },
-      "page": {
-        "error": {
-          "title": "Không thể tải dữ liệu",
-          "message": "Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.",
-          "retry": "Thử lại"
-        },
-        "loading": {
-          "title": "Đang tải cấu hình check-in",
-          "message": "Vui lòng chờ trong giây lát."
-        },
-        "empty": {
-          "title": "Chưa có cấu hình check-in",
-          "message": "Hiện chưa có chi nhánh hoặc cấu hình check-in."
-        },
-        "status": {
-          "active": "Đang hoạt động",
-          "inactive": "Ngừng hoạt động"
-        },
+    "page": {
+      "error": {
+        "title": "Không thể tải dữ liệu",
+        "message": "Đã xảy ra lỗi khi tải danh sách cấu hình chi nhánh.",
+        "retry": "Thử lại"
+      },
+      "loading": {
+        "title": "Đang tải cấu hình check-in",
+        "message": "Vui lòng chờ trong giây lát."
+      },
+      "empty": {
+        "title": "Chưa có cấu hình check-in",
+        "message": "Hiện chưa có chi nhánh hoặc cấu hình check-in."
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "inactive": "Ngừng hoạt động"
+      },
       "noSelection": {
         "title": "Chưa chọn chi nhánh",
         "message": "Vui lòng chọn một chi nhánh từ danh sách bên trái để quản lý cấu hình check-in."
@@ -356,7 +357,7 @@
         "sendSuccess": "Đã gửi thông báo thành công"
       }
     },
-        "master": {
+    "master": {
       "breadcrumb": {
         "title": "Mã thông báo"
       },
@@ -465,7 +466,8 @@
         "push": "Push",
         "inApp": "In-app"
       }
-    },"table": {
+    },
+    "table": {
       "headers": {
         "index": "STT",
         "title": "Tiêu đề",
@@ -857,16 +859,16 @@
       "active": "Hoạt động",
       "inactive": "Tạm ẩn"
     },
-      "validation": {
-        "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
-        "codeDuplicate": "Mã menu đã tồn tại.",
-        "pathRequired": "Vui lòng nhập đường dẫn (Path).",
-        "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
-        "iconRequired": "Vui lòng nhập Icon (tên class CSS).",
-        "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
-        "sortOrderDuplicate": "Thứ tự hiển thị đã được dùng trong cùng cấp.",
-        "sortOrderSuggested": "Gợi ý: {{value}}",
-        "sortOrderSwapTitle": "Hoán đổi thứ tự hiển thị?",
+    "validation": {
+      "codeFormat": "Mã menu phải viết HOA và chỉ gồm chữ, số, dấu _ (VD: USER_MANAGEMENT).",
+      "codeDuplicate": "Mã menu đã tồn tại.",
+      "pathRequired": "Vui lòng nhập đường dẫn (Path).",
+      "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
+      "iconRequired": "Vui lòng nhập Icon (tên class CSS).",
+      "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
+      "sortOrderDuplicate": "Thứ tự hiển thị đã được dùng trong cùng cấp.",
+      "sortOrderSuggested": "Gợi ý: {{value}}",
+      "sortOrderSwapTitle": "Hoán đổi thứ tự hiển thị?",
       "sortOrderSwapMessage": "Thứ tự <b>{{value}}</b> đang được dùng bởi <b>{{code}}</b> ({{title}}). Bạn có muốn hoán đổi vị trí không?",
       "sortOrderSwapConfirm": "Hoán đổi",
       "sortOrderSwapped": "Hoán đổi thứ tự hiển thị thành công.",
@@ -980,6 +982,16 @@
       "statusField": "Tạm ẩn sẽ giấu menu khỏi UI client nhưng không xóa cấu hình.",
       "noRoles": "Chưa có vai trò nào — mọi người dùng sẽ thấy menu này",
       "removeRole": "Gỡ bỏ vai trò này"
+    }
+  },
+  "auditLog": {
+    "title": "Nhật ký hệ thống",
+    "breadcrumb": {
+      "title": "Nhật ký hệ thống"
+    },
+    "empty": {
+      "title": "Chưa có nhật ký",
+      "message": "Dữ liệu nhật ký hệ thống sẽ được hiển thị tại đây."
     }
   }
 }

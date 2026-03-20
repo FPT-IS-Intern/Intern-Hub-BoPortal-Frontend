@@ -155,6 +155,11 @@ export class BoPortalLayoutComponent {
         content: this.translate.instant('layout.menu.systemSettings'),
         url: '/system-settings',
       },
+      {
+        iconLeft: SIDEBAR_ICONS.PACKAGE_SEARCH,
+        content: this.translate.instant('layout.menu.auditLog'),
+        url: '/audit-log',
+      },
     ];
   }
 }
