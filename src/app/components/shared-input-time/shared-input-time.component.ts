@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, computed, signal, HostListener, ElementRef, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, computed, signal, HostListener, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
@@ -13,7 +13,7 @@ import { DropdownOption } from '../shared-dropdown/shared-dropdown.component';
     styleUrls: ['./shared-input-time.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SharedInputTimeComponent implements OnInit, OnDestroy {
+export class SharedInputTimeComponent {
     form = input.required<FormGroup>();
     controlName = input.required<string>();
     label = input<string>();
@@ -47,13 +47,7 @@ export class SharedInputTimeComponent implements OnInit, OnDestroy {
     protected readonly selectedHour = computed(() => this.getParts(this.value()).hour);
     protected readonly selectedMinute = computed(() => this.getParts(this.value()).minute);
 
-    ngOnInit(): void {
-        document.addEventListener('pointerdown', this.onDocumentPointerDown, true);
-    }
 
-    ngOnDestroy(): void {
-        document.removeEventListener('pointerdown', this.onDocumentPointerDown, true);
-    }
 
     protected toggleOpen(event: Event): void {
         event.stopPropagation();
@@ -70,6 +64,7 @@ export class SharedInputTimeComponent implements OnInit, OnDestroy {
 
     protected onMinuteChange(value: string): void {
         this.updateTime(this.selectedHour(), value);
+        this.close();
     }
 
     private updateTime(hour?: string | null, minute?: string | null): void {
@@ -95,16 +90,10 @@ export class SharedInputTimeComponent implements OnInit, OnDestroy {
         return { hour: null, minute: null };
     }
 
-    @HostListener('document:click', ['$event'])
-    onClickOutside(event: Event): void {
+    @HostListener('document:mousedown', ['$event'])
+    onClickOutside(event: MouseEvent): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.close();
         }
     }
-
-    private onDocumentPointerDown = (event: Event): void => {
-        if (!this.elementRef.nativeElement.contains(event.target as Node)) {
-            this.close();
-        }
-    };
 }
