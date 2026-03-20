@@ -4,19 +4,17 @@
       (valueChange)="onSearchChange($event)">
     </app-shared-search>
 
-    <app-shared-dropdown [options]="statusOptions" [value]="selectedStatus()" [ngStyle]="{ width: '100%' }"
+    <app-shared-dropdown [options]="statusOptions" [value]="selectedStatus()"
       (valueChange)="onStatusChange($event)">
     </app-shared-dropdown>
 
-    <app-shared-dropdown [options]="roleOptions()" [value]="selectedRole()" [ngStyle]="{ width: '100%' }"
+    <app-shared-dropdown [options]="roleOptions()" [value]="selectedRole()"
       (valueChange)="onRoleChange($event)">
     </app-shared-dropdown>
 
-    <app-shared-dropdown [options]="positionOptions()" [value]="selectedPosition()" [ngStyle]="{ width: '100%' }"
+    <app-shared-dropdown [options]="positionOptions()" [value]="selectedPosition()"
       (valueChange)="onPositionChange($event)">
     </app-shared-dropdown>
-
-
   </section>
 
   <section class="table-shell">

@@ -220,10 +220,10 @@ export class UserManagementComponent {
   }
 
   // --- Filter handlers ---
-  protected onSearchChange(value: string): void { this.keyword.set(value); }
-  protected onStatusChange(value: string): void { this.selectedStatus.set(value); }
-  protected onRoleChange(value: string): void { this.selectedRole.set(value); }
-  protected onPositionChange(value: string): void { this.selectedPosition.set(value); }
+  protected onSearchChange(value: string): void { this.keyword.set(value); this.applyFilters(); }
+  protected onStatusChange(value: string): void { this.selectedStatus.set(value); this.applyFilters(); }
+  protected onRoleChange(value: string): void { this.selectedRole.set(value); this.applyFilters(); }
+  protected onPositionChange(value: string): void { this.selectedPosition.set(value); this.applyFilters(); }
 
   protected applyFilters(): void {
     this.pageIndex.set(1);
@@ -570,7 +570,16 @@ export class UserManagementComponent {
     this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize())
       .pipe(finalize(() => { if (showLoading) { this.isLoading.set(false); this.loadingService.hidePageLoading(); } }))
       .subscribe({
-        next: (res) => { this.rows.set(res.data?.items ?? []); this.totalItems.set(res.data?.totalItems ?? 0); },
+        next: (res) => {
+          const page = this.pageIndex();
+          const size = this.pageSize();
+          const mappedItems = (res.data?.items ?? []).map((item, index) => ({
+            ...item,
+            no: (page - 1) * size + index + 1
+          }));
+          this.rows.set(mappedItems);
+          this.totalItems.set(res.data?.totalItems ?? 0);
+        },
         error: () => { this.rows.set([]); this.totalItems.set(0); this.isError.set(true); },
       });
   }

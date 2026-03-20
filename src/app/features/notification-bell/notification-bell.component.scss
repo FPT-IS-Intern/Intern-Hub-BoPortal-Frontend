@@ -15,7 +15,7 @@
   align-items: center;
   background: var(--app-color-white);
   padding: 12px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--app-color-border-alpha-soft);
   box-shadow: 0 1px 3px var(--app-shadow-sm);
   flex-wrap: wrap;
@@ -37,6 +37,7 @@
 .filter-right {
   margin-left: auto;
 }
+
 :host ::ng-deep .notification-table {
   .code-cell {
     font-weight: 600;
