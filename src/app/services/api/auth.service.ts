@@ -72,11 +72,14 @@ export class AuthService {
     return this.httpClient.post<ResponseApi<{ accessToken: string; refreshToken: string }>>(
       `${getBaseUrl()}/bo-portal/auth/refresh`,
       payload,
+      { headers: { 'X-Skip-Loading': 'true' } }
     );
   }
 
   me(): Observable<ResponseApi<BoAdminProfile>> {
-    return this.httpClient.get<ResponseApi<BoAdminProfile>>(`${getBaseUrl()}/bo-portal/auth/me`).pipe(
+    return this.httpClient.get<ResponseApi<BoAdminProfile>>(`${getBaseUrl()}/bo-portal/auth/me`, {
+      headers: { 'X-Skip-Loading': 'true' }
+    }).pipe(
       tap((res) => {
         if (res.data) {
           // Robustly extract user object
@@ -89,6 +92,7 @@ export class AuthService {
       }),
     );
   }
+
 
   loadInitialData(): Observable<any> {
     return forkJoin({
