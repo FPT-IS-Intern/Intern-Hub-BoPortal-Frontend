@@ -8,6 +8,7 @@ import {
   cancelTokenRefresh,
   notifyTokenRefreshed,
 } from './core/utils/storage.util';
+import { TokenStorageService } from './services/common/token-storage.service';
 
 import { HeaderComponent, HeaderData } from './components/header/header.component';
 import { ToastContainer } from './components/toast-container/toast-container';
@@ -71,21 +72,35 @@ export class App implements OnInit, OnDestroy {
       });
   }
 
+  private readonly tokenService = inject(TokenStorageService);
+  private readonly onWindowFocus = this.checkSessionValidity.bind(this);
+
   ngOnInit(): void {
     // Fetch /me if already logged in to populate header
-    if (StorageUtil.getAccessToken()) {
+    if (this.tokenService.isAuthenticated()) {
       this.authService.me().subscribe();
+    } else if (this.tokenService.getAccessToken()) {
+      // Token exists but is invalid/expired
+      this.handleForceLogout();
     }
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.addEventListener('FORCE_LOGOUT', this.onForceLogout);
+    window.addEventListener('focus', this.onWindowFocus);
   }
 
-  // fetchUserProfile is now replaced by service signal observation
+  private checkSessionValidity(): void {
+    const token = this.tokenService.getAccessToken();
+    if (token && this.tokenService.isAccessTokenExpired()) {
+      console.warn('App: session expired on focus, triggering refresh/logout');
+      this.handleAuthTokenExpired();
+    }
+  }
 
   ngOnDestroy(): void {
     window.removeEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.removeEventListener('FORCE_LOGOUT', this.onForceLogout);
+    window.removeEventListener('focus', this.onWindowFocus);
   }
 
   handleLogout(): void {
