@@ -26,7 +26,14 @@
     background-color: transparent;
     border-bottom: none;
     box-shadow: none;
+
+    .header-left {
+      .logo {
+        height: 36px;
+      }
+    }
   }
+
 
 
   .header-left {
@@ -34,10 +41,11 @@
     align-items: center;
 
     .logo {
-      height: 28px;
+      height: 32px; // Increased from 28px for better presence
       width: auto;
       object-fit: contain;
       cursor: pointer;
+      transition: height 0.3s ease;
     }
   }
 
