@@ -41,11 +41,10 @@
     align-items: center;
 
     .logo {
-      height: 32px; // Increased from 28px for better presence
+      height: 36px; // Fixed size as requested (from login page)
       width: auto;
       object-fit: contain;
       cursor: pointer;
-      transition: height 0.3s ease;
     }
   }
 
