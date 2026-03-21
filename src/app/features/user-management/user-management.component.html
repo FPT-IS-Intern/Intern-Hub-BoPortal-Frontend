@@ -33,13 +33,6 @@
         </button>
       </app-no-data>
     </div>
-    } @else if (rows().length === 0) {
-    <div class="state-wrap">
-        <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
-          [message]="'users.empty.message' | translate">
-          <span icon class="custom-icon-users"></span>
-        </app-no-data>
-      </div>
     } @else {
     <app-data-table class="user-table" [columns]="columns" [rows]="rows()" [rowTrackBy]="trackUser"
       [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)" [showPagination]="totalItems() > pageSize()">
@@ -81,14 +74,21 @@
         }
         }
       </ng-template>
+      <ng-template #empty>
+        <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
+          [message]="'users.empty.message' | translate">
+          <span icon class="custom-icon-users"></span>
+        </app-no-data>
+      </ng-template>
+      <ng-template #pagination>
+        <div class="pagination-wrap">
+          <app-pagination [pageIndex]="pageIndex()" [pageSize]="pageSize()" [total]="totalItems()"
+            [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange()"
+            (pageIndexChange)="onPageIndexChange($event)" (pageSizeChange)="onPageSizeChange($event)">
+          </app-pagination>
+        </div>
+      </ng-template>
     </app-data-table>
-
-    <div class="pagination-wrap">
-      <app-pagination [pageIndex]="pageIndex()" [pageSize]="pageSize()" [total]="totalItems()"
-        [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange()"
-        (pageIndexChange)="onPageIndexChange($event)" (pageSizeChange)="onPageSizeChange($event)">
-      </app-pagination>
-    </div>
     }
   </section>
 </div>
