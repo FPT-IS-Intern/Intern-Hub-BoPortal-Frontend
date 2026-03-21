@@ -42,7 +42,7 @@
       </div>
     } @else {
     <app-data-table class="user-table" [columns]="columns" [rows]="rows()" [rowTrackBy]="trackUser"
-      [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)">
+      [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)" [showPagination]="totalItems() > pageSize()">
 
       <ng-template #cell let-row let-col="col">
         @switch (col.key) {
