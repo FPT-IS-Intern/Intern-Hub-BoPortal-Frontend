@@ -578,7 +578,7 @@ export class UserManagementComponent {
     this.isError.set(false);
     if (showLoading) { this.isLoading.set(true); this.loadingService.showPageLoading(); }
 
-    this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize())
+    this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize(), !showLoading)
       .pipe(finalize(() => { if (showLoading) { this.isLoading.set(false); this.loadingService.hidePageLoading(); } }))
       .subscribe({
         next: (res) => {

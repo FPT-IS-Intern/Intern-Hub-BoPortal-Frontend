@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { getBaseUrl } from '../../core/config/app-config';
@@ -27,14 +27,29 @@ import {
   providedIn: 'root',
 })
 export class UserManagementService {
+  private static readonly SKIP_LOADING_HEADER = new HttpHeaders({ 'X-Loading-Mode': 'skip' });
+  private static readonly PAGE_LOADING_HEADER = new HttpHeaders({ 'X-Loading-Mode': 'page' });
+
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${getBaseUrl()}/bo-portal/users`;
   private readonly authzUrl = `${getBaseUrl()}/bo-portal/authz`;
   private readonly noGlobalToastCtx = new HttpContext().set(SKIP_API_ERROR_TOAST, true);
 
-  filterUsers(request: UserFilterRequest, page: number, size: number): Observable<ResponseApi<UserPageResponse<UserListItem>>> {
+  filterUsers(
+    request: UserFilterRequest,
+    page: number,
+    size: number,
+    skipLoading = false,
+  ): Observable<ResponseApi<UserPageResponse<UserListItem>>> {
     return this.http.post<ResponseApi<UserPageResponse<UserListItem>>>(
-      `${this.baseUrl}/search?page=${page}&size=${size}`, request, { context: this.noGlobalToastCtx },
+      `${this.baseUrl}/search?page=${page}&size=${size}`,
+      request,
+      {
+        context: this.noGlobalToastCtx,
+        headers: skipLoading
+          ? UserManagementService.SKIP_LOADING_HEADER
+          : UserManagementService.PAGE_LOADING_HEADER,
+      },
     );
   }
 

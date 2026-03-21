@@ -4,23 +4,24 @@ import { finalize } from 'rxjs';
 import { LoadingService } from '../../services/common/loading.service';
 
 let activeRequests = 0;
+type LoadingMode = 'page' | 'global' | 'skip';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
-  
-  if (req.headers.has('X-Skip-Loading')) {
+  const loadingMode = (req.headers.get('X-Loading-Mode') as LoadingMode | null)
+    ?? (req.headers.has('X-Skip-Loading') ? 'skip' : null);
+
+  if (loadingMode === 'skip') {
     return next(req);
   }
 
-  // Determine which loading type to show
-  // GET requests use Top Progress Bar (page loading)
-  // POST, PUT, DELETE, PATCH use Global Overlay (blocking loading)
-  const isDataMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method);
+  const resolvedMode: Exclude<LoadingMode, 'skip'> = loadingMode
+    ?? (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method) ? 'global' : 'page');
   
   activeRequests++;
   
   if (activeRequests === 1) {
-    if (isDataMutation) {
+    if (resolvedMode === 'global') {
       loadingService.showGlobalLoading();
     } else {
       loadingService.showPageLoading();
