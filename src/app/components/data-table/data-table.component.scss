@@ -6,7 +6,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-.data-table-wrapper:has(.pagination-container) .data-table tbody tr:last-child td {
+.data-table-wrapper.has-pagination .data-table tbody tr:last-child td {
   border-bottom: none;
 }
 

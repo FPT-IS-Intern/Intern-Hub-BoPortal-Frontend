@@ -1,4 +1,4 @@
-<div class="data-table-wrapper" [ngClass]="wrapperClass">
+<div class="data-table-wrapper" [ngClass]="[wrapperClass, resolvedShowPagination ? 'has-pagination' : '']">
   <table class="data-table" [ngClass]="tableClass">
     <thead>
       <tr>
