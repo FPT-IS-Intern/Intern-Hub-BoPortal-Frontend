@@ -21,6 +21,7 @@ import {
   UserDetail,
   UserFilterRequest,
   UserHistoryRecord,
+  UserId,
   UserListItem,
 } from '../../models/user-management.model';
 
@@ -249,11 +250,11 @@ export class UserManagementComponent {
   protected refresh(): void { this.loadUsers(); }
   protected onPageIndexChange(page: number): void { this.pageIndex.set(page); this.loadUsers(false); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.pageIndex.set(1); this.loadUsers(false); }
-  protected trackUser(_index: number, row: UserListItem): string { return row.userId; }
+  protected trackUser(_index: number, row: UserListItem): UserId { return row.userId; }
   protected trackTrace(_index: number, row: UserHistoryRecord): number { return row.id; }
 
   // --- Drawer ---
-  protected openDetail(userId: string): void {
+  protected openDetail(userId: UserId): void {
     this.drawerVisible.set(true);
     this.drawerLoading.set(true);
     this.drawerTab.set('profile');
@@ -266,7 +267,7 @@ export class UserManagementComponent {
       .pipe(finalize(() => this.drawerLoading.set(false)))
       .subscribe({
         next: (res) => {
-          this.selectedUser.set(res.data ?? null);
+          this.selectedUser.set(res.data ? this.normalizeUserDetail(res.data) : null);
           this.loadTrace(userId);
           this.loadUserRoles(userId);
           if (this.allRoles().length === 0) this.loadAllRoles();
@@ -284,16 +285,16 @@ export class UserManagementComponent {
       if ('sysStatus' in user) {
         // Map UserListItem to a minimal UserDetail-like object for compatibility
         const item = user as UserListItem;
-        this.selectedUser.set({
+        this.selectedUser.set(this.normalizeUserDetail({
           userId: item.userId,
           fullName: item.fullName,
           email: item.email,
           status: item.sysStatus,
           role: item.role,
           positionCode: item.position,
-        } as UserDetail);
+        } as UserDetail));
       } else {
-        this.selectedUser.set(user as UserDetail);
+        this.selectedUser.set(this.normalizeUserDetail(user as UserDetail));
       }
     }
     if (!this.selectedUser()) return;
@@ -349,7 +350,7 @@ export class UserManagementComponent {
       .pipe(finalize(() => this.loadingService.hidePageLoading()))
       .subscribe({
         next: (res: any) => {
-          if (res.data) this.selectedUser.set(res.data);
+          if (res.data) this.selectedUser.set(this.normalizeUserDetail(res.data));
           this.toastService.success(this.successMessage(action as any));
           this.loadUsers(false);
           this.loadTrace(user.userId);
@@ -364,16 +365,16 @@ export class UserManagementComponent {
     if (user) {
       if ('sysStatus' in user) {
         const item = user as UserListItem;
-        this.selectedUser.set({
+        this.selectedUser.set(this.normalizeUserDetail({
           userId: item.userId,
           fullName: item.fullName,
           email: item.email,
           status: item.sysStatus,
           role: item.role,
           positionCode: item.position,
-        } as UserDetail);
+        } as UserDetail));
       } else {
-        this.selectedUser.set(user as UserDetail);
+        this.selectedUser.set(this.normalizeUserDetail(user as UserDetail));
       }
     }
     if (!this.selectedUser()) return;
@@ -454,7 +455,7 @@ export class UserManagementComponent {
       .pipe(finalize(() => this.loadingService.hidePageLoading()))
       .subscribe({
         next: (res) => {
-          if (res.data) this.selectedUser.set(res.data);
+          if (res.data) this.selectedUser.set(this.normalizeUserDetail(res.data));
           this.toastService.success(this.modalSuccessMessage(modal));
           this.loadUsers(false);
           this.loadTrace(user.userId);
@@ -572,9 +573,9 @@ export class UserManagementComponent {
         next: (res) => {
           const page = this.pageIndex();
           const size = this.pageSize();
-          const mappedItems = (res.data?.items ?? []).map((item, index) => ({
+          const mappedItems = (res.data?.items ?? []).map((item, index) => this.normalizeListItem({
             ...item,
-            no: (page - 1) * size + index + 1
+            no: (page - 1) * size + index + 1,
           }));
           this.rows.set(mappedItems);
           this.totalItems.set(res.data?.totalItems ?? 0);
@@ -592,7 +593,7 @@ export class UserManagementComponent {
     });
   }
 
-  private loadTrace(userId: string): void {
+  private loadTrace(userId: UserId): void {
     this.userManagementService.getActivityHistory(userId).subscribe({
       next: (res) => this.activityHistory.set(res.data ?? []),
       error: () => this.activityHistory.set([]),
@@ -603,7 +604,7 @@ export class UserManagementComponent {
     });
   }
 
-  private loadUserRoles(userId: string): void {
+  private loadUserRoles(userId: UserId): void {
     this.rolesLoading.set(true);
     this.userManagementService.getUserRoles(userId)
       .pipe(finalize(() => this.rolesLoading.set(false)))
@@ -622,6 +623,18 @@ export class UserManagementComponent {
 
   private toOptions(values: string[], allLabel: string): DropdownOption[] {
     return [{ label: allLabel, value: '' }, ...values.map((value) => ({ label: value, value }))];
+  }
+
+  private normalizeUserId(userId: UserId): string {
+    return String(userId);
+  }
+
+  private normalizeListItem(item: UserListItem): UserListItem {
+    return { ...item, userId: this.normalizeUserId(item.userId) };
+  }
+
+  private normalizeUserDetail(user: UserDetail): UserDetail {
+    return { ...user, userId: this.normalizeUserId(user.userId) };
   }
 
   private successMessage(action: ConfirmAction): string {
