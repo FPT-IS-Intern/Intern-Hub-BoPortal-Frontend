@@ -11,6 +11,7 @@ import {
   UserDetail,
   UserFilterRequest,
   UserHistoryRecord,
+  UserId,
   UserListItem,
   UserOrganizationUpdateRequest,
   UserPageResponse,
@@ -37,7 +38,7 @@ export class UserManagementService {
     );
   }
 
-  getUserById(userId: number): Observable<ResponseApi<UserDetail>> {
+  getUserById(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.get<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}`, { context: this.noGlobalToastCtx });
   }
 
@@ -49,63 +50,63 @@ export class UserManagementService {
 
   // --- Lifecycle Actions ---
 
-  approveUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  approveUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/approve`, {}, { context: this.noGlobalToastCtx });
   }
 
-  rejectUser(userId: number, request: UserRejectRequest): Observable<ResponseApi<UserDetail>> {
+  rejectUser(userId: UserId, request: UserRejectRequest): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/reject`, request, { context: this.noGlobalToastCtx });
   }
 
-  suspendUser(userId: number, request: UserSuspendRequest): Observable<ResponseApi<UserDetail>> {
+  suspendUser(userId: UserId, request: UserSuspendRequest): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/suspend`, request, { context: this.noGlobalToastCtx });
   }
 
-  reactivateUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  reactivateUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/reactivate`, {}, { context: this.noGlobalToastCtx });
   }
 
   // --- Login Access ---
 
-  lockUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  lockUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/lock`, {}, { context: this.noGlobalToastCtx });
   }
 
-  unlockUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  unlockUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/unlock`, {}, { context: this.noGlobalToastCtx });
   }
 
-  resetPassword(userId: number): Observable<ResponseApi<UserDetail>> {
+  resetPassword(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.post<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/reset-password`, {}, { context: this.noGlobalToastCtx });
   }
 
-  resendActivationEmail(userId: number): Observable<ResponseApi<UserDetail>> {
+  resendActivationEmail(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.post<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/resend-activation`, {}, { context: this.noGlobalToastCtx });
   }
 
   // --- Profile ---
 
-  updateProfile(userId: number, request: UserProfileUpdateRequest): Observable<ResponseApi<UserDetail>> {
+  updateProfile(userId: UserId, request: UserProfileUpdateRequest): Observable<ResponseApi<UserDetail>> {
     return this.http.patch<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/profile`, request, { context: this.noGlobalToastCtx });
   }
 
-  assignMentor(userId: number, mentorId: number): Observable<ResponseApi<{ userId: number; mentorId: number }>> {
-    return this.http.patch<ResponseApi<{ userId: number; mentorId: number }>>(
+  assignMentor(userId: UserId, mentorId: number): Observable<ResponseApi<{ userId: UserId; mentorId: number }>> {
+    return this.http.patch<ResponseApi<{ userId: UserId; mentorId: number }>>(
       `${this.baseUrl}/${userId}/mentor/${mentorId}`, {}, { context: this.noGlobalToastCtx },
     );
   }
 
   // --- Role Management ---
 
-  getUserRoles(userId: number): Observable<ResponseApi<UserRoleResponse>> {
+  getUserRoles(userId: UserId): Observable<ResponseApi<UserRoleResponse>> {
     return this.http.get<ResponseApi<UserRoleResponse>>(`${this.baseUrl}/${userId}/role`, { context: this.noGlobalToastCtx });
   }
 
-  assignRoleById(userId: number, request: AssignRoleRequest): Observable<ResponseApi<UserRoleResponse>> {
+  assignRoleById(userId: UserId, request: AssignRoleRequest): Observable<ResponseApi<UserRoleResponse>> {
     return this.http.put<ResponseApi<UserRoleResponse>>(`${this.baseUrl}/${userId}/role`, request, { context: this.noGlobalToastCtx });
   }
 
-  detachRole(userId: number, request: DetachRoleRequest): Observable<ResponseApi<UserRoleResponse>> {
+  detachRole(userId: UserId, request: DetachRoleRequest): Observable<ResponseApi<UserRoleResponse>> {
     return this.http.delete<ResponseApi<UserRoleResponse>>(`${this.baseUrl}/${userId}/role`, {
       body: request, context: this.noGlobalToastCtx,
     });
@@ -123,39 +124,39 @@ export class UserManagementService {
     return this.http.post<ResponseApi<UserDetail>>(this.baseUrl, request, { context: this.noGlobalToastCtx });
   }
 
-  updateUser(userId: number, request: UserUpsertRequest): Observable<ResponseApi<UserDetail>> {
+  updateUser(userId: UserId, request: UserUpsertRequest): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}`, request, { context: this.noGlobalToastCtx });
   }
 
-  activateUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  activateUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/activate`, {}, { context: this.noGlobalToastCtx });
   }
 
-  deactivateUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  deactivateUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/deactivate`, {}, { context: this.noGlobalToastCtx });
   }
 
-  deleteUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  deleteUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.delete<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}`, { context: this.noGlobalToastCtx });
   }
 
-  restoreUser(userId: number): Observable<ResponseApi<UserDetail>> {
+  restoreUser(userId: UserId): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/restore`, {}, { context: this.noGlobalToastCtx });
   }
 
-  assignRole(userId: number, request: UserRoleUpdateRequest): Observable<ResponseApi<UserDetail>> {
+  assignRole(userId: UserId, request: UserRoleUpdateRequest): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/role`, request, { context: this.noGlobalToastCtx });
   }
 
-  updateOrganization(userId: number, request: UserOrganizationUpdateRequest): Observable<ResponseApi<UserDetail>> {
+  updateOrganization(userId: UserId, request: UserOrganizationUpdateRequest): Observable<ResponseApi<UserDetail>> {
     return this.http.put<ResponseApi<UserDetail>>(`${this.baseUrl}/${userId}/organization`, request, { context: this.noGlobalToastCtx });
   }
 
-  getActivityHistory(userId: number): Observable<ResponseApi<UserHistoryRecord[]>> {
+  getActivityHistory(userId: UserId): Observable<ResponseApi<UserHistoryRecord[]>> {
     return this.http.get<ResponseApi<UserHistoryRecord[]>>(`${this.baseUrl}/${userId}/activity-history`, { context: this.noGlobalToastCtx });
   }
 
-  getLoginHistory(userId: number): Observable<ResponseApi<UserHistoryRecord[]>> {
+  getLoginHistory(userId: UserId): Observable<ResponseApi<UserHistoryRecord[]>> {
     return this.http.get<ResponseApi<UserHistoryRecord[]>>(`${this.baseUrl}/${userId}/login-history`, { context: this.noGlobalToastCtx });
   }
 }

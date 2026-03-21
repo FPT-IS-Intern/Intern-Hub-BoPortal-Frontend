@@ -249,11 +249,11 @@ export class UserManagementComponent {
   protected refresh(): void { this.loadUsers(); }
   protected onPageIndexChange(page: number): void { this.pageIndex.set(page); this.loadUsers(false); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.pageIndex.set(1); this.loadUsers(false); }
-  protected trackUser(_index: number, row: UserListItem): number { return row.userId; }
+  protected trackUser(_index: number, row: UserListItem): string { return row.userId; }
   protected trackTrace(_index: number, row: UserHistoryRecord): number { return row.id; }
 
   // --- Drawer ---
-  protected openDetail(userId: number): void {
+  protected openDetail(userId: string): void {
     this.drawerVisible.set(true);
     this.drawerLoading.set(true);
     this.drawerTab.set('profile');
@@ -592,7 +592,7 @@ export class UserManagementComponent {
     });
   }
 
-  private loadTrace(userId: number): void {
+  private loadTrace(userId: string): void {
     this.userManagementService.getActivityHistory(userId).subscribe({
       next: (res) => this.activityHistory.set(res.data ?? []),
       error: () => this.activityHistory.set([]),
@@ -603,7 +603,7 @@ export class UserManagementComponent {
     });
   }
 
-  private loadUserRoles(userId: number): void {
+  private loadUserRoles(userId: string): void {
     this.rolesLoading.set(true);
     this.userManagementService.getUserRoles(userId)
       .pipe(finalize(() => this.rolesLoading.set(false)))

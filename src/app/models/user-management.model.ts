@@ -1,3 +1,5 @@
+export type UserId = string;
+
 export interface UserFilterRequest {
   keyword?: string;
   sysStatuses?: string[];
@@ -8,7 +10,7 @@ export interface UserFilterRequest {
 
 export interface UserListItem {
   no?: number;
-  userId: number;
+  userId: UserId;
   avatarUrl?: string;
   fullName?: string;
   sysStatus?: string;
@@ -20,7 +22,7 @@ export interface UserListItem {
 }
 
 export interface UserDetail {
-  userId: number;
+  userId: UserId;
   email?: string;
   fullName?: string;
   phoneNumber?: string;
@@ -89,7 +91,7 @@ export interface AuthzRole {
 }
 
 export interface UserRoleResponse {
-  userId: number;
+  userId: UserId;
   roles: AuthzRole[];
 }
 
