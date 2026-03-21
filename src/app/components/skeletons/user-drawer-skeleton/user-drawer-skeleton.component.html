@@ -1,0 +1,39 @@
+<div class="user-drawer-skeleton">
+  <section class="skeleton-header">
+    <div class="header-left">
+      <div class="skeleton-avatar"></div>
+      <div class="header-copy">
+        <div class="skeleton-line name"></div>
+        <div class="skeleton-line email"></div>
+      </div>
+    </div>
+
+    <div class="header-badges">
+      <div class="skeleton-pill short"></div>
+      <div class="skeleton-pill long"></div>
+    </div>
+  </section>
+
+  <nav class="skeleton-tabs" aria-hidden="true">
+    <div class="skeleton-tab active"></div>
+    <div class="skeleton-tab"></div>
+    <div class="skeleton-tab wide"></div>
+  </nav>
+
+  <section class="skeleton-info-list">
+    @for (row of [1, 2, 3, 4, 5, 6]; track row) {
+    <div class="skeleton-info-row">
+      <div class="skeleton-line label"></div>
+      <div class="skeleton-line value"></div>
+    </div>
+    }
+  </section>
+
+  <section class="skeleton-section">
+    <div class="skeleton-line section-title"></div>
+    <div class="skeleton-action-card">
+      <div class="skeleton-line action-label"></div>
+      <div class="skeleton-button"></div>
+    </div>
+  </section>
+</div>

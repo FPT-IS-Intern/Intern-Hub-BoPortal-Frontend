@@ -99,7 +99,7 @@
 
   @if (drawerLoading()) {
   <div class="drawer-state">
-    <app-table-skeleton [columns]="1" [rows]="6" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
+    <app-user-drawer-skeleton></app-user-drawer-skeleton>
   </div>
   } @else if (selectedUser()) {
 

@@ -10,6 +10,7 @@ import { SharedSearchComponent } from '../../components/shared-search/shared-sea
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
+import { UserDrawerSkeletonComponent } from '../../components/skeletons/user-drawer-skeleton/user-drawer-skeleton.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { SideDrawerComponent } from '../../components/popups/side-drawer/side-drawer.component';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
@@ -42,6 +43,7 @@ type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
     PaginationComponent,
     NoDataComponent,
     TableSkeletonComponent,
+    UserDrawerSkeletonComponent,
     ConfirmPopup,
     SideDrawerComponent,
   ],
