@@ -473,6 +473,18 @@
   padding: 0 4px;
 }
 
+.profile-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-section {
+  .profile-action-row {
+    margin-bottom: 0;
+  }
+}
+
 .info-list {
   display: flex;
   flex-direction: column;

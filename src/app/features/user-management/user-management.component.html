@@ -76,18 +76,6 @@
         @case ('sysStatus') {
         <span [class]="businessStatusClass(row.sysStatus)">{{ businessStatusLabel(row.sysStatus) }}</span>
         }
-        @case ('actions') {
-        <div class="table-actions">
-          <button type="button" class="btn-table-action edit" (click)="openModal('edit-profile', row, $event)"
-            title="Chỉnh sửa">
-            <span class="custom-icon-edit"></span>
-          </button>
-
-          <button type="button" class="btn-table-action detail" (click)="openDetail(row.userId)" title="Chi tiết">
-            <span class="custom-icon-eye"></span>
-          </button>
-        </div>
-        }
         @default {
         <span>{{ safeValue($any(row)?.[col.key]) }}</span>
         }
@@ -144,8 +132,6 @@
     </div>
   </section>
 
-  <!-- Quick Actions migrated to Table Thao tác column -->
-
   <!-- Redesigned Tabs Switcher -->
   <nav class="drawer-tabs-new">
     <button type="button" class="tab-item" [class.active]="drawerTab() === 'profile'"
@@ -167,6 +153,17 @@
           <span class="info-value">{{ item.value || '-' }}</span>
         </div>
         }
+      </div>
+      <div class="section-group profile-section">
+        <h4 class="section-title">Thông tin hồ sơ</h4>
+        <div class="access-row profile-action-row">
+          <div class="row-left">
+            <span class="row-label">Cập nhật thông tin người dùng</span>
+          </div>
+          <button type="button" class="btn-row-action" (click)="openModal('edit-profile')">
+            Chỉnh sửa
+          </button>
+        </div>
       </div>
     </div>
     }

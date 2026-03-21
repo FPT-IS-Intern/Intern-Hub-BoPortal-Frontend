@@ -63,7 +63,6 @@ export class UserManagementComponent {
     { key: 'role', label: 'Vai trò', minWidth: '130px' },
     { key: 'position', label: 'Chức danh', minWidth: '150px' },
     { key: 'sysStatus', label: 'Trạng thái', width: '130px', align: 'center' },
-    { key: 'actions', label: 'Thao tác', width: '110px', align: 'center' },
   ];
 
 
