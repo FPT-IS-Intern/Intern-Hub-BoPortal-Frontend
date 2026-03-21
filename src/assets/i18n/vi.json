@@ -613,7 +613,12 @@
       "view": "Xem",
       "lock": "Khóa",
       "unlock": "Mở khóa",
-      "close": "Đóng"
+      "close": "Đóng",
+      "edit": "Chỉnh sửa",
+      "approve": "Duyệt",
+      "reject": "Từ chối",
+      "suspend": "Tạm dừng",
+      "reactivate": "Khôi phục"
     },
     "pagination": {
       "empty": "0-0 / 0",
@@ -637,6 +642,33 @@
       "role": "Vai trò",
       "position": "Chức vụ",
       "status": "Trạng thái",
+
+      "tabs": {
+        "profile": "Thông tin",
+        "access": "Bảo mật & Quyền",
+        "trace": "Lịch sử hoạt động"
+      },
+      "profile": {
+        "sectionTitle": "Thông tin hồ sơ",
+        "updateUserInfo": "Cập nhật thông tin người dùng"
+      },
+      "access": {
+        "loginSettings": "Cài đặt đăng nhập",
+        "loginStatus": "Trạng thái đăng nhập",
+        "unlockTitle": "Mở khóa tài khoản cho người dùng",
+        "lockTitle": "Khóa đăng nhập tạm thời",
+        "resetPassword": "Cấp lại mật khẩu",
+        "resetPasswordTitle": "Gửi email mật khẩu mới cho người dùng",
+        "resetAction": "Cấp lại",
+        "profileStatus": "Trạng thái hồ sơ",
+        "systemRole": "Vai trò hệ thống",
+        "activeRole": "Vai trò đang áp dụng",
+        "unassigned": "Chưa gán"
+      },
+      "trace": {
+        "empty": "Không có dữ liệu lịch sử",
+        "by": "Bởi"
+      },
       "emptyTitle": "Không có thông tin chi tiết",
       "emptyMessage": "Không thể tải hồ sơ của người dùng này."
     },
@@ -920,7 +952,7 @@
           "pickTitle": "Chọn role",
           "selectedTitle": "Role đã chọn",
           "selectPlaceholder": "Chọn role...",
-          "loading": "Đang tải danh sách role...",
+          "loading": "\u0110ang t\u1EA3i...",
           "loadError": "Không thể tải danh sách role.",
           "placeholder": "Nhập mã quyền và nhấn Enter (VD: ROLE_ADMIN)...",
           "help": "Chọn role ở dropdown để thêm vào danh sách. Nếu để trống, mọi user đều có thể thấy."
@@ -995,3 +1027,6 @@
     }
   }
 }
+
+
+

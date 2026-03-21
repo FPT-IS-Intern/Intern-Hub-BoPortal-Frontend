@@ -52,6 +52,15 @@ type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagementComponent {
+  private readonly baseColumns: DataTableColumn[] = [
+    { key: 'no', width: '60px', align: 'center' },
+    { key: 'user', minWidth: '220px' },
+    { key: 'email', minWidth: '200px' },
+    { key: 'role', minWidth: '130px' },
+    { key: 'position', minWidth: '150px' },
+    { key: 'sysStatus', width: '130px', align: 'center' },
+  ];
+
   private readonly userManagementService = inject(UserManagementService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translateService = inject(TranslateService);
@@ -59,14 +68,8 @@ export class UserManagementComponent {
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly columns: DataTableColumn[] = [
-    { key: 'no', label: 'STT', width: '60px', align: 'center' },
-    { key: 'user', label: 'Người dùng', minWidth: '220px' },
-    { key: 'email', label: 'Email', minWidth: '200px' },
-    { key: 'role', label: 'Vai trò', minWidth: '130px' },
-    { key: 'position', label: 'Chức danh', minWidth: '150px' },
-    { key: 'sysStatus', label: 'Trạng thái', width: '130px', align: 'center' },
-  ];
+  protected readonly columns: DataTableColumn[] = [];
+  protected readonly searchPlaceholder = signal('');
 
 
   // --- List state ---
@@ -121,6 +124,11 @@ export class UserManagementComponent {
 
   // --- Assign role ---
   protected readonly selectedNewRoleId = signal<string | null>(null);
+  protected readonly listColumns = signal<DataTableColumn[]>(this.baseColumns);
+  protected readonly listSearchPlaceholder = signal('');
+  protected readonly listRoleOptions = signal<DropdownOption[]>([]);
+  protected readonly listPositionOptions = signal<DropdownOption[]>([]);
+  protected readonly listStatusOptions = signal<DropdownOption[]>([]);
 
   // --- Metadata dropdowns ---
   protected readonly roleOptions = signal<DropdownOption[]>([{ label: 'Tất cả vai trò', value: '' }]);
@@ -217,23 +225,24 @@ export class UserManagementComponent {
         ]);
       });
 
+    this.bindListTranslations();
     this.loadMetaOptions();
     this.loadUsers();
   }
 
   // --- Filter handlers ---
-  protected onSearchChange(value: string): void { this.keyword.set(value); this.applyFilters(); }
+  protected onSearchChange(value: string): void { this.keyword.set(value); this.applyFilters(false); }
   protected onStatusChange(value: string): void { this.selectedStatus.set(value); this.applyFilters(); }
   protected onRoleChange(value: string): void { this.selectedRole.set(value); this.applyFilters(); }
   protected onPositionChange(value: string): void { this.selectedPosition.set(value); this.applyFilters(); }
 
-  protected applyFilters(): void {
+  protected applyFilters(showLoading = true): void {
     this.pageIndex.set(1);
     this.appliedKeyword.set(this.keyword().trim());
     this.appliedStatus.set(this.selectedStatus());
     this.appliedRole.set(this.selectedRole());
     this.appliedPosition.set(this.selectedPosition());
-    this.loadUsers();
+    this.loadUsers(showLoading);
   }
 
   protected clearFilters(): void {
@@ -246,7 +255,7 @@ export class UserManagementComponent {
     this.appliedRole.set('');
     this.appliedPosition.set('');
     this.pageIndex.set(1);
-    this.loadUsers();
+    this.loadUsers(false);
   }
 
   protected refresh(): void { this.loadUsers(); }
@@ -639,6 +648,39 @@ export class UserManagementComponent {
     return { ...user, userId: this.normalizeUserId(user.userId) };
   }
 
+  private bindListTranslations(): void {
+    this.translateService
+      .stream([
+        'users.filters.searchPlaceholder',
+        'users.table.no',
+        'users.table.user',
+        'users.table.email',
+        'users.table.role',
+        'users.table.position',
+        'users.table.status',
+        'users.filters.allStatuses',
+      ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((translations) => {
+        this.listSearchPlaceholder.set(translations['users.filters.searchPlaceholder']);
+        this.listColumns.set([
+          { ...this.baseColumns[0], label: translations['users.table.no'] },
+          { ...this.baseColumns[1], label: translations['users.table.user'] },
+          { ...this.baseColumns[2], label: translations['users.table.email'] },
+          { ...this.baseColumns[3], label: translations['users.table.role'] },
+          { ...this.baseColumns[4], label: translations['users.table.position'] },
+          { ...this.baseColumns[5], label: translations['users.table.status'] },
+        ]);
+        this.listStatusOptions.set([
+          { label: 'T\u1EA5t c\u1EA3 tr\u1EA1ng th\u00E1i', value: '' },
+          { label: 'Ch\u1EDD duy\u1EC7t', value: 'PENDING' },
+          { label: '\u0110\u00E3 duy\u1EC7t', value: 'APPROVED' },
+          { label: 'T\u1EEB ch\u1ED1i', value: 'REJECTED' },
+          { label: 'T\u1EA1m d\u1EEBng', value: 'SUSPENDED' },
+        ]);
+      });
+  }
+
   private successMessage(action: ConfirmAction): string {
     switch (action) {
       case 'unlock': return 'Mở khóa đăng nhập thành công';
@@ -659,3 +701,6 @@ export class UserManagementComponent {
     }
   }
 }
+
+
+

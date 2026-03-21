@@ -613,7 +613,12 @@
       "view": "View",
       "lock": "Lock",
       "unlock": "Unlock",
-      "close": "Close"
+      "close": "Close",
+      "edit": "Edit",
+      "approve": "Approve",
+      "reject": "Reject",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate"
     },
     "pagination": {
       "empty": "0-0 / 0",
@@ -637,6 +642,33 @@
       "role": "Role",
       "position": "Position",
       "status": "Status",
+      
+      "tabs": {
+        "profile": "Information",
+        "access": "Security & Permissions",
+        "trace": "Activity history"
+      },
+      "profile": {
+        "sectionTitle": "Profile information",
+        "updateUserInfo": "Update user information"
+      },
+      "access": {
+        "loginSettings": "Login settings",
+        "loginStatus": "Login status",
+        "unlockTitle": "Unlock user account",
+        "lockTitle": "Temporarily lock login",
+        "resetPassword": "Reset password",
+        "resetPasswordTitle": "Send a new password email to the user",
+        "resetAction": "Reset",
+        "profileStatus": "Profile status",
+        "systemRole": "System role",
+        "activeRole": "Active role",
+        "unassigned": "Unassigned"
+      },
+      "trace": {
+        "empty": "No activity history",
+        "by": "By"
+      },
       "emptyTitle": "No detail available",
       "emptyMessage": "This user profile could not be loaded."
     },
@@ -995,3 +1027,5 @@
     }
   }
 }
+
+
