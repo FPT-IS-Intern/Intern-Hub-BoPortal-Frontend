@@ -32,7 +32,7 @@
       </app-no-data>
     </div>
     } @else {
-    <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [bodyLoading]="true"
+    <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [bodyLoading]="isFiltering()"
       [rowTrackBy]="trackUser"
         [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)"
         [paginationAuto]="true" [paginationSticky]="true" [paginationTotal]="totalItems()" [paginationPageSize]="pageSize()">
