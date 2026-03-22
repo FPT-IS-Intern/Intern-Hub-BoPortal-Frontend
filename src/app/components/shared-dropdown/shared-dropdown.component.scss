@@ -2,6 +2,7 @@
   position: relative;
   user-select: none;
   font-family: inherit;
+  color: var(--app-color-text-main);
 
   // Đảm bảo dropdown đang mở luôn nổi lên trên các phần tử form khác
   &:has(.dropdown-overlay) {
@@ -35,7 +36,7 @@
       }
 
       .selected-text {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 500;
         color: var(--app-color-text-main);
         white-space: nowrap;
@@ -94,6 +95,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     gap: 12px;
+    color: var(--app-color-text-main);
 
     &:hover {
       background: var(--app-color-surface-warm-100);
@@ -119,6 +121,7 @@
 
       .item-label {
         font-size: 13px;
+        color: var(--app-color-text-main);
       }
       .check-icon {
         font-size: 14px;
