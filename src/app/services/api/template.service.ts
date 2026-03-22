@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { getBaseUrl } from '../../core/config/app-config';
+import { buildApiUrl } from '../../core/config/app-config';
+import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 import {
   TemplateResponse,
   TemplateSummaryPageResponse,
@@ -19,7 +20,7 @@ import {
 })
 export class TemplateService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${getBaseUrl()}/bo-portal/templates`;
+  private readonly baseUrl = buildApiUrl(API_ENDPOINTS.templates.root);
 
   /**
    * List templates with filters
@@ -62,7 +63,7 @@ export class TemplateService {
     if (params.page !== undefined) httpParams = httpParams.set('page', params.page);
     if (params.size !== undefined) httpParams = httpParams.set('size', params.size);
 
-    return this.http.get<ResponseApi<TemplateSummaryPageResponse>>(`${this.baseUrl}/summary`, { params: httpParams });
+    return this.http.get<ResponseApi<TemplateSummaryPageResponse>>(buildApiUrl(API_ENDPOINTS.templates.summary), { params: httpParams });
   }
 
   /**
@@ -72,35 +73,35 @@ export class TemplateService {
     let httpParams = new HttpParams();
     if (lang) httpParams = httpParams.set('lang', lang);
 
-    return this.http.get<ResponseApi<TemplateChannelAvailabilityResponse>>(`${this.baseUrl}/${code}/channels`, { params: httpParams });
+    return this.http.get<ResponseApi<TemplateChannelAvailabilityResponse>>(buildApiUrl(API_ENDPOINTS.templates.channels(code)), { params: httpParams });
   }
 
   /**
    * Get template definition by code
    */
   getTemplateDefinition(code: string): Observable<ResponseApi<TemplateDefinitionResponse>> {
-    return this.http.get<ResponseApi<TemplateDefinitionResponse>>(`${this.baseUrl}/${code}/definition`);
+    return this.http.get<ResponseApi<TemplateDefinitionResponse>>(buildApiUrl(API_ENDPOINTS.templates.definitionByCode(code)));
   }
 
   /**
    * Create template definition
    */
   createTemplateDefinition(request: TemplateDefinitionCreateRequest): Observable<ResponseApi<TemplateDefinitionResponse>> {
-    return this.http.post<ResponseApi<TemplateDefinitionResponse>>(`${this.baseUrl}/definition`, request);
+    return this.http.post<ResponseApi<TemplateDefinitionResponse>>(buildApiUrl(API_ENDPOINTS.templates.definitionRoot), request);
   }
 
   /**
    * Update template definition by code
    */
   updateTemplateDefinition(code: string, request: TemplateDefinitionUpdateRequest): Observable<ResponseApi<TemplateDefinitionResponse>> {
-    return this.http.put<ResponseApi<TemplateDefinitionResponse>>(`${this.baseUrl}/${code}/definition`, request);
+    return this.http.put<ResponseApi<TemplateDefinitionResponse>>(buildApiUrl(API_ENDPOINTS.templates.definitionByCode(code)), request);
   }
 
   /**
    * Delete template definition by code
    */
   deleteTemplateDefinition(code: string): Observable<ResponseApi<boolean>> {
-    return this.http.delete<ResponseApi<boolean>>(`${this.baseUrl}/definition/${code}`);
+    return this.http.delete<ResponseApi<boolean>>(buildApiUrl(API_ENDPOINTS.templates.definitionDelete(code)));
   }
 
   /**
@@ -110,14 +111,14 @@ export class TemplateService {
     let httpParams = new HttpParams().set('channel', channel);
     if (lang) httpParams = httpParams.set('lang', lang);
 
-    return this.http.get<ResponseApi<TemplateResponse[]>>(`${this.baseUrl}/${code}/history`, { params: httpParams });
+    return this.http.get<ResponseApi<TemplateResponse[]>>(buildApiUrl(API_ENDPOINTS.templates.history(code)), { params: httpParams });
   }
 
   /**
    * Restore template version
    */
   restoreTemplate(code: string, request: TemplateRestoreRequest): Observable<ResponseApi<TemplateResponse>> {
-    return this.http.put<ResponseApi<TemplateResponse>>(`${this.baseUrl}/${code}/restore`, request);
+    return this.http.put<ResponseApi<TemplateResponse>>(buildApiUrl(API_ENDPOINTS.templates.restore(code)), request);
   }
 
   /**
@@ -131,6 +132,6 @@ export class TemplateService {
    * Update template
    */
   updateTemplate(id: string, request: TemplateUpsertRequest): Observable<ResponseApi<TemplateResponse>> {
-    return this.http.put<ResponseApi<TemplateResponse>>(`${this.baseUrl}/${id}`, request);
+    return this.http.put<ResponseApi<TemplateResponse>>(buildApiUrl(API_ENDPOINTS.templates.byId(id)), request);
   }
 }

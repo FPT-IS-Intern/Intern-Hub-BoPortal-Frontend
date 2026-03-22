@@ -5,7 +5,8 @@ import { GeneralConfigService } from './general-config.service';
 import { LogoutRequest, LoginPayload, LoginRequest, LoginResponse, BoAdminProfile } from '../../models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { StorageUtil } from '../../core/utils/storage.util';
-import { getBaseUrl } from '../../core/config/app-config';
+import { buildApiUrl } from '../../core/config/app-config';
+import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 import { encryptWithRsaPublicKey } from '../../core/utils/rsa.util';
 
 @Injectable({
@@ -43,7 +44,7 @@ export class AuthService {
           deviceId,
         };
         return this.httpClient.post<ResponseApi<LoginResponse>>(
-          `${getBaseUrl()}/bo-portal/auth/login`,
+          buildApiUrl(API_ENDPOINTS.auth.login),
           payload,
         );
       }),
@@ -52,7 +53,7 @@ export class AuthService {
 
   logout(data: LogoutRequest): Observable<ResponseApi<void>> {
     return this.httpClient
-      .post<ResponseApi<void>>(`${getBaseUrl()}/bo-portal/auth/logout`, data)
+      .post<ResponseApi<void>>(buildApiUrl(API_ENDPOINTS.auth.logout), data)
       .pipe(
         finalize(() => {
           StorageUtil.clearAll();
@@ -70,14 +71,14 @@ export class AuthService {
     };
 
     return this.httpClient.post<ResponseApi<{ accessToken: string; refreshToken: string }>>(
-      `${getBaseUrl()}/bo-portal/auth/refresh`,
+      buildApiUrl(API_ENDPOINTS.auth.refresh),
       payload,
       { headers: { 'X-Skip-Loading': 'true' } }
     );
   }
 
   me(): Observable<ResponseApi<BoAdminProfile>> {
-    return this.httpClient.get<ResponseApi<BoAdminProfile>>(`${getBaseUrl()}/bo-portal/auth/me`, {
+    return this.httpClient.get<ResponseApi<BoAdminProfile>>(buildApiUrl(API_ENDPOINTS.auth.me), {
       headers: { 'X-Skip-Loading': 'true' }
     }).pipe(
       tap((res) => {
@@ -131,7 +132,7 @@ export class AuthService {
     }
     if (!this.loginPublicKey$) {
       this.loginPublicKey$ = this.httpClient
-        .get<ResponseApi<string | { publicKey?: string; key?: string }>>(`${getBaseUrl()}/bo-portal/auth/public-key`)
+        .get<ResponseApi<string | { publicKey?: string; key?: string }>>(buildApiUrl(API_ENDPOINTS.auth.publicKey))
         .pipe(
           map((res) => {
             const key = this.extractPublicKey(res.data);

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, delay } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { getBaseUrl } from '../../core/config/app-config';
+import { buildApiUrl } from '../../core/config/app-config';
+import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 import { PermissionRow } from '../../models/permission.model';
 
 
@@ -10,7 +11,7 @@ import { PermissionRow } from '../../models/permission.model';
     providedIn: 'root',
 })
 export class PermissionService {
-    private readonly baseUrl = `${getBaseUrl()}/permission-matrix`;
+    private readonly baseUrl = buildApiUrl(API_ENDPOINTS.permissionMatrix.root);
 
     constructor(private readonly http: HttpClient) { }
 

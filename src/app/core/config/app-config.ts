@@ -1,9 +1,26 @@
-export function getBaseUrl(): string {
-  const appEnv = (window as any).__env;
+import { environment } from '../../../environments/environment';
 
-  if (appEnv && appEnv.apiUrl) {
-    return appEnv.apiUrl;
+declare const window: any;
+
+function normalizeBaseUrl(url: string): string {
+  return url.replace(/\/+$/, '');
+}
+
+export function getBaseUrl(): string {
+  const runtimeApiUrl = window.__env?.apiUrl;
+
+  if (runtimeApiUrl) {
+    return normalizeBaseUrl(runtimeApiUrl);
+  }
+
+  if (environment.apiUrl) {
+    return normalizeBaseUrl(environment.apiUrl);
   }
 
   return '';
+}
+
+export function buildApiUrl(path: string): string {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${getBaseUrl()}${normalizedPath}`;
 }

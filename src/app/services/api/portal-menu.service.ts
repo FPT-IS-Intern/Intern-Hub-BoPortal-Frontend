@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { getBaseUrl } from '../../core/config/app-config';
+import { buildApiUrl } from '../../core/config/app-config';
+import { API_ENDPOINTS } from '../../core/config/api-endpoints';
 import { SKIP_API_ERROR_TOAST } from '../../core/interceptors/api-error.interceptor';
 import { PortalMenuItem, PortalMenuRequest } from '../../models/portal-menu.model';
 
@@ -11,35 +12,34 @@ import { PortalMenuItem, PortalMenuRequest } from '../../models/portal-menu.mode
 })
 export class PortalMenuService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${getBaseUrl()}/bo-portal/menus`;
   private readonly noGlobalToastCtx = new HttpContext().set(SKIP_API_ERROR_TOAST, true);
 
   getAllMenus(): Observable<ResponseApi<PortalMenuItem[]>> {
-    return this.http.get<ResponseApi<PortalMenuItem[]>>(this.baseUrl, {
+    return this.http.get<ResponseApi<PortalMenuItem[]>>(buildApiUrl(API_ENDPOINTS.portalMenus.root), {
       context: this.noGlobalToastCtx,
     });
   }
 
   getMenuById(id: number): Observable<ResponseApi<PortalMenuItem>> {
-    return this.http.get<ResponseApi<PortalMenuItem>>(`${this.baseUrl}/${id}`, {
+    return this.http.get<ResponseApi<PortalMenuItem>>(buildApiUrl(API_ENDPOINTS.portalMenus.byId(id)), {
       context: this.noGlobalToastCtx,
     });
   }
 
   createMenu(request: PortalMenuRequest): Observable<ResponseApi<PortalMenuItem>> {
-    return this.http.post<ResponseApi<PortalMenuItem>>(this.baseUrl, request, {
+    return this.http.post<ResponseApi<PortalMenuItem>>(buildApiUrl(API_ENDPOINTS.portalMenus.root), request, {
       context: this.noGlobalToastCtx,
     });
   }
 
   updateMenu(id: number, request: PortalMenuRequest): Observable<ResponseApi<PortalMenuItem>> {
-    return this.http.put<ResponseApi<PortalMenuItem>>(`${this.baseUrl}/${id}`, request, {
+    return this.http.put<ResponseApi<PortalMenuItem>>(buildApiUrl(API_ENDPOINTS.portalMenus.byId(id)), request, {
       context: this.noGlobalToastCtx,
     });
   }
 
   deleteMenu(id: number): Observable<ResponseApi<void>> {
-    return this.http.delete<ResponseApi<void>>(`${this.baseUrl}/${id}`, {
+    return this.http.delete<ResponseApi<void>>(buildApiUrl(API_ENDPOINTS.portalMenus.byId(id)), {
       context: this.noGlobalToastCtx,
     });
   }
