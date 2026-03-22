@@ -1,19 +1,19 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { Observable, finalize, tap, forkJoin, of, catchError, throwError, map, shareReplay, switchMap } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { GeneralConfigService } from './general-config.service';
 import { LogoutRequest, LoginPayload, LoginRequest, LoginResponse, BoAdminProfile } from '@/models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { StorageUtil } from '@/core/utils/storage.util';
-import { buildApiUrl } from '@/core/config/app-config';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
 import { encryptWithRsaPublicKey } from '@/core/utils/rsa.util';
+import { ApiClientService } from '@/services/api/api-client.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly httpClient = inject(HttpClient);
+  private readonly apiClient = inject(ApiClientService);
   private readonly configService = inject(GeneralConfigService);
   private loginPublicKey$: Observable<string> | null = null;
   private loginPublicKeyValue: string | null = null;
@@ -43,17 +43,14 @@ export class AuthService {
           encryptedPassword,
           deviceId,
         };
-        return this.httpClient.post<ResponseApi<LoginResponse>>(
-          buildApiUrl(API_ENDPOINTS.auth.login),
-          payload,
-        );
+        return this.apiClient.post<ResponseApi<LoginResponse>>(API_ENDPOINTS.auth.login, payload);
       }),
     );
   }
 
   logout(data: LogoutRequest): Observable<ResponseApi<void>> {
-    return this.httpClient
-      .post<ResponseApi<void>>(buildApiUrl(API_ENDPOINTS.auth.logout), data)
+    return this.apiClient
+      .post<ResponseApi<void>>(API_ENDPOINTS.auth.logout, data)
       .pipe(
         finalize(() => {
           StorageUtil.clearAll();
@@ -70,15 +67,15 @@ export class AuthService {
       deviceId: data.deviceId || this.getDeviceId(),
     };
 
-    return this.httpClient.post<ResponseApi<{ accessToken: string; refreshToken: string }>>(
-      buildApiUrl(API_ENDPOINTS.auth.refresh),
+    return this.apiClient.post<ResponseApi<{ accessToken: string; refreshToken: string }>>(
+      API_ENDPOINTS.auth.refresh,
       payload,
       { headers: { 'X-Skip-Loading': 'true' } }
     );
   }
 
   me(): Observable<ResponseApi<BoAdminProfile>> {
-    return this.httpClient.get<ResponseApi<BoAdminProfile>>(buildApiUrl(API_ENDPOINTS.auth.me), {
+    return this.apiClient.get<ResponseApi<BoAdminProfile>>(API_ENDPOINTS.auth.me, {
       headers: { 'X-Skip-Loading': 'true' }
     }).pipe(
       tap((res) => {
@@ -131,8 +128,8 @@ export class AuthService {
       return of(this.loginPublicKeyValue);
     }
     if (!this.loginPublicKey$) {
-      this.loginPublicKey$ = this.httpClient
-        .get<ResponseApi<string | { publicKey?: string; key?: string }>>(buildApiUrl(API_ENDPOINTS.auth.publicKey))
+      this.loginPublicKey$ = this.apiClient
+        .get<ResponseApi<string | { publicKey?: string; key?: string }>>(API_ENDPOINTS.auth.publicKey)
         .pipe(
           map((res) => {
             const key = this.extractPublicKey(res.data);
