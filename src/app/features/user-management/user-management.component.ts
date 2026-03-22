@@ -283,9 +283,9 @@ export class UserManagementComponent {
   }
 
   protected onSearchChange(value: string): void { this.keyword.set(value); this.applyFilters(false); }
-  protected onStatusChange(value: string): void { this.selectedStatus.set(value); this.applyFilters(); }
-  protected onRoleChange(value: string): void { this.selectedRole.set(value); this.applyFilters(); }
-  protected onPositionChange(value: string): void { this.selectedPosition.set(value); this.applyFilters(); }
+  protected onStatusChange(value: string): void { this.selectedStatus.set(value); this.applyFilters(false); }
+  protected onRoleChange(value: string): void { this.selectedRole.set(value); this.applyFilters(false); }
+  protected onPositionChange(value: string): void { this.selectedPosition.set(value); this.applyFilters(false); }
 
   protected applyFilters(showLoading = true): void {
     this.pageIndex.set(1);
