@@ -37,7 +37,7 @@ export class NotificationTableComponent {
         this.sendNow.emit(record);
     }
 
-    getStatusClass(status: string): string {
+    getStatusClass(status: NotificationRecord['status']): string {
         switch (status) {
             case 'Sent': return 'status-sent';
             case 'Draft': return 'status-draft';
@@ -46,7 +46,7 @@ export class NotificationTableComponent {
         }
     }
 
-    getStatusLabel(status: string): string {
+    getStatusLabel(status: NotificationRecord['status']): string {
         switch (status) {
             case 'Sent': return 'notification.table.status.sent';
             case 'Draft': return 'notification.table.status.draft';

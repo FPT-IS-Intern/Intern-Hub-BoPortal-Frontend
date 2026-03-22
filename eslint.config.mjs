@@ -38,6 +38,7 @@ export default [
       },
     },
     rules: {
+      'no-duplicate-imports': 'error',
       'no-restricted-imports': [
         'error',
         {
