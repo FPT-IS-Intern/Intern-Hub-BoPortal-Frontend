@@ -18,14 +18,12 @@
   </section>
 
   <section class="table-shell">
-
-
     @if (isLoading()) {
     <div class="state-wrap">
       <app-table-skeleton [columns]="6" [rows]="7" headerMode="single" [columnWidths]="['100%']"></app-table-skeleton>
     </div>
     } @else if (isError()) {
-      <div class="error-view">
+    <div class="error-view">
       <app-no-data [title]="'users.error.title' | translate" [message]="'users.error.message' | translate">
         <span icon class="custom-icon-error error-icon"></span>
         <button action class="btn-outline-custom retry-btn" (click)="refresh()">
@@ -34,7 +32,7 @@
       </app-no-data>
     </div>
     } @else {
-<app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [rowTrackBy]="trackUser"
+    <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [rowTrackBy]="trackUser"
       [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)"
       [paginationAuto]="true" [paginationSticky]="true" [paginationTotal]="totalItems()" [paginationPageSize]="pageSize()">
 
@@ -94,7 +92,6 @@
   </section>
 </div>
 
-<!-- ========== SIDE DRAWER ========== -->
 <app-side-drawer [isVisible]="drawerVisible()" (isVisibleChange)="drawerVisible.set($event)" (close)="closeDrawer()"
   [title]="drawerTitle()" width="480px">
 
@@ -103,8 +100,6 @@
     <app-user-drawer-skeleton></app-user-drawer-skeleton>
   </div>
   } @else if (selectedUser()) {
-
-  <!-- Redesigned Header -->
   <section class="drawer-header-new">
     <div class="header-main">
       <div class="header-avatar">
@@ -133,7 +128,6 @@
     </div>
   </section>
 
-  <!-- Redesigned Tabs Switcher -->
   <nav class="drawer-tabs-new">
     <button type="button" class="tab-item" [class.active]="drawerTab() === 'profile'"
       (click)="drawerTab.set('profile')">{{ 'users.detail.tabs.profile' | translate }}</button>
@@ -144,7 +138,6 @@
   </nav>
 
   <div class="drawer-content-scroll">
-    <!-- Tab Content: Profile -->
     @if (drawerTab() === 'profile') {
     <div class="content-panel profile-panel">
       <div class="info-list">
@@ -169,7 +162,6 @@
     </div>
     }
 
-    <!-- Tab Content: Access -->
     @if (drawerTab() === 'access') {
     <div class="content-panel access-panel-new">
       <div class="section-group">
@@ -241,7 +233,6 @@
     </div>
     }
 
-    <!-- Tab Content: Trace -->
     @if (drawerTab() === 'trace') {
     <div class="content-panel trace-panel-new">
       @if (mergedTrace().length === 0) {
@@ -271,68 +262,67 @@
   }
 </app-side-drawer>
 
-<!-- ========== CONFIRM POPUP ========== -->
 <app-confirm-popup [isVisible]="confirmVisible()" (isVisibleChange)="confirmVisible.set($event)"
-  [title]="confirmTitle()" [message]="confirmMessage()" cancelText="Hủy" confirmText="Xác nhận"
+  [title]="confirmTitle()" [message]="confirmMessage()"
+  [cancelText]="'users.confirm.cancel' | translate"
+  [confirmText]="'users.confirm.confirm' | translate"
   (confirm)="confirmAction()" (cancel)="cancelAction()">
 </app-confirm-popup>
 
-<!-- ========== MODAL OVERLAY (Reject / Suspend / Edit Profile / Assign Role) ========== -->
 @if (modalVisible()) {
 <div class="modal-overlay" (click)="cancelModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
     <header class="modal-header">
       <h3>{{ modalTitle() }}</h3>
-      <button type="button" class="modal-close" (click)="cancelModal()">×</button>
+      <button type="button" class="modal-close" (click)="cancelModal()">&times;</button>
     </header>
 
     <div class="modal-body">
-      <!-- Reject / Suspend -->
       @if (pendingModal() === 'reject' || pendingModal() === 'suspend') {
       <label class="field-label">
-        Lý do <span class="required-star">*</span>
+        {{ 'users.modal.reasonLabel' | translate }} <span class="required-star">*</span>
       </label>
       <textarea class="modal-textarea" rows="4"
-        [placeholder]="pendingModal() === 'reject' ? 'Nh?p l� do t? ch?i...' : 'Nh?p l� do t?m d?ng...'"
+        [placeholder]="pendingModal() === 'reject'
+          ? ('users.modal.rejectPlaceholder' | translate)
+          : ('users.modal.suspendPlaceholder' | translate)"
         [ngModel]="modalReason()" (ngModelChange)="modalReason.set($event); modalReasonError.set('')">
-          </textarea>
+      </textarea>
       @if (modalReasonError()) {
       <p class="field-error">{{ modalReasonError() }}</p>
       }
       @if (pendingModal() === 'suspend') {
       <div class="modal-info-box">
         <span class="custom-icon-info"></span>
-        <p>Tạm dừng người dùng sẽ ngăn chặn các hoạt động nghiệp vụ của tài khoản này (chấm công, gửi yêu cầu...) nhưng vẫn giữ lại thông tin hồ sơ và dữ liệu lịch sử. Bạn có thể kích hoạt lại tài khoản bất cứ lúc nào.</p>
+        <p>{{ 'users.modal.suspendInfo' | translate }}</p>
       </div>
       }
       }
 
-      <!-- Edit Profile -->
       @if (pendingModal() === 'edit-profile') {
       <div class="form-grid">
-        <label class="field-label">Họ và tên</label>
+        <label class="field-label">{{ 'users.modal.fullNameLabel' | translate }}</label>
         <input type="text" class="modal-input" [ngModel]="editFullName()" (ngModelChange)="editFullName.set($event)"
-          placeholder="Họ và tên">
+          [placeholder]="'users.modal.fullNamePlaceholder' | translate">
 
-        <label class="field-label">Số điện thoại</label>
+        <label class="field-label">{{ 'users.modal.phoneLabel' | translate }}</label>
         <input type="text" class="modal-input" [ngModel]="editPhone()" (ngModelChange)="editPhone.set($event)"
-          placeholder="Số điện thoại">
+          [placeholder]="'users.modal.phonePlaceholder' | translate">
 
-        <label class="field-label">Chức danh</label>
+        <label class="field-label">{{ 'users.modal.positionLabel' | translate }}</label>
         <input type="text" class="modal-input" [ngModel]="editPosition()" (ngModelChange)="editPosition.set($event)"
-          placeholder="Chức danh">
+          [placeholder]="'users.modal.positionPlaceholder' | translate">
 
-        <label class="field-label">Phòng ban</label>
+        <label class="field-label">{{ 'users.modal.departmentLabel' | translate }}</label>
         <input type="text" class="modal-input" [ngModel]="editDepartment()" (ngModelChange)="editDepartment.set($event)"
-          placeholder="Phòng ban">
+          [placeholder]="'users.modal.departmentPlaceholder' | translate">
       </div>
       }
 
-      <!-- Assign Role -->
       @if (pendingModal() === 'assign-role') {
-      <label class="field-label">Chọn vai trò</label>
+      <label class="field-label">{{ 'users.modal.selectRoleLabel' | translate }}</label>
       @if (assignableRoles().length === 0) {
-      <p class="no-roles">Không có vai trò nào khả dụng</p>
+      <p class="no-roles">{{ 'users.modal.noAssignableRoles' | translate }}</p>
       } @else {
       <div class="role-options">
         @for (role of assignableRoles(); track role.id) {
@@ -348,18 +338,14 @@
     </div>
 
     <footer class="modal-footer">
-      <button type="button" class="btn-outline-custom" (click)="cancelModal()">Hủy</button>
+      <button type="button" class="btn-outline-custom" (click)="cancelModal()">
+        {{ 'users.confirm.cancel' | translate }}
+      </button>
       <button type="button" class="btn-primary-custom"
         [disabled]="pendingModal() === 'assign-role' && !selectedNewRoleId()" (click)="confirmModal()">
-        Xác nhận
+        {{ 'users.confirm.confirm' | translate }}
       </button>
     </footer>
   </div>
 </div>
 }
-
-
-
-
-
-

@@ -602,9 +602,24 @@
       "actions": "Actions"
     },
     "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "suspended": "Suspended",
+      "unknown": "Unknown",
       "active": "Active",
       "locked": "Locked",
       "inactive": "Inactive"
+    },
+    "loginStatus": {
+      "active": "Login allowed",
+      "inactive": "Access stopped",
+      "suspended": "Login locked",
+      "unknown": "Unknown"
+    },
+    "common": {
+      "thisUser": "this user",
+      "newRole": "new"
     },
     "actions": {
       "search": "Search",
@@ -675,13 +690,51 @@
     "confirm": {
       "lockTitle": "Lock account",
       "unlockTitle": "Unlock account",
+      "resetPasswordTitle": "Reset password",
+      "approveTitle": "Approve user",
+      "reactivateTitle": "Reactivate user",
+      "assignRoleTitle": "Change role",
       "lockMessage": "Do you want to lock account {{name}}?",
       "unlockMessage": "Do you want to unlock account {{name}}?",
+      "resetPasswordMessage": "Do you want to reset password for {{name}}?",
+      "approveMessage": "Do you want to approve the profile of {{name}}?",
+      "reactivateMessage": "Do you want to reactivate {{name}}?",
+      "assignRoleMessage": "Do you want to change the role for {{name}} from [{{currentRole}}] to [{{newRole}}]?",
       "cancel": "Cancel",
       "confirm": "Confirm"
     },
+    "modal": {
+      "rejectTitle": "Reject profile",
+      "suspendTitle": "Suspend user",
+      "editProfileTitle": "Update profile",
+      "assignRoleTitle": "Assign role",
+      "reasonRequired": "Please enter a reason",
+      "reasonLabel": "Reason",
+      "rejectPlaceholder": "Enter rejection reason...",
+      "suspendPlaceholder": "Enter suspension reason...",
+      "suspendInfo": "Suspending a user will block account-related business operations (check-in, submitting requests, and more) while preserving profile information and history data. You can reactivate the account at any time.",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Full name",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Phone number",
+      "positionLabel": "Position",
+      "positionPlaceholder": "Position",
+      "departmentLabel": "Department",
+      "departmentPlaceholder": "Department",
+      "selectRoleLabel": "Select role",
+      "noAssignableRoles": "No roles available"
+    },
     "toast": {
       "loadDetailError": "Unable to load user details",
+      "assignRoleSuccess": "Role assigned successfully",
+      "assignRoleError": "Unable to assign role",
+      "actionError": "Unable to perform this action",
+      "resetPasswordSuccess": "Password reset successfully",
+      "approveSuccess": "User approved successfully",
+      "reactivateSuccess": "User reactivated successfully",
+      "rejectSuccess": "Profile rejected successfully",
+      "suspendSuccess": "User suspended successfully",
+      "updateProfileSuccess": "Profile updated successfully",
       "lockSuccess": "User account locked successfully",
       "unlockSuccess": "User account unlocked successfully",
       "lockError": "Unable to lock this account",

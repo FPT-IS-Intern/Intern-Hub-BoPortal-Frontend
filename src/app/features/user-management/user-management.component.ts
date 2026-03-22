@@ -68,11 +68,6 @@ export class UserManagementComponent {
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly columns: DataTableColumn[] = [];
-  protected readonly searchPlaceholder = signal('');
-
-
-  // --- List state ---
   protected readonly rows = signal<UserListItem[]>([]);
   protected readonly totalItems = signal(0);
   protected readonly pageIndex = signal(1);
@@ -89,7 +84,6 @@ export class UserManagementComponent {
   protected readonly isLoading = signal(true);
   protected readonly isError = signal(false);
 
-  // --- Drawer state ---
   protected readonly drawerVisible = signal(false);
   protected readonly drawerLoading = signal(false);
   protected readonly drawerTab = signal<DrawerTab>('profile');
@@ -97,7 +91,6 @@ export class UserManagementComponent {
   protected readonly activityHistory = signal<UserHistoryRecord[]>([]);
   protected readonly loginHistory = signal<UserHistoryRecord[]>([]);
 
-  // --- Role state ---
   protected readonly userRoles = signal<AuthzRole[]>([]);
   protected readonly allRoles = signal<AuthzRole[]>([]);
   protected readonly rolesLoading = signal(false);
@@ -105,43 +98,36 @@ export class UserManagementComponent {
     this.allRoles().map((r) => ({ label: r.name, value: r.id.toString() })),
   );
 
-  // --- Confirm dialog ---
   protected readonly confirmVisible = signal(false);
-  protected readonly pendingAction = signal<ConfirmAction| null>(null);
+  protected readonly pendingAction = signal<ConfirmAction | null>(null);
   protected readonly pendingActionRoleId = signal<string | null>(null);
 
-  // --- Modal (reject/suspend/edit/assign-role) ---
   protected readonly modalVisible = signal(false);
   protected readonly pendingModal = signal<ModalAction | null>(null);
   protected readonly modalReason = signal('');
   protected readonly modalReasonError = signal('');
 
-  // --- Profile edit ---
   protected readonly editFullName = signal('');
   protected readonly editPhone = signal('');
   protected readonly editPosition = signal('');
   protected readonly editDepartment = signal('');
 
-  // --- Assign role ---
   protected readonly selectedNewRoleId = signal<string | null>(null);
   protected readonly listColumns = signal<DataTableColumn[]>(this.baseColumns);
   protected readonly listSearchPlaceholder = signal('');
-  protected readonly listRoleOptions = signal<DropdownOption[]>([]);
-  protected readonly listPositionOptions = signal<DropdownOption[]>([]);
   protected readonly listStatusOptions = signal<DropdownOption[]>([]);
 
-  // --- Metadata dropdowns ---
-  protected readonly roleOptions = signal<DropdownOption[]>([{ label: 'Tất cả vai trò', value: '' }]);
-  protected readonly positionOptions = signal<DropdownOption[]>([{ label: 'Tất cả chức danh', value: '' }]);
-  protected readonly statusOptions: DropdownOption[] = [
-    { label: 'Tất cả trạng thái', value: '' },
-    { label: 'Chờ duyệt', value: 'PENDING' },
-    { label: 'Đã duyệt', value: 'APPROVED' },
-    { label: 'Từ chối', value: 'REJECTED' },
-    { label: 'Tạm dừng', value: 'SUSPENDED' },
-  ];
+  protected readonly metaRoles = signal<string[]>([]);
+  protected readonly metaPositions = signal<string[]>([]);
+  protected readonly allRolesLabel = signal('');
+  protected readonly allPositionsLabel = signal('');
+  protected readonly roleOptions = computed<DropdownOption[]>(() =>
+    this.toOptions(this.metaRoles(), this.allRolesLabel()),
+  );
+  protected readonly positionOptions = computed<DropdownOption[]>(() =>
+    this.toOptions(this.metaPositions(), this.allPositionsLabel()),
+  );
 
-  // --- Computed ---
   protected readonly displayRange = computed(() => {
     const total = this.totalItems();
     if (total === 0) return '0-0 / 0';
@@ -150,18 +136,28 @@ export class UserManagementComponent {
     return `${start}-${end} / ${total}`;
   });
 
-  protected readonly drawerTitle = computed(() => this.selectedUser()?.fullName || 'Chi tiết người dùng');
+  protected readonly drawerTitle = computed(() =>
+    this.selectedUser()?.fullName || this.translateService.instant('users.detail.title'),
+  );
 
   protected readonly summaryItems = computed(() => {
     const user = this.selectedUser();
     if (!user) return [];
+    const labels = this.translateService.instant([
+      'users.detail.userId',
+      'users.detail.email',
+      'users.detail.phone',
+      'users.detail.role',
+      'users.detail.position',
+      'users.detail.department',
+    ]) as Record<string, string>;
     return [
-      { label: 'Mã hồ sơ', value: `${user.userId}` },
-      { label: 'Email', value: this.safeValue(user.email) },
-      { label: 'Điện thoại', value: this.safeValue(user.phoneNumber) },
-      { label: 'Vai trò', value: this.safeValue(user.role) },
-      { label: 'Chức danh', value: this.safeValue(user.positionCode) },
-      { label: 'Phòng ban', value: this.safeValue(user.department) },
+      { label: labels['users.detail.userId'], value: `${user.userId}` },
+      { label: labels['users.detail.email'], value: this.safeValue(user.email) },
+      { label: labels['users.detail.phone'], value: this.safeValue(user.phoneNumber) },
+      { label: labels['users.detail.role'], value: this.safeValue(user.role) },
+      { label: labels['users.detail.position'], value: this.safeValue(user.positionCode) },
+      { label: labels['users.detail.department'], value: this.safeValue(user.department) },
     ];
   });
 
@@ -172,40 +168,50 @@ export class UserManagementComponent {
 
   protected readonly confirmTitle = computed(() => {
     switch (this.pendingAction()) {
-      case 'unlock': return 'Mở khóa đăng nhập';
-      case 'reset-password': return 'Reset mật khẩu';
-      case 'approve': return 'Duyệt người dùng';
-      case 'reactivate': return 'Kích hoạt lại người dùng';
-      case 'assign-role': return 'Thay đổi vai trò';
-      default: return 'Khóa đăng nhập';
+      case 'unlock': return this.translateService.instant('users.confirm.unlockTitle');
+      case 'reset-password': return this.translateService.instant('users.confirm.resetPasswordTitle');
+      case 'approve': return this.translateService.instant('users.confirm.approveTitle');
+      case 'reactivate': return this.translateService.instant('users.confirm.reactivateTitle');
+      case 'assign-role': return this.translateService.instant('users.confirm.assignRoleTitle');
+      default: return this.translateService.instant('users.confirm.lockTitle');
     }
   });
 
   protected readonly confirmMessage = computed(() => {
-    const name = this.selectedUser()?.fullName || 'người dùng này';
+    const name = this.selectedUser()?.fullName || this.translateService.instant('users.common.thisUser');
     const action = this.pendingAction();
-    
+
     if (action === 'assign-role') {
-      const currentRole = this.userRoles()[0]?.name || 'Chưa gán';
-      const newRole = this.allRoles().find(r => r.id === this.pendingActionRoleId())?.name || 'mới';
-      return `Bạn có chắc muốn đổi vai trò cho ${name} từ [${currentRole}] sang [${newRole}] không?`;
+      const currentRole = this.userRoles()[0]?.name || this.translateService.instant('users.detail.access.unassigned');
+      const newRole = this.allRoles().find((r) => r.id.toString() === this.pendingActionRoleId())?.name
+        || this.translateService.instant('users.common.newRole');
+      return this.translateService.instant('users.confirm.assignRoleMessage', {
+        name,
+        currentRole,
+        newRole,
+      });
     }
 
     switch (action) {
-      case 'unlock': return `Bạn có chắc muốn mở khóa đăng nhập cho ${name}?`;
-      case 'reset-password': return `Bạn có chắc muốn reset mật khẩu của ${name}?`;
-      case 'approve': return `Bạn có chắc muốn duyệt hồ sơ của ${name}?`;
-      case 'reactivate': return `Bạn có chắc muốn kích hoạt lại ${name}?`;
-      default: return `Bạn có chắc muốn khóa đăng nhập của ${name}?`;
+      case 'unlock':
+        return this.translateService.instant('users.confirm.unlockMessage', { name });
+      case 'reset-password':
+        return this.translateService.instant('users.confirm.resetPasswordMessage', { name });
+      case 'approve':
+        return this.translateService.instant('users.confirm.approveMessage', { name });
+      case 'reactivate':
+        return this.translateService.instant('users.confirm.reactivateMessage', { name });
+      default:
+        return this.translateService.instant('users.confirm.lockMessage', { name });
     }
   });
 
   protected readonly modalTitle = computed(() => {
     switch (this.pendingModal()) {
-      case 'reject': return 'Từ chối hồ sơ';
-      case 'suspend': return 'Tạm dừng người dùng';
-      case 'edit-profile': return 'Cập nhật hồ sơ';
-      case 'assign-role': return 'Gán vai trò';
+      case 'reject': return this.translateService.instant('users.modal.rejectTitle');
+      case 'suspend': return this.translateService.instant('users.modal.suspendTitle');
+      case 'edit-profile': return this.translateService.instant('users.modal.editProfileTitle');
+      case 'assign-role': return this.translateService.instant('users.modal.assignRoleTitle');
       default: return '';
     }
   });
@@ -230,7 +236,6 @@ export class UserManagementComponent {
     this.loadUsers();
   }
 
-  // --- Filter handlers ---
   protected onSearchChange(value: string): void { this.keyword.set(value); this.applyFilters(false); }
   protected onStatusChange(value: string): void { this.selectedStatus.set(value); this.applyFilters(); }
   protected onRoleChange(value: string): void { this.selectedRole.set(value); this.applyFilters(); }
@@ -264,7 +269,6 @@ export class UserManagementComponent {
   protected trackUser(_index: number, row: UserListItem): UserId { return row.userId; }
   protected trackTrace(_index: number, row: UserHistoryRecord): number { return row.id; }
 
-  // --- Drawer ---
   protected openDetail(userId: UserId): void {
     this.drawerVisible.set(true);
     this.drawerLoading.set(true);
@@ -283,18 +287,16 @@ export class UserManagementComponent {
           this.loadUserRoles(userId);
           if (this.allRoles().length === 0) this.loadAllRoles();
         },
-        error: () => this.toastService.error('Không thể tải chi tiết người dùng'),
+        error: () => this.toastService.error(this.translateService.instant('users.toast.loadDetailError')),
       });
   }
 
   protected closeDrawer(): void { this.drawerVisible.set(false); }
 
-  // --- Confirm actions (no extra input) ---
   protected requestAction(action: ConfirmAction, user?: UserListItem | UserDetail | null, event?: Event): void {
     event?.stopPropagation();
     if (user) {
       if ('sysStatus' in user) {
-        // Map UserListItem to a minimal UserDetail-like object for compatibility
         const item = user as UserListItem;
         this.selectedUser.set(this.normalizeUserDetail({
           userId: item.userId,
@@ -313,9 +315,9 @@ export class UserManagementComponent {
     this.confirmVisible.set(true);
   }
 
-  protected cancelAction(): void { 
-    this.confirmVisible.set(false); 
-    this.pendingAction.set(null); 
+  protected cancelAction(): void {
+    this.confirmVisible.set(false);
+    this.pendingAction.set(null);
     this.pendingActionRoleId.set(null);
   }
 
@@ -340,11 +342,11 @@ export class UserManagementComponent {
             const assignedRoles = res.data?.roles ?? [];
             this.userRoles.set(assignedRoles);
             this.applyAssignedRoleToCurrentUser(assignedRoles);
-            this.toastService.success('Thay đổi vai trò thành công');
+            this.toastService.success(this.translateService.instant('users.toast.assignRoleSuccess'));
             this.loadTrace(user.userId);
             this.loadUsers(false);
           },
-          error: () => this.toastService.error('Không thể thay đổi vai trò'),
+          error: () => this.toastService.error(this.translateService.instant('users.toast.assignRoleError')),
         });
       return;
     }
@@ -364,15 +366,14 @@ export class UserManagementComponent {
       .subscribe({
         next: (res: any) => {
           if (res.data) this.selectedUser.set(this.normalizeUserDetail(res.data));
-          this.toastService.success(this.successMessage(action as any));
+          this.toastService.success(this.successMessage(action));
           this.loadUsers(false);
           this.loadTrace(user.userId);
         },
-        error: () => this.toastService.error('Không thể thực hiện thao tác'),
+        error: () => this.toastService.error(this.translateService.instant('users.toast.actionError')),
       });
   }
 
-  // --- Modal actions (require additional input) ---
   protected openModal(action: ModalAction, user?: UserListItem | UserDetail | null, event?: Event): void {
     event?.stopPropagation();
     if (user) {
@@ -396,11 +397,11 @@ export class UserManagementComponent {
     this.modalReasonError.set('');
 
     if (action === 'edit-profile') {
-      const user = this.selectedUser()!;
-      this.editFullName.set(user.fullName ?? '');
-      this.editPhone.set(user.phoneNumber ?? '');
-      this.editPosition.set(user.positionCode ?? '');
-      this.editDepartment.set(user.department ?? '');
+      const currentUser = this.selectedUser()!;
+      this.editFullName.set(currentUser.fullName ?? '');
+      this.editPhone.set(currentUser.phoneNumber ?? '');
+      this.editPosition.set(currentUser.positionCode ?? '');
+      this.editDepartment.set(currentUser.department ?? '');
     }
 
     if (action === 'assign-role') {
@@ -422,7 +423,7 @@ export class UserManagementComponent {
     if (!modal || !user) { this.cancelModal(); return; }
 
     if ((modal === 'reject' || modal === 'suspend') && !this.modalReason().trim()) {
-      this.modalReasonError.set('Vui lòng nhập lý do');
+      this.modalReasonError.set(this.translateService.instant('users.modal.reasonRequired'));
       return;
     }
 
@@ -456,11 +457,11 @@ export class UserManagementComponent {
               const assignedRoles = res.data?.roles ?? [];
               this.userRoles.set(assignedRoles);
               this.applyAssignedRoleToCurrentUser(assignedRoles);
-              this.toastService.success('Gán vai trò thành công');
+              this.toastService.success(this.translateService.instant('users.toast.assignRoleSuccess'));
               this.loadTrace(user.userId);
               this.loadUsers(false);
             },
-            error: () => this.toastService.error('Không thể gán vai trò'),
+            error: () => this.toastService.error(this.translateService.instant('users.toast.assignRoleError')),
           });
         return;
       }
@@ -475,15 +476,14 @@ export class UserManagementComponent {
           this.loadUsers(false);
           this.loadTrace(user.userId);
         },
-        error: () => this.toastService.error('Không thể thực hiện thao tác'),
+        error: () => this.toastService.error(this.translateService.instant('users.toast.actionError')),
       });
   }
-
 
   protected onRoleDirectChange(newRoleId: string): void {
     const user = this.selectedUser();
     if (!user || !newRoleId) return;
-    
+
     const currentRoleId = this.userRoles()[0]?.id?.toString();
     if (newRoleId === currentRoleId) return;
 
@@ -492,7 +492,6 @@ export class UserManagementComponent {
     this.confirmVisible.set(true);
   }
 
-  // --- Status helpers ---
   protected safeValue(value?: string | null): string {
     return value && value.trim().length > 0 ? value : '-';
   }
@@ -506,11 +505,11 @@ export class UserManagementComponent {
 
   protected businessStatusLabel(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
-      case 'PENDING': return 'Chờ duyệt';
-      case 'APPROVED': return 'Đã duyệt';
-      case 'REJECTED': return 'Từ chối';
-      case 'SUSPENDED': return 'Tạm dừng';
-      default: return 'Chưa xác định';
+      case 'PENDING': return this.translateService.instant('users.status.pending');
+      case 'APPROVED': return this.translateService.instant('users.status.approved');
+      case 'REJECTED': return this.translateService.instant('users.status.rejected');
+      case 'SUSPENDED': return this.translateService.instant('users.status.suspended');
+      default: return this.translateService.instant('users.status.unknown');
     }
   }
 
@@ -526,10 +525,10 @@ export class UserManagementComponent {
 
   protected loginStatusLabel(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
-      case 'ACTIVE': return 'Cho phép đăng nhập';
-      case 'INACTIVE': return 'Ngừng truy cập';
-      case 'SUSPENDED': return 'Đã khóa đăng nhập';
-      default: return 'Chưa xác định';
+      case 'ACTIVE': return this.translateService.instant('users.loginStatus.active');
+      case 'INACTIVE': return this.translateService.instant('users.loginStatus.inactive');
+      case 'SUSPENDED': return this.translateService.instant('users.loginStatus.suspended');
+      default: return this.translateService.instant('users.loginStatus.unknown');
     }
   }
 
@@ -547,30 +546,29 @@ export class UserManagementComponent {
   }
 
   protected canApprove(user?: UserListItem | UserDetail | null): boolean {
-    const u = user || this.selectedUser();
-    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    const targetUser = user || this.selectedUser();
+    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
     return `${status}`.toUpperCase() === 'PENDING';
   }
 
   protected canReject(user?: UserListItem | UserDetail | null): boolean {
-    const u = user || this.selectedUser();
-    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    const targetUser = user || this.selectedUser();
+    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
     return `${status}`.toUpperCase() === 'PENDING';
   }
 
   protected canSuspend(user?: UserListItem | UserDetail | null): boolean {
-    const u = user || this.selectedUser();
-    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    const targetUser = user || this.selectedUser();
+    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
     return `${status}`.toUpperCase() === 'APPROVED';
   }
 
   protected canReactivate(user?: UserListItem | UserDetail | null): boolean {
-    const u = user || this.selectedUser();
-    const status = (u as any)?.sysStatus || (u as any)?.status || '';
+    const targetUser = user || this.selectedUser();
+    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
     return `${status}`.toUpperCase() === 'SUSPENDED';
   }
 
-  // --- Data loaders ---
   private loadUsers(showLoading = true): void {
     const request: UserFilterRequest = {
       keyword: this.appliedKeyword() || undefined,
@@ -580,10 +578,18 @@ export class UserManagementComponent {
     };
 
     this.isError.set(false);
-    if (showLoading) { this.isLoading.set(true); this.loadingService.showPageLoading(); }
+    if (showLoading) {
+      this.isLoading.set(true);
+      this.loadingService.showPageLoading();
+    }
 
     this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize(), !showLoading)
-      .pipe(finalize(() => { if (showLoading) { this.isLoading.set(false); this.loadingService.hidePageLoading(); } }))
+      .pipe(finalize(() => {
+        if (showLoading) {
+          this.isLoading.set(false);
+          this.loadingService.hidePageLoading();
+        }
+      }))
       .subscribe({
         next: (res) => {
           const page = this.pageIndex();
@@ -595,15 +601,23 @@ export class UserManagementComponent {
           this.rows.set(mappedItems);
           this.totalItems.set(res.data?.totalItems ?? 0);
         },
-        error: () => { this.rows.set([]); this.totalItems.set(0); this.isError.set(true); },
+        error: () => {
+          this.rows.set([]);
+          this.totalItems.set(0);
+          this.isError.set(true);
+        },
       });
   }
 
   private loadMetaOptions(): void {
     this.userManagementService.getMetaOptions().subscribe({
       next: (res) => {
-        this.roleOptions.set(this.toOptions(res.data?.roles ?? [], 'Tất cả vai trò'));
-        this.positionOptions.set(this.toOptions(res.data?.positions ?? [], 'Tất cả chức danh'));
+        this.metaRoles.set(res.data?.roles ?? []);
+        this.metaPositions.set(res.data?.positions ?? []);
+      },
+      error: () => {
+        this.metaRoles.set([]);
+        this.metaPositions.set([]);
       },
     });
   }
@@ -678,17 +692,25 @@ export class UserManagementComponent {
     this.translateService
       .stream([
         'users.filters.searchPlaceholder',
+        'users.filters.allRoles',
+        'users.filters.allPositions',
+        'users.filters.allStatuses',
         'users.table.no',
         'users.table.user',
         'users.table.email',
         'users.table.role',
         'users.table.position',
         'users.table.status',
-        'users.filters.allStatuses',
+        'users.status.pending',
+        'users.status.approved',
+        'users.status.rejected',
+        'users.status.suspended',
       ])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((translations) => {
         this.listSearchPlaceholder.set(translations['users.filters.searchPlaceholder']);
+        this.allRolesLabel.set(translations['users.filters.allRoles']);
+        this.allPositionsLabel.set(translations['users.filters.allPositions']);
         this.listColumns.set([
           { ...this.baseColumns[0], label: translations['users.table.no'] },
           { ...this.baseColumns[1], label: translations['users.table.user'] },
@@ -698,35 +720,32 @@ export class UserManagementComponent {
           { ...this.baseColumns[5], label: translations['users.table.status'] },
         ]);
         this.listStatusOptions.set([
-          { label: 'T\u1EA5t c\u1EA3 tr\u1EA1ng th\u00E1i', value: '' },
-          { label: 'Ch\u1EDD duy\u1EC7t', value: 'PENDING' },
-          { label: '\u0110\u00E3 duy\u1EC7t', value: 'APPROVED' },
-          { label: 'T\u1EEB ch\u1ED1i', value: 'REJECTED' },
-          { label: 'T\u1EA1m d\u1EEBng', value: 'SUSPENDED' },
+          { label: translations['users.filters.allStatuses'], value: '' },
+          { label: translations['users.status.pending'], value: 'PENDING' },
+          { label: translations['users.status.approved'], value: 'APPROVED' },
+          { label: translations['users.status.rejected'], value: 'REJECTED' },
+          { label: translations['users.status.suspended'], value: 'SUSPENDED' },
         ]);
       });
   }
 
   private successMessage(action: ConfirmAction): string {
     switch (action) {
-      case 'unlock': return 'Mở khóa đăng nhập thành công';
-      case 'reset-password': return 'Reset mật khẩu thành công';
-      case 'approve': return 'Duyệt người dùng thành công';
-      case 'reactivate': return 'Kích hoạt lại thành công';
-      case 'assign-role': return 'Thay đổi vai trò thành công';
-      default: return 'Khóa đăng nhập thành công';
+      case 'unlock': return this.translateService.instant('users.toast.unlockSuccess');
+      case 'reset-password': return this.translateService.instant('users.toast.resetPasswordSuccess');
+      case 'approve': return this.translateService.instant('users.toast.approveSuccess');
+      case 'reactivate': return this.translateService.instant('users.toast.reactivateSuccess');
+      case 'assign-role': return this.translateService.instant('users.toast.assignRoleSuccess');
+      default: return this.translateService.instant('users.toast.lockSuccess');
     }
   }
 
   private modalSuccessMessage(modal: ModalAction): string {
     switch (modal) {
-      case 'reject': return 'Từ chối hồ sơ thành công';
-      case 'suspend': return 'Tạm dừng người dùng thành công';
-      case 'edit-profile': return 'Cập nhật hồ sơ thành công';
-      case 'assign-role': return 'Gán vai trò thành công';
+      case 'reject': return this.translateService.instant('users.toast.rejectSuccess');
+      case 'suspend': return this.translateService.instant('users.toast.suspendSuccess');
+      case 'edit-profile': return this.translateService.instant('users.toast.updateProfileSuccess');
+      case 'assign-role': return this.translateService.instant('users.toast.assignRoleSuccess');
     }
   }
 }
-
-
-

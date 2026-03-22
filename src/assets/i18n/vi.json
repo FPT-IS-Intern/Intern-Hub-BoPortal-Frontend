@@ -602,9 +602,24 @@
       "actions": "Thao tác"
     },
     "status": {
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối",
+      "suspended": "Tạm dừng",
+      "unknown": "Chưa xác định",
       "active": "Đang hoạt động",
       "locked": "Đã khóa",
       "inactive": "Ngừng hoạt động"
+    },
+    "loginStatus": {
+      "active": "Cho phép đăng nhập",
+      "inactive": "Ngừng truy cập",
+      "suspended": "Đã khóa đăng nhập",
+      "unknown": "Chưa xác định"
+    },
+    "common": {
+      "thisUser": "người dùng này",
+      "newRole": "mới"
     },
     "actions": {
       "search": "Tìm kiếm",
@@ -675,13 +690,51 @@
     "confirm": {
       "lockTitle": "Khóa tài khoản",
       "unlockTitle": "Mở khóa tài khoản",
+      "resetPasswordTitle": "Reset mật khẩu",
+      "approveTitle": "Duyệt người dùng",
+      "reactivateTitle": "Kích hoạt lại người dùng",
+      "assignRoleTitle": "Thay đổi vai trò",
       "lockMessage": "Bạn có muốn khóa tài khoản {{name}} không?",
       "unlockMessage": "Bạn có muốn mở khóa tài khoản {{name}} không?",
+      "resetPasswordMessage": "Bạn có muốn reset mật khẩu của {{name}} không?",
+      "approveMessage": "Bạn có muốn duyệt hồ sơ của {{name}} không?",
+      "reactivateMessage": "Bạn có muốn kích hoạt lại {{name}} không?",
+      "assignRoleMessage": "Bạn có chắc muốn đổi vai trò cho {{name}} từ [{{currentRole}}] sang [{{newRole}}] không?",
       "cancel": "Hủy",
       "confirm": "Xác nhận"
     },
+    "modal": {
+      "rejectTitle": "Từ chối hồ sơ",
+      "suspendTitle": "Tạm dừng người dùng",
+      "editProfileTitle": "Cập nhật hồ sơ",
+      "assignRoleTitle": "Gán vai trò",
+      "reasonRequired": "Vui lòng nhập lý do",
+      "reasonLabel": "Lý do",
+      "rejectPlaceholder": "Nhập lý do từ chối...",
+      "suspendPlaceholder": "Nhập lý do tạm dừng...",
+      "suspendInfo": "Tạm dừng người dùng sẽ ngăn chặn các hoạt động nghiệp vụ của tài khoản này (chấm công, gửi yêu cầu...) nhưng vẫn giữ lại thông tin hồ sơ và dữ liệu lịch sử. Bạn có thể kích hoạt lại tài khoản bất cứ lúc nào.",
+      "fullNameLabel": "Họ và tên",
+      "fullNamePlaceholder": "Họ và tên",
+      "phoneLabel": "Số điện thoại",
+      "phonePlaceholder": "Số điện thoại",
+      "positionLabel": "Chức danh",
+      "positionPlaceholder": "Chức danh",
+      "departmentLabel": "Phòng ban",
+      "departmentPlaceholder": "Phòng ban",
+      "selectRoleLabel": "Chọn vai trò",
+      "noAssignableRoles": "Không có vai trò nào khả dụng"
+    },
     "toast": {
       "loadDetailError": "Không thể tải chi tiết người dùng",
+      "assignRoleSuccess": "Gán vai trò thành công",
+      "assignRoleError": "Không thể gán vai trò",
+      "actionError": "Không thể thực hiện thao tác",
+      "resetPasswordSuccess": "Reset mật khẩu thành công",
+      "approveSuccess": "Duyệt người dùng thành công",
+      "reactivateSuccess": "Kích hoạt lại thành công",
+      "rejectSuccess": "Từ chối hồ sơ thành công",
+      "suspendSuccess": "Tạm dừng người dùng thành công",
+      "updateProfileSuccess": "Cập nhật hồ sơ thành công",
       "lockSuccess": "Khóa tài khoản thành công",
       "unlockSuccess": "Mở khóa tài khoản thành công",
       "lockError": "Không thể khóa tài khoản này",
