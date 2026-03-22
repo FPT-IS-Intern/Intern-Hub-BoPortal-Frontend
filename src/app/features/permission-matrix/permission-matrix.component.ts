@@ -2,12 +2,12 @@ import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { RoleSelectorComponent } from './role-selector/role-selector.component';
 import { PermissionTableComponent } from './permission-table/permission-table.component';
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
 import { AuthzService } from '../../services/api/authz.service';
@@ -28,12 +28,12 @@ import { TableSkeletonComponent } from '../../components/skeletons/table-skeleto
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
     RoleSelectorComponent,
     PermissionTableComponent,
     CreateRoleDialogComponent,
     CreateResourceDialogComponent,
     NoDataComponent,
+    SharedSearchComponent,
     ConfirmPopup,
     TranslateModule,
     TableSkeletonComponent,

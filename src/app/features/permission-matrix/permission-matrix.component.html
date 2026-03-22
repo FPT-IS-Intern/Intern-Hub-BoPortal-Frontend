@@ -2,11 +2,10 @@
   <!-- Toolbar: Role selector + action buttons -->
   <div class="toolbar">
     <div class="toolbar-left">
-      <div class="search-wrapper">
-        <span class="custom-icon-search search-icon"></span>
-        <input type="text" class="search-input" [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate"
-          [ngModel]="searchQuery()" (ngModelChange)="onSearchQueryChange($event)">
-      </div>
+      <app-shared-search width="300px" [value]="searchQuery()"
+        [placeholder]="'permissionMatrix.toolbar.searchPlaceholder' | translate"
+        (valueChange)="onSearchQueryChange($event)">
+      </app-shared-search>
 
       <app-role-selector [roles]="roles()" [selectedRole]="selectedRoleId()" (roleChange)="onRoleChange($event)">
       </app-role-selector>
