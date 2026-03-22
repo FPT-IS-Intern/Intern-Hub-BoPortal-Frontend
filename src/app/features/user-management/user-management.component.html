@@ -301,21 +301,36 @@
 
       @if (pendingModal() === 'edit-profile') {
       <div class="form-grid">
-        <label class="field-label">{{ 'users.modal.fullNameLabel' | translate }}</label>
-        <input type="text" class="modal-input" [ngModel]="editFullName()" (ngModelChange)="editFullName.set($event)"
-          [placeholder]="'users.modal.fullNamePlaceholder' | translate">
+        <div class="modal-field">
+          <label class="field-label">{{ 'users.modal.fullNameLabel' | translate }}</label>
+          <input type="text" class="modal-input" [ngModel]="editFullName()" (ngModelChange)="editFullName.set($event)"
+            [placeholder]="'users.modal.fullNamePlaceholder' | translate">
+        </div>
 
-        <label class="field-label">{{ 'users.modal.phoneLabel' | translate }}</label>
-        <input type="text" class="modal-input" [ngModel]="editPhone()" (ngModelChange)="editPhone.set($event)"
-          [placeholder]="'users.modal.phonePlaceholder' | translate">
+        <div class="modal-field">
+          <label class="field-label">{{ 'users.modal.phoneLabel' | translate }}</label>
+          <input type="text" class="modal-input" [ngModel]="editPhone()" (ngModelChange)="editPhone.set($event)"
+            [placeholder]="'users.modal.phonePlaceholder' | translate">
+        </div>
 
-        <label class="field-label">{{ 'users.modal.positionLabel' | translate }}</label>
-        <input type="text" class="modal-input" [ngModel]="editPosition()" (ngModelChange)="editPosition.set($event)"
-          [placeholder]="'users.modal.positionPlaceholder' | translate">
+        <div class="modal-field">
+          <label class="field-label field-label-with-tooltip">
+            <span>{{ 'users.modal.positionLabel' | translate }}</span>
+            <button type="button" class="field-tooltip-trigger"
+              [appTooltip]="'users.modal.positionReadonlyHint' | translate" tooltipPosition="top"
+              [attr.aria-label]="'users.modal.positionReadonlyHint' | translate">
+              <span class="custom-icon-info"></span>
+            </button>
+          </label>
+          <input type="text" class="modal-input modal-input-readonly" [ngModel]="editPosition()" readonly
+            [placeholder]="'users.modal.positionPlaceholder' | translate">
+        </div>
 
-        <label class="field-label">{{ 'users.modal.departmentLabel' | translate }}</label>
-        <input type="text" class="modal-input" [ngModel]="editDepartment()" (ngModelChange)="editDepartment.set($event)"
-          [placeholder]="'users.modal.departmentPlaceholder' | translate">
+        <div class="modal-field">
+          <label class="field-label">{{ 'users.modal.departmentLabel' | translate }}</label>
+          <input type="text" class="modal-input" [ngModel]="editDepartment()" (ngModelChange)="editDepartment.set($event)"
+            [placeholder]="'users.modal.departmentPlaceholder' | translate">
+        </div>
       </div>
       }
 

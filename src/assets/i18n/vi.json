@@ -656,6 +656,7 @@
       "phone": "Số điện thoại",
       "role": "Vai trò",
       "position": "Chức vụ",
+      "department": "Phòng ban",
       "status": "Trạng thái",
 
       "tabs": {
@@ -719,6 +720,7 @@
       "phonePlaceholder": "Số điện thoại",
       "positionLabel": "Chức danh",
       "positionPlaceholder": "Chức danh",
+      "positionReadonlyHint": "Chức danh được tổng hợp từ vai trò và chức vụ nên không thể cập nhật tại đây.",
       "departmentLabel": "Phòng ban",
       "departmentPlaceholder": "Phòng ban",
       "selectRoleLabel": "Chọn vai trò",

@@ -13,6 +13,7 @@ import { TableSkeletonComponent } from '../../components/skeletons/table-skeleto
 import { UserDrawerSkeletonComponent } from '../../components/skeletons/user-drawer-skeleton/user-drawer-skeleton.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { SideDrawerComponent } from '../../components/popups/side-drawer/side-drawer.component';
+import { TooltipDirective } from '../../directives/tooltip.directive';
 import { BreadcrumbService } from '../../services/common/breadcrumb.service';
 import { LoadingService } from '../../services/common/loading.service';
 import { ToastService } from '../../services/common/toast.service';
@@ -46,6 +47,7 @@ type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
     UserDrawerSkeletonComponent,
     ConfirmPopup,
     SideDrawerComponent,
+    TooltipDirective,
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
@@ -443,7 +445,6 @@ export class UserManagementComponent {
         request$ = this.userManagementService.updateProfile(user.userId, {
           fullName: this.editFullName().trim() || undefined,
           phoneNumber: this.editPhone().trim() || undefined,
-          positionCode: this.editPosition().trim() || undefined,
           department: this.editDepartment().trim() || undefined,
         });
         break;

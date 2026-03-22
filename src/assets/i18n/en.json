@@ -656,6 +656,7 @@
       "phone": "Phone number",
       "role": "Role",
       "position": "Position",
+      "department": "Department",
       "status": "Status",
       
       "tabs": {
@@ -719,6 +720,7 @@
       "phonePlaceholder": "Phone number",
       "positionLabel": "Position",
       "positionPlaceholder": "Position",
+      "positionReadonlyHint": "This field is derived from role and title, so it cannot be updated here.",
       "departmentLabel": "Department",
       "departmentPlaceholder": "Department",
       "selectRoleLabel": "Select role",

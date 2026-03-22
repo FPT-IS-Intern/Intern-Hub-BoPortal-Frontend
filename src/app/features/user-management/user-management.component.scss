@@ -847,9 +847,10 @@
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   max-height: 60vh;
   overflow-y: auto;
+  background: linear-gradient(180deg, #fff 0%, #fcfdff 100%);
 }
 
 .modal-footer {
@@ -864,6 +865,34 @@
   font-size: 13px;
   font-weight: 700;
   color: #374151;
+}
+
+.field-label-with-tooltip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: help;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: transparent;
+    color: #64748b;
+  }
+
+  span {
+    font-size: 12px;
+    line-height: 1;
+  }
 }
 
 .required-star {
@@ -903,7 +932,24 @@
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+}
+
+.modal-input-readonly {
+  color: #475569;
+  background: #f1f5f9;
+  border-color: #dbe3ee;
+  cursor: not-allowed;
+
+  &:focus {
+    border-color: #dbe3ee;
+  }
 }
 
 /* ── Role selector in assign-role modal ── */
