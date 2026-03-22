@@ -46,12 +46,16 @@ export class SharedInputTimeComponent {
 
     protected readonly selectedHour = computed(() => this.getParts(this.value()).hour);
     protected readonly selectedMinute = computed(() => this.getParts(this.value()).minute);
+    protected readonly orderedHours = computed(() => this.rotateOptions(this.hours, this.selectedHour()));
+    protected readonly orderedMinutes = computed(() => this.rotateOptions(this.minutes, this.selectedMinute()));
 
 
 
     protected toggleOpen(event: Event): void {
         event.stopPropagation();
-        this.isOpen.set(!this.isOpen());
+        const nextOpenState = !this.isOpen();
+        this.isOpen.set(nextOpenState);
+
     }
 
     protected close(): void {
@@ -88,6 +92,19 @@ export class SharedInputTimeComponent {
             };
         }
         return { hour: null, minute: null };
+    }
+
+    private rotateOptions(options: DropdownOption[], selectedValue: string | null): DropdownOption[] {
+        if (!selectedValue) {
+            return options;
+        }
+
+        const selectedIndex = options.findIndex((option) => option.value === selectedValue);
+        if (selectedIndex <= 0) {
+            return options;
+        }
+
+        return [...options.slice(selectedIndex), ...options.slice(0, selectedIndex)];
     }
 
     @HostListener('document:mousedown', ['$event'])
