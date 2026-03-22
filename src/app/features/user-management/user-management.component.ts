@@ -337,7 +337,9 @@ export class UserManagementComponent {
         .pipe(finalize(() => this.loadingService.hidePageLoading()))
         .subscribe({
           next: (res) => {
-            this.userRoles.set(res.data?.roles ?? []);
+            const assignedRoles = res.data?.roles ?? [];
+            this.userRoles.set(assignedRoles);
+            this.applyAssignedRoleToCurrentUser(assignedRoles);
             this.toastService.success('Thay đổi vai trò thành công');
             this.loadTrace(user.userId);
             this.loadUsers(false);
@@ -451,7 +453,9 @@ export class UserManagementComponent {
           .pipe(finalize(() => this.loadingService.hidePageLoading()))
           .subscribe({
             next: (res) => {
-              this.userRoles.set(res.data?.roles ?? []);
+              const assignedRoles = res.data?.roles ?? [];
+              this.userRoles.set(assignedRoles);
+              this.applyAssignedRoleToCurrentUser(assignedRoles);
               this.toastService.success('Gán vai trò thành công');
               this.loadTrace(user.userId);
               this.loadUsers(false);
@@ -646,6 +650,28 @@ export class UserManagementComponent {
 
   private normalizeUserDetail(user: UserDetail): UserDetail {
     return { ...user, userId: this.normalizeUserId(user.userId) };
+  }
+
+  private applyAssignedRoleToCurrentUser(roles: AuthzRole[]): void {
+    const selectedUser = this.selectedUser();
+    const nextRoleName = roles[0]?.name ?? '';
+
+    if (!selectedUser || !nextRoleName) {
+      return;
+    }
+
+    this.selectedUser.set({
+      ...selectedUser,
+      role: nextRoleName,
+    });
+
+    this.rows.update((rows) =>
+      rows.map((row) =>
+        row.userId === selectedUser.userId
+          ? { ...row, role: nextRoleName }
+          : row,
+      ),
+    );
   }
 
   private bindListTranslations(): void {
