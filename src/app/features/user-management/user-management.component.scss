@@ -806,7 +806,7 @@
 
 .modal-card {
   background: #fff;
-  border-radius: 20px;
+  border-radius: 8px;
   box-shadow: 0 24px 64px rgba(15, 23, 42, 0.16);
   width: 100%;
   max-width: 480px;
@@ -859,6 +859,11 @@
   gap: 10px;
   padding: 16px 24px 20px;
   border-top: 1px solid rgba(148, 163, 184, 0.14);
+
+  .btn-outline-custom,
+  .btn-primary-custom {
+    border-radius: 4px;
+  }
 }
 
 .field-label {
@@ -904,7 +909,7 @@
   width: 100%;
   padding: 10px 14px;
   border: 1px solid rgba(148, 163, 184, 0.4);
-  border-radius: 12px;
+  border-radius: 4px;
   font-size: 14px;
   color: #111827;
   background: #f8fafc;
