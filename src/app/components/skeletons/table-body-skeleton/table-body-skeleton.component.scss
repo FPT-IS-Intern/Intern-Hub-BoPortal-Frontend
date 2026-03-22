@@ -1,0 +1,36 @@
+.table-body-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-body-skeleton__row {
+  display: grid;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--app-color-border-alpha-soft-2, rgba(226, 232, 240, 0.9));
+  box-sizing: border-box;
+}
+
+.table-body-skeleton__cell-wrap {
+  display: grid;
+  min-width: 0;
+}
+
+.table-body-skeleton__cell {
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  background: linear-gradient(90deg, #eef2f7 0%, #f8fafc 50%, #eef2f7 100%);
+  background-size: 200% 100%;
+  animation: table-body-skeleton-shimmer 1.15s ease-in-out infinite;
+}
+
+@keyframes table-body-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

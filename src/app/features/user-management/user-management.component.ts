@@ -10,6 +10,10 @@ import { SharedSearchComponent } from '../../components/shared-search/shared-sea
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
+import {
+  TableBodySkeletonCell,
+  TableBodySkeletonComponent,
+} from '../../components/skeletons/table-body-skeleton/table-body-skeleton.component';
 import { UserDrawerSkeletonComponent } from '../../components/skeletons/user-drawer-skeleton/user-drawer-skeleton.component';
 import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
 import { SideDrawerComponent } from '../../components/popups/side-drawer/side-drawer.component';
@@ -44,6 +48,7 @@ type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
     PaginationComponent,
     NoDataComponent,
     TableSkeletonComponent,
+    TableBodySkeletonComponent,
     UserDrawerSkeletonComponent,
     ConfirmPopup,
     SideDrawerComponent,
@@ -84,6 +89,7 @@ export class UserManagementComponent {
   protected readonly appliedRole = signal('');
   protected readonly appliedPosition = signal('');
   protected readonly isLoading = signal(true);
+  protected readonly isFiltering = signal(false);
   protected readonly isError = signal(false);
 
   protected readonly drawerVisible = signal(false);
@@ -129,6 +135,19 @@ export class UserManagementComponent {
   protected readonly positionOptions = computed<DropdownOption[]>(() =>
     this.toOptions(this.metaPositions(), this.allPositionsLabel()),
   );
+  protected readonly filterSkeletonRows = computed(() =>
+    Array.from({ length: Math.min(Math.max(this.pageSize(), 5), 8) }, (_, index) => index),
+  );
+  protected readonly filterSkeletonTemplateColumns =
+    '60px minmax(220px, 2.1fr) minmax(200px, 1.6fr) minmax(130px, 1fr) minmax(150px, 1fr) 130px';
+  protected readonly filterSkeletonCells: TableBodySkeletonCell[] = [
+    { width: '18px' },
+    { width: '62%', height: '42px', radius: '12px' },
+    { width: '68%' },
+    { width: '56%' },
+    { width: '48%' },
+    { width: '92px', height: '34px', radius: '999px', align: 'end' },
+  ];
 
   protected readonly displayRange = computed(() => {
     const total = this.totalItems();
@@ -249,7 +268,7 @@ export class UserManagementComponent {
     this.appliedStatus.set(this.selectedStatus());
     this.appliedRole.set(this.selectedRole());
     this.appliedPosition.set(this.selectedPosition());
-    this.loadUsers(showLoading);
+    this.loadUsers({ showPageLoading: showLoading, showTableOverlay: !showLoading });
   }
 
   protected clearFilters(): void {
@@ -262,12 +281,16 @@ export class UserManagementComponent {
     this.appliedRole.set('');
     this.appliedPosition.set('');
     this.pageIndex.set(1);
-    this.loadUsers(false);
+    this.loadUsers({ showTableOverlay: true });
   }
 
   protected refresh(): void { this.loadUsers(); }
-  protected onPageIndexChange(page: number): void { this.pageIndex.set(page); this.loadUsers(false); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.pageIndex.set(1); this.loadUsers(false); }
+  protected onPageIndexChange(page: number): void { this.pageIndex.set(page); this.loadUsers({ showTableOverlay: true }); }
+  protected onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.pageIndex.set(1);
+    this.loadUsers({ showTableOverlay: true });
+  }
   protected trackUser(_index: number, row: UserListItem): UserId { return row.userId; }
   protected trackTrace(_index: number, row: UserHistoryRecord): number { return row.id; }
 
@@ -346,7 +369,7 @@ export class UserManagementComponent {
             this.applyAssignedRoleToCurrentUser(assignedRoles);
             this.toastService.success(this.translateService.instant('users.toast.assignRoleSuccess'));
             this.loadTrace(user.userId);
-            this.loadUsers(false);
+            this.loadUsers({ showTableOverlay: false });
           },
           error: () => this.toastService.error(this.translateService.instant('users.toast.assignRoleError')),
         });
@@ -369,7 +392,7 @@ export class UserManagementComponent {
         next: (res: any) => {
           if (res.data) this.selectedUser.set(this.normalizeUserDetail(res.data));
           this.toastService.success(this.successMessage(action));
-          this.loadUsers(false);
+          this.loadUsers({ showTableOverlay: false });
           this.loadTrace(user.userId);
         },
         error: () => this.toastService.error(this.translateService.instant('users.toast.actionError')),
@@ -460,7 +483,7 @@ export class UserManagementComponent {
               this.applyAssignedRoleToCurrentUser(assignedRoles);
               this.toastService.success(this.translateService.instant('users.toast.assignRoleSuccess'));
               this.loadTrace(user.userId);
-              this.loadUsers(false);
+              this.loadUsers({ showTableOverlay: false });
             },
             error: () => this.toastService.error(this.translateService.instant('users.toast.assignRoleError')),
           });
@@ -474,7 +497,7 @@ export class UserManagementComponent {
         next: (res) => {
           if (res.data) this.selectedUser.set(this.normalizeUserDetail(res.data));
           this.toastService.success(this.modalSuccessMessage(modal));
-          this.loadUsers(false);
+          this.loadUsers({ showTableOverlay: false });
           this.loadTrace(user.userId);
         },
         error: () => this.toastService.error(this.translateService.instant('users.toast.actionError')),
@@ -570,7 +593,9 @@ export class UserManagementComponent {
     return `${status}`.toUpperCase() === 'SUSPENDED';
   }
 
-  private loadUsers(showLoading = true): void {
+  private loadUsers(options: { showPageLoading?: boolean; showTableOverlay?: boolean } = {}): void {
+    const showPageLoading = options.showPageLoading ?? true;
+    const showTableOverlay = options.showTableOverlay ?? false;
     const request: UserFilterRequest = {
       keyword: this.appliedKeyword() || undefined,
       sysStatuses: this.appliedStatus() ? [this.appliedStatus()] : undefined,
@@ -579,16 +604,22 @@ export class UserManagementComponent {
     };
 
     this.isError.set(false);
-    if (showLoading) {
+    if (showPageLoading) {
       this.isLoading.set(true);
       this.loadingService.showPageLoading();
+      this.isFiltering.set(false);
+    } else if (showTableOverlay) {
+      this.isFiltering.set(true);
     }
 
-    this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize(), !showLoading)
+    this.userManagementService.filterUsers(request, this.pageIndex(), this.pageSize(), !showPageLoading)
       .pipe(finalize(() => {
-        if (showLoading) {
+        if (showPageLoading) {
           this.isLoading.set(false);
           this.loadingService.hidePageLoading();
+        }
+        if (showTableOverlay) {
+          this.isFiltering.set(false);
         }
       }))
       .subscribe({

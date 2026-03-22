@@ -32,62 +32,72 @@
       </app-no-data>
     </div>
     } @else {
-    <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [rowTrackBy]="trackUser"
-      [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)"
-      [paginationAuto]="true" [paginationSticky]="true" [paginationTotal]="totalItems()" [paginationPageSize]="pageSize()">
+    <div class="table-content-wrap">
+      <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [rowTrackBy]="trackUser"
+        [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)"
+        [paginationAuto]="true" [paginationSticky]="true" [paginationTotal]="totalItems()" [paginationPageSize]="pageSize()">
 
-      <ng-template #cell let-row let-col="col">
-        @switch (col.key) {
-        @case ('no') {
-        <span class="row-no">{{ row.no || '-' }}</span>
-        }
-        @case ('user') {
-        <div class="user-cell">
-          <div class="user-avatar">
-            @if (row.avatarUrl) {
-            <img [src]="row.avatarUrl" [alt]="safeValue(row.fullName)" class="avatar-image">
-            } @else {
-            <span>{{ avatarFallback(row.fullName) }}</span>
-            }
+        <ng-template #cell let-row let-col="col">
+          @switch (col.key) {
+          @case ('no') {
+          <span class="row-no">{{ row.no || '-' }}</span>
+          }
+          @case ('user') {
+          <div class="user-cell">
+            <div class="user-avatar">
+              @if (row.avatarUrl) {
+              <img [src]="row.avatarUrl" [alt]="safeValue(row.fullName)" class="avatar-image">
+              } @else {
+              <span>{{ avatarFallback(row.fullName) }}</span>
+              }
+            </div>
+            <div class="user-meta">
+              <strong>{{ safeValue(row.fullName) }}</strong>
+              <span>{{ safeValue(row.department) }}</span>
+            </div>
           </div>
-          <div class="user-meta">
-            <strong>{{ safeValue(row.fullName) }}</strong>
-            <span>{{ safeValue(row.department) }}</span>
+          }
+          @case ('email') {
+          <span class="email-cell">{{ safeValue(row.email) }}</span>
+          }
+          @case ('role') {
+          <span class="role-badge">{{ safeValue(row.role) }}</span>
+          }
+          @case ('position') {
+          <span class="text-ellipsis">{{ safeValue(row.position) }}</span>
+          }
+          @case ('sysStatus') {
+          <span [class]="businessStatusClass(row.sysStatus)">{{ businessStatusLabel(row.sysStatus) }}</span>
+          }
+          @default {
+          <span>{{ safeValue($any(row)?.[col.key]) }}</span>
+          }
+          }
+        </ng-template>
+        <ng-template #empty>
+          <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
+            [message]="'users.empty.message' | translate">
+            <span icon class="custom-icon-users"></span>
+          </app-no-data>
+        </ng-template>
+        <ng-template #pagination>
+          <div class="pagination-wrap">
+            <app-pagination [pageIndex]="pageIndex()" [pageSize]="pageSize()" [total]="totalItems()"
+              [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange()"
+              (pageIndexChange)="onPageIndexChange($event)" (pageSizeChange)="onPageSizeChange($event)">
+            </app-pagination>
           </div>
-        </div>
-        }
-        @case ('email') {
-        <span class="email-cell">{{ safeValue(row.email) }}</span>
-        }
-        @case ('role') {
-        <span class="role-badge">{{ safeValue(row.role) }}</span>
-        }
-        @case ('position') {
-        <span class="text-ellipsis">{{ safeValue(row.position) }}</span>
-        }
-        @case ('sysStatus') {
-        <span [class]="businessStatusClass(row.sysStatus)">{{ businessStatusLabel(row.sysStatus) }}</span>
-        }
-        @default {
-        <span>{{ safeValue($any(row)?.[col.key]) }}</span>
-        }
-        }
-      </ng-template>
-      <ng-template #empty>
-        <app-no-data [fullHeight]="false" [title]="'users.empty.title' | translate"
-          [message]="'users.empty.message' | translate">
-          <span icon class="custom-icon-users"></span>
-        </app-no-data>
-      </ng-template>
-      <ng-template #pagination>
-        <div class="pagination-wrap">
-          <app-pagination [pageIndex]="pageIndex()" [pageSize]="pageSize()" [total]="totalItems()"
-            [pageSizeOptions]="pageSizeOptions" [displayRange]="displayRange()"
-            (pageIndexChange)="onPageIndexChange($event)" (pageSizeChange)="onPageSizeChange($event)">
-          </app-pagination>
-        </div>
-      </ng-template>
-    </app-data-table>
+        </ng-template>
+      </app-data-table>
+
+      @if (isFiltering()) {
+      <div class="table-filter-skeleton" aria-hidden="true">
+        <app-table-body-skeleton [rows]="filterSkeletonRows().length" [rowHeight]="76"
+          [templateColumns]="filterSkeletonTemplateColumns" [cells]="filterSkeletonCells">
+        </app-table-body-skeleton>
+      </div>
+      }
+    </div>
     }
   </section>
 </div>
