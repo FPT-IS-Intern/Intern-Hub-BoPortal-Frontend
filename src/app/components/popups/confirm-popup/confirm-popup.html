@@ -1,60 +1,27 @@
 <div class="confirm-overlay" *ngIf="isVisible" (click)="handleCancel()">
-    <div class="confirm-container" (click)="$event.stopPropagation()">
-
-        <!-- Illustration / Icon section -->
-        <div class="confirm-illustration">
-            <!-- 
-        Default SVG provided matching the image style. 
-        You can replace this with an ng-content slot or an image tag if you have external assets 
-      -->
-            <div class="disk-icon-wrapper">
-                <svg viewBox="0 0 100 100" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Decorative bubbles -->
-                    <circle cx="20" cy="30" r="4" fill="#a5b4fc" opacity="0.6" />
-                    <circle cx="25" cy="45" r="2" fill="#818cf8" opacity="0.4" />
-                    <circle cx="85" cy="35" r="3" fill="#a5b4fc" opacity="0.5" />
-                    <circle cx="80" cy="50" r="2" fill="#818cf8" opacity="0.8" />
-                    <!-- Chat bubbles -->
-                    <path
-                        d="M70 20 h6 a2 2 0 0 1 2 2 v4 a2 2 0 0 1 -2 2 h-2 l-2 2 v-2 h-2 a2 2 0 0 1 -2 -2 v-4 a2 2 0 0 1 2 -2 z"
-                        fill="#93c5fd" opacity="0.8" />
-                    <path
-                        d="M60 15 h4 a1 1 0 0 1 1 1 v3 a1 1 0 0 1 -1 1 h-1 l-1 1 v-1 h-2 a1 1 0 0 1 -1 -1 v-3 a1 1 0 0 1 1 -1 z"
-                        fill="#bfdbfe" opacity="0.9" />
-
-                    <!-- Main character / Blue orb -->
-                    <circle cx="50" cy="50" r="24" fill="url(#blueGrad)" />
-
-                    <!-- Eyes -->
-                    <circle cx="42" cy="45" r="3" fill="white" />
-                    <circle cx="58" cy="45" r="3" fill="white" />
-
-                    <!-- Save icon badge -->
-                    <g transform="translate(56, 56)">
-                        <circle cx="10" cy="10" r="12" fill="white" />
-                        <foreignObject x="3" y="3" width="14" height="14">
-                            <span class="custom-icon-save" style="color: #60a5fa; display: block;"></span>
-                        </foreignObject>
-                    </g>
-
-                    <defs>
-                        <radialGradient id="blueGrad" cx="50%" cy="30%" r="70%">
-                            <stop offset="0%" stop-color="#93c5fd" />
-                            <stop offset="100%" stop-color="#3b82f6" />
-                        </radialGradient>
-                    </defs>
-                </svg>
+    <div class="confirm-container" (click)="$event.stopPropagation()" role="dialog" aria-modal="true"
+        [attr.aria-label]="title">
+        <div class="confirm-header">
+            <div class="confirm-illustration" aria-hidden="true">
+                <div class="confirm-icon-ring">
+                    <div class="confirm-icon-core">
+                        <span class="custom-icon-info"></span>
+                    </div>
+                </div>
             </div>
+            <button type="button" class="confirm-close" (click)="handleCancel()" aria-label="Close">
+                &times;
+            </button>
         </div>
 
-        <!-- Text content -->
-        <h3 class="confirm-title">{{ title }}</h3>
-        <p class="confirm-message" [innerHTML]="message"></p>
+        <div class="confirm-body">
+            <h3 class="confirm-title">{{ title }}</h3>
+            <p class="confirm-message" [innerHTML]="message"></p>
+        </div>
 
-        <!-- Footer actions -->
         <div class="confirm-actions">
-            <button class="btn-cancel" (click)="handleCancel()">{{ cancelText }}</button>
-            <button class="btn-confirm" (click)="handleConfirm()">{{ confirmText }}</button>
+            <button type="button" class="btn-cancel" (click)="handleCancel()">{{ cancelText }}</button>
+            <button type="button" class="btn-confirm" (click)="handleConfirm()">{{ confirmText }}</button>
         </div>
     </div>
 </div>
