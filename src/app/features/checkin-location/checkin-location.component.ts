@@ -6,19 +6,19 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 
-import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
-import { CheckinConfigService } from '../../services/api/checkin-config.service';
-import { ToastService } from '../../services/common/toast.service';
-import { BranchCheckinConfig, IPRange, AttendanceLocation } from '../../models/checkin-config.model';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { CheckinConfigService } from '@/services/api/checkin-config.service';
+import { ToastService } from '@/services/common/toast.service';
+import { BranchCheckinConfig, IPRange, AttendanceLocation } from '@/models/checkin-config.model';
 import { UpsertLocationDialogComponent } from './dialogs/upsert-location-dialog.component';
 import { UpsertIPRangeDialogComponent } from './dialogs/upsert-ip-range-dialog.component';
 import { BranchManagementDialogComponent } from './dialogs/branch-management-dialog.component';
 import { BranchSidebarComponent } from './components/branch-sidebar/branch-sidebar.component';
 import { LocationTabComponent } from './components/location-tab/location-tab.component';
 import { IpTabComponent } from './components/ip-tab/ip-tab.component';
-import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
-import { CheckinTabsSkeletonComponent } from '../../components/skeletons/checkin-tabs-skeleton/checkin-tabs-skeleton.component';
+import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
+import { CheckinTabsSkeletonComponent } from '@/components/skeletons/checkin-tabs-skeleton/checkin-tabs-skeleton.component';
 
 @Component({
   selector: 'app-checkin-location',
@@ -272,3 +272,5 @@ export class CheckinLocationComponent implements OnInit {
     ]);
   }
 }
+
+

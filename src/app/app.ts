@@ -2,20 +2,20 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './services/api/auth.service';
+import { AuthService } from '@/services/api/auth.service';
 import {
   StorageUtil,
   cancelTokenRefresh,
   notifyTokenRefreshed,
-} from './core/utils/storage.util';
-import { TokenStorageService } from './services/common/token-storage.service';
-import { LoadingService } from './services/common/loading.service';
-import { ToastService } from './services/common/toast.service';
+} from '@/core/utils/storage.util';
+import { TokenStorageService } from '@/services/common/token-storage.service';
+import { LoadingService } from '@/services/common/loading.service';
+import { ToastService } from '@/services/common/toast.service';
 
-import { HeaderComponent, HeaderData } from './components/header/header.component';
-import { ToastContainer } from './components/toast-container/toast-container';
-import { GlobalOverlaySpinnerComponent } from './components/loading/global-overlay-spinner/global-overlay-spinner.component';
-import { TopProgressBarComponent } from './components/loading/top-progress-bar/top-progress-bar.component';
+import { HeaderComponent, HeaderData } from '@/components/header/header.component';
+import { ToastContainer } from '@/components/toast-container/toast-container';
+import { GlobalOverlaySpinnerComponent } from '@/components/loading/global-overlay-spinner/global-overlay-spinner.component';
+import { TopProgressBarComponent } from '@/components/loading/top-progress-bar/top-progress-bar.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 

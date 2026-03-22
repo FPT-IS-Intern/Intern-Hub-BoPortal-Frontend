@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, delay } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { buildApiUrl } from '../../core/config/app-config';
-import { API_ENDPOINTS } from '../../core/config/api-endpoints';
-import { PermissionRow } from '../../models/permission.model';
+import { buildApiUrl } from '@/core/config/app-config';
+import { API_ENDPOINTS } from '@/core/config/api-endpoints';
+import { PermissionRow } from '@/models/permission.model';
 
 
 @Injectable({

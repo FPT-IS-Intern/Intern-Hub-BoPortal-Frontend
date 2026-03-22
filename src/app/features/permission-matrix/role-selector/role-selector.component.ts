@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthzRole } from '../../../models/authz.model';
-import { SharedDropdownComponent } from '../../../components/shared-dropdown/shared-dropdown.component';
+import { AuthzRole } from '@/models/authz.model';
+import { SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -26,3 +26,5 @@ export class RoleSelectorComponent {
         this.roleChange.emit(value);
     }
 }
+
+

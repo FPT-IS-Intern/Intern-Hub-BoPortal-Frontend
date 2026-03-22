@@ -1,9 +1,9 @@
 import { Component, Output, EventEmitter, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NoDataComponent } from '../../../../components/no-data/no-data.component';
-import { SharedSearchComponent } from '../../../../components/shared-search/shared-search.component';
-import { IPRange } from '../../../../models/checkin-config.model';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
+import { IPRange } from '@/models/checkin-config.model';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -35,3 +35,5 @@ export class IpTabComponent {
 
   protected readonly hasIpRanges = computed(() => this.filteredIpRanges().length > 0);
 }
+
+

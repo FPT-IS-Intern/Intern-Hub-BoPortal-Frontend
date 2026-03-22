@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, inject, ViewChild, ElementRef, Output, EventEmitter, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AttendanceLocation } from '../../../models/checkin-config.model';
-import { environment } from '../../../../environments/environment';
+import { AttendanceLocation } from '@/models/checkin-config.model';
+import { environment } from '@env/environment';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ToastService } from '../../../services/common/toast.service';
-import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
+import { ToastService } from '@/services/common/toast.service';
+import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 
 declare const google: any;
 

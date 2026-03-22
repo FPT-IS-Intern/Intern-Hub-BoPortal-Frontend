@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { PermissionService } from '../../services/api/permission.service';
+import { PermissionService } from '@/services/api/permission.service';
 import { map, take } from 'rxjs';
 
 export const permissionGuard: (requiredPermission: string) => CanActivateFn = (requiredPermission) => {

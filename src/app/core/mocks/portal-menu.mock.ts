@@ -1,4 +1,4 @@
-import { PortalMenuItem, PortalMenuRequest } from '../../models/portal-menu.model';
+import { PortalMenuItem, PortalMenuRequest } from '@/models/portal-menu.model';
 
 let nextId = 100;
 
@@ -155,3 +155,5 @@ export function deleteMockMenu(id: number): boolean {
   }
   return true;
 }
+
+

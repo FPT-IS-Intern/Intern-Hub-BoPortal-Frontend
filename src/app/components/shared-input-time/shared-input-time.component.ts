@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap, startWith, of } from 'rxjs';
-import { DropdownOption } from '../shared-dropdown/shared-dropdown.component';
+import { DropdownOption } from '@/components/shared-dropdown/shared-dropdown.component';
 
 @Component({
     selector: 'app-shared-input-time',

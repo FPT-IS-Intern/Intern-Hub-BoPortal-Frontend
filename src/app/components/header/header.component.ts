@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserProfileDropdownComponent } from './user-profile-dropdown/user-profile-dropdown.component';
 import { NotificationsDropdownComponent } from './notifications-dropdown/notifications-dropdown.component';
-import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import { LanguageSwitcherComponent } from '@/components/language-switcher/language-switcher.component';
 
 export interface HeaderData {
   logo?: string;

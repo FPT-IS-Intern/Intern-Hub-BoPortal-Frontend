@@ -1,6 +1,6 @@
-﻿import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PaginationComponent } from '../../../components/pagination/pagination.component';
+import { PaginationComponent } from '@/components/pagination/pagination.component';
 
 @Component({
     selector: 'app-notification-pagination',
@@ -23,3 +23,5 @@ export class NotificationPaginationComponent implements OnChanges {
     ngOnChanges(_changes: SimpleChanges): void {}
 
 }
+
+

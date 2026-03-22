@@ -6,21 +6,21 @@ import { RoleSelectorComponent } from './role-selector/role-selector.component';
 import { PermissionTableComponent } from './permission-table/permission-table.component';
 import { CreateRoleDialogComponent } from './create-role-dialog/create-role-dialog.component';
 import { CreateResourceDialogComponent } from './create-resource-dialog/create-resource-dialog.component';
-import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
-import { BreadcrumbComponent, BreadcrumbItem } from '../../components/breadcrumb/breadcrumb.component';
-import { AuthzService } from '../../services/api/authz.service';
-import { PermissionRow } from '../../models/permission.model';
-import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '../../models/authz.model';
-import { LoadingService } from '../../services/common/loading.service';
-import { ToastService } from '../../services/common/toast.service';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { BreadcrumbComponent, BreadcrumbItem } from '@/components/breadcrumb/breadcrumb.component';
+import { AuthzService } from '@/services/api/authz.service';
+import { PermissionRow } from '@/models/permission.model';
+import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '@/models/authz.model';
+import { LoadingService } from '@/services/common/loading.service';
+import { ToastService } from '@/services/common/toast.service';
 import { finalize } from 'rxjs';
-import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
+import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PERMISSION_COLUMNS } from '../../core/constants/permission-matrix.constants';
-import { environment } from '../../../environments/environment';
-import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
+import { PERMISSION_COLUMNS } from '@/core/constants/permission-matrix.constants';
+import { environment } from '@env/environment';
+import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/table-skeleton.component';
 
 @Component({
   selector: 'app-permission-matrix',

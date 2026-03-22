@@ -2,12 +2,12 @@ import { Injectable, signal, inject } from '@angular/core';
 import { Observable, finalize, tap, forkJoin, of, catchError, throwError, map, shareReplay, switchMap } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { GeneralConfigService } from './general-config.service';
-import { LogoutRequest, LoginPayload, LoginRequest, LoginResponse, BoAdminProfile } from '../../models/auth.model';
+import { LogoutRequest, LoginPayload, LoginRequest, LoginResponse, BoAdminProfile } from '@/models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { StorageUtil } from '../../core/utils/storage.util';
-import { buildApiUrl } from '../../core/config/app-config';
-import { API_ENDPOINTS } from '../../core/config/api-endpoints';
-import { encryptWithRsaPublicKey } from '../../core/utils/rsa.util';
+import { StorageUtil } from '@/core/utils/storage.util';
+import { buildApiUrl } from '@/core/config/app-config';
+import { API_ENDPOINTS } from '@/core/config/api-endpoints';
+import { encryptWithRsaPublicKey } from '@/core/utils/rsa.util';
 
 @Injectable({
   providedIn: 'root',

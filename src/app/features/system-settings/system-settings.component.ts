@@ -13,17 +13,17 @@ import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
-import { SharedInputTimeComponent } from '../../components/shared-input-time/shared-input-time.component';
-import { SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
-import { SystemSettingsSkeletonComponent } from '../../components/skeletons/system-settings-skeleton/system-settings-skeleton.component';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
-import { LoadingService } from '../../services/common/loading.service';
-import { ToastService } from '../../services/common/toast.service';
-import { SystemConfigurationService } from '../../services/api/system-configuration.service';
-import { SystemConfigUpdateRequest, SecurityConfigUpdateRequest } from '../../models/system-configuration.model';
-import { AuthService } from '../../services/api/auth.service';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { SharedInputTextComponent } from '@/components/shared-input-text/shared-input-text.component';
+import { SharedInputTimeComponent } from '@/components/shared-input-time/shared-input-time.component';
+import { SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
+import { SystemSettingsSkeletonComponent } from '@/components/skeletons/system-settings-skeleton/system-settings-skeleton.component';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { LoadingService } from '@/services/common/loading.service';
+import { ToastService } from '@/services/common/toast.service';
+import { SystemConfigurationService } from '@/services/api/system-configuration.service';
+import { SystemConfigUpdateRequest, SecurityConfigUpdateRequest } from '@/models/system-configuration.model';
+import { AuthService } from '@/services/api/auth.service';
 
 @Component({
   selector: 'app-system-settings',

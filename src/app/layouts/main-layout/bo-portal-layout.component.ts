@@ -4,11 +4,11 @@ import { RouterOutlet, Router, NavigationStart } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { HeaderData } from '../../components/header/header.component';
-import { SidebarComponent, SidebarData } from '../../components/sidebar/sidebar.component';
-import { SIDEBAR_ICONS } from '../../core/sidebar-icons';
-import { BreadcrumbComponent } from '../../components/breadcrumb/breadcrumb.component';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
+import { HeaderData } from '@/components/header/header.component';
+import { SidebarComponent, SidebarData } from '@/components/sidebar/sidebar.component';
+import { SIDEBAR_ICONS } from '@/core/sidebar-icons';
+import { BreadcrumbComponent } from '@/components/breadcrumb/breadcrumb.component';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
 
 @Component({
   selector: 'app-bo-portal-layout',
@@ -163,3 +163,5 @@ export class BoPortalLayoutComponent {
     ];
   }
 }
+
+

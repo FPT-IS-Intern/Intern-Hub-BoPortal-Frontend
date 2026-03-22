@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { NotificationRecord } from '../../../models/notification.model';
-import { NoDataComponent } from '../../../components/no-data/no-data.component';
+import { NotificationRecord } from '@/models/notification.model';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
 
 @Component({
     selector: 'app-notification-table',
@@ -55,3 +55,5 @@ export class NotificationTableComponent {
         }
     }
 }
+
+

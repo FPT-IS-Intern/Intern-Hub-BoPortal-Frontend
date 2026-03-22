@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, HostListener, ElementRef, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderData } from '../header.component';
+import { HeaderData } from '@/components/header/header.component';
 
 @Component({
     selector: 'app-user-profile-dropdown',

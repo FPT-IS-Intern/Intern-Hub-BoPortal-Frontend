@@ -4,24 +4,24 @@ import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
-import { DataTableColumn, DataTableComponent } from '../../components/data-table/data-table.component';
-import { DropdownOption, SharedDropdownComponent } from '../../components/shared-dropdown/shared-dropdown.component';
-import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
-import { PaginationComponent } from '../../components/pagination/pagination.component';
-import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
+import { DataTableColumn, DataTableComponent } from '@/components/data-table/data-table.component';
+import { DropdownOption, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
+import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
+import { PaginationComponent } from '@/components/pagination/pagination.component';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/table-skeleton.component';
 import {
   TableBodySkeletonCell,
   TableBodySkeletonComponent,
-} from '../../components/skeletons/table-body-skeleton/table-body-skeleton.component';
-import { UserDrawerSkeletonComponent } from '../../components/skeletons/user-drawer-skeleton/user-drawer-skeleton.component';
-import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
-import { SideDrawerComponent } from '../../components/popups/side-drawer/side-drawer.component';
-import { TooltipDirective } from '../../directives/tooltip.directive';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
-import { LoadingService } from '../../services/common/loading.service';
-import { ToastService } from '../../services/common/toast.service';
-import { UserManagementService } from '../../services/api/user-management.service';
+} from '@/components/skeletons/table-body-skeleton/table-body-skeleton.component';
+import { UserDrawerSkeletonComponent } from '@/components/skeletons/user-drawer-skeleton/user-drawer-skeleton.component';
+import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
+import { SideDrawerComponent } from '@/components/popups/side-drawer/side-drawer.component';
+import { TooltipDirective } from '@/directives/tooltip.directive';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { LoadingService } from '@/services/common/loading.service';
+import { ToastService } from '@/services/common/toast.service';
+import { UserManagementService } from '@/services/api/user-management.service';
 import {
   AuthzRole,
   UserDetail,
@@ -29,7 +29,7 @@ import {
   UserHistoryRecord,
   UserId,
   UserListItem,
-} from '../../models/user-management.model';
+} from '@/models/user-management.model';
 
 type DrawerTab = 'profile' | 'access' | 'trace';
 type ConfirmAction = 'lock' | 'unlock' | 'reset-password' | 'approve' | 'reactivate' | 'assign-role';
@@ -806,3 +806,5 @@ export class UserManagementComponent {
     }
   }
 }
+
+

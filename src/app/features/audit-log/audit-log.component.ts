@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
-import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
 
 @Component({
   selector: 'app-audit-log',
@@ -85,3 +85,5 @@ export class AuditLogComponent implements OnInit {
     ]);
   }
 }
+
+

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { LoadingService } from '../../../services/common/loading.service';
+import { LoadingService } from '@/services/common/loading.service';
 
 @Component({
   selector: 'app-global-overlay-spinner',
@@ -14,3 +14,5 @@ export class GlobalOverlaySpinnerComponent {
   private readonly loading: LoadingService = inject(LoadingService);
   readonly isLoading = this.loading.isGlobalLoading;
 }
+
+

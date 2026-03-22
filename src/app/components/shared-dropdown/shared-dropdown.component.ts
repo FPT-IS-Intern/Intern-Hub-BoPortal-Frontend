@@ -11,7 +11,7 @@ export interface DropdownOption {
 }
 
 import { TranslateModule } from '@ngx-translate/core';
-import { NoDataComponent } from '../no-data/no-data.component';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
 import { SharedDropdownCoordinatorService } from './shared-dropdown-coordinator.service';
 
 @Component({

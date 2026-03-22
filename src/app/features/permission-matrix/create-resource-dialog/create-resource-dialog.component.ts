@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
+import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -55,3 +55,5 @@ export class CreateResourceDialogComponent implements OnChanges {
     this.isTriedToSave = false;
   }
 }
+
+

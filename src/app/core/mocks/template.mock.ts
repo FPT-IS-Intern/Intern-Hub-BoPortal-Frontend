@@ -1,4 +1,4 @@
-import { TemplateSummaryPageResponse } from '../../models/template.model';
+import { TemplateSummaryPageResponse } from '@/models/template.model';
 
 export const TEMPLATE_SUMMARY_PAGE_MOCK: TemplateSummaryPageResponse = {
   items: [
@@ -84,3 +84,5 @@ export const TEMPLATE_SUMMARY_PAGE_MOCK: TemplateSummaryPageResponse = {
   size: 10,
   total: 3,
 };
+
+

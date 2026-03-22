@@ -5,12 +5,12 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { AuthService } from '../../services/api/auth.service';
-import { LoginRequest } from '../../models/auth.model';
-import { TokenStorageService } from '../../services/common/token-storage.service';
-import { ErrorMessageComponent } from '../../components/error-message/error-message.component';
-import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
-import { ErrorMessageService } from '../../i18n/error-message.service';
+import { AuthService } from '@/services/api/auth.service';
+import { LoginRequest } from '@/models/auth.model';
+import { TokenStorageService } from '@/services/common/token-storage.service';
+import { ErrorMessageComponent } from '@/components/error-message/error-message.component';
+import { SharedInputTextComponent } from '@/components/shared-input-text/shared-input-text.component';
+import { ErrorMessageService } from '@/i18n/error-message.service';
 
 @Component({
     selector: 'app-login-form',
@@ -131,3 +131,5 @@ function fallbackCodeFromHttpStatus(status: number): string | undefined {
     }
     return undefined;
 }
+
+

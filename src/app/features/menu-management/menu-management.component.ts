@@ -3,25 +3,25 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, concatMap, finalize, of, throwError } from 'rxjs';
-import { SharedSearchComponent } from '../../components/shared-search/shared-search.component';
-import { SharedInputTextComponent } from '../../components/shared-input-text/shared-input-text.component';
+import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
+import { SharedInputTextComponent } from '@/components/shared-input-text/shared-input-text.component';
 import {
   DropdownOption,
   SharedDropdownComponent,
-} from '../../components/shared-dropdown/shared-dropdown.component';
-import { NoDataComponent } from '../../components/no-data/no-data.component';
-import { TableSkeletonComponent } from '../../components/skeletons/table-skeleton/table-skeleton.component';
-import { ConfirmPopup } from '../../components/popups/confirm-popup/confirm-popup';
-import { ModalPopup } from '../../components/popups/modal-popup/modal-popup';
-import { PaginationComponent } from '../../components/pagination/pagination.component';
-import { BreadcrumbService } from '../../services/common/breadcrumb.service';
-import { LoadingService } from '../../services/common/loading.service';
-import { ToastService } from '../../services/common/toast.service';
-import { AuthzService } from '../../services/api/authz.service';
-import { PortalMenuService } from '../../services/api/portal-menu.service';
-import { PortalMenuItem, PortalMenuRequest } from '../../models/portal-menu.model';
-import { AuthzRole } from '../../models/authz.model';
-import { TooltipDirective } from '../../directives/tooltip.directive';
+} from '@/components/shared-dropdown/shared-dropdown.component';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/table-skeleton.component';
+import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
+import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
+import { PaginationComponent } from '@/components/pagination/pagination.component';
+import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { LoadingService } from '@/services/common/loading.service';
+import { ToastService } from '@/services/common/toast.service';
+import { AuthzService } from '@/services/api/authz.service';
+import { PortalMenuService } from '@/services/api/portal-menu.service';
+import { PortalMenuItem, PortalMenuRequest } from '@/models/portal-menu.model';
+import { AuthzRole } from '@/models/authz.model';
+import { TooltipDirective } from '@/directives/tooltip.directive';
 
 type FormMode = 'create' | 'edit';
 
@@ -915,3 +915,5 @@ function buildRequestFromMenuItem(item: PortalMenuItem): PortalMenuRequest {
     status: item.status || 'ACTIVE',
   };
 }
+
+

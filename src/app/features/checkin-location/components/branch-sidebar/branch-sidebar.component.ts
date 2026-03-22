@@ -2,9 +2,9 @@ import { Component, Output, EventEmitter, signal, computed, input } from '@angul
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedSearchComponent } from '../../../../components/shared-search/shared-search.component';
-import { CheckinSidebarSkeletonComponent } from '../../../../components/skeletons/checkin-sidebar-skeleton/checkin-sidebar-skeleton.component';
-import { BranchCheckinConfig } from '../../../../models/checkin-config.model';
+import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
+import { CheckinSidebarSkeletonComponent } from '@/components/skeletons/checkin-sidebar-skeleton/checkin-sidebar-skeleton.component';
+import { BranchCheckinConfig } from '@/models/checkin-config.model';
 
 @Component({
   selector: 'app-branch-sidebar',
@@ -40,3 +40,5 @@ export class BranchSidebarComponent {
     this.selectBranch.emit(branch);
   }
 }
+
+

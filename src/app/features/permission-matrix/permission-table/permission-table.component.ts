@@ -2,10 +2,10 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { NoDataComponent } from '../../../components/no-data/no-data.component';
+import { NoDataComponent } from '@/components/no-data/no-data.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { PaginationComponent } from '../../../components/pagination/pagination.component';
-import { DataTableColumn, DataTableComponent } from '../../../components/data-table/data-table.component';
+import { PaginationComponent } from '@/components/pagination/pagination.component';
+import { DataTableColumn, DataTableComponent } from '@/components/data-table/data-table.component';
 
 @Component({
     selector: 'app-permission-table',
@@ -73,3 +73,5 @@ export class PermissionTableComponent {
         return [base, ...permissions];
     }
 }
+
+

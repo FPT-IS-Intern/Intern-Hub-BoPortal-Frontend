@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, signal, computed, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { BranchCheckinConfig } from '../../../models/checkin-config.model';
-import { CheckinConfigService } from '../../../services/api/checkin-config.service';
-import { ToastService } from '../../../services/common/toast.service';
-import { SharedSearchComponent } from '../../../components/shared-search/shared-search.component';
+import { BranchCheckinConfig } from '@/models/checkin-config.model';
+import { CheckinConfigService } from '@/services/api/checkin-config.service';
+import { ToastService } from '@/services/common/toast.service';
+import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ModalPopup } from '../../../components/popups/modal-popup/modal-popup';
-import { ConfirmPopup } from '../../../components/popups/confirm-popup/confirm-popup';
+import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
+import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 
 @Component({
   selector: 'app-branch-management-dialog',
@@ -141,3 +141,5 @@ export class BranchManagementDialogComponent implements OnInit {
     this.close.emit(false);
   }
 }
+
+

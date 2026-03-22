@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoadingService } from '../../../services/common/loading.service';
+import { LoadingService } from '@/services/common/loading.service';
 
 @Component({
   selector: 'app-top-progress-bar',
@@ -14,3 +14,5 @@ export class TopProgressBarComponent {
   private readonly loadingService = inject(LoadingService);
   protected readonly isLoading = this.loadingService.isPageLoading;
 }
+
+
