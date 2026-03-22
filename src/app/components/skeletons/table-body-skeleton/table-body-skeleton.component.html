@@ -1,14 +1,23 @@
-<div class="table-body-skeleton" [style.rowGap.px]="rowGap">
-  @for (row of rowIndexes; track row) {
-  <div class="table-body-skeleton__row" [style.minHeight.px]="rowHeight" [style.padding]="rowPadding"
-    [style.gridTemplateColumns]="templateColumns">
-    @for (cell of cells; track $index) {
-    <div class="table-body-skeleton__cell-wrap" [style.justifyItems]="cellJustify(cell.align)">
-      <div class="table-body-skeleton__cell" [style.width]="cell.width || '100%'" [style.height]="cell.height || '14px'"
-        [style.borderRadius]="cell.radius || '8px'">
-      </div>
-    </div>
-    }
-  </div>
-  }
+<div class="table-body-skeleton">
+  <table class="table-body-skeleton__table">
+    <colgroup>
+      @for (cell of cells; track $index) {
+      <col [style.width]="cell.columnWidth || null" [style.minWidth]="cell.columnMinWidth || null">
+      }
+    </colgroup>
+    <tbody>
+      @for (row of rowIndexes; track row) {
+      <tr class="table-body-skeleton__row" [style.height.px]="rowHeight">
+        @for (cell of cells; track $index) {
+        <td class="table-body-skeleton__cell-slot" [class.align-center]="cell.align === 'center'"
+          [class.align-end]="cell.align === 'end'">
+          <div class="table-body-skeleton__cell" [style.width]="cell.width || '100%'" [style.height]="cell.height || '14px'"
+            [style.borderRadius]="cell.radius || '8px'">
+          </div>
+        </td>
+        }
+      </tr>
+      }
+    </tbody>
+  </table>
 </div>

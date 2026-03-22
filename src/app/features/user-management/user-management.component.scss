@@ -37,10 +37,6 @@
 .table-shell {
 }
 
-.table-content-wrap {
-  position: relative;
-}
-
 .table-head {
   display: flex;
   align-items: center;
@@ -97,15 +93,6 @@
 
 .user-table {
   display: block;
-}
-
-.table-filter-skeleton {
-  position: absolute;
-  inset: 44px 0 0;
-  z-index: 2;
-  padding-bottom: 1px;
-  background: rgba(255, 255, 255, 0.96);
-  pointer-events: none;
 }
 
 .row-no,

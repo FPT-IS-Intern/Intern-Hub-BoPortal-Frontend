@@ -21,6 +21,7 @@ export interface DataTableColumn {
 export class DataTableComponent<T = unknown> implements OnChanges {
   @Input() columns: DataTableColumn[] = [];
   @Input() rows: T[] = [];
+  @Input() bodyLoading = false;
   @Input() rowTrackBy?: (index: number, row: T) => unknown;
   @Input() enableRowAlt = true;
   @Input() enableRowHover = true;
@@ -43,6 +44,7 @@ export class DataTableComponent<T = unknown> implements OnChanges {
   @ContentChild('header', { read: TemplateRef }) headerTemplate?: TemplateRef<{ $implicit: DataTableColumn }>;
   @ContentChild('cell', { read: TemplateRef }) cellTemplate?: TemplateRef<{ $implicit: T; col: DataTableColumn; rowIndex: number }>;
   @ContentChild('empty', { read: TemplateRef }) emptyTemplate?: TemplateRef<unknown>;
+  @ContentChild('loadingBody', { read: TemplateRef }) loadingBodyTemplate?: TemplateRef<unknown>;
   @ContentChild('pagination', { read: TemplateRef }) paginationTemplate?: TemplateRef<unknown>;
 
   private paginationEverVisible = false;

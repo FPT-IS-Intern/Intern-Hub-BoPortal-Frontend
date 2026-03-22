@@ -32,8 +32,8 @@
       </app-no-data>
     </div>
     } @else {
-    <div class="table-content-wrap">
-      <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [rowTrackBy]="trackUser"
+    <app-data-table class="user-table" [columns]="listColumns()" [rows]="rows()" [bodyLoading]="true"
+      [rowTrackBy]="trackUser"
         [rowClickable]="true" [enableRowAlt]="false" (rowClick)="openDetail($event.userId)"
         [paginationAuto]="true" [paginationSticky]="true" [paginationTotal]="totalItems()" [paginationPageSize]="pageSize()">
 
@@ -80,6 +80,10 @@
             <span icon class="custom-icon-users"></span>
           </app-no-data>
         </ng-template>
+        <ng-template #loadingBody>
+          <app-table-body-skeleton [rows]="filterSkeletonRows().length" [rowHeight]="60" [cells]="filterSkeletonCells()">
+          </app-table-body-skeleton>
+        </ng-template>
         <ng-template #pagination>
           <div class="pagination-wrap">
             <app-pagination [pageIndex]="pageIndex()" [pageSize]="pageSize()" [total]="totalItems()"
@@ -89,15 +93,6 @@
           </div>
         </ng-template>
       </app-data-table>
-
-      @if (isFiltering()) {
-      <div class="table-filter-skeleton" aria-hidden="true">
-        <app-table-body-skeleton [rows]="filterSkeletonRows().length" [rowHeight]="76"
-          [templateColumns]="filterSkeletonTemplateColumns" [cells]="filterSkeletonCells">
-        </app-table-body-skeleton>
-      </div>
-      }
-    </div>
     }
   </section>
 </div>

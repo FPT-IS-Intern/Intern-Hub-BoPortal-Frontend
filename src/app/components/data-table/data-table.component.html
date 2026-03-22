@@ -21,7 +21,13 @@
       </tr>
     </thead>
     <tbody>
-      @if (rows.length > 0) {
+      @if (bodyLoading && loadingBodyTemplate) {
+      <tr>
+        <td [attr.colspan]="colSpan" class="loading-body-cell">
+          <ng-container [ngTemplateOutlet]="loadingBodyTemplate"></ng-container>
+        </td>
+      </tr>
+      } @else if (rows.length > 0) {
       @for (row of rows; track trackRow($index, row); let i = $index) {
       <tr
         [class.row-alt]="enableRowAlt && i % 2 === 1"

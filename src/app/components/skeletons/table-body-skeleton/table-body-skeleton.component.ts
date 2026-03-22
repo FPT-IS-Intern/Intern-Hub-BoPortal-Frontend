@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface TableBodySkeletonCell {
+  columnWidth?: string;
+  columnMinWidth?: string;
   width?: string;
   height?: string;
   radius?: string;
@@ -19,9 +21,6 @@ export interface TableBodySkeletonCell {
 export class TableBodySkeletonComponent {
   @Input() rows = 6;
   @Input() rowHeight = 76;
-  @Input() rowGap = 0;
-  @Input() rowPadding = '0 16px';
-  @Input() templateColumns = '1fr';
   @Input() cells: TableBodySkeletonCell[] = [];
 
   get rowIndexes(): number[] {

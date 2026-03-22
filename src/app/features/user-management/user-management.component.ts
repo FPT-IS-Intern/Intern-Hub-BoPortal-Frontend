@@ -135,19 +135,44 @@ export class UserManagementComponent {
   protected readonly positionOptions = computed<DropdownOption[]>(() =>
     this.toOptions(this.metaPositions(), this.allPositionsLabel()),
   );
-  protected readonly filterSkeletonRows = computed(() =>
-    Array.from({ length: Math.min(Math.max(this.pageSize(), 5), 8) }, (_, index) => index),
+  protected readonly filterSkeletonRows = computed(() => Array.from({ length: 5 }, (_, index) => index));
+  protected readonly filterSkeletonCells = computed<TableBodySkeletonCell[]>(() =>
+    this.baseColumns.map((column) => {
+      switch (column.key) {
+        case 'no':
+          return {
+            columnWidth: column.width,
+            columnMinWidth: column.minWidth,
+            width: '100%',
+            align: column.align === 'center' ? 'center' : 'start',
+          };
+        case 'user':
+          return {
+            columnWidth: column.width,
+            columnMinWidth: column.minWidth,
+            width: '100%',
+            height: '42px',
+            radius: '12px',
+          };
+        case 'sysStatus':
+          return {
+            columnWidth: column.width,
+            columnMinWidth: column.minWidth,
+            width: '100%',
+            height: '26px',
+            radius: '999px',
+            align: column.align === 'center' ? 'center' : 'end',
+          };
+        default:
+          return {
+            columnWidth: column.width,
+            columnMinWidth: column.minWidth,
+            width: '100%',
+            align: column.align === 'center' ? 'center' : 'start',
+          };
+      }
+    }),
   );
-  protected readonly filterSkeletonTemplateColumns =
-    '60px minmax(220px, 2.1fr) minmax(200px, 1.6fr) minmax(130px, 1fr) minmax(150px, 1fr) 130px';
-  protected readonly filterSkeletonCells: TableBodySkeletonCell[] = [
-    { width: '18px' },
-    { width: '62%', height: '42px', radius: '12px' },
-    { width: '68%' },
-    { width: '56%' },
-    { width: '48%' },
-    { width: '92px', height: '34px', radius: '999px', align: 'end' },
-  ];
 
   protected readonly displayRange = computed(() => {
     const total = this.totalItems();
