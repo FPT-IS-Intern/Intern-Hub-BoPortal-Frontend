@@ -4,6 +4,10 @@
     gap: 8px;
     width: 100%;
     position: relative;
+
+    &.open {
+      z-index: 2001;
+    }
 }
 
 .label-text {
@@ -69,7 +73,7 @@
   border-radius: 12px;
   background: var(--app-color-white);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
-  z-index: 20;
+  z-index: 2000;
 }
 
 .time-col {

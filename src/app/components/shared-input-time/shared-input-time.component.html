@@ -1,4 +1,4 @@
-<div class="shared-input-container" [formGroup]="form()">
+<div class="shared-input-container" [formGroup]="form()" [class.open]="isOpen()">
     @if (label()) {
     <label class="label-text">
         {{ label() }}
