@@ -677,6 +677,7 @@
         "resetPasswordTitle": "Gửi email mật khẩu mới cho người dùng",
         "resetAction": "Cấp lại",
         "profileStatus": "Trạng thái hồ sơ",
+        "profileStatusHint": "Hiển thị trạng thái vòng đời của người dùng để admin biết hiện có thể duyệt, từ chối, tạm dừng hay kích hoạt lại tài khoản này.",
         "systemRole": "Vai trò hệ thống",
         "activeRole": "Vai trò đang áp dụng",
         "unassigned": "Chưa gán"

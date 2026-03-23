@@ -677,6 +677,7 @@
         "resetPasswordTitle": "Send a new password email to the user",
         "resetAction": "Reset",
         "profileStatus": "Profile status",
+        "profileStatusHint": "Shows the user's lifecycle status so admins know whether they can approve, reject, suspend, or reactivate this account.",
         "systemRole": "System role",
         "activeRole": "Active role",
         "unassigned": "Unassigned"

@@ -194,7 +194,17 @@
         @if (canApprove() || canReject() || canSuspend() || canReactivate()) {
         <div class="access-row">
           <div class="row-left">
-            <span class="row-label">{{ 'users.detail.access.profileStatus' | translate }}</span>
+            <span class="row-label field-label-with-tooltip">
+              <span>{{ 'users.detail.access.profileStatus' | translate }}</span>
+              <button
+                type="button"
+                class="field-tooltip-trigger"
+                [appTooltip]="'users.detail.access.profileStatusHint' | translate"
+                tooltipPosition="top"
+                [attr.aria-label]="'users.detail.access.profileStatusHint' | translate">
+                <span class="custom-icon-info"></span>
+              </button>
+            </span>
             <span [class]="'status-badge-sm ' + businessStatusClass(selectedUser()?.status)">
               {{ businessStatusLabel(selectedUser()?.status) }}
             </span>
