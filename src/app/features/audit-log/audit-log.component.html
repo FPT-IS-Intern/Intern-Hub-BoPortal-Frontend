@@ -1,0 +1,155 @@
+<div class="audit-log-container">
+  <div class="audit-log-header">
+    <h1 class="page-title">
+      <span class="custom-icon-package-search title-icon"></span>
+      {{ 'auditLog.title' | translate }}
+    </h1>
+  </div>
+
+  <div class="audit-log-filters">
+    <app-shared-search [value]="keyword()" [placeholder]="'Tìm kiếm đối tượng, người thao tác...'" (valueChange)="onSearchChange($event)"></app-shared-search>
+    
+    <div class="filter-dates">
+      <input type="date" class="date-input" [ngModel]="startDate()" (ngModelChange)="onStartDateChange($event)" />
+      <span> - </span>
+      <input type="date" class="date-input" [ngModel]="endDate()" (ngModelChange)="onEndDateChange($event)" />
+    </div>
+
+    <app-shared-dropdown [options]="actionOptions()" [value]="selectedAction()" (valueChange)="onActionChange($event)" width="200px"></app-shared-dropdown>
+    
+    <button type="button" class="btn-outline-custom" (click)="clearFilters()">Xóa lọc</button>
+    <button type="button" class="btn-primary-custom" (click)="openActionManager()">
+      <span class="custom-icon-settings-02"></span>
+      Quản lý hành động
+    </button>
+  </div>
+
+  <div class="audit-log-content">
+    <ng-container *ngIf="isError(); else dataContent">
+      <app-no-data [title]="'Lỗi tải trang'" [message]="'Đã xảy ra lỗi khi tải danh sách Audit Log'"></app-no-data>
+    </ng-container>
+
+    <ng-template #dataContent>
+      <app-data-table 
+        class="audit-table" 
+        [columns]="columns()" 
+        [rows]="rows()" 
+        [bodyLoading]="isFiltering()">
+        <ng-template #cell let-row let-col="col">
+          @switch (col.key) {
+            @case ('actions') {
+              <div class="action-buttons">
+                <span class="verify-icon" [ngClass]="row.hashValid === true ? 'valid' : (row.hashValid === false ? 'invalid' : '')" (click)="verifyHash(row)" title="Verify Hash">
+                  <i class="custom-icon-check" *ngIf="row.hashValid === true"></i>
+                  <i class="custom-icon-alert-square" *ngIf="row.hashValid !== true"></i>
+                </span>
+                <span class="view-icon" (click)="openDiff(row)" title="Show Diff">
+                  <i class="custom-icon-eye"></i>
+                </span>
+              </div>
+            }
+            @case ('actionStatus') {
+              <span class="status-badge" [ngClass]="row.actionStatus.toLowerCase()">
+                {{ row.actionStatus }}
+              </span>
+            }
+            @case ('timeStamp') {
+              {{ formatDateTime(row.timeStamp) }}
+            }
+            @default {
+              {{ row[col.key] || '-' }}
+            }
+          }
+        </ng-template>
+      </app-data-table>
+
+      <div class="table-footer" *ngIf="totalItems() > 0">
+        <app-pagination 
+          [pageIndex]="pageIndex()" 
+          [pageSize]="pageSize()" 
+          [total]="totalItems()"
+          [pageSizeOptions]="pageSizeOptions"
+          (pageIndexChange)="onPageIndexChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)">
+        </app-pagination>
+      </div>
+
+      <app-no-data *ngIf="!isLoading() && totalItems() === 0"
+        [title]="'auditLog.empty.title' | translate"
+        [message]="'auditLog.empty.message' | translate">
+        <span icon class="custom-icon-package-search empty-icon"></span>
+      </app-no-data>
+    </ng-template>
+  </div>
+
+  <!-- Drawer Diff Viewer -->
+  <app-side-drawer 
+    [isVisible]="drawerVisible()" 
+    [title]="'Chi tiết dữ liệu thay đổi'" 
+    width="800px"
+    (isVisibleChange)="drawerVisible.set($event)" 
+    (close)="closeDrawer()">
+    <div class="diff-viewer-container" *ngIf="selectedAudit()">
+      <div class="meta-info">
+        <p><strong>Trace ID:</strong> {{ selectedAudit()!.traceId }}</p>
+        <p><strong>Request ID:</strong> {{ selectedAudit()!.requestId }}</p>
+        <p><strong>Description:</strong> {{ selectedAudit()!.actionDescription }}</p>
+      </div>
+
+      <div class="no-diff-msg" *ngIf="!selectedAudit()!.oldValue && !selectedAudit()!.newValue">
+        <span class="custom-icon-file-search empty-icon"></span>
+        <p>Không có gì thay đổi</p>
+      </div>
+
+      <div class="diff-columns" *ngIf="selectedAudit()!.oldValue || selectedAudit()!.newValue">
+        <div class="diff-col col-old">
+          <h4>Old Value</h4>
+          <pre><code>{{ formatJson(selectedAudit()!.oldValue) }}</code></pre>
+        </div>
+        <div class="diff-col col-new">
+          <h4>New Value</h4>
+          <pre><code>{{ formatJson(selectedAudit()!.newValue) }}</code></pre>
+        </div>
+      </div>
+    </div>
+  </app-side-drawer>
+
+  <!-- Action Manager Drawer -->
+  <app-side-drawer
+    [isVisible]="actionDrawerVisible()"
+    [title]="'Quản lý hành động'"
+    width="500px"
+    (isVisibleChange)="actionDrawerVisible.set($event)">
+    <div class="action-manager-container">
+      <div class="add-action-section">
+        <h3>Thêm hành động mới</h3>
+        <div class="form-group">
+          <label>Mã hành động (action)</label>
+          <input type="text" [(ngModel)]="newActionBody().action" placeholder="VD: CREATE_USER" />
+        </div>
+        <div class="form-group">
+          <label>Mô tả (description)</label>
+          <textarea [(ngModel)]="newActionBody().description" rows="3" placeholder="Mô tả ý nghĩa của hành động..."></textarea>
+        </div>
+        <button class="add-btn" [disabled]="isActionLoading()" (click)="createActionFunction()">
+          {{ isActionLoading() ? 'Đang lưu...' : 'Lưu hành động' }}
+        </button>
+      </div>
+
+      <div class="action-list-section">
+        <h3>Danh sách hành động</h3>
+        <div class="action-list">
+          <div class="action-item" *ngFor="let item of actionList()">
+            <div class="item-main">
+              <strong>{{ item.action }}</strong>
+              <p>{{ item.description || 'Không có mô tả' }}</p>
+            </div>
+          </div>
+          <div *ngIf="actionList().length === 0" class="no-actions">
+            Chưa có hành động nào được tạo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-side-drawer>
+</div>

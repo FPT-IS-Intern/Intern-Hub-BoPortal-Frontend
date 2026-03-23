@@ -1,0 +1,256 @@
+.audit-log-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+}
+
+.audit-log-header {
+  .page-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--app-color-text-main);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .title-icon {
+      color: var(--app-color-primary);
+    }
+  }
+}
+
+.audit-log-filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  .filter-dates {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    
+    .date-input {
+      padding: 8px 12px;
+      border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
+      border-radius: 6px;
+      font-size: 14px;
+      background: var(--app-color-white);
+    }
+  }
+
+  .btn-primary-custom {
+    margin-left: auto;
+  }
+}
+
+.audit-log-content {
+  flex: 1;
+  background: var(--app-color-white);
+  border-radius: 12px;
+  border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+
+  .audit-table {
+    flex: 1;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .verify-icon, .view-icon {
+    cursor: pointer;
+    color: var(--app-color-text-subtle);
+    font-size: 18px;
+    
+    &:hover {
+      color: var(--brand-500);
+    }
+  }
+
+  .verify-icon.valid {
+    color: #10b981; /* Green */
+  }
+
+  .verify-icon.invalid {
+    color: #ef4444; /* Red */
+  }
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  
+  &.success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  &.failed {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  /* default fallback */
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.table-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.empty-icon {
+  font-size: 64px;
+  opacity: 0.2;
+  color: var(--app-color-text-subtle);
+}
+
+.diff-viewer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .meta-info {
+    p { margin: 4px 0; font-size: 14px;}
+  }
+
+  .no-diff-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+    color: var(--app-color-text-subtle);
+    p { font-size: 18px; margin-top: 16px; }
+  }
+
+  .diff-columns {
+    display: flex;
+    gap: 16px;
+
+    .diff-col {
+      flex: 1;
+      width: 50%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      
+      h4 {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        color: #475569;
+      }
+      
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 13px;
+        color: #334155;
+      }
+    }
+  }
+}
+
+
+.action-manager-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 8px;
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--app-color-text-main);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #475569;
+    }
+
+    input, textarea {
+      padding: 10px 12px;
+      border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
+      border-radius: 6px;
+      font-size: 14px;
+      background: #f8fafc;
+
+      &:focus {
+        outline: none;
+        border-color: var(--brand-300);
+      }
+    }
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--app-color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+
+    .action-item {
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+
+      strong {
+        display: block;
+        font-size: 14px;
+        color: var(--brand-600);
+        margin-bottom: 4px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 13px;
+        color: #64748b;
+      }
+    }
+  }
+
+  .no-actions {
+    text-align: center;
+    padding: 24px;
+    color: #94a3b8;
+    font-style: italic;
+  }
+}
