@@ -671,6 +671,8 @@
       "access": {
         "loginSettings": "Cài đặt đăng nhập",
         "loginStatus": "Trạng thái đăng nhập",
+        "accountActivation": "Kích hoạt tài khoản",
+        "accountSuspension": "Tạm dừng tài khoản",
         "unlockTitle": "Mở khóa tài khoản cho người dùng",
         "lockTitle": "Khóa đăng nhập tạm thời",
         "resetPassword": "Cấp lại mật khẩu",

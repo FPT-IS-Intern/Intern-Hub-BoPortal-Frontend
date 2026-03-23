@@ -171,17 +171,33 @@
         <div class="access-row">
           <div class="row-left">
             <span class="row-label">{{ 'users.detail.access.loginStatus' | translate }}</span>
-            <span [class]="'status-badge-sm ' + loginStatusClass(currentAuthStatus())">
-              {{ loginStatusLabel(currentAuthStatus()) }}
-            </span>
+          </div>
+          <span [class]="'status-badge-sm ' + loginStatusClass(currentAuthStatus())">
+            {{ loginStatusLabel(currentAuthStatus()) }}
+          </span>
+        </div>
+        @if (canApprove() || canReject()) {
+        <div class="access-row">
+          <div class="row-left">
+            <span class="row-label">{{ 'users.detail.access.accountActivation' | translate }}</span>
           </div>
           <div class="row-actions-group">
             @if (canApprove()) { <button type="button" class="btn-row-action approve" (click)="requestAction('approve')">{{ 'users.actions.approve' | translate }}</button> }
             @if (canReject()) { <button type="button" class="btn-row-action reject" (click)="openModal('reject')">{{ 'users.actions.reject' | translate }}</button> }
-            @if (canSuspend()) { <button type="button" class="btn-row-action" (click)="openModal('suspend')">{{ 'users.actions.suspend' | translate }}</button> }
+          </div>
+        </div>
+        }
+        @if (canSuspend() || canReactivate()) {
+        <div class="access-row">
+          <div class="row-left">
+            <span class="row-label">{{ 'users.detail.access.accountSuspension' | translate }}</span>
+          </div>
+          <div class="row-actions-group">
+            @if (canSuspend()) { <button type="button" class="btn-row-action suspend" (click)="openModal('suspend')">{{ 'users.actions.suspend' | translate }}</button> }
             @if (canReactivate()) { <button type="button" class="btn-row-action reactivate" (click)="requestAction('reactivate')">{{ 'users.actions.reactivate' | translate }}</button> }
           </div>
         </div>
+        }
         <div class="access-row">
           <div class="row-left">
             <span class="row-label">{{ 'users.detail.access.resetPassword' | translate }}</span>

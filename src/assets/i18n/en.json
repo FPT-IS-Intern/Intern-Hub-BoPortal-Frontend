@@ -671,6 +671,8 @@
       "access": {
         "loginSettings": "Login settings",
         "loginStatus": "Login status",
+        "accountActivation": "Account activation",
+        "accountSuspension": "Account suspension",
         "unlockTitle": "Unlock user account",
         "lockTitle": "Temporarily lock login",
         "resetPassword": "Reset password",
