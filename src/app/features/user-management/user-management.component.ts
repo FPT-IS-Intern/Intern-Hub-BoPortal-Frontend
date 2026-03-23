@@ -29,13 +29,14 @@ import {
   UserFilterRequest,
   UserHistoryRecord,
   UserId,
+  UserLifecycleStatus,
   UserListItem,
+  UserSummary,
 } from '@/models/user-management.model';
 
 type DrawerTab = 'profile' | 'access' | 'trace';
 type ConfirmAction = 'lock' | 'unlock' | 'reset-password' | 'approve' | 'reactivate' | 'assign-role';
 type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
-type UserSummary = UserListItem | UserDetail;
 
 @Component({
   selector: 'app-user-management',
@@ -617,7 +618,7 @@ export class UserManagementComponent {
     const showTableOverlay = options.showTableOverlay ?? false;
     const request: UserFilterRequest = {
       keyword: this.appliedKeyword() || undefined,
-      sysStatuses: this.appliedStatus() ? [this.appliedStatus()] : undefined,
+      sysStatuses: this.appliedStatus() ? [this.appliedStatus() as UserLifecycleStatus] : undefined,
       roles: this.appliedRole() ? [this.appliedRole()] : undefined,
       positions: this.appliedPosition() ? [this.appliedPosition()] : undefined,
     };

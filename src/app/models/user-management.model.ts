@@ -1,8 +1,10 @@
 export type UserId = string;
+export type UserLifecycleStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
+export type UserLoginStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
 
 export interface UserFilterRequest {
   keyword?: string;
-  sysStatuses?: string[];
+  sysStatuses?: UserLifecycleStatus[];
   roles?: string[];
   positions?: string[];
   departments?: string[];
@@ -13,7 +15,7 @@ export interface UserListItem {
   userId: UserId;
   avatarUrl?: string;
   fullName?: string;
-  sysStatus?: string;
+  sysStatus?: UserLifecycleStatus;
   email?: string;
   role?: string;
   position?: string;
@@ -29,8 +31,8 @@ export interface UserDetail {
   avatarUrl?: string;
   positionCode?: string;
   role?: string;
-  status?: string;
-  loginStatus?: string;
+  status?: UserLifecycleStatus;
+  loginStatus?: UserLoginStatus;
   department?: string;
   activated?: boolean;
   deleted?: boolean;
@@ -40,6 +42,12 @@ export interface UserPageResponse<T> {
   items: T[];
   totalItems: number;
   totalPages: number;
+}
+
+export interface UserMetaOptionsResponse {
+  roles: string[];
+  positions: string[];
+  departments: string[];
 }
 
 export interface UserUpsertRequest {
@@ -94,6 +102,8 @@ export interface UserRoleResponse {
   userId: UserId;
   roles: AuthzRole[];
 }
+
+export type UserSummary = UserListItem | UserDetail;
 
 export interface AssignRoleRequest {
   roleId: string;

@@ -121,9 +121,9 @@
       <div class="header-badges">
         <span [class]="'status-badge ' + businessStatusClass(selectedUser()?.status)">
           <span class="custom-icon-check"
-            *ngIf="selectedUser()?.status === 'APPROVED' || selectedUser()?.status === 'ACTIVE'"></span>
+            *ngIf="selectedUser()?.status === 'APPROVED'"></span>
           <span class="custom-icon-close"
-            *ngIf="selectedUser()?.status === 'REJECTED' || selectedUser()?.status === 'LOCKED'"></span>
+            *ngIf="selectedUser()?.status === 'REJECTED'"></span>
           {{ businessStatusLabel(selectedUser()?.status) }}
         </span>
         <span [class]="'status-badge ' + loginStatusClass(selectedUser()?.loginStatus)">

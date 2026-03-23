@@ -12,6 +12,7 @@ import {
   UserHistoryRecord,
   UserId,
   UserListItem,
+  UserMetaOptionsResponse,
   UserOrganizationUpdateRequest,
   UserPageResponse,
   UserProfileUpdateRequest,
@@ -55,8 +56,8 @@ export class UserManagementService {
     return this.apiClient.get<ResponseApi<UserDetail>>(API_ENDPOINTS.users.byId(userId), { skipErrorToast: true });
   }
 
-  getMetaOptions(): Observable<ResponseApi<{ roles: string[]; positions: string[]; departments: string[] }>> {
-    return this.apiClient.get<ResponseApi<{ roles: string[]; positions: string[]; departments: string[] }>>(
+  getMetaOptions(): Observable<ResponseApi<UserMetaOptionsResponse>> {
+    return this.apiClient.get<ResponseApi<UserMetaOptionsResponse>>(
       API_ENDPOINTS.users.meta, { skipErrorToast: true },
     );
   }

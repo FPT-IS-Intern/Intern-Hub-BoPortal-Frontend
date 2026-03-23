@@ -1,14 +1,34 @@
-export type ParamsSchemaObject = Record<string, { description?: string } | string>;
+export type TemplateChannel = 'EMAIL' | 'PUSH' | 'IN_APP' | 'IN-APP';
+export type TemplateFormat = 'HTML' | 'TEXT';
+export type ParamsSchemaEntry = string | { description?: string };
+export type ParamsSchemaObject = Record<string, ParamsSchemaEntry>;
 export type ParamsSchemaPayload = ParamsSchemaObject | string;
+
+export interface TemplateListQuery {
+  code?: string;
+  channel?: TemplateChannel;
+  locale?: string;
+  active?: boolean;
+  page?: number;
+  size?: number;
+}
+
+export interface TemplateSummaryQuery {
+  code?: string;
+  channel?: TemplateChannel;
+  lang?: string;
+  page?: number;
+  size?: number;
+}
 
 export interface TemplateResponse {
   id: string;
   code: string;
-  channel: string;
+  channel: TemplateChannel;
   locale: string;
   subject?: string;
   content: string;
-  format: string;
+  format: TemplateFormat;
   active: boolean;
   templateVersion: number;
   createdAt: string;
@@ -20,7 +40,7 @@ export interface TemplateResponse {
 export interface TemplateSummaryResponse {
   code: string;
   description?: string;
-  channels: string[];
+  channels: TemplateChannel[];
   updatedAt: string;
   isDeletable: boolean;
 }
@@ -35,8 +55,8 @@ export interface TemplateSummaryPageResponse {
 export interface TemplateChannelAvailabilityResponse {
   code: string;
   locale?: string;
-  activeChannels: string[];
-  availableChannels: string[];
+  activeChannels: TemplateChannel[];
+  availableChannels: TemplateChannel[];
 }
 
 export interface TemplateDefinitionResponse {
@@ -58,17 +78,17 @@ export interface TemplateDefinitionUpdateRequest {
 
 export interface TemplateUpsertRequest {
   code: string;
-  channel: string;
+  channel: TemplateChannel;
   locale: string;
   subject?: string;
   content: string;
-  format: string;
+  format: TemplateFormat;
   active: boolean;
   paramsSchema?: ParamsSchemaPayload;
 }
 
 export interface TemplateRestoreRequest {
-  channel: string;
+  channel: TemplateChannel;
   lang?: string;
   version: number;
 }

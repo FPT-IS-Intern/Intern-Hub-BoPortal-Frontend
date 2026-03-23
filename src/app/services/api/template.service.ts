@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
 import {
+  TemplateListQuery,
   TemplateResponse,
+  TemplateSummaryQuery,
   TemplateSummaryPageResponse,
   TemplateChannelAvailabilityResponse,
   TemplateDefinitionResponse,
@@ -24,14 +26,7 @@ export class TemplateService {
   /**
    * List templates with filters
    */
-  listTemplates(params: {
-    code?: string;
-    channel?: string;
-    locale?: string;
-    active?: boolean;
-    page?: number;
-    size?: number;
-  } = {}): Observable<ResponseApi<TemplateResponse[]>> {
+  listTemplates(params: TemplateListQuery = {}): Observable<ResponseApi<TemplateResponse[]>> {
     let httpParams = new HttpParams();
 
     if (params.code) httpParams = httpParams.set('code', params.code);
@@ -47,13 +42,7 @@ export class TemplateService {
   /**
    * List templates summary by code
    */
-  listTemplateSummaries(params: {
-    code?: string;
-    channel?: string;
-    lang?: string;
-    page?: number;
-    size?: number;
-  } = {}): Observable<ResponseApi<TemplateSummaryPageResponse>> {
+  listTemplateSummaries(params: TemplateSummaryQuery = {}): Observable<ResponseApi<TemplateSummaryPageResponse>> {
     let httpParams = new HttpParams();
 
     if (params.code) httpParams = httpParams.set('code', params.code);
@@ -106,7 +95,7 @@ export class TemplateService {
   /**
    * Get template version history
    */
-  getTemplateHistory(code: string, channel: string, lang?: string): Observable<ResponseApi<TemplateResponse[]>> {
+  getTemplateHistory(code: string, channel: TemplateResponse['channel'], lang?: string): Observable<ResponseApi<TemplateResponse[]>> {
     let httpParams = new HttpParams().set('channel', channel);
     if (lang) httpParams = httpParams.set('lang', lang);
 
