@@ -11,6 +11,11 @@ export interface PermissionRow {
     [key: string]: string | boolean | number | undefined;
 }
 
+export interface PermissionColumn {
+    key: Exclude<keyof PermissionRow, 'resourceId' | 'function'>;
+    label: string;
+}
+
 export interface PermissionMatrixResponse {
     role: string;
     permissions: PermissionRow[];

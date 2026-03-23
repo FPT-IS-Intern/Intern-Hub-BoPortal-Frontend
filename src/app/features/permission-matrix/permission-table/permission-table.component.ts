@@ -6,6 +6,7 @@ import { NoDataComponent } from '@/components/no-data/no-data.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { DataTableColumn, DataTableComponent } from '@/components/data-table/data-table.component';
+import { PermissionColumn, PermissionRow } from '@/models/permission.model';
 
 @Component({
     selector: 'app-permission-table',
@@ -15,9 +16,9 @@ import { DataTableColumn, DataTableComponent } from '@/components/data-table/dat
     styleUrl: './permission-table.component.scss',
 })
 export class PermissionTableComponent {
-    @Input() columns: readonly any[] = [];
-    @Input() rows: any[] = [];
-    @Output() permissionChange = new EventEmitter<any[]>();
+    @Input() columns: readonly PermissionColumn[] = [];
+    @Input() rows: PermissionRow[] = [];
+    @Output() permissionChange = new EventEmitter<PermissionRow[]>();
 
     pageIndex = 1;
     pageSize = 10;
@@ -26,7 +27,7 @@ export class PermissionTableComponent {
         return this.rows.length;
     }
 
-    get pagedRows(): any[] {
+    get pagedRows(): PermissionRow[] {
         const start = (this.pageIndex - 1) * this.pageSize;
         return this.rows.slice(start, start + this.pageSize);
     }

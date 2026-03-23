@@ -1,4 +1,6 @@
-export const PERMISSION_COLUMNS = [
+import { PermissionColumn } from '@/models/permission.model';
+
+export const PERMISSION_COLUMNS: readonly PermissionColumn[] = [
   { key: 'create', label: 'permissionMatrix.table.actions.create' },
   { key: 'view', label: 'permissionMatrix.table.actions.view' },
   { key: 'update', label: 'permissionMatrix.table.actions.update' },
