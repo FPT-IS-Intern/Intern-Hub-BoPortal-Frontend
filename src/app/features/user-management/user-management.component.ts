@@ -29,9 +29,9 @@ import {
   UserFilterRequest,
   UserHistoryRecord,
   UserId,
-  UserLifecycleStatus,
   UserListItem,
   UserSummary,
+  UserSystemStatus,
 } from '@/models/user-management.model';
 
 type DrawerTab = 'profile' | 'access' | 'trace';
@@ -558,6 +558,8 @@ export class UserManagementComponent {
 
   protected businessStatusLabel(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
+      case 'ACTIVE': return this.translateService.instant('users.status.active');
+      case 'INACTIVE': return this.translateService.instant('users.status.inactive');
       case 'PENDING': return this.translateService.instant('users.status.pending');
       case 'APPROVED': return this.translateService.instant('users.status.approved');
       case 'REJECTED': return this.translateService.instant('users.status.rejected');
@@ -568,6 +570,8 @@ export class UserManagementComponent {
 
   protected businessStatusClass(status?: string | null): string {
     switch (`${status || ''}`.toUpperCase()) {
+      case 'ACTIVE': return 'status-chip active';
+      case 'INACTIVE': return 'status-chip inactive';
       case 'PENDING': return 'status-chip pending';
       case 'APPROVED': return 'status-chip approved';
       case 'REJECTED': return 'status-chip rejected';
@@ -619,7 +623,7 @@ export class UserManagementComponent {
     const showTableOverlay = options.showTableOverlay ?? false;
     const request: UserFilterRequest = {
       keyword: this.appliedKeyword() || undefined,
-      sysStatuses: this.appliedStatus() ? [this.appliedStatus() as UserLifecycleStatus] : undefined,
+      sysStatuses: this.appliedStatus() ? [this.appliedStatus() as UserSystemStatus] : undefined,
       roles: this.appliedRole() ? [this.appliedRole()] : undefined,
       positions: this.appliedPosition() ? [this.appliedPosition()] : undefined,
     };
@@ -769,6 +773,8 @@ export class UserManagementComponent {
         'users.table.role',
         'users.table.position',
         'users.table.status',
+        'users.status.active',
+        'users.status.inactive',
         'users.status.pending',
         'users.status.approved',
         'users.status.rejected',
@@ -789,6 +795,8 @@ export class UserManagementComponent {
         ]);
         this.listStatusOptions.set([
           { label: translations['users.filters.allStatuses'], value: '' },
+          { label: translations['users.status.active'], value: 'ACTIVE' },
+          { label: translations['users.status.inactive'], value: 'INACTIVE' },
           { label: translations['users.status.pending'], value: 'PENDING' },
           { label: translations['users.status.approved'], value: 'APPROVED' },
           { label: translations['users.status.rejected'], value: 'REJECTED' },

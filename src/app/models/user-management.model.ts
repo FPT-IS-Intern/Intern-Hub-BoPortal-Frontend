@@ -1,10 +1,11 @@
 export type UserId = string;
 export type UserLifecycleStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
+export type UserSystemStatus = UserLifecycleStatus | 'ACTIVE' | 'INACTIVE';
 export type UserLoginStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
 
 export interface UserFilterRequest {
   keyword?: string;
-  sysStatuses?: UserLifecycleStatus[];
+  sysStatuses?: UserSystemStatus[];
   roles?: string[];
   positions?: string[];
   departments?: string[];
@@ -15,7 +16,7 @@ export interface UserListItem {
   userId: UserId;
   avatarUrl?: string;
   fullName?: string;
-  sysStatus?: UserLifecycleStatus;
+  sysStatus?: UserSystemStatus;
   email?: string;
   role?: string;
   position?: string;
