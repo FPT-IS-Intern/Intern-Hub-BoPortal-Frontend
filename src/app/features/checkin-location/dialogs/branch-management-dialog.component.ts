@@ -9,6 +9,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 
+type BranchFormValue = {
+  name: string;
+  description: string;
+  isActive: boolean;
+};
+
 @Component({
   selector: 'app-branch-management-dialog',
   standalone: true,
@@ -93,7 +99,11 @@ export class BranchManagementDialogComponent implements OnInit {
     if (this.branchForm.invalid) return;
 
     this.isSaving = true;
-    const value = this.branchForm.value;
+    const value: BranchFormValue = {
+      name: this.branchForm.get('name')?.value?.trim() || '',
+      description: this.branchForm.get('description')?.value?.trim() || '',
+      isActive: this.branchForm.get('isActive')?.value ?? true,
+    };
     
     const request$ = this.editingBranch 
       ? this.checkinService.updateBranch(this.editingBranch.id, value)

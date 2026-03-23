@@ -12,6 +12,12 @@ import { ErrorMessageComponent } from '@/components/error-message/error-message.
 import { SharedInputTextComponent } from '@/components/shared-input-text/shared-input-text.component';
 import { ErrorMessageService } from '@/i18n/error-message.service';
 
+interface ErrorStatusPayload {
+    status?: {
+        code?: string;
+    };
+}
+
 @Component({
     selector: 'app-login-form',
     standalone: true,
@@ -91,7 +97,7 @@ export class LoginFormComponent implements AfterViewInit {
 
     private resolveHttpError(err: unknown): string {
         if (err instanceof HttpErrorResponse) {
-            const businessCode = (err.error as any)?.status?.code as string | undefined;
+            const businessCode = (err.error as ErrorStatusPayload | null | undefined)?.status?.code;
             const resolvedCode = businessCode ?? fallbackCodeFromHttpStatus(err.status);
             return this.errorMessageService.resolve(resolvedCode);
         }

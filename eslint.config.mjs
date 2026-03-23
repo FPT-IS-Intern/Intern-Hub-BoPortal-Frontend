@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 
 const aliasImportMessage =
@@ -37,6 +38,9 @@ export default [
         atob: 'readonly',
       },
     },
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
     rules: {
       'no-duplicate-imports': 'error',
       'no-restricted-imports': [
@@ -54,6 +58,20 @@ export default [
           ],
         },
       ],
+    },
+  },
+  {
+    files: [
+      'src/app/models/**/*.ts',
+      'src/app/services/api/**/*.ts',
+      'src/app/core/config/**/*.ts',
+      'src/app/features/login/**/*.ts',
+    ],
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
 ];
