@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, input, output, computed } from '@an
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthzRole } from '@/models/authz.model';
-import { SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
+import { DropdownValue, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -22,8 +22,8 @@ export class RoleSelectorComponent {
         return this.roles().map(r => ({ label: r.name, value: r.id }));
     });
 
-    onRoleChange(value: string | null): void {
-        this.roleChange.emit(value);
+    onRoleChange(value: DropdownValue): void {
+        this.roleChange.emit(value == null ? null : String(value));
     }
 }
 

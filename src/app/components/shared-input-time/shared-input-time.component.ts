@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap, startWith, of } from 'rxjs';
-import { DropdownOption } from '@/components/shared-dropdown/shared-dropdown.component';
+import { DropdownOption, DropdownValue } from '@/components/shared-dropdown/shared-dropdown.component';
 
 type TimeValue = string | null | undefined;
 
@@ -64,12 +64,12 @@ export class SharedInputTimeComponent {
         this.isOpen.set(false);
     }
 
-    protected onHourChange(value: string): void {
-        this.updateTime(value, this.selectedMinute());
+    protected onHourChange(value: DropdownValue): void {
+        this.updateTime(this.toTimePart(value), this.selectedMinute());
     }
 
-    protected onMinuteChange(value: string): void {
-        this.updateTime(this.selectedHour(), value);
+    protected onMinuteChange(value: DropdownValue): void {
+        this.updateTime(this.selectedHour(), this.toTimePart(value));
         this.close();
     }
 
@@ -107,6 +107,10 @@ export class SharedInputTimeComponent {
         }
 
         return [...options.slice(selectedIndex), ...options.slice(0, selectedIndex)];
+    }
+
+    private toTimePart(value: DropdownValue): string | null {
+        return typeof value === 'string' ? value : null;
     }
 
     @HostListener('document:mousedown', ['$event'])

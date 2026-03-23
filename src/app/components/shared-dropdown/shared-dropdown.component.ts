@@ -4,9 +4,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+export type DropdownValue = string | number | boolean | null;
+
 export interface DropdownOption {
   label: string;
-  value: any;
+  value: DropdownValue;
   icon?: string;
 }
 
@@ -64,31 +66,31 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
   @Input() width: string = '100%';
   @Input() direction: 'auto' | 'up' | 'down' = 'auto';
 
-  @Output() valueChange = new EventEmitter<any>();
+  @Output() valueChange = new EventEmitter<DropdownValue>();
 
   protected isOpen = false;
   protected overlayReady = false;
   protected overlayStyle: Record<string, string> = {};
-  protected internalValue: any = null;
+  protected internalValue: DropdownValue = null;
 
   // ControlValueAccessor methods
-  onChange: any = () => {};
+  onChange: (value: DropdownValue) => void = () => {};
   onTouched: () => void = () => {};
 
-  @Input() set value(val: any) {
+  @Input() set value(val: DropdownValue) {
     this.internalValue = val;
     this.cdr.markForCheck();
   }
-  get value(): any {
+  get value(): DropdownValue {
     return this.internalValue;
   }
 
-  writeValue(value: any): void {
+  writeValue(value: DropdownValue): void {
     this.internalValue = value;
     this.cdr.markForCheck();
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: DropdownValue) => void): void {
     this.onChange = fn;
   }
 

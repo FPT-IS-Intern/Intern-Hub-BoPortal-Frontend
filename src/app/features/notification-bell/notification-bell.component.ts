@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+ï»¿import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BreadcrumbService } from '@/services/common/breadcrumb.service';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
-import { SharedDropdownComponent, DropdownOption } from '@/components/shared-dropdown/shared-dropdown.component';
+import { SharedDropdownComponent, DropdownOption, DropdownValue } from '@/components/shared-dropdown/shared-dropdown.component';
 import { NotificationPaginationComponent } from './notification-pagination/notification-pagination.component';
 import { DataTableComponent, DataTableColumn } from '@/components/data-table/data-table.component';
 import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/table-skeleton.component';
@@ -752,6 +752,29 @@ export class NotificationBellComponent implements OnInit {
     }
   }
 
+  onChannelFilterChange(value: DropdownValue): void {
+    this.channelFilter = this.toChannelFilter(value);
+    this.onSearchChange();
+  }
+
+  onAddChannelChange(value: DropdownValue): void {
+    this.addChannel(this.toChannelType(value));
+  }
+
+  onFormatChange(value: DropdownValue): void {
+    if (!this.selectedChannelConfig) return;
+    const format = this.toChannelFormat(value);
+    if (!format) return;
+    this.selectedChannelConfig.format = format;
+    this.markDirty();
+  }
+
+  onCreateChannelDropdownChange(value: DropdownValue): void {
+    const channel = this.toChannelType(value);
+    if (!channel) return;
+    this.onCreateChannelChange(channel);
+  }
+
   get isCreateFormValid(): boolean {
     return !!this.createCodeValue.trim() && !!this.createDescriptionValue.trim() && !!this.createChannelValue;
   }
@@ -853,7 +876,7 @@ export class NotificationBellComponent implements OnInit {
         return;
       }
 
-      editor.focus(); // Ép focus vào l?i editor
+      editor.focus();
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
         const range = selection.getRangeAt(0);
@@ -861,7 +884,6 @@ export class NotificationBellComponent implements OnInit {
         const textNode = document.createTextNode(token);
         range.insertNode(textNode);
 
-        // Ð?y con tr? chu?t ra ngay sau bi?n v?a chèn
         range.setStartAfter(textNode);
         range.collapse(true);
         selection.removeAllRanges();
@@ -877,7 +899,7 @@ export class NotificationBellComponent implements OnInit {
     const field = this.getContentTextField();
     if (field) {
       this.insertIntoTextField(field, token);
-      field.focus(); // Focus l?i vào textarea d? gõ ti?p
+      field.focus();
     } else {
       this.selectedChannelConfig.content = (this.selectedChannelConfig.content || '') + token;
       this.markDirty();
@@ -927,7 +949,7 @@ export class NotificationBellComponent implements OnInit {
         iframe.style.height = `${height + 20}px`;
       }
     } catch (error) {
-      console.warn('Không th? t? d?ng resize iframe:', error);
+      console.warn('Khong the tu dong resize iframe:', error);
       iframe.style.height = '600px';
     }
   }
@@ -989,9 +1011,9 @@ export class NotificationBellComponent implements OnInit {
 
   private validateParamKey(key: string): string | null {
     const trimmed = key.trim();
-    if (!trimmed) return 'Tên bi?n là b?t bu?c';
+    if (!trimmed) return 'Ten bien la bat buoc';
     if (!/^[A-Za-z0-9_]+$/.test(trimmed)) {
-      return 'Ch? dùng ch?, s?, d?u g?ch du?i';
+      return 'Chi dung chu, so, dau gach duoi';
     }
     return null;
   }
@@ -1073,8 +1095,8 @@ export class NotificationBellComponent implements OnInit {
   confirmRestoreHistory(): void {
     if (!this.restoreCandidate) return;
     this.restoreHistory(this.restoreCandidate);
-    this.closeRestoreConfirm(); // Ðóng popup xác nh?n
-    this.closeHistorySidebar(); // Ðóng luôn sidebar d? nhìn th?y n?i dung dã khôi ph?c ? màn hình chính
+    this.closeRestoreConfirm();
+    this.closeHistorySidebar();
   }
 
   restoreHistory(item: ChannelHistoryItem): void {
@@ -1183,6 +1205,19 @@ export class NotificationBellComponent implements OnInit {
         }
       });
   }
+
+  private toChannelType(value: DropdownValue): ChannelType | null {
+    return value === 'EMAIL' || value === 'PUSH' || value === 'IN_APP' ? value : null;
+  }
+
+  private toChannelFilter(value: DropdownValue): ChannelFilter {
+    return value === 'ALL' || value === 'EMAIL' || value === 'PUSH' || value === 'IN_APP' ? value : 'ALL';
+  }
+
+  private toChannelFormat(value: DropdownValue): ChannelFormat | null {
+    return value === 'HTML' || value === 'TEXT' ? value : null;
+  }
 }
+
 
 

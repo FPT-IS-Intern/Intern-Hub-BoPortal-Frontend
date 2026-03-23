@@ -6,6 +6,7 @@ import { catchError, concatMap, finalize, of, throwError } from 'rxjs';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { SharedInputTextComponent } from '@/components/shared-input-text/shared-input-text.component';
 import {
+  DropdownValue,
   DropdownOption,
   SharedDropdownComponent,
 } from '@/components/shared-dropdown/shared-dropdown.component';
@@ -586,10 +587,11 @@ export class MenuManagementComponent {
       });
   }
 
-  protected onRoleSelect(value: string): void {
-    this.selectedRoleName.set(value || '');
+  protected onRoleSelect(value: DropdownValue): void {
+    const normalizedValue = value == null ? '' : String(value);
+    this.selectedRoleName.set(normalizedValue);
     this.roleCodeInputErrorKey.set(null);
-    if (value) this.addSelectedRole();
+    if (normalizedValue) this.addSelectedRole();
   }
 
   private addSelectedRole(): void {

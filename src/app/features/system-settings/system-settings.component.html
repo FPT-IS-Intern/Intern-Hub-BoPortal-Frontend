@@ -94,7 +94,7 @@
                     </div>
                     <div class="setting-control">
                       <app-shared-dropdown [options]="languageOptions" formControlName="defaultLanguage"
-                        [ngStyle]="{ width: '100%' }" [value]="systemForm.get('defaultLanguage')?.value">
+                        [ngStyle]="{ width: '100%' }" [value]="systemForm.get('defaultLanguage')?.value ?? null">
                       </app-shared-dropdown>
                     </div>
                   </div>
@@ -244,7 +244,7 @@
                     </div>
                     <div class="setting-control">
                       <app-shared-dropdown [options]="allowWhitespaceOptions" formControlName="allowWhitespace"
-                        [ngStyle]="{ width: '100%' }" [value]="securityForm.get('allowWhitespace')?.value">
+                        [ngStyle]="{ width: '100%' }" [value]="securityForm.get('allowWhitespace')?.value ?? null">
                       </app-shared-dropdown>
                     </div>
                   </div>

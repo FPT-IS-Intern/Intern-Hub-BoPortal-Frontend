@@ -11,11 +11,11 @@
 
       <app-shared-dropdown
         [options]="channelFilterOptions"
-        [(value)]="channelFilter"
+        [value]="channelFilter"
         [placeholder]="'notification.master.filters.channels.placeholder' | translate"
         icon="custom-icon-filter-lines"
         width="180px"
-        (valueChange)="onSearchChange()">
+        (valueChange)="onChannelFilterChange($event)">
       </app-shared-dropdown>
 
     </div>
@@ -122,11 +122,11 @@
         <app-shared-dropdown
           class="add-channel-dropdown"
           [options]="missingChannelOptions"
-          [(value)]="addChannelValue"
+          [value]="addChannelValue"
           [placeholder]="'notification.master.actions.addChannel' | translate"
           icon="custom-icon-package-plus"
           width="140px"
-          (valueChange)="addChannel($event)">
+          (valueChange)="onAddChannelChange($event)">
         </app-shared-dropdown>
       </div>
     </div>
@@ -149,9 +149,9 @@
               <label>{{ 'notification.master.detail.form.format' | translate }}</label>
               <app-shared-dropdown
                 [options]="formatOptions"
-                [(value)]="selectedChannelConfig.format"
+                [value]="selectedChannelConfig.format"
                 width="100%"
-                (valueChange)="markDirty()">
+                (valueChange)="onFormatChange($event)">
               </app-shared-dropdown>
               @if (isFormatNonOptimal) {
               <div class="field-hint">
@@ -295,8 +295,8 @@
       <label class="form-label required">{{ 'notification.master.create.channelLabel' | translate }}</label>
       <app-shared-dropdown
         [options]="createChannelOptions"
-        [(value)]="createChannelValue"
-        (valueChange)="onCreateChannelChange($event)"
+        [value]="createChannelValue"
+        (valueChange)="onCreateChannelDropdownChange($event)"
         width="220px">
       </app-shared-dropdown>
       @if (createErrors.channel) {

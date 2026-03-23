@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { finalize, Observable } from 'rxjs';
 import { DataTableColumn, DataTableComponent } from '@/components/data-table/data-table.component';
-import { DropdownOption, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
+import { DropdownOption, DropdownValue, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
@@ -286,9 +286,9 @@ export class UserManagementComponent {
   }
 
   protected onSearchChange(value: string): void { this.keyword.set(value); this.applyFilters(false); }
-  protected onStatusChange(value: string): void { this.selectedStatus.set(value); this.applyFilters(false); }
-  protected onRoleChange(value: string): void { this.selectedRole.set(value); this.applyFilters(false); }
-  protected onPositionChange(value: string): void { this.selectedPosition.set(value); this.applyFilters(false); }
+  protected onStatusChange(value: DropdownValue): void { this.selectedStatus.set(this.toDropdownString(value)); this.applyFilters(false); }
+  protected onRoleChange(value: DropdownValue): void { this.selectedRole.set(this.toDropdownString(value)); this.applyFilters(false); }
+  protected onPositionChange(value: DropdownValue): void { this.selectedPosition.set(this.toDropdownString(value)); this.applyFilters(false); }
 
   protected applyFilters(showLoading = true): void {
     this.pageIndex.set(1);
@@ -532,14 +532,15 @@ export class UserManagementComponent {
       });
   }
 
-  protected onRoleDirectChange(newRoleId: string): void {
+  protected onRoleDirectChange(newRoleId: DropdownValue): void {
     const user = this.selectedUser();
-    if (!user || !newRoleId) return;
+    const normalizedRoleId = this.toDropdownString(newRoleId);
+    if (!user || !normalizedRoleId) return;
 
     const currentRoleId = this.userRoles()[0]?.id?.toString();
-    if (newRoleId === currentRoleId) return;
+    if (normalizedRoleId === currentRoleId) return;
 
-    this.pendingActionRoleId.set(newRoleId);
+    this.pendingActionRoleId.set(normalizedRoleId);
     this.pendingAction.set('assign-role');
     this.confirmVisible.set(true);
   }
@@ -704,6 +705,10 @@ export class UserManagementComponent {
 
   private toOptions(values: string[], allLabel: string): DropdownOption[] {
     return [{ label: allLabel, value: '' }, ...values.map((value) => ({ label: value, value }))];
+  }
+
+  private toDropdownString(value: DropdownValue): string {
+    return value == null ? '' : String(value);
   }
 
   private normalizeUserId(userId: UserId): string {

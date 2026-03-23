@@ -235,7 +235,7 @@
     <div class="form-field">
       <label [appTooltip]="'menus.hint.parentField' | translate">{{ 'menus.dialog.form.parentId.label' | translate }}</label>
       <app-shared-dropdown [options]="parentOptions()" [value]="formState().parentId ? '' + formState().parentId : ''"
-        [ngStyle]="{ width: '100%' }" (valueChange)="updateFormField('parentId', $event ? +$event : null)">
+        [ngStyle]="{ width: '100%' }" (valueChange)="updateFormField('parentId', $event === null || $event === '' ? null : +$event)">
       </app-shared-dropdown>
     </div>
     <div class="form-field sort-order-field">
