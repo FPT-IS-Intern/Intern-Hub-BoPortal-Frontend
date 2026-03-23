@@ -10,6 +10,11 @@ export const API_ENDPOINTS = {
     me: withBoPortal('/auth/me'),
     publicKey: withBoPortal('/auth/public-key'),
   },
+  audit: {
+    root: withBoPortal('/audit'),
+    verifyHash: (auditId: number | string) => withBoPortal(`/audit/${auditId}/hash/verify`),
+    actionFunctions: withBoPortal('/audit/action-functions'),
+  },
   authz: {
     roles: withBoPortal('/authz/roles'),
     resources: withBoPortal('/authz/resources'),
