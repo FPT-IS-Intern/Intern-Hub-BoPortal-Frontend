@@ -1,4 +1,6 @@
 <div class="web-container">
+  <app-header-component [data]="headerData" (logoutRequested)="handleLogout()"></app-header-component>
+
   <div class="mobile-warning">
     <div class="mobile-warning-content">
       <img src="Home-Page-Mobile.svg" alt="BoPortal Mobile" />

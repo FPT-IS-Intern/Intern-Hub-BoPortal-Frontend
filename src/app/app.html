@@ -2,8 +2,6 @@
 <app-top-progress-bar></app-top-progress-bar>
 }
 
-<app-header-component [data]="headerData" [showControls]="!isLoginRoute" (logoutRequested)="handleLogout()">
-</app-header-component>
 <router-outlet></router-outlet>
 
 @if (toastService.toastsSignal().length > 0) {

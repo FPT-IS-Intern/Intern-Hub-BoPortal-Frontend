@@ -1,19 +1,21 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationStart } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { HeaderData } from '@/components/header/header.component';
+import { HeaderComponent, HeaderData } from '@/components/header/header.component';
 import { SidebarComponent, SidebarData } from '@/components/sidebar/sidebar.component';
 import { SIDEBAR_ICONS } from '@/core/sidebar-icons';
 import { BreadcrumbComponent } from '@/components/breadcrumb/breadcrumb.component';
 import { BreadcrumbService } from '@/services/common/breadcrumb.service';
+import { AuthService } from '@/services/api/auth.service';
+import { StorageUtil } from '@/core/utils/storage.util';
 
 @Component({
   selector: 'app-bo-portal-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, BreadcrumbComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, BreadcrumbComponent],
   templateUrl: './bo-portal-layout.component.html',
   styleUrls: ['./bo-portal-layout.component.scss'],
 })
@@ -21,6 +23,7 @@ export class BoPortalLayoutComponent {
   protected readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly authService = inject(AuthService);
 
   constructor() {
     // Clear breadcrumbs immediately on any navigation start to avoid stale titles
@@ -37,6 +40,24 @@ export class BoPortalLayoutComponent {
         this.sidebarData = {
           ...this.sidebarData,
           menuItems: this.buildSidebarMenuItems(),
+        };
+      });
+
+    toObservable(this.authService.userProfile)
+      .pipe(takeUntilDestroyed(), filter(Boolean))
+      .subscribe((user) => {
+        const roleStr = user.roles && user.roles.length > 0
+          ? user.roles[0].replace('ROLE_', '').replace(/_/g, ' ')
+          : (user.role || 'USER');
+
+        this.headerData = {
+          ...this.headerData,
+          displayName: user.displayName || user.fullName || user.username || 'User',
+          userName: user.username || '',
+          email: user.username,
+          role: roleStr,
+          roles: user.roles || [],
+          permissions: user.permissions || [],
         };
       });
   }
@@ -123,6 +144,19 @@ export class BoPortalLayoutComponent {
     this.isMobileSidebarOpen = false;
   }
 
+  protected handleLogout(): void {
+    const refreshToken = StorageUtil.getRefreshToken();
+    if (!refreshToken) {
+      this.forceLogout();
+      return;
+    }
+
+    this.authService.logout({ refreshToken }).subscribe({
+      next: () => this.forceLogout(),
+      error: () => this.forceLogout(),
+    });
+  }
+
   private buildSidebarMenuItems(): SidebarData['menuItems'] {
     return [
       {
@@ -161,6 +195,11 @@ export class BoPortalLayoutComponent {
         url: '/audit-log',
       },
     ];
+  }
+
+  private forceLogout(): void {
+    StorageUtil.clearAll();
+    this.router.navigate(['/login']);
   }
 }
 
