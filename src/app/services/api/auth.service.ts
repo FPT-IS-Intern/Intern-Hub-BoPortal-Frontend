@@ -1,12 +1,11 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { Observable, finalize, tap, forkJoin, of, catchError, throwError, map, shareReplay, switchMap } from 'rxjs';
+import { Observable, finalize, tap, forkJoin, of, catchError, throwError, map, shareReplay, switchMap, from } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeneralConfigService } from './general-config.service';
 import { AuthTokenPair, BoAdminProfile, BoAdminProfileResponse, LoginPayload, LoginRequest, LoginResponse, LogoutRequest, PublicKeyPayload } from '@/models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { StorageUtil } from '@/core/utils/storage.util';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
-import { encryptWithRsaPublicKey } from '@/core/utils/rsa.util';
 import { ApiClientService } from '@/services/api/api-client.service';
 
 @Injectable({
@@ -33,10 +32,14 @@ export class AuthService {
 
     const deviceId = data.deviceId || this.getDeviceId();
     return this.getLoginPublicKey().pipe(
-      map((publicKey) => ({
-        encryptedUsername: encryptWithRsaPublicKey(data.username, publicKey),
-        encryptedPassword: encryptWithRsaPublicKey(data.password as string, publicKey),
-      })),
+      switchMap((publicKey) =>
+        from(import('@/core/utils/rsa.util')).pipe(
+          map(({ encryptWithRsaPublicKey }) => ({
+            encryptedUsername: encryptWithRsaPublicKey(data.username, publicKey),
+            encryptedPassword: encryptWithRsaPublicKey(data.password as string, publicKey),
+          })),
+        ),
+      ),
       switchMap(({ encryptedUsername, encryptedPassword }) => {
         const payload: LoginPayload = {
           encryptedUsername,
