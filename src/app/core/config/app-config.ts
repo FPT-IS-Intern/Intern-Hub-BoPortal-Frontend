@@ -1,13 +1,5 @@
 import { environment } from '@env/environment';
 
-declare global {
-  interface Window {
-    __env?: {
-      apiUrl?: string;
-    };
-  }
-}
-
 function normalizeBaseUrl(url: string): string {
   return url.replace(/\/+$/, '');
 }
