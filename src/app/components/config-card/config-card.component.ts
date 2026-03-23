@@ -2,6 +2,11 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 
+interface ConfigCardOption {
+    label: string;
+    value: string | number | boolean | null;
+}
+
 @Component({
     selector: 'app-config-card',
     standalone: true,
@@ -17,6 +22,6 @@ export class ConfigCardComponent {
     @Input() type: 'number' | 'select' | 'text' | 'time' | 'url' = 'number';
     @Input() unit?: string;
     @Input() textAlign: 'left' | 'center' | 'right' = 'left';
-    @Input() options: { label: string; value: any }[] = [];
+    @Input() options: ConfigCardOption[] = [];
     @Input() placeholder?: string;
 }

@@ -5,6 +5,8 @@ import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap, startWith, of } from 'rxjs';
 import { DropdownOption } from '@/components/shared-dropdown/shared-dropdown.component';
 
+type TimeValue = string | null | undefined;
+
 @Component({
     selector: 'app-shared-input-time',
     standalone: true,
@@ -81,7 +83,7 @@ export class SharedInputTimeComponent {
         control.markAsTouched();
     }
 
-    private getParts(value: any): { hour: string | null; minute: string | null } {
+    private getParts(value: TimeValue): { hour: string | null; minute: string | null } {
         if (!value) return { hour: null, minute: null };
         const raw = String(value).trim();
         const parts = raw.split(':');

@@ -73,7 +73,7 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
 
   // ControlValueAccessor methods
   onChange: any = () => {};
-  onTouched: any = () => {};
+  onTouched: () => void = () => {};
 
   @Input() set value(val: any) {
     this.internalValue = val;
@@ -92,7 +92,7 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -106,7 +106,7 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
     return selected ? selected.label : this.placeholder;
   }
 
-  protected get selectedOption() {
+  protected get selectedOption(): DropdownOption | undefined {
     return this.options.find(opt => opt.value === this.internalValue);
   }
 

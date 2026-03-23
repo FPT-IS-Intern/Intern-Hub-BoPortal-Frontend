@@ -53,8 +53,8 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
   protected hours = Array.from({ length: 24 }, (_, i) => i);
   protected minutes = Array.from({ length: 60 }, (_, i) => i);
 
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: (value: Date | null) => void = () => { };
+  onTouched: () => void = () => { };
 
   ngOnInit(): void {
     const now = new Date();
@@ -168,7 +168,7 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
   }
 
   // ControlValueAccessor implementation
-  writeValue(value: any): void {
+  writeValue(value: Date | string | null): void {
     if (value) {
       this.selectedDate = new Date(value);
       this.selectedHour = this.selectedDate.getHours();
@@ -181,19 +181,20 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
     this.cdr.markForCheck();
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: Date | null) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
   private isScrolling = false;
-  private scrollTimeout: any;
+  private scrollTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  protected onScroll(type: 'hour' | 'minute', event: any): void {
-    const container = event.target;
+  protected onScroll(type: 'hour' | 'minute', event: Event): void {
+    const container = event.target as HTMLElement | null;
+    if (!container) return;
     const itemHeight = 40; // matches SCSS
     const index = Math.round((container.scrollTop) / itemHeight);
 
@@ -213,9 +214,12 @@ export class SharedDateTimePickerComponent implements OnInit, OnDestroy, Control
 
     // Set flag to prevent scrollToSelected from triggering during manual scroll
     this.isScrolling = true;
-    clearTimeout(this.scrollTimeout);
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
     this.scrollTimeout = setTimeout(() => {
       this.isScrolling = false;
+      this.scrollTimeout = null;
     }, 150);
   }
 
