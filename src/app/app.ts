@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '@/services/api/auth.service';
 import {
@@ -15,7 +14,6 @@ import { ToastService } from '@/services/common/toast.service';
 import { ToastContainer } from '@/components/toast-container/toast-container';
 import { GlobalOverlaySpinnerComponent } from '@/components/loading/global-overlay-spinner/global-overlay-spinner.component';
 import { TopProgressBarComponent } from '@/components/loading/top-progress-bar/top-progress-bar.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -33,18 +31,8 @@ export class App implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
-  isLoginRoute = false;
-
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
-
-  constructor() {
-    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.isLoginRoute = event.urlAfterRedirects.includes('/login');
-      }
-    });
-  }
 
   private readonly tokenService = inject(TokenStorageService);
   protected readonly loadingService = inject(LoadingService);

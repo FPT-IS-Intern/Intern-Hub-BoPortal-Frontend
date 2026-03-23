@@ -18,7 +18,7 @@ export default [
     ],
   },
   {
-    files: ['src/app/**/*.ts'],
+    files: ['src/app/**/*.ts', 'src/environments/**/*.ts'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -67,6 +67,7 @@ export default [
       'src/app/core/config/**/*.ts',
       'src/app/core/constants/**/*.ts',
       'src/app/core/guards/**/*.ts',
+      'src/app/core/interceptors/**/*.ts',
       'src/app/components/**/*.ts',
       'src/app/features/checkin-location/**/*.ts',
       'src/app/features/menu-management/**/*.ts',
@@ -75,6 +76,7 @@ export default [
       'src/app/features/permission-matrix/**/*.ts',
       'src/app/features/system-settings/**/*.ts',
       'src/app/features/user-management/**/*.ts',
+      'src/environments/**/*.ts',
     ],
     plugins: {
       '@typescript-eslint': tseslint,
