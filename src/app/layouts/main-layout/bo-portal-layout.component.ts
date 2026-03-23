@@ -90,7 +90,7 @@ export class BoPortalLayoutComponent {
     closeButtonBackgroundColor: 'var(--app-color-white)',
     closeButtonMarginRight: '12px',
 
-    // ===== DEFAULT (collapsed & expanded dùng chung) =====
+    // ===== DEFAULT (collapsed & expanded shared values) =====
     defaultWidth: '100%',
     defaultHeight: '48px',
     defaultBorderRadius: '8px',
