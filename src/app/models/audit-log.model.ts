@@ -3,6 +3,7 @@ export interface AuditQueryRequest {
   endDate?: string;
   day?: string;
   action?: string;
+  actorIds?: string[];
   page?: number;
   size?: number;
   sortBy?: string;

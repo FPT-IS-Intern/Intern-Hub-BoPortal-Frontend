@@ -41,16 +41,8 @@
     }
   }
 
-  .clear-btn {
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid var(--app-color-border-alpha-soft, #e2e8f0);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    &:hover {
-      background: #f1f5f9;
-    }
+  .btn-primary-custom {
+    margin-left: auto;
   }
 }
 
@@ -171,24 +163,6 @@
   }
 }
 
-.manage-actions-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: var(--brand-50, #f0f9ff);
-  color: var(--brand-600, #0284c7);
-  border: 1px solid var(--brand-100, #e0f2fe);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  margin-left: auto;
-
-  &:hover {
-    background: var(--brand-100, #e0f2fe);
-  }
-}
 
 .action-manager-container {
   display: flex;

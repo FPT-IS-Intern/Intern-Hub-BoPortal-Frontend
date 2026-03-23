@@ -17,6 +17,7 @@ import { LoadingService } from '@/services/common/loading.service';
 import { ToastService } from '@/services/common/toast.service';
 import { AuditService } from '@/services/api/audit.service';
 import { AuditItemResponse, AuditQueryRequest, ActionFunctionResponse } from '@/models/audit-log.model';
+import { UserManagementService } from '@/services/api/user-management.service';
 
 export interface AuditItemRow extends AuditItemResponse {
   hashValid?: boolean;
@@ -46,6 +47,7 @@ export class AuditLogComponent implements OnInit {
   private readonly loadingService = inject(LoadingService);
   private readonly toastService = inject(ToastService);
   private readonly auditService = inject(AuditService);
+  private readonly userManagementService = inject(UserManagementService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly baseColumns: DataTableColumn[] = [
@@ -155,17 +157,7 @@ export class AuditLogComponent implements OnInit {
 
   // ---- API QUERIES ----
   private loadAudits(showPageLoading = true): void {
-    const req: AuditQueryRequest = {
-      page: this.pageIndex() - 1,
-      size: this.pageSize(),
-      startDate: this.startDate() || undefined,
-      endDate: this.endDate() || undefined,
-      action: this.selectedAction() || undefined,
-    };
-
-    // If searching, we could pass keyword if backend supported it. 
-    // Usually backend maps it to 'entity' or 'actor', assuming we can't search via DTO for now, 
-    // or maybe backend supports it out of DTO. We stick to DTO spec.
+    const keyword = this.keyword().trim();
 
     this.isError.set(false);
     if (showPageLoading) {
@@ -175,6 +167,41 @@ export class AuditLogComponent implements OnInit {
     } else {
       this.isFiltering.set(true);
     }
+
+    if (keyword) {
+      this.userManagementService.filterUsers({ keyword }, 0, 1000, true).subscribe({
+        next: (res) => {
+          const actorIds = res.data?.items?.map((u: any) => String(u.userId)) || [];
+          if (actorIds.length === 0) {
+            this.rows.set([]);
+            this.totalItems.set(0);
+            if (showPageLoading) {
+              this.isLoading.set(false);
+              this.loadingService.hidePageLoading();
+            }
+            this.isFiltering.set(false);
+            return;
+          }
+          this.executeAuditQuery(actorIds, showPageLoading);
+        },
+        error: () => this.executeAuditQuery([], showPageLoading)
+      });
+    } else {
+      this.executeAuditQuery(undefined, showPageLoading);
+    }
+  }
+
+  private executeAuditQuery(actorIds?: string[], showPageLoading = true): void {
+    const req: any = {
+      page: this.pageIndex() - 1,
+      size: this.pageSize()
+    };
+    
+    // Explicitly check to prevent "undefined" string values in HTTP params
+    if (this.startDate()) req.startDate = this.startDate();
+    if (this.endDate()) req.endDate = this.endDate();
+    if (this.selectedAction()) req.action = this.selectedAction();
+    if (actorIds && actorIds.length > 0) req.actorIds = actorIds;
 
     this.auditService.queryAudits(req)
       .pipe(finalize(() => {

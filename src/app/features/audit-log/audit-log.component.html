@@ -15,10 +15,10 @@
       <input type="date" class="date-input" [ngModel]="endDate()" (ngModelChange)="onEndDateChange($event)" />
     </div>
 
-    <app-shared-dropdown [options]="actionOptions()" [value]="selectedAction()" (valueChange)="onActionChange($event)"></app-shared-dropdown>
+    <app-shared-dropdown [options]="actionOptions()" [value]="selectedAction()" (valueChange)="onActionChange($event)" width="200px"></app-shared-dropdown>
     
-    <button class="clear-btn" (click)="clearFilters()">Xóa lọc</button>
-    <button class="manage-actions-btn" (click)="openActionManager()">
+    <button type="button" class="btn-outline-custom" (click)="clearFilters()">Xóa lọc</button>
+    <button type="button" class="btn-primary-custom" (click)="openActionManager()">
       <span class="custom-icon-settings-02"></span>
       Quản lý hành động
     </button>
