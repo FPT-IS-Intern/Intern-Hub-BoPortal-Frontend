@@ -599,23 +599,23 @@ export class UserManagementComponent {
   }
 
   protected isLoginLocked(): boolean {
-    return `${this.selectedUser()?.loginStatus || ''}`.toUpperCase() === 'SUSPENDED';
+    return this.currentAuthStatus() === 'SUSPENDED';
   }
 
   protected canApprove(user?: UserListItem | UserDetail | null): boolean {
-    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'PENDING';
+    return this.getUserSystemStatus(user || this.selectedUser()) === 'INACTIVE';
   }
 
   protected canReject(user?: UserListItem | UserDetail | null): boolean {
-    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'PENDING';
+    return this.getUserSystemStatus(user || this.selectedUser()) !== 'INACTIVE';
   }
 
   protected canSuspend(user?: UserListItem | UserDetail | null): boolean {
-    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'APPROVED';
+    return this.getUserSystemStatus(user || this.selectedUser()) === 'ACTIVE';
   }
 
   protected canReactivate(user?: UserListItem | UserDetail | null): boolean {
-    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'SUSPENDED';
+    return this.getUserSystemStatus(user || this.selectedUser()) === 'SUSPENDED';
   }
 
   private loadUsers(options: { showPageLoading?: boolean; showTableOverlay?: boolean } = {}): void {
@@ -727,14 +727,18 @@ export class UserManagementComponent {
     return { ...user, userId: this.normalizeUserId(user.userId) };
   }
 
-  private getUserLifecycleStatus(user?: UserSummary | null): string {
+  protected currentAuthStatus(): string {
+    return this.getUserSystemStatus(this.selectedUser());
+  }
+
+  private getUserSystemStatus(user?: UserSummary | null): string {
     if (!user) {
       return '';
     }
 
-    const status = 'sysStatus' in user
-      ? user.sysStatus
-      : ('status' in user ? user.status : undefined);
+    const status = 'status' in user
+      ? (user.loginStatus || user.status)
+      : ('sysStatus' in user ? user.sysStatus : undefined);
     return `${status || ''}`.toUpperCase();
   }
 
@@ -775,9 +779,6 @@ export class UserManagementComponent {
         'users.table.status',
         'users.status.active',
         'users.status.inactive',
-        'users.status.pending',
-        'users.status.approved',
-        'users.status.rejected',
         'users.status.suspended',
       ])
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -797,9 +798,6 @@ export class UserManagementComponent {
           { label: translations['users.filters.allStatuses'], value: '' },
           { label: translations['users.status.active'], value: 'ACTIVE' },
           { label: translations['users.status.inactive'], value: 'INACTIVE' },
-          { label: translations['users.status.pending'], value: 'PENDING' },
-          { label: translations['users.status.approved'], value: 'APPROVED' },
-          { label: translations['users.status.rejected'], value: 'REJECTED' },
           { label: translations['users.status.suspended'], value: 'SUSPENDED' },
         ]);
       });

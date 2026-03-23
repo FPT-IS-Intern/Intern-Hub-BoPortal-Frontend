@@ -121,13 +121,10 @@
       <div class="header-badges">
         <span [class]="'status-badge ' + businessStatusClass(selectedUser()?.status)">
           <span class="custom-icon-check"
-            *ngIf="selectedUser()?.status === 'APPROVED'"></span>
+            *ngIf="selectedUser()?.status === 'ACTIVE'"></span>
           <span class="custom-icon-close"
-            *ngIf="selectedUser()?.status === 'REJECTED'"></span>
+            *ngIf="selectedUser()?.status === 'INACTIVE'"></span>
           {{ businessStatusLabel(selectedUser()?.status) }}
-        </span>
-        <span [class]="'status-badge ' + loginStatusClass(selectedUser()?.loginStatus)">
-          {{ loginStatusLabel(selectedUser()?.loginStatus) }}
         </span>
       </div>
     </div>
@@ -174,15 +171,16 @@
         <div class="access-row">
           <div class="row-left">
             <span class="row-label">{{ 'users.detail.access.loginStatus' | translate }}</span>
-            <span [class]="'status-badge-sm ' + loginStatusClass(selectedUser()?.loginStatus)">
-              {{ loginStatusLabel(selectedUser()?.loginStatus) }}
+            <span [class]="'status-badge-sm ' + loginStatusClass(currentAuthStatus())">
+              {{ loginStatusLabel(currentAuthStatus()) }}
             </span>
           </div>
-          <button type="button" class="btn-row-action"
-            [title]="isLoginLocked() ? ('users.detail.access.unlockTitle' | translate) : ('users.detail.access.lockTitle' | translate)"
-            (click)="requestAction(isLoginLocked() ? 'unlock' : 'lock')">
-            {{ isLoginLocked() ? ('users.actions.unlock' | translate) : ('users.actions.lock' | translate) }}
-          </button>
+          <div class="row-actions-group">
+            @if (canApprove()) { <button type="button" class="btn-row-action approve" (click)="requestAction('approve')">{{ 'users.actions.approve' | translate }}</button> }
+            @if (canReject()) { <button type="button" class="btn-row-action reject" (click)="openModal('reject')">{{ 'users.actions.reject' | translate }}</button> }
+            @if (canSuspend()) { <button type="button" class="btn-row-action" (click)="openModal('suspend')">{{ 'users.actions.suspend' | translate }}</button> }
+            @if (canReactivate()) { <button type="button" class="btn-row-action reactivate" (click)="requestAction('reactivate')">{{ 'users.actions.reactivate' | translate }}</button> }
+          </div>
         </div>
         <div class="access-row">
           <div class="row-left">
@@ -191,32 +189,6 @@
           <button type="button" class="btn-row-action" [title]="'users.detail.access.resetPasswordTitle' | translate"
             (click)="requestAction('reset-password')">{{ 'users.detail.access.resetAction' | translate }}</button>
         </div>
-        @if (canApprove() || canReject() || canSuspend() || canReactivate()) {
-        <div class="access-row">
-          <div class="row-left">
-            <span class="row-label field-label-with-tooltip">
-              <span>{{ 'users.detail.access.profileStatus' | translate }}</span>
-              <button
-                type="button"
-                class="field-tooltip-trigger"
-                [appTooltip]="'users.detail.access.profileStatusHint' | translate"
-                tooltipPosition="top"
-                [attr.aria-label]="'users.detail.access.profileStatusHint' | translate">
-                <span class="custom-icon-info"></span>
-              </button>
-            </span>
-            <span [class]="'status-badge-sm ' + businessStatusClass(selectedUser()?.status)">
-              {{ businessStatusLabel(selectedUser()?.status) }}
-            </span>
-          </div>
-          <div class="row-actions-group">
-            @if (canApprove()) { <button type="button" class="btn-row-action approve" (click)="requestAction('approve')">{{ 'users.actions.approve' | translate }}</button> }
-            @if (canReject()) { <button type="button" class="btn-row-action reject" (click)="openModal('reject')">{{ 'users.actions.reject' | translate }}</button> }
-            @if (canSuspend()) { <button type="button" class="btn-row-action" (click)="openModal('suspend')">{{ 'users.actions.suspend' | translate }}</button> }
-            @if (canReactivate()) { <button type="button" class="btn-row-action" (click)="requestAction('reactivate')">{{ 'users.actions.reactivate' | translate }}</button> }
-          </div>
-        </div>
-        }
       </div>
 
       <div class="section-group role-group">

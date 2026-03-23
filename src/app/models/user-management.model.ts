@@ -1,6 +1,6 @@
 export type UserId = string;
 export type UserLifecycleStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
-export type UserSystemStatus = UserLifecycleStatus | 'ACTIVE' | 'INACTIVE';
+export type UserSystemStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
 export type UserLoginStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
 
 export interface UserFilterRequest {
@@ -32,7 +32,7 @@ export interface UserDetail {
   avatarUrl?: string;
   positionCode?: string;
   role?: string;
-  status?: UserLifecycleStatus;
+  status?: UserSystemStatus;
   loginStatus?: UserLoginStatus;
   department?: string;
   activated?: boolean;
