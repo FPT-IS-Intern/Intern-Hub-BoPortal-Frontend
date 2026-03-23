@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import { BoPortalLayoutComponent } from '@/layouts/main-layout/bo-portal-layout.component';
-import { Error404LayoutComponent } from '@/layouts/error-404/error-404.component';
 import { authGuard } from '@/core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -15,7 +13,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: BoPortalLayoutComponent,
+    loadComponent: () => import('@/layouts/main-layout/bo-portal-layout.component').then((m) => m.BoPortalLayoutComponent),
     canActivate: [authGuard],
     children: [
       {
@@ -53,7 +51,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        component: Error404LayoutComponent,
+        loadComponent: () => import('@/layouts/error-404/error-404.component').then((m) => m.Error404LayoutComponent),
       },
       {
         path: '**',
