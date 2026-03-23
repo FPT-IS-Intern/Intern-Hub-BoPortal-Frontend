@@ -20,6 +20,13 @@ import { IpTabComponent } from './components/ip-tab/ip-tab.component';
 import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 import { CheckinTabsSkeletonComponent } from '@/components/skeletons/checkin-tabs-skeleton/checkin-tabs-skeleton.component';
 
+type DeleteTarget =
+  | { type: 'location'; data: AttendanceLocation }
+  | { type: 'ip'; data: IPRange };
+
+type LocationSavePayload = Pick<AttendanceLocation, 'id' | 'name' | 'latitude' | 'longitude' | 'radiusMeters' | 'isActive'>;
+type IPRangeSavePayload = Pick<IPRange, 'id' | 'name' | 'ipPrefix' | 'description' | 'isActive'>;
+
 @Component({
   selector: 'app-checkin-location',
   standalone: true,
@@ -68,7 +75,7 @@ export class CheckinLocationComponent implements OnInit {
 
   // Delete Confirm State
   protected readonly isDeleteConfirmVisible = signal(false);
-  protected deleteConfirmData = signal<{ type: 'location' | 'ip'; data: any } | null>(null);
+  protected deleteConfirmData = signal<DeleteTarget | null>(null);
 
   ngOnInit(): void {
     this.updateBreadcrumbs();
@@ -103,7 +110,7 @@ export class CheckinLocationComponent implements OnInit {
         if (freshData.length > 0) {
           const currentId = this.selectedBranch()?.id;
           const refreshed = currentId
-            ? freshData.find((b: any) => b.id === currentId) ?? freshData[0]
+            ? freshData.find((branch) => branch.id === currentId) ?? freshData[0]
             : freshData[0];
           this.selectedBranch.set(refreshed);
         } else {
@@ -143,7 +150,7 @@ export class CheckinLocationComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  protected handleLocationSave(result: any): void {
+  protected handleLocationSave(result: LocationSavePayload): void {
     const branch = this.selectedBranch();
     if (!branch) return;
 
@@ -196,7 +203,7 @@ export class CheckinLocationComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  protected handleIPSave(result: any): void {
+  protected handleIPSave(result: IPRangeSavePayload): void {
     const branch = this.selectedBranch();
     if (!branch) return;
 

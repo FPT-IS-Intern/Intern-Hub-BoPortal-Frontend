@@ -7,7 +7,80 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastService } from '@/services/common/toast.service';
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 
-declare const google: any;
+type LocationFormValue = Pick<
+  AttendanceLocation,
+  'id' | 'name' | 'latitude' | 'longitude' | 'radiusMeters' | 'isActive'
+>;
+
+interface GoogleLatLngLike {
+  lat(): number;
+  lng(): number;
+}
+
+interface GoogleMapsMouseEvent {
+  latLng: GoogleLatLngLike;
+}
+
+interface GoogleMap {
+  addListener(eventName: string, handler: (event: GoogleMapsMouseEvent) => void): void;
+  fitBounds(bounds: unknown): void;
+  panTo(latLng: GoogleLatLngLike): void;
+  setCenter(latLng: GoogleLatLngLike | { lat: number; lng: number }): void;
+  setZoom(zoom: number): void;
+}
+
+interface GoogleMarker {
+  addListener(eventName: string, handler: (event: GoogleMapsMouseEvent) => void): void;
+  setPosition(latLng: GoogleLatLngLike): void;
+}
+
+interface GoogleCircle {
+  setCenter(latLng: GoogleLatLngLike): void;
+  setRadius(radius: number): void;
+}
+
+interface GoogleGeocoderResult {
+  formatted_address?: string;
+  name?: string;
+  types?: string[];
+}
+
+interface GoogleGeocoder {
+  geocode(
+    request: { location: { lat: number; lng: number } },
+    callback: (results: GoogleGeocoderResult[], status: string) => void,
+  ): void;
+}
+
+interface GooglePlaceResult {
+  name?: string;
+  geometry?: {
+    location?: GoogleLatLngLike;
+    viewport?: unknown;
+  };
+}
+
+interface GoogleAutocomplete {
+  addListener(eventName: string, handler: () => void): void;
+  bindTo(key: string, target: GoogleMap | null): void;
+  getPlace(): GooglePlaceResult;
+}
+
+interface GoogleMapsApi {
+  maps?: {
+    Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMap;
+    Marker: new (options: Record<string, unknown>) => GoogleMarker;
+    Circle: new (options: Record<string, unknown>) => GoogleCircle;
+    Geocoder: new () => GoogleGeocoder;
+    LatLng: new (lat: number, lng: number) => GoogleLatLngLike;
+    Animation: { DROP: unknown };
+    places: {
+      Autocomplete: new (element: HTMLInputElement, options: Record<string, unknown>) => GoogleAutocomplete;
+    };
+  };
+}
+
+declare const google: GoogleMapsApi;
 
 @Component({
   selector: 'app-upsert-location-dialog',
@@ -30,17 +103,21 @@ export class UpsertLocationDialogComponent implements OnInit {
   @Input() isVisible = false;
   @Input() data: AttendanceLocation | null = null;
   @Output() isVisibleChange = new EventEmitter<boolean>();
-  @Output() save = new EventEmitter<any>();
+  @Output() save = new EventEmitter<LocationFormValue>();
 
-  @ViewChild('searchInput') searchElementRef!: ElementRef;
+  @ViewChild('searchInput') searchElementRef!: ElementRef<HTMLInputElement>;
 
   protected form!: FormGroup;
-  private map: any;
-  private marker: any;
-  private radiusCircle: any;
-  private geocoder: any;
+  private map: GoogleMap | null = null;
+  private marker: GoogleMarker | null = null;
+  private radiusCircle: GoogleCircle | null = null;
+  private geocoder: GoogleGeocoder | null = null;
   protected isLocating = false;
   protected searchInputValue = '';
+
+  private get mapsApi() {
+    return google.maps!;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -121,11 +198,11 @@ export class UpsertLocationDialogComponent implements OnInit {
     });
 
     // Map Events
-    this.map.addListener('click', (event: any) => {
+    this.map.addListener('click', (event) => {
       this.updatePosition(event.latLng);
     });
 
-    this.marker.addListener('dragend', (event: any) => {
+    this.marker.addListener('dragend', (event) => {
       this.updatePosition(event.latLng);
     });
 
@@ -139,8 +216,8 @@ export class UpsertLocationDialogComponent implements OnInit {
     const input = this.searchElementRef.nativeElement;
 
     // Listen for input events (handle typing or pasting)
-    input.addEventListener('input', (e: any) => {
-      const value = e.target.value;
+    input.addEventListener('input', (event: Event) => {
+      const value = (event.target as HTMLInputElement | null)?.value ?? '';
       this.searchInputValue = value; // Keep track for clear button visibility
       if (this.isGoogleMapsUrl(value)) {
         this.handleUrlPaste(value);
@@ -171,8 +248,8 @@ export class UpsertLocationDialogComponent implements OnInit {
         longitude: lng
       }, { emitEvent: false });
 
-      if (this.map && this.marker) {
-        const latLng = new google.maps.LatLng(lat, lng);
+      if (this.map && this.marker && this.radiusCircle) {
+        const latLng = new this.mapsApi.LatLng(lat, lng);
         this.marker.setPosition(latLng);
         this.radiusCircle.setCenter(latLng);
         this.map.setCenter(latLng);
@@ -259,14 +336,14 @@ export class UpsertLocationDialogComponent implements OnInit {
 
   private reverseGeocode(lat: number, lng: number): void {
     if (!this.geocoder) {
-      this.geocoder = new google.maps.Geocoder();
+      this.geocoder = new this.mapsApi.Geocoder();
     }
-    this.geocoder.geocode({ location: { lat, lng } }, (results: any[], status: string) => {
+    this.geocoder.geocode({ location: { lat, lng } }, (results, status) => {
       this.ngZone.run(() => {
         if (status === 'OK' && results && results.length > 0) {
           // Try to get a meaningful POI name, then fall back to formatted address
-          const poiResult = results.find((r: any) =>
-            r.types && (r.types.includes('point_of_interest') || r.types.includes('establishment'))
+          const poiResult = results.find((result) =>
+            result.types && (result.types.includes('point_of_interest') || result.types.includes('establishment'))
           );
           const name = poiResult ? poiResult.name : '';
           const address = (poiResult || results[0]).formatted_address || '';
@@ -288,7 +365,7 @@ export class UpsertLocationDialogComponent implements OnInit {
   private initAutocomplete(): void {
     if (!this.searchElementRef) return;
 
-    const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+    const autocomplete = new this.mapsApi.places.Autocomplete(this.searchElementRef.nativeElement, {
       fields: ['geometry', 'name', 'formatted_address'],
       types: ['establishment', 'geocode']
     });
@@ -304,10 +381,10 @@ export class UpsertLocationDialogComponent implements OnInit {
 
       // Update map center and zoom
       if (place.geometry.viewport) {
-        this.map.fitBounds(place.geometry.viewport);
+        this.map?.fitBounds(place.geometry.viewport);
       } else {
-        this.map.setCenter(place.geometry.location);
-        this.map.setZoom(17);
+        this.map?.setCenter(place.geometry.location);
+        this.map?.setZoom(17);
       }
 
       // Update form and marker
@@ -320,12 +397,12 @@ export class UpsertLocationDialogComponent implements OnInit {
         longitude: lng
       }, { emitEvent: false });
 
-      this.marker.setPosition(place.geometry.location);
-      this.radiusCircle.setCenter(place.geometry.location);
+      this.marker?.setPosition(place.geometry.location);
+      this.radiusCircle?.setCenter(place.geometry.location);
     });
   }
 
-  private updatePosition(latLng: any): void {
+  private updatePosition(latLng: GoogleLatLngLike): void {
     const lat = latLng.lat();
     const lng = latLng.lng();
 
@@ -334,15 +411,15 @@ export class UpsertLocationDialogComponent implements OnInit {
       longitude: lng
     }, { emitEvent: false });
 
-    this.marker.setPosition(latLng);
-    this.radiusCircle.setCenter(latLng);
+    this.marker?.setPosition(latLng);
+    this.radiusCircle?.setCenter(latLng);
   }
 
   private updateMarkerFromForm(): void {
     const lat = this.form.get('latitude')?.value;
     const lng = this.form.get('longitude')?.value;
-    if (lat && lng && this.marker) {
-      const latLng = new google.maps.LatLng(lat, lng);
+    if (lat && lng && this.marker && this.radiusCircle && this.map) {
+      const latLng = new this.mapsApi.LatLng(lat, lng);
       this.marker.setPosition(latLng);
       this.radiusCircle.setCenter(latLng);
       this.map.panTo(latLng);
@@ -368,8 +445,8 @@ export class UpsertLocationDialogComponent implements OnInit {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         this.form.patchValue({ latitude: lat, longitude: lng }, { emitEvent: false });
-        if (this.map && this.marker) {
-          const latLng = new google.maps.LatLng(lat, lng);
+        if (this.map && this.marker && this.radiusCircle) {
+          const latLng = new this.mapsApi.LatLng(lat, lng);
           this.marker.setPosition(latLng);
           this.radiusCircle.setCenter(latLng);
           this.map.panTo(latLng);
@@ -387,7 +464,7 @@ export class UpsertLocationDialogComponent implements OnInit {
 
   submit(): void {
     if (this.form.valid) {
-      this.save.emit(this.form.value);
+      this.save.emit(this.form.getRawValue() as LocationFormValue);
     }
   }
 

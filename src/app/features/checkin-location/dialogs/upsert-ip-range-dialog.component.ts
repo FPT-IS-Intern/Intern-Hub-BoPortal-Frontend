@@ -9,6 +9,9 @@ import { catchError, concat, map, of, take, finalize, filter } from 'rxjs';
 import { SKIP_API_ERROR_TOAST } from '@/core/interceptors/api-error.interceptor';
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 
+type PublicIpLookupResponse = { ip?: string };
+type IPRangeFormValue = Pick<IPRange, 'id' | 'name' | 'ipPrefix' | 'description' | 'isActive'>;
+
 @Component({
   selector: 'app-upsert-ip-range-dialog',
   standalone: true,
@@ -24,7 +27,7 @@ export class UpsertIPRangeDialogComponent implements OnInit {
   @Input() isVisible = false;
   @Input() data: IPRange | null = null;
   @Output() isVisibleChange = new EventEmitter<boolean>();
-  @Output() save = new EventEmitter<any>();
+  @Output() save = new EventEmitter<IPRangeFormValue>();
 
   protected form = this.fb.group({
     id: [null as string | null],
@@ -65,8 +68,10 @@ export class UpsertIPRangeDialogComponent implements OnInit {
         responseType: (api.type === 'text' ? 'text' : 'json') as 'json'
       };
 
-      return this.http.get<any>(api.url, options).pipe(
-        map(res => api.type === 'json' ? res?.ip : res?.trim()),
+      return this.http.get<PublicIpLookupResponse | string>(api.url, options).pipe(
+        map((res) => api.type === 'json'
+          ? ((res as PublicIpLookupResponse | null | undefined)?.ip ?? null)
+          : (typeof res === 'string' ? res.trim() : null)),
         catchError(() => of(null))
       );
     })).pipe(
@@ -84,7 +89,7 @@ export class UpsertIPRangeDialogComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.form.valid) this.save.emit(this.form.value);
+    if (this.form.valid) this.save.emit(this.form.getRawValue() as IPRangeFormValue);
   }
 
   cancel(): void {

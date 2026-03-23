@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { finalize } from 'rxjs';
+import { ResponseApi } from '@goat-bravos/shared-lib-client';
+import { finalize, Observable } from 'rxjs';
 import { DataTableColumn, DataTableComponent } from '@/components/data-table/data-table.component';
 import { DropdownOption, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
@@ -34,6 +35,7 @@ import {
 type DrawerTab = 'profile' | 'access' | 'trace';
 type ConfirmAction = 'lock' | 'unlock' | 'reset-password' | 'approve' | 'reactivate' | 'assign-role';
 type ModalAction = 'reject' | 'suspend' | 'edit-profile' | 'assign-role';
+type UserSummary = UserListItem | UserDetail;
 
 @Component({
   selector: 'app-user-management',
@@ -401,7 +403,7 @@ export class UserManagementComponent {
       return;
     }
 
-    let request$;
+    let request$!: Observable<ResponseApi<UserDetail>>;
     switch (action) {
       case 'unlock': request$ = this.userManagementService.unlockUser(user.userId); break;
       case 'reset-password': request$ = this.userManagementService.resetPassword(user.userId); break;
@@ -414,7 +416,7 @@ export class UserManagementComponent {
     request$
       .pipe(finalize(() => this.loadingService.hidePageLoading()))
       .subscribe({
-        next: (res: any) => {
+        next: (res) => {
           if (res.data) this.selectedUser.set(this.normalizeUserDetail(res.data));
           this.toastService.success(this.successMessage(action));
           this.loadUsers({ showTableOverlay: false });
@@ -481,7 +483,7 @@ export class UserManagementComponent {
     this.pendingModal.set(null);
     this.loadingService.showPageLoading();
 
-    let request$;
+    let request$!: Observable<ResponseApi<UserDetail>>;
     switch (modal) {
       case 'reject':
         request$ = this.userManagementService.rejectUser(user.userId, { reason: this.modalReason().trim() });
@@ -595,27 +597,19 @@ export class UserManagementComponent {
   }
 
   protected canApprove(user?: UserListItem | UserDetail | null): boolean {
-    const targetUser = user || this.selectedUser();
-    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
-    return `${status}`.toUpperCase() === 'PENDING';
+    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'PENDING';
   }
 
   protected canReject(user?: UserListItem | UserDetail | null): boolean {
-    const targetUser = user || this.selectedUser();
-    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
-    return `${status}`.toUpperCase() === 'PENDING';
+    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'PENDING';
   }
 
   protected canSuspend(user?: UserListItem | UserDetail | null): boolean {
-    const targetUser = user || this.selectedUser();
-    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
-    return `${status}`.toUpperCase() === 'APPROVED';
+    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'APPROVED';
   }
 
   protected canReactivate(user?: UserListItem | UserDetail | null): boolean {
-    const targetUser = user || this.selectedUser();
-    const status = (targetUser as any)?.sysStatus || (targetUser as any)?.status || '';
-    return `${status}`.toUpperCase() === 'SUSPENDED';
+    return this.getUserLifecycleStatus(user || this.selectedUser()) === 'SUSPENDED';
   }
 
   private loadUsers(options: { showPageLoading?: boolean; showTableOverlay?: boolean } = {}): void {
@@ -721,6 +715,17 @@ export class UserManagementComponent {
 
   private normalizeUserDetail(user: UserDetail): UserDetail {
     return { ...user, userId: this.normalizeUserId(user.userId) };
+  }
+
+  private getUserLifecycleStatus(user?: UserSummary | null): string {
+    if (!user) {
+      return '';
+    }
+
+    const status = 'sysStatus' in user
+      ? user.sysStatus
+      : ('status' in user ? user.status : undefined);
+    return `${status || ''}`.toUpperCase();
   }
 
   private applyAssignedRoleToCurrentUser(roles: AuthzRole[]): void {
