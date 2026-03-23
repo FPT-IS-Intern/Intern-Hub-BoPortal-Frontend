@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, ChangeDetectorRef, signal, computed, DestroyRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, signal, computed, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -9,7 +9,6 @@ import { CreateResourceDialogComponent } from './create-resource-dialog/create-r
 import { NoDataComponent } from '@/components/no-data/no-data.component';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { BreadcrumbService } from '@/services/common/breadcrumb.service';
-import { BreadcrumbComponent, BreadcrumbItem } from '@/components/breadcrumb/breadcrumb.component';
 import { AuthzService } from '@/services/api/authz.service';
 import { PermissionRow } from '@/models/permission.model';
 import { AuthzRole, AuthzResource, AuthzRolePermission, ResourcePermission } from '@/models/authz.model';
@@ -19,7 +18,6 @@ import { finalize } from 'rxjs';
 import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PERMISSION_COLUMNS } from '@/core/constants/permission-matrix.constants';
-import { environment } from '@env/environment';
 import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/table-skeleton.component';
 
 @Component({
@@ -109,6 +107,7 @@ export class PermissionMatrixComponent implements OnInit {
       pending -= 1;
       if (pending <= 0) {
         this.isInitLoading.set(false);
+        this.loadingService.hide();
         this.cdr.markForCheck();
       }
     };
@@ -209,11 +208,11 @@ export class PermissionMatrixComponent implements OnInit {
     this.loadingService.show();
     this.cdr.markForCheck();
 
-    this.cdr.markForCheck();
     this.authzService
       .getRolePermissions(roleId)
       .pipe(finalize(() => {
         this.isLoading = false;
+        this.loadingService.hide();
         this.cdr.markForCheck();
       }))
       .subscribe({
@@ -342,7 +341,7 @@ export class PermissionMatrixComponent implements OnInit {
 
   protected onCreateResource(event: { name: string; code: string; description: string }): void {
     this.authzService.createResource(event.name, event.code, event.description).subscribe({
-      next: (res) => {
+      next: () => {
         this.toastService.successKey('toast.rbac.createResourceSuccess', 'toast.system');
         this.isCreateResourceVisible = false;
         this.loadResources();
