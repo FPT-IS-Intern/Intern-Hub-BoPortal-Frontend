@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
-import { NotificationRecord } from '@/models/notification.model';
+import { NotificationRecord, NotificationUpdateRequest, NotificationUpsertRequest } from '@/models/notification.model';
 import { ApiClientService } from '@/services/api/api-client.service';
 
 @Injectable({
@@ -28,14 +28,14 @@ export class NotificationService {
   /**
    * Create a new notification
    */
-  createNotification(data: Partial<NotificationRecord>): Observable<ResponseApi<NotificationRecord>> {
+  createNotification(data: NotificationUpsertRequest): Observable<ResponseApi<NotificationRecord>> {
     return this.apiClient.post<ResponseApi<NotificationRecord>>(API_ENDPOINTS.notifications.root, data, { skipErrorToast: true });
   }
 
   /**
    * Update an existing notification
    */
-  updateNotification(id: number, data: Partial<NotificationRecord>): Observable<ResponseApi<void>> {
+  updateNotification(id: number, data: NotificationUpdateRequest): Observable<ResponseApi<void>> {
     return this.apiClient.put<ResponseApi<void>>(API_ENDPOINTS.notifications.byId(id), data, { skipErrorToast: true });
   }
 

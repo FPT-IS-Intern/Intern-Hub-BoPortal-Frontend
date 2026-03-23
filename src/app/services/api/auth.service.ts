@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { Observable, finalize, tap, forkJoin, of, catchError, throwError, map, shareReplay, switchMap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeneralConfigService } from './general-config.service';
-import { LogoutRequest, LoginPayload, LoginRequest, LoginResponse, BoAdminProfile } from '@/models/auth.model';
+import { AuthTokenPair, BoAdminProfile, BoAdminProfileResponse, LoginPayload, LoginRequest, LoginResponse, LogoutRequest, PublicKeyPayload } from '@/models/auth.model';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { StorageUtil } from '@/core/utils/storage.util';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
@@ -61,38 +61,33 @@ export class AuthService {
   refreshAccessToken(data: {
     refreshToken: string;
     deviceId?: string;
-  }): Observable<ResponseApi<{ accessToken: string; refreshToken: string }>> {
+  }): Observable<ResponseApi<AuthTokenPair>> {
     const payload = {
       refreshToken: data.refreshToken,
       deviceId: data.deviceId || this.getDeviceId(),
     };
 
-    return this.apiClient.post<ResponseApi<{ accessToken: string; refreshToken: string }>>(
+    return this.apiClient.post<ResponseApi<AuthTokenPair>>(
       API_ENDPOINTS.auth.refresh,
       payload,
       { headers: { 'X-Skip-Loading': 'true' } }
     );
   }
 
-  me(): Observable<ResponseApi<BoAdminProfile>> {
-    return this.apiClient.get<ResponseApi<BoAdminProfile>>(API_ENDPOINTS.auth.me, {
+  me(): Observable<ResponseApi<BoAdminProfileResponse>> {
+    return this.apiClient.get<ResponseApi<BoAdminProfileResponse>>(API_ENDPOINTS.auth.me, {
       headers: { 'X-Skip-Loading': 'true' }
     }).pipe(
       tap((res) => {
         if (res.data) {
-          // Robustly extract user object
-          let user: any = res.data;
-          if ((res.data as any).user) {
-            user = (res.data as any).user;
-          }
-          this.userProfile.set(user);
+          this.userProfile.set(res.data.user ?? res.data);
         }
       }),
     );
   }
 
 
-  loadInitialData(): Observable<any> {
+  loadInitialData(): Observable<{ profile: ResponseApi<BoAdminProfileResponse>; config: unknown }> {
     return forkJoin({
       profile: this.me().pipe(
         catchError((err: HttpErrorResponse) => {
@@ -107,7 +102,7 @@ export class AuthService {
         })
       ),
     }).pipe(
-      catchError((err: any) => {
+      catchError((err: unknown) => {
         console.error('loadInitialData failed overall:', err);
         return throwError(() => err);
       })
@@ -129,7 +124,7 @@ export class AuthService {
     }
     if (!this.loginPublicKey$) {
       this.loginPublicKey$ = this.apiClient
-        .get<ResponseApi<string | { publicKey?: string; key?: string }>>(API_ENDPOINTS.auth.publicKey)
+        .get<ResponseApi<string | PublicKeyPayload>>(API_ENDPOINTS.auth.publicKey)
         .pipe(
           map((res) => {
             const key = this.extractPublicKey(res.data);
@@ -150,7 +145,7 @@ export class AuthService {
     return this.loginPublicKey$;
   }
 
-  private extractPublicKey(data: string | { publicKey?: string; key?: string } | null | undefined): string {
+  private extractPublicKey(data: string | PublicKeyPayload | null | undefined): string {
     if (typeof data === 'string') {
       return data;
     }

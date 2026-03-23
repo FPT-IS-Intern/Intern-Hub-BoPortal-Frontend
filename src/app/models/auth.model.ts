@@ -2,6 +2,11 @@ export interface LogoutRequest {
   refreshToken: string;
 }
 
+export interface AuthTokenPair {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export interface LoginRequest {
   username: string;
   password?: string;
@@ -24,11 +29,18 @@ export interface BoAdminProfile {
   permissions?: string[];
 }
 
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
+export interface BoAdminProfileResponse extends BoAdminProfile {
+  user?: BoAdminProfile;
+}
+
+export interface LoginResponse extends AuthTokenPair {
   tokenType?: string;
   expiresIn?: number;
   refreshExpiresIn?: number;
   user?: BoAdminProfile;
+}
+
+export interface PublicKeyPayload {
+  publicKey?: string;
+  key?: string;
 }
