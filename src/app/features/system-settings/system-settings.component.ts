@@ -22,8 +22,18 @@ import { BreadcrumbService } from '@/services/common/breadcrumb.service';
 import { LoadingService } from '@/services/common/loading.service';
 import { ToastService } from '@/services/common/toast.service';
 import { SystemConfigurationService } from '@/services/api/system-configuration.service';
-import { SystemConfigUpdateRequest, SecurityConfigUpdateRequest } from '@/models/system-configuration.model';
+import {
+  SecurityConfigUpdateRequest,
+  SystemConfigUpdateRequest,
+  UiClientConfig,
+  WorkingTimeConfig,
+} from '@/models/system-configuration.model';
 import { AuthService } from '@/services/api/auth.service';
+import { SecurityConfig } from '@/models/security-config.model';
+
+type SettingsFormGroupLike = {
+  get(controlName: string): AbstractControl | null;
+};
 
 @Component({
   selector: 'app-system-settings',
@@ -226,7 +236,7 @@ export class SystemSettingsComponent implements OnInit {
     return !this.isSaving() && hasChanges && this.systemForm.valid && this.securityForm.valid;
   }
 
-  protected updateControl(form: any, controlName: string, value: any): void {
+  protected updateControl(form: SettingsFormGroupLike, controlName: string, value: string | boolean): void {
     const control = form.get(controlName);
     if (!control) return;
     control.setValue(value);
@@ -245,7 +255,7 @@ export class SystemSettingsComponent implements OnInit {
     this.logoPreviewError.set(false);
   }
 
-  private patchSystemConfig(uiClientConfig: any, workingTimeConfig: any): void {
+  private patchSystemConfig(uiClientConfig?: UiClientConfig | null, workingTimeConfig?: WorkingTimeConfig | null): void {
     this.systemForm.patchValue(
       {
         appName: uiClientConfig?.appName ?? '',
@@ -259,7 +269,7 @@ export class SystemSettingsComponent implements OnInit {
     this.systemForm.markAsPristine();
   }
 
-  private patchSecurityConfig(config: any): void {
+  private patchSecurityConfig(config: SecurityConfig): void {
     this.securityForm.patchValue(
       {
         minPasswordLength: config.minPasswordLength ?? 0,
@@ -309,7 +319,7 @@ export class SystemSettingsComponent implements OnInit {
     return normalized.length === 5 ? `${normalized}:00` : normalized;
   }
 
-  private toNumber(value: any): number {
+  private toNumber(value: string | number | boolean | null | undefined): number {
     const num = Number(value);
     return Number.isNaN(num) ? 0 : num;
   }
