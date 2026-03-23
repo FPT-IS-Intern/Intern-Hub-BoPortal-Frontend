@@ -66,6 +66,7 @@ export default [
       'src/app/services/api/**/*.ts',
       'src/app/core/config/**/*.ts',
       'src/app/core/constants/**/*.ts',
+      'src/app/core/guards/**/*.ts',
       'src/app/components/**/*.ts',
       'src/app/features/checkin-location/**/*.ts',
       'src/app/features/menu-management/**/*.ts',

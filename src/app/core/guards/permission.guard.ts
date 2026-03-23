@@ -1,26 +1,29 @@
 import { inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
-import { PermissionService } from '@/services/api/permission.service';
+import { CanActivateFn, Router } from '@angular/router';
 import { map, take } from 'rxjs';
+import { PermissionRow } from '@/models/permission.model';
+import { PermissionService } from '@/services/api/permission.service';
 
 export const permissionGuard: (requiredPermission: string) => CanActivateFn = (requiredPermission) => {
-    return (route, state) => {
-        const router = inject(Router);
-        const permissionService = inject(PermissionService);
+  return () => {
+    const router = inject(Router);
+    const permissionService = inject(PermissionService);
 
-        // Ở đây giả định PermissionService có method checkPermission
-        // Nếu chưa có, chúng ta sẽ cần bổ sung hoặc mock logic dựa trên requirements
-        return permissionService.getPermissions('current_role').pipe(
-            take(1),
-            map(res => {
-                const permissions = (res as any).data || [];
-                const hasPermission = permissions.some((p: any) => p.function === requiredPermission && p.view);
-                if (hasPermission) {
-                    return true;
-                }
-                router.navigate(['/404']);
-                return false;
-            })
+    return permissionService.getPermissions('current_role').pipe(
+      take(1),
+      map((response) => {
+        const permissions: PermissionRow[] = response.data ?? [];
+        const hasPermission = permissions.some((permission) =>
+          permission.function === requiredPermission && permission.view,
         );
-    };
+
+        if (hasPermission) {
+          return true;
+        }
+
+        router.navigate(['/404']);
+        return false;
+      }),
+    );
+  };
 };
