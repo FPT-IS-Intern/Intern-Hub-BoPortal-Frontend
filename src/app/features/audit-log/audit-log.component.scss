@@ -317,3 +317,124 @@
     font-style: italic;
   }
 }
+
+.drawer-header-new {
+  padding-bottom: 20px;
+
+  .header-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  .header-avatar {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: rgba(var(--app-color-primary-rgb, 194, 65, 12), 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-placeholder {
+      font-size: 20px;
+      font-weight: 800;
+      color: #c2410c;
+    }
+  }
+
+  .header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+
+    .user-name {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: #111827;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-email {
+      margin: 0;
+      font-size: 13px;
+      color: #64748b;
+    }
+  }
+}
+
+.content-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.12);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .info-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.status-active {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &.status-inactive {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.drawer-state {
+  padding: 24px;
+}

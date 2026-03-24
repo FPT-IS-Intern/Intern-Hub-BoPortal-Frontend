@@ -395,4 +395,27 @@ export class AuditLogComponent implements OnInit {
     const normalized = String(value).trim();
     return normalized.length > 0 ? normalized : '-';
   }
+
+  protected avatarFallback(name?: string | null): string {
+    const normalized = `${name || ''}`.trim();
+    if (!normalized) return '?';
+    const parts = normalized.split(/\s+/).slice(0, 2);
+    return parts.map((part) => part.charAt(0)).join('').toUpperCase();
+  }
+
+  protected businessStatusClass(status?: string | null): string {
+    if (!status) return 'status-unknown';
+    const s = status.toUpperCase();
+    if (s === 'ACTIVE') return 'status-active';
+    if (s === 'INACTIVE') return 'status-inactive';
+    return 'status-unknown';
+  }
+
+  protected businessStatusLabel(status?: string | null): string {
+    if (!status) return 'Không xác định';
+    const s = status.toUpperCase();
+    if (s === 'ACTIVE') return 'Hoạt động';
+    if (s === 'INACTIVE') return 'Vô hiệu hóa';
+    return status;
+  }
 }
