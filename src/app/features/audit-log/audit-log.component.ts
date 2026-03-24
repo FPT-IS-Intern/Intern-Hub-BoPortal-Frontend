@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
@@ -53,6 +53,7 @@ export class AuditLogComponent implements OnInit {
   private readonly auditService = inject(AuditService);
   private readonly userManagementService = inject(UserManagementService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly baseColumns: DataTableColumn[] = [
@@ -163,11 +164,17 @@ export class AuditLogComponent implements OnInit {
   }
 
   protected clearFilters(): void {
+    this.fixedActorId.set('');
     this.keyword.set(this.fixedActorId());
     this.startDate.set('');
     this.endDate.set('');
     this.selectedAction.set('');
     this.pageIndex.set(1);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { actorId: null },
+      queryParamsHandling: 'merge',
+    });
     this.loadAudits();
   }
 
