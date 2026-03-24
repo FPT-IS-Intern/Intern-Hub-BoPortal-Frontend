@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
@@ -8,6 +9,7 @@ import { finalize } from 'rxjs';
 import { DataTableColumn, DataTableComponent } from '@/components/data-table/data-table.component';
 import { SharedDropdownComponent, DropdownOption } from '@/components/shared-dropdown/shared-dropdown.component';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
+import { DateRange, SharedDateRangeComponent } from '@/components/shared-date-range/shared-date-range.component';
 import { PaginationComponent } from '@/components/pagination/pagination.component';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
 import { SideDrawerComponent } from '@/components/popups/side-drawer/side-drawer.component';
@@ -18,6 +20,7 @@ import { ToastService } from '@/services/common/toast.service';
 import { AuditService } from '@/services/api/audit.service';
 import { AuditItemResponse, AuditQueryRequest, ActionFunctionResponse } from '@/models/audit-log.model';
 import { UserManagementService } from '@/services/api/user-management.service';
+import { UserDetail } from '@/models/user-management.model';
 
 export interface AuditItemRow extends AuditItemResponse {
   hashValid?: boolean;
@@ -34,6 +37,7 @@ export interface AuditItemRow extends AuditItemResponse {
     DataTableComponent,
     SharedDropdownComponent,
     SharedSearchComponent,
+    SharedDateRangeComponent,
     PaginationComponent,
     SideDrawerComponent
   ],
@@ -48,13 +52,14 @@ export class AuditLogComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly auditService = inject(AuditService);
   private readonly userManagementService = inject(UserManagementService);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly baseColumns: DataTableColumn[] = [
-    { key: 'id', width: '80px', label: 'ID' },
     { key: 'timeStamp', width: '180px', label: 'Thời gian' },
     { key: 'traceId', minWidth: '200px', label: 'Trace ID' },
     { key: 'actor', minWidth: '150px', label: 'Người dùng' },
+    { key: 'actorId', width: '120px', label: 'Actor ID' },
     { key: 'entity', minWidth: '150px', label: 'Đối tượng' },
     { key: 'action', width: '120px', label: 'Hành động' },
     { key: 'actionStatus', width: '120px', label: 'Trạng thái', align: 'center' },
@@ -72,6 +77,11 @@ export class AuditLogComponent implements OnInit {
   protected readonly startDate = signal('');
   protected readonly endDate = signal('');
   protected readonly selectedAction = signal('');
+  protected readonly fixedActorId = signal('');
+  protected readonly dateRange = computed<DateRange>(() => ({
+    from: this.startDate() || null,
+    to: this.endDate() || null,
+  }));
 
   protected readonly isLoading = signal(true);
   protected readonly isFiltering = signal(false);
@@ -80,6 +90,9 @@ export class AuditLogComponent implements OnInit {
   // Drawer / Diff Viewer State
   protected readonly drawerVisible = signal(false);
   protected readonly selectedAudit = signal<AuditItemRow | null>(null);
+  protected readonly userDrawerVisible = signal(false);
+  protected readonly userDrawerLoading = signal(false);
+  protected readonly selectedActorUser = signal<UserDetail | null>(null);
 
   // Action Function Management State
   protected readonly actionDrawerVisible = signal(false);
@@ -97,13 +110,22 @@ export class AuditLogComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.updateBreadcrumbs());
 
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const actorId = (params.get('actorId') || '').trim();
+        this.fixedActorId.set(actorId);
+        this.keyword.set(actorId);
+        this.pageIndex.set(1);
+        this.loadAudits();
+      });
+
     this.loadActionFunctions();
-    this.loadAudits();
   }
 
   private updateBreadcrumbs(): void {
     this.breadcrumbService.setBreadcrumbs([
-      { label: this.translate.instant('checkin.breadcrumb.home'), icon: 'dsi-home-01-line', url: '/main' },
+      { label: this.translate.instant('checkin.breadcrumb.home'), icon: 'custom-icon-home', url: '/main' },
       { label: this.translate.instant('auditLog.breadcrumb.title'), active: true }
     ]);
   }
@@ -124,6 +146,12 @@ export class AuditLogComponent implements OnInit {
     this.applyFilters();
   }
 
+  protected onDateRangeChange(range: DateRange): void {
+    this.startDate.set(range.from || '');
+    this.endDate.set(range.to || '');
+    this.applyFilters();
+  }
+
   protected onActionChange(val: any): void {
     this.selectedAction.set(val || '');
     this.applyFilters();
@@ -135,7 +163,7 @@ export class AuditLogComponent implements OnInit {
   }
 
   protected clearFilters(): void {
-    this.keyword.set('');
+    this.keyword.set(this.fixedActorId());
     this.startDate.set('');
     this.endDate.set('');
     this.selectedAction.set('');
@@ -166,6 +194,11 @@ export class AuditLogComponent implements OnInit {
       this.isFiltering.set(false);
     } else {
       this.isFiltering.set(true);
+    }
+
+    if (this.fixedActorId()) {
+      this.executeAuditQuery([this.fixedActorId()], showPageLoading);
+      return;
     }
 
     if (keyword) {
@@ -255,6 +288,31 @@ export class AuditLogComponent implements OnInit {
     this.selectedAudit.set(null);
   }
 
+  protected openActorDetail(row: AuditItemRow): void {
+    if (!row.actorId) {
+      return;
+    }
+    const actorId = String(row.actorId).trim();
+    if (!actorId) {
+      return;
+    }
+    this.userDrawerVisible.set(true);
+    this.userDrawerLoading.set(true);
+    this.selectedActorUser.set(null);
+
+    this.userManagementService.getUserById(actorId)
+      .pipe(finalize(() => this.userDrawerLoading.set(false)))
+      .subscribe({
+        next: (res) => this.selectedActorUser.set(res.data || null),
+        error: () => this.toastService.error(`Không thể tải thông tin user #${actorId}`),
+      });
+  }
+
+  protected closeUserDrawer(): void {
+    this.userDrawerVisible.set(false);
+    this.selectedActorUser.set(null);
+  }
+
   // ---- ACTION FUNCTION MANAGEMENT ----
   protected loadActionFunctions(): void {
     this.auditService.getActionFunctions().subscribe({
@@ -265,7 +323,11 @@ export class AuditLogComponent implements OnInit {
         // Update selection options
         const options: DropdownOption[] = [
           { label: 'Tất cả hành động', value: '' },
-          ...list.map(a => ({ label: a.action, value: a.action }))
+          ...list.map(a => ({
+            label: a.action,
+            value: a.action,
+            description: a.description || ''
+          }))
         ];
         this.actionOptions.set(options);
       },
@@ -317,5 +379,13 @@ export class AuditLogComponent implements OnInit {
     } catch {
       return val;
     }
+  }
+
+  protected safeValue(value?: string | number | null): string {
+    if (value == null) {
+      return '-';
+    }
+    const normalized = String(value).trim();
+    return normalized.length > 0 ? normalized : '-';
   }
 }

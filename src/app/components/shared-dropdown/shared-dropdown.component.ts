@@ -10,6 +10,7 @@ export interface DropdownOption {
   label: string;
   value: DropdownValue;
   icon?: string;
+  description?: string;
 }
 
 import { TranslateModule } from '@ngx-translate/core';
@@ -65,6 +66,7 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
   @Input() icon: string = '';
   @Input() width: string = '100%';
   @Input() direction: 'auto' | 'up' | 'down' = 'auto';
+  @Input() maxLabelChars = 0;
 
   @Output() valueChange = new EventEmitter<DropdownValue>();
 
@@ -110,6 +112,36 @@ export class SharedDropdownComponent implements ControlValueAccessor, OnInit {
 
   protected get selectedOption(): DropdownOption | undefined {
     return this.options.find(opt => opt.value === this.internalValue);
+  }
+
+  protected get selectedDisplayLabel(): string {
+    return this.truncateLabel(this.selectedLabel);
+  }
+
+  protected get selectedTooltip(): string {
+    const selected = this.selectedOption;
+    return this.buildOptionTooltip(selected?.label || this.selectedLabel, selected?.description);
+  }
+
+  protected getOptionDisplayLabel(opt: DropdownOption): string {
+    return this.truncateLabel(opt.label);
+  }
+
+  protected getOptionTooltip(opt: DropdownOption): string {
+    return this.buildOptionTooltip(opt.label, opt.description);
+  }
+
+  private truncateLabel(label: string): string {
+    const max = Number(this.maxLabelChars) || 0;
+    if (max <= 0 || !label || label.length <= max) {
+      return label;
+    }
+    return `${label.slice(0, max)}...`;
+  }
+
+  private buildOptionTooltip(label: string, description?: string): string {
+    const desc = (description || '').trim();
+    return desc ? `${label}\n${desc}` : label;
   }
 
   protected toggle(event: MouseEvent): void {

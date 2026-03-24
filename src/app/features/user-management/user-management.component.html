@@ -238,25 +238,32 @@
 
     @if (drawerTab() === 'trace') {
     <div class="content-panel trace-panel-new">
-      @if (mergedTrace().length === 0) {
+      @if (auditLogsLoading()) {
+      <div class="no-data-text centered">{{ 'common.loading' | translate }}</div>
+      } @else if (recentAuditLogs().length === 0) {
       <div class="no-data-text centered">{{ 'users.detail.trace.empty' | translate }}</div>
       } @else {
       <div class="timeline-wrap">
-        @for (record of mergedTrace(); track trackTrace($index, record)) {
+        @for (record of recentAuditLogs(); track trackRecentAudit($index, record)) {
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-content">
             <div class="tm-header">
-              <span class="tm-title">{{ record.title }}</span>
-              <span class="tm-time">{{ record.createdAt | date:'dd/MM HH:mm' }}</span>
+              <span class="tm-title">{{ record.action || '-' }}</span>
+              <span class="tm-time">{{ record.timeStamp | date:'dd/MM HH:mm' }}</span>
             </div>
-            <p class="tm-desc">{{ record.description }}</p>
-            @if (record.actor) {
-            <span class="tm-actor">{{ 'users.detail.trace.by' | translate }}: {{ record.actor }}</span>
+            <p class="tm-desc">{{ record.actionDescription || record.entity || '-' }}</p>
+            @if (record.traceId) {
+            <span class="tm-actor">Trace ID: {{ record.traceId }}</span>
             }
           </div>
         </div>
         }
+      </div>
+      <div class="trace-more-wrap">
+        <button type="button" class="btn-row-action" (click)="openAuditLogForCurrentUser()">
+          Xem thêm
+        </button>
       </div>
       }
     </div>

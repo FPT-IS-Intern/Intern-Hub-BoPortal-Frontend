@@ -732,6 +732,12 @@
   }
 }
 
+.trace-more-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .timeline-item {
   position: relative;
   padding-bottom: 20px;

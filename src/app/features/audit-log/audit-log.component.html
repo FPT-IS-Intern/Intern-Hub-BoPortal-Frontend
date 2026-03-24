@@ -9,13 +9,18 @@
   <div class="audit-log-filters">
     <app-shared-search [value]="keyword()" [placeholder]="'Tìm kiếm đối tượng, người thao tác...'" (valueChange)="onSearchChange($event)"></app-shared-search>
     
-    <div class="filter-dates">
-      <input type="date" class="date-input" [ngModel]="startDate()" (ngModelChange)="onStartDateChange($event)" />
-      <span> - </span>
-      <input type="date" class="date-input" [ngModel]="endDate()" (ngModelChange)="onEndDateChange($event)" />
-    </div>
+    <app-shared-date-range
+      [dateRange]="dateRange()"
+      (dateRangeChange)="onDateRangeChange($event)">
+    </app-shared-date-range>
 
-    <app-shared-dropdown [options]="actionOptions()" [value]="selectedAction()" (valueChange)="onActionChange($event)" width="200px"></app-shared-dropdown>
+    <app-shared-dropdown
+      [options]="actionOptions()"
+      [value]="selectedAction()"
+      (valueChange)="onActionChange($event)"
+      width="320px"
+      [maxLabelChars]="32">
+    </app-shared-dropdown>
     
     <button type="button" class="btn-outline-custom" (click)="clearFilters()">Xóa lọc</button>
     <button type="button" class="btn-primary-custom" (click)="openActionManager()">
@@ -40,21 +45,30 @@
             @case ('actions') {
               <div class="action-buttons">
                 <span class="verify-icon" [ngClass]="row.hashValid === true ? 'valid' : (row.hashValid === false ? 'invalid' : '')" (click)="verifyHash(row)" title="Verify Hash">
-                  <i class="custom-icon-check" *ngIf="row.hashValid === true"></i>
-                  <i class="custom-icon-alert-square" *ngIf="row.hashValid !== true"></i>
+                  <i class="custom-icon-success" *ngIf="row.hashValid === true"></i>
+                  <i class="custom-icon-warning" *ngIf="row.hashValid !== true"></i>
                 </span>
                 <span class="view-icon" (click)="openDiff(row)" title="Show Diff">
-                  <i class="custom-icon-eye"></i>
+                  <i class="line-file-eye"></i>
                 </span>
               </div>
             }
             @case ('actionStatus') {
-              <span class="status-badge" [ngClass]="row.actionStatus.toLowerCase()">
-                {{ row.actionStatus }}
+              <span class="status-badge" [ngClass]="(row.actionStatus || '').toLowerCase()">
+                {{ row.actionStatus || '-' }}
               </span>
             }
             @case ('timeStamp') {
               {{ formatDateTime(row.timeStamp) }}
+            }
+            @case ('actorId') {
+              @if (row.actorId) {
+                <button type="button" class="actor-link" (click)="openActorDetail(row)">
+                  #{{ row.actorId }}
+                </button>
+              } @else {
+                <span>-</span>
+              }
             }
             @default {
               {{ row[col.key] || '-' }}
@@ -112,6 +126,31 @@
         </div>
       </div>
     </div>
+  </app-side-drawer>
+
+  <app-side-drawer
+    [isVisible]="userDrawerVisible()"
+    [title]="'Thông tin người dùng'"
+    width="480px"
+    (isVisibleChange)="userDrawerVisible.set($event)"
+    (close)="closeUserDrawer()">
+    <div class="user-drawer" *ngIf="!userDrawerLoading() && selectedActorUser(); else userDrawerLoadingTpl">
+      <div class="user-main">
+        <h3>{{ safeValue(selectedActorUser()!.fullName) }}</h3>
+        <p>{{ safeValue(selectedActorUser()!.email) }}</p>
+      </div>
+      <div class="user-grid">
+        <div class="user-field"><span>User ID</span><strong>{{ safeValue(selectedActorUser()!.userId) }}</strong></div>
+        <div class="user-field"><span>SĐT</span><strong>{{ safeValue(selectedActorUser()!.phoneNumber) }}</strong></div>
+        <div class="user-field"><span>Role</span><strong>{{ safeValue(selectedActorUser()!.role) }}</strong></div>
+        <div class="user-field"><span>Position</span><strong>{{ safeValue(selectedActorUser()!.positionCode) }}</strong></div>
+        <div class="user-field"><span>Department</span><strong>{{ safeValue(selectedActorUser()!.department) }}</strong></div>
+        <div class="user-field"><span>Trạng thái</span><strong>{{ safeValue(selectedActorUser()!.status) }}</strong></div>
+      </div>
+    </div>
+    <ng-template #userDrawerLoadingTpl>
+      <div class="user-drawer-loading">{{ userDrawerLoading() ? 'Đang tải thông tin người dùng...' : 'Không có dữ liệu người dùng' }}</div>
+    </ng-template>
   </app-side-drawer>
 
   <!-- Action Manager Drawer -->

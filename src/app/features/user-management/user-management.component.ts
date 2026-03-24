@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
@@ -23,6 +24,8 @@ import { BreadcrumbService } from '@/services/common/breadcrumb.service';
 import { LoadingService } from '@/services/common/loading.service';
 import { ToastService } from '@/services/common/toast.service';
 import { UserManagementService } from '@/services/api/user-management.service';
+import { AuditService } from '@/services/api/audit.service';
+import { AuditItemResponse } from '@/models/audit-log.model';
 import {
   AuthzRole,
   UserDetail,
@@ -76,6 +79,8 @@ export class UserManagementComponent {
   private readonly translateService = inject(TranslateService);
   private readonly loadingService = inject(LoadingService);
   private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly auditService = inject(AuditService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly rows = signal<UserListItem[]>([]);
@@ -101,6 +106,8 @@ export class UserManagementComponent {
   protected readonly selectedUser = signal<UserDetail | null>(null);
   protected readonly activityHistory = signal<UserHistoryRecord[]>([]);
   protected readonly loginHistory = signal<UserHistoryRecord[]>([]);
+  protected readonly recentAuditLogs = signal<AuditItemResponse[]>([]);
+  protected readonly auditLogsLoading = signal(false);
 
   protected readonly userRoles = signal<AuthzRole[]>([]);
   protected readonly allRoles = signal<AuthzRole[]>([]);
@@ -337,6 +344,7 @@ export class UserManagementComponent {
         next: (res) => {
           this.selectedUser.set(res.data ? this.normalizeUserDetail(res.data) : null);
           this.loadTrace(userId);
+          this.loadRecentAuditLogs(userId);
           this.loadUserRoles(userId);
           if (this.allRoles().length === 0) this.loadAllRoles();
         },
@@ -345,6 +353,15 @@ export class UserManagementComponent {
   }
 
   protected closeDrawer(): void { this.drawerVisible.set(false); }
+
+  protected openAuditLogForCurrentUser(): void {
+    const userId = this.selectedUser()?.userId;
+    if (!userId) {
+      return;
+    }
+    this.drawerVisible.set(false);
+    this.router.navigate(['/audit-log'], { queryParams: { actorId: userId } });
+  }
 
   protected requestAction(action: ConfirmAction, user?: UserListItem | UserDetail | null, event?: Event): void {
     event?.stopPropagation();
@@ -618,6 +635,10 @@ export class UserManagementComponent {
     return this.getUserSystemStatus(user || this.selectedUser()) === 'SUSPENDED';
   }
 
+  protected trackRecentAudit(index: number, row: AuditItemResponse): string {
+    return `${row.id}-${row.timeStamp}-${index}`;
+  }
+
   private loadUsers(options: { showPageLoading?: boolean; showTableOverlay?: boolean } = {}): void {
     const showPageLoading = options.showPageLoading ?? true;
     const showTableOverlay = options.showTableOverlay ?? false;
@@ -688,6 +709,20 @@ export class UserManagementComponent {
       next: (res) => this.loginHistory.set(res.data ?? []),
       error: () => this.loginHistory.set([]),
     });
+  }
+
+  private loadRecentAuditLogs(userId: UserId): void {
+    this.auditLogsLoading.set(true);
+    this.auditService.queryAudits({
+      page: 0,
+      size: 10,
+      actorIds: [String(userId)],
+    })
+      .pipe(finalize(() => this.auditLogsLoading.set(false)))
+      .subscribe({
+        next: (res) => this.recentAuditLogs.set(res.data?.content ?? []),
+        error: () => this.recentAuditLogs.set([]),
+      });
   }
 
   private loadUserRoles(userId: UserId): void {
