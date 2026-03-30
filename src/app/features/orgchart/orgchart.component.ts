@@ -18,6 +18,9 @@ import {
   OrgChartUserNode,
 } from '@/models/orgchart.model';
 import { OrgChartService } from '@/services/api/orgchart.service';
+import { UserManagementService } from '@/services/api/user-management.service';
+
+type DrawerMode = 'view' | 'assign-member' | 'move-node';
 
 interface UiOrgChartNode extends OrgChartUserNode {
   children: UiOrgChartNode[];
@@ -58,6 +61,7 @@ export class OrgChartComponent {
   private static readonly DEEP_FOCUS_DEPTH = 6;
 
   private readonly orgChartService = inject(OrgChartService);
+  private readonly userManagementService = inject(UserManagementService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
@@ -83,6 +87,8 @@ export class OrgChartComponent {
   protected readonly selectedDetail = signal<OrgChartUserDetail | null>(null);
   protected readonly detailVisible = signal(false);
   protected readonly detailLoading = signal(false);
+  protected readonly drawerMode = signal<DrawerMode>('view');
+  protected readonly saving = signal(false);
   protected readonly departmentOptions = signal<DropdownOption[]>([]);
   protected readonly statusOptions = signal<DropdownOption[]>([]);
   protected readonly searchPlaceholder = signal('');
@@ -94,6 +100,17 @@ export class OrgChartComponent {
   protected readonly isPanning = signal(false);
   protected readonly panX = signal(0);
   protected readonly panY = signal(0);
+  protected readonly positionOptions = signal<string[]>([]);
+  protected readonly managerSearchTerm = signal('');
+  protected readonly managerSearchLoading = signal(false);
+  protected readonly managerSearchResults = signal<OrgChartUserLite[]>([]);
+  protected readonly formManagerId = signal<string | null>(null);
+  protected readonly formManagerLabel = signal('');
+  protected readonly candidateSearchTerm = signal('');
+  protected readonly candidateSearchLoading = signal(false);
+  protected readonly candidateSearchResults = signal<OrgChartUserLite[]>([]);
+  protected readonly selectedCandidateId = signal<string | null>(null);
+  protected readonly selectedCandidateLabel = signal('');
 
   protected readonly hasActiveFilters = computed(
     () => !!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus(),
@@ -101,9 +118,16 @@ export class OrgChartComponent {
   protected readonly searchPanelVisible = computed(
     () => this.hasActiveFilters() && this.searchPanelOpen(),
   );
-  protected readonly selectedUserTitle = computed(
-    () => this.selectedDetail()?.name || this.translateService.instant('orgchart.detail.title'),
-  );
+  protected readonly isFormMode = computed(() => this.drawerMode() !== 'view');
+  protected readonly drawerTitle = computed(() => {
+    if (this.drawerMode() === 'assign-member') {
+      return this.translateService.instant('orgchart.drawer.assignTitle');
+    }
+    if (this.drawerMode() === 'move-node') {
+      return this.translateService.instant('orgchart.drawer.moveTitle');
+    }
+    return this.selectedDetail()?.name || this.translateService.instant('orgchart.detail.title');
+  });
   protected readonly deepFocusMode = computed(
     () => !this.forceTreeOverview() && this.focusPath().length > OrgChartComponent.DEEP_FOCUS_DEPTH && !!this.selectedDetail(),
   );
@@ -138,6 +162,26 @@ export class OrgChartComponent {
   protected readonly viewportTransform = computed(
     () => `translate(calc(-50% + ${this.panX()}px), calc(-50% + ${this.panY()}px)) scale(${this.zoomScale()})`,
   );
+  protected readonly selectedManagerName = computed(() => {
+    const selectedId = this.formManagerId();
+    if (!selectedId) {
+      return '';
+    }
+    if (this.formManagerLabel()) {
+      return this.formManagerLabel();
+    }
+    return this.managerSearchResults().find((item) => item.id === selectedId)?.name ?? '';
+  });
+  protected readonly selectedCandidateName = computed(() => {
+    const selectedId = this.selectedCandidateId();
+    if (!selectedId) {
+      return '';
+    }
+    if (this.selectedCandidateLabel()) {
+      return this.selectedCandidateLabel();
+    }
+    return this.candidateSearchResults().find((item) => item.id === selectedId)?.name ?? '';
+  });
 
   private activePointerId: number | null = null;
   private panStartX = 0;
@@ -174,6 +218,7 @@ export class OrgChartComponent {
       });
 
     void this.loadTree();
+    void this.loadMetaOptions();
   }
 
   protected onSearchChange(value: string): void {
@@ -196,6 +241,161 @@ export class OrgChartComponent {
 
   protected retryLoad(): void {
     void this.loadTree();
+  }
+
+  protected openAssignMemberForm(): void {
+    const detail = this.selectedDetail();
+    if (!detail) {
+      return;
+    }
+
+    this.drawerMode.set('assign-member');
+    this.selectedCandidateId.set(null);
+    this.selectedCandidateLabel.set('');
+    this.candidateSearchTerm.set('');
+    this.candidateSearchResults.set([]);
+  }
+
+  protected openMoveNodeForm(): void {
+    const detail = this.selectedDetail();
+    if (!detail) {
+      return;
+    }
+
+    this.drawerMode.set('move-node');
+    this.formManagerId.set(detail.manager?.id ?? null);
+    this.formManagerLabel.set(detail.manager?.name ?? '');
+    this.managerSearchTerm.set(detail.manager?.name ?? '');
+    this.managerSearchResults.set([]);
+  }
+
+  protected async saveAssignMember(): Promise<void> {
+    if (this.saving()) {
+      return;
+    }
+
+    const targetNode = this.selectedDetail();
+    const selectedUserId = this.selectedCandidateId();
+    if (!targetNode || !selectedUserId) {
+      this.toastService.error(this.translateService.instant('orgchart.toast.selectUserError'));
+      return;
+    }
+
+    this.saving.set(true);
+    try {
+      await firstValueFrom(this.orgChartService.updateManager(selectedUserId, targetNode.id));
+      await this.reloadTree(targetNode.id);
+      this.drawerMode.set('view');
+      this.toastService.success(this.translateService.instant('orgchart.toast.assignSuccess'));
+    } catch {
+      this.toastService.error(this.translateService.instant('orgchart.toast.assignError'));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  protected async saveMoveNode(): Promise<void> {
+    const detail = this.selectedDetail();
+    if (!detail || this.saving()) {
+      return;
+    }
+
+    this.saving.set(true);
+    try {
+      await firstValueFrom(this.orgChartService.updateManager(detail.id, this.formManagerId()));
+      await this.reloadTree(detail.id);
+      this.drawerMode.set('view');
+      this.toastService.success(this.translateService.instant('orgchart.toast.moveSuccess'));
+    } catch {
+      this.toastService.error(this.translateService.instant('orgchart.toast.moveError'));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  protected async removeSelectedUserFromNode(): Promise<void> {
+    const detail = this.selectedDetail();
+    if (!detail || this.saving()) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      this.translateService.instant('orgchart.confirm.removeMessage', { name: detail.name }),
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    this.saving.set(true);
+    try {
+      await firstValueFrom(this.orgChartService.updateManager(detail.id, null));
+      await this.reloadTree(undefined, detail.id);
+      this.closeDetail();
+      this.toastService.success(this.translateService.instant('orgchart.toast.removeSuccess'));
+    } catch {
+      this.toastService.error(this.translateService.instant('orgchart.toast.removeError'));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  protected onManagerSearchChange(value: string): void {
+    this.managerSearchTerm.set(value);
+    if (!value.trim()) {
+      this.formManagerLabel.set('');
+      this.formManagerId.set(null);
+    }
+    void this.searchManagers();
+  }
+
+  protected clearManagerSelection(): void {
+    this.formManagerId.set(null);
+    this.formManagerLabel.set('');
+    this.managerSearchTerm.set('');
+    this.managerSearchResults.set([]);
+  }
+
+  protected onCandidateSearchChange(value: string): void {
+    this.candidateSearchTerm.set(value);
+    if (!value.trim()) {
+      this.selectedCandidateId.set(null);
+      this.selectedCandidateLabel.set('');
+    }
+    void this.searchAssignableUsers();
+  }
+
+  protected chooseCandidate(candidate: OrgChartUserLite): void {
+    this.selectedCandidateId.set(candidate.id);
+    this.selectedCandidateLabel.set(candidate.name);
+    this.candidateSearchTerm.set(candidate.name);
+    this.candidateSearchResults.set([]);
+  }
+
+  protected chooseManager(candidate: OrgChartUserLite): void {
+    if (candidate.id === this.selectedDetail()?.id) {
+      return;
+    }
+
+    this.formManagerId.set(candidate.id);
+    this.formManagerLabel.set(candidate.name);
+    this.managerSearchTerm.set(candidate.name);
+    this.managerSearchResults.set([]);
+  }
+
+  protected cancelForm(): void {
+    this.drawerMode.set('view');
+    this.managerSearchResults.set([]);
+    this.managerSearchTerm.set('');
+    this.candidateSearchResults.set([]);
+    this.candidateSearchTerm.set('');
+  }
+
+  protected onDetailVisibleChange(visible: boolean): void {
+    if (visible) {
+      this.detailVisible.set(true);
+      return;
+    }
+    this.closeDetail();
   }
 
   protected zoomIn(): void {
@@ -293,6 +493,8 @@ export class OrgChartComponent {
     event?.stopPropagation();
     this.detailVisible.set(true);
     this.detailLoading.set(true);
+    this.drawerMode.set('view');
+    this.managerSearchResults.set([]);
 
     try {
       const response = await firstValueFrom(this.orgChartService.getUserDetail(userId));
@@ -306,6 +508,13 @@ export class OrgChartComponent {
 
   protected closeDetail(): void {
     this.detailVisible.set(false);
+    this.detailLoading.set(false);
+    this.drawerMode.set('view');
+    this.selectedDetail.set(null);
+    this.managerSearchResults.set([]);
+    this.managerSearchTerm.set('');
+    this.candidateSearchResults.set([]);
+    this.candidateSearchTerm.set('');
   }
 
   protected async focusResult(node: OrgChartUserNode): Promise<void> {
@@ -409,6 +618,15 @@ export class OrgChartComponent {
     }
   }
 
+  private async loadMetaOptions(): Promise<void> {
+    try {
+      const response = await firstValueFrom(this.userManagementService.getMetaOptions());
+      this.positionOptions.set([...(response.data?.positions ?? [])].sort((left, right) => left.localeCompare(right)));
+    } catch {
+      this.positionOptions.set([]);
+    }
+  }
+
   private async loadChildren(nodeId: string): Promise<void> {
     this.rootNode.update((root) => (root ? this.patchNode(root, nodeId, (target) => ({ ...target, isLoading: true })) : root));
 
@@ -464,6 +682,82 @@ export class OrgChartComponent {
     } finally {
       this.searchLoading.set(false);
     }
+  }
+
+  private async searchManagers(): Promise<void> {
+    const query = this.managerSearchTerm().trim();
+    if (!query) {
+      this.managerSearchResults.set([]);
+      return;
+    }
+
+    this.managerSearchLoading.set(true);
+    try {
+      const response = await firstValueFrom(this.orgChartService.searchUsers(query, undefined, undefined, 1, 8));
+      const currentUserId = this.selectedDetail()?.id;
+      this.managerSearchResults.set(
+        (response.data?.data ?? [])
+          .filter((item) => item.id !== currentUserId)
+          .map((item) => ({
+            id: item.id,
+            name: item.name,
+            title: item.title ?? undefined,
+            avatar: item.avatar ?? null,
+          })),
+      );
+    } catch {
+      this.managerSearchResults.set([]);
+      this.toastService.error(this.translateService.instant('orgchart.toast.searchManagerError'));
+    } finally {
+      this.managerSearchLoading.set(false);
+    }
+  }
+
+  private async searchAssignableUsers(): Promise<void> {
+    const query = this.candidateSearchTerm().trim();
+    if (!query) {
+      this.candidateSearchResults.set([]);
+      return;
+    }
+
+    this.candidateSearchLoading.set(true);
+    try {
+      const response = await firstValueFrom(
+        this.userManagementService.filterUsers({ keyword: query }, 1, 8, true),
+      );
+      const currentNodeId = this.selectedDetail()?.id;
+      this.candidateSearchResults.set(
+        (response.data?.items ?? [])
+          .filter((item) => item.userId !== currentNodeId)
+          .map((item) => ({
+            id: item.userId,
+            name: item.fullName || item.email || item.userId,
+            title: item.position || undefined,
+            avatar: item.avatarUrl ?? null,
+          })),
+      );
+    } catch {
+      this.candidateSearchResults.set([]);
+      this.toastService.error(this.translateService.instant('orgchart.toast.searchUserError'));
+    } finally {
+      this.candidateSearchLoading.set(false);
+    }
+  }
+
+  private async reloadTree(focusUserId?: string, deletedUserId?: string): Promise<void> {
+    const currentRootId = this.rootNode()?.id;
+    const nextRootId = currentRootId && currentRootId !== deletedUserId ? currentRootId : undefined;
+    await this.loadTree(nextRootId);
+
+    if (focusUserId) {
+      await this.focusNode(focusUserId);
+      await this.showUserDetail(focusUserId);
+      return;
+    }
+
+    this.clearHighlights();
+    this.focusPath.set([]);
+    this.forceTreeOverview.set(true);
   }
 
   private async focusNode(userId: string): Promise<void> {

@@ -1,61 +1,81 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@/core/guards/auth.guard';
+import { SystemSettingsComponent } from './features/system-settings/system-settings.component';
+import { PermissionMatrixComponent } from './features/permission-matrix/permission-matrix.component';
+import { NotificationBellComponent } from './features/notification-bell/notification-bell.component';
+import { BoPortalLayoutComponent } from './layouts/main-layout/bo-portal-layout.component';
+import { Error404LayoutComponent } from './layouts/error-404/error-404.component';
+import { LoginFormComponent } from './features/login/login-form.component';
+import { authGuard } from './core/guards/auth.guard';
+import { CheckinLocationComponent } from './features/checkin-location/checkin-location.component';
+import { OrgChartComponent } from './features/orgchart/orgchart.component';
+import { MenuManagementComponent } from './features/menu-management/menu-management.component';
+import { UserManagementComponent } from './features/user-management/user-management.component';
+import { AuditLogComponent } from './features/audit-log/audit-log.component';
 
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('@/features/login/login-form.component').then((m) => m.LoginFormComponent),
+    component: LoginFormComponent,
   },
   {
     path: '',
-    redirectTo: 'users',
+    redirectTo: 'general',
     pathMatch: 'full',
   },
   {
     path: '',
-    loadComponent: () => import('@/layouts/main-layout/bo-portal-layout.component').then((m) => m.BoPortalLayoutComponent),
+    component: BoPortalLayoutComponent,
     canActivate: [authGuard],
     children: [
+      // Kept for backward compatibility (login currently navigates to /main).
       {
         path: 'main',
-        redirectTo: 'users',
+        redirectTo: 'general',
         pathMatch: 'full',
       },
       {
-        path: 'users',
-        loadComponent: () => import('@/features/user-management/user-management.component').then((m) => m.UserManagementComponent),
+        path: 'general',
+        component: SystemSettingsComponent,
       },
       {
-        path: 'permissions',
-        loadComponent: () => import('@/features/permission-matrix/permission-matrix.component').then((m) => m.PermissionMatrixComponent),
-      },
-      {
-        path: 'notifications',
-        loadComponent: () => import('@/features/notification-bell/notification-bell.component').then((m) => m.NotificationBellComponent),
-      },
-      {
-        path: 'checkin',
-        loadComponent: () => import('@/features/checkin-location/checkin-location.component').then((m) => m.CheckinLocationComponent),
-      },
-      {
-        path: 'menus',
-        loadComponent: () => import('@/features/menu-management/menu-management.component').then((m) => m.MenuManagementComponent),
-      },
-      {
-        path: 'orgchart',
-        loadComponent: () => import('@/features/orgchart/orgchart.component').then((m) => m.OrgChartComponent),
+        path: 'security',
+        component: SystemSettingsComponent,
       },
       {
         path: 'system-settings',
-        loadComponent: () => import('@/features/system-settings/system-settings.component').then((m) => m.SystemSettingsComponent),
+        component: SystemSettingsComponent,
+      },
+      {
+        path: 'permissions',
+        component: PermissionMatrixComponent,
+      },
+      {
+        path: 'notifications',
+        component: NotificationBellComponent,
+      },
+      {
+        path: 'checkin',
+        component: CheckinLocationComponent,
+      },
+      {
+        path: 'orgchart',
+        component: OrgChartComponent,
+      },
+      {
+        path: 'menus',
+        component: MenuManagementComponent,
+      },
+      {
+        path: 'users',
+        component: UserManagementComponent,
       },
       {
         path: 'audit-log',
-        loadComponent: () => import('@/features/audit-log/audit-log.component').then((m) => m.AuditLogComponent),
+        component: AuditLogComponent,
       },
       {
-        path: '',
-        loadComponent: () => import('@/layouts/error-404/error-404.component').then((m) => m.Error404LayoutComponent),
+        path: '404',
+        component: Error404LayoutComponent,
       },
       {
         path: '**',

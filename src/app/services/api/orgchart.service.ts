@@ -5,6 +5,7 @@ import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
 import {
   OrgChartPageResponse,
+  OrgChartUserUpsertRequest,
   OrgChartUserDetail,
   OrgChartUserLite,
   OrgChartUserNode,
@@ -45,6 +46,31 @@ export class OrgChartService {
 
   getUserDetail(userId: string | number): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.get<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.byId(userId), {
+      skipErrorToast: true,
+    });
+  }
+
+  createUser(request: OrgChartUserUpsertRequest): Observable<ResponseApi<OrgChartUserDetail>> {
+    return this.apiClient.post<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.create, request, {
+      skipErrorToast: true,
+    });
+  }
+
+  updateUser(userId: string | number, request: OrgChartUserUpsertRequest): Observable<ResponseApi<OrgChartUserDetail>> {
+    return this.apiClient.patch<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.update(userId), request, {
+      skipErrorToast: true,
+    });
+  }
+
+  updateManager(userId: string | number, managerId?: string | number | null): Observable<ResponseApi<OrgChartUserDetail>> {
+    return this.apiClient.put<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.manager(userId), {}, {
+      params: managerId == null ? {} : { managerId },
+      skipErrorToast: true,
+    });
+  }
+
+  deleteUser(userId: string | number): Observable<ResponseApi<OrgChartUserDetail>> {
+    return this.apiClient.delete<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.delete(userId), {
       skipErrorToast: true,
     });
   }

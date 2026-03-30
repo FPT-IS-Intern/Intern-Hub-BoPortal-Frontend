@@ -69,7 +69,25 @@
       "reset": "Reset",
       "retry": "Retry",
       "expand": "Expand branch",
-      "collapse": "Collapse branch"
+      "collapse": "Collapse branch",
+      "assignMember": "Add user to node",
+      "moveNode": "Move node",
+      "removeFromNode": "Remove from node",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "clearManager": "Clear manager"
+    },
+    "drawer": {
+      "assignTitle": "Add user to node",
+      "moveTitle": "Move user to another node",
+      "assignHint": "Search an existing HRM user and attach them to the current node.",
+      "moveHint": "Only change the reporting node. User profile data is not edited here."
+    },
+    "form": {
+      "userSearch": "Search user by name or email",
+      "targetNode": "Target node",
+      "managerSearch": "Search target manager by name or email"
     },
     "status": {
       "active": "Employed",
@@ -124,7 +142,19 @@
       "loadError": "Unable to load organization chart",
       "expandError": "Unable to expand this branch",
       "detailError": "Unable to load employee details",
-      "searchError": "Unable to search employees"
+      "searchError": "Unable to search employees",
+      "searchManagerError": "Unable to search managers",
+      "searchUserError": "Unable to search users",
+      "selectUserError": "Please select a user to attach to this node",
+      "assignSuccess": "User added to node successfully",
+      "moveSuccess": "User moved successfully",
+      "removeSuccess": "User removed from node successfully",
+      "assignError": "Unable to add user to node",
+      "moveError": "Unable to move user",
+      "removeError": "Unable to remove user from node"
+    },
+    "confirm": {
+      "removeMessage": "Do you want to remove {{name}} from the current node?"
     }
   },
   "login": {

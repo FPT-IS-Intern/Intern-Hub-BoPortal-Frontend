@@ -54,8 +54,12 @@ export const API_ENDPOINTS = {
   },
   orgChart: {
     root: withBoPortal('/orgchart'),
+    create: withBoPortal('/orgchart/users'),
     search: withBoPortal('/orgchart/users'),
     byId: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),
+    update: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),
+    delete: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),
+    manager: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}/manager`),
     subordinates: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}/subordinates`),
     path: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}/path`),
   },

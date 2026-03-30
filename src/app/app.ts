@@ -1,19 +1,18 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '@/services/api/auth.service';
 import {
   StorageUtil,
   cancelTokenRefresh,
   notifyTokenRefreshed,
-} from '@/core/utils/storage.util';
-import { TokenStorageService } from '@/services/common/token-storage.service';
-import { LoadingService } from '@/services/common/loading.service';
-import { ToastService } from '@/services/common/toast.service';
-
-import { ToastContainer } from '@/components/toast-container/toast-container';
+} from './core/utils/storage.util';
 import { GlobalOverlaySpinnerComponent } from '@/components/loading/global-overlay-spinner/global-overlay-spinner.component';
 import { TopProgressBarComponent } from '@/components/loading/top-progress-bar/top-progress-bar.component';
+import { ToastContainer } from './components/toast-container/toast-container';
+import { LoadingService } from '@/services/common/loading.service';
+import { ToastService } from '@/services/common/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -21,50 +20,41 @@ import { TopProgressBarComponent } from '@/components/loading/top-progress-bar/t
   imports: [
     RouterOutlet,
     CommonModule,
+    TopProgressBarComponent,
     ToastContainer,
     GlobalOverlaySpinnerComponent,
-    TopProgressBarComponent,
   ],
   templateUrl: './app.html',
 })
 export class App implements OnInit, OnDestroy {
+  protected readonly loadingService = inject(LoadingService);
+  protected readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
   private readonly onAuthTokenExpired = this.handleAuthTokenExpired.bind(this);
   private readonly onForceLogout = this.handleForceLogout.bind(this);
 
-  private readonly tokenService = inject(TokenStorageService);
-  protected readonly loadingService = inject(LoadingService);
-  protected readonly toastService = inject(ToastService);
-  private readonly onWindowFocus = this.checkSessionValidity.bind(this);
+  constructor() {
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+        void event.urlAfterRedirects;
+      }
+    });
+  }
 
   ngOnInit(): void {
-    // Fetch /me if already logged in to populate header
-    if (this.tokenService.isAuthenticated()) {
+    if (StorageUtil.getAccessToken()) {
       this.authService.me().subscribe();
-    } else if (this.tokenService.getAccessToken()) {
-      // Token exists but is invalid/expired
-      this.handleForceLogout();
     }
 
     window.addEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.addEventListener('FORCE_LOGOUT', this.onForceLogout);
-    window.addEventListener('focus', this.onWindowFocus);
-  }
-
-  private checkSessionValidity(): void {
-    const token = this.tokenService.getAccessToken();
-    if (token && this.tokenService.isAccessTokenExpired()) {
-      console.warn('App: session expired on focus, triggering refresh/logout');
-      this.handleAuthTokenExpired();
-    }
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('AUTH_TOKEN_EXPIRED', this.onAuthTokenExpired);
     window.removeEventListener('FORCE_LOGOUT', this.onForceLogout);
-    window.removeEventListener('focus', this.onWindowFocus);
   }
 
   private handleAuthTokenExpired(): void {

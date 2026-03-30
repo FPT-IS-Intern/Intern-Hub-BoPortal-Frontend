@@ -48,6 +48,16 @@ export interface OrgChartUserDetail {
   subordinateCount: number;
 }
 
+export interface OrgChartUserUpsertRequest {
+  fullName: string;
+  companyEmail: string;
+  phoneNumber?: string | null;
+  address: string;
+  positionCode: string;
+  status: OrgChartStatus;
+  managerId?: number | null;
+}
+
 export interface OrgChartMeta {
   total: number;
   page: number;

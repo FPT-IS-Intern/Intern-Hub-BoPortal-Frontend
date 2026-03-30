@@ -69,7 +69,25 @@
       "reset": "Đặt lại",
       "retry": "Thử lại",
       "expand": "Mở nhánh",
-      "collapse": "Thu gọn nhánh"
+      "collapse": "Thu gọn nhánh",
+      "assignMember": "Thêm user vào node",
+      "moveNode": "Đổi node",
+      "removeFromNode": "Xóa khỏi node",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "cancel": "Hủy",
+      "clearManager": "Bỏ quản lý"
+    },
+    "drawer": {
+      "assignTitle": "Thêm user vào node",
+      "moveTitle": "Đổi node cho user",
+      "assignHint": "Tìm user có sẵn trong HRM rồi gán vào node đang xem.",
+      "moveHint": "Chỉ đổi node quản lý trực tiếp, không chỉnh sửa hồ sơ user."
+    },
+    "form": {
+      "userSearch": "Tìm user theo tên hoặc email",
+      "targetNode": "Node đích",
+      "managerSearch": "Tìm node quản lý theo tên hoặc email"
     },
     "status": {
       "active": "Đang công tác",
@@ -124,7 +142,19 @@
       "loadError": "Không tải được sơ đồ tổ chức",
       "expandError": "Không mở được nhánh này",
       "detailError": "Không tải được chi tiết nhân sự",
-      "searchError": "Không tìm kiếm được nhân sự"
+      "searchError": "Không tìm kiếm được nhân sự",
+      "searchManagerError": "Không tìm kiếm được quản lý",
+      "searchUserError": "Không tìm kiếm được user",
+      "selectUserError": "Vui lòng chọn user cần gán vào node",
+      "assignSuccess": "Đã thêm user vào node",
+      "moveSuccess": "Đã đổi node cho user",
+      "removeSuccess": "Đã xóa user khỏi node",
+      "assignError": "Không thể thêm user vào node",
+      "moveError": "Không thể đổi node cho user",
+      "removeError": "Không thể xóa user khỏi node"
+    },
+    "confirm": {
+      "removeMessage": "Bạn có chắc muốn xóa {{name}} khỏi node hiện tại?"
     }
   },
   "login": {

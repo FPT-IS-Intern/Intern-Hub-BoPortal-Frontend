@@ -29,6 +29,7 @@
             (valueChange)="onStatusChange($event)">
           </app-shared-dropdown>
         </div>
+
       </div>
     </section>
 
@@ -233,7 +234,7 @@
             [attr.aria-label]="'orgchart.viewport.zoomOut' | translate"
             [title]="'orgchart.viewport.zoomOut' | translate"
             (click)="zoomOut()">
-            −
+            -
           </button>
 
           <button
@@ -283,7 +284,7 @@
             @if (node.isLoading) {
               <span class="custom-icon-loading rotate"></span>
             } @else {
-              <span>{{ node.isExpanded ? '−' : '+' }}</span>
+              <span>{{ node.isExpanded ? '-' : '+' }}</span>
             }
           </button>
         } @else {
@@ -344,9 +345,9 @@
 
 <app-side-drawer
   [isVisible]="detailVisible()"
-  (isVisibleChange)="detailVisible.set($event)"
+  (isVisibleChange)="onDetailVisibleChange($event)"
   (close)="closeDetail()"
-  [title]="selectedUserTitle()"
+  [title]="drawerTitle()"
   width="460px">
   @if (detailLoading()) {
     <div class="detail-loading">
@@ -354,6 +355,102 @@
       <div class="detail-loading-line long"></div>
       <div class="detail-loading-line"></div>
       <div class="detail-loading-line"></div>
+    </div>
+  } @else if (isFormMode()) {
+    <div class="detail-panel">
+      <div class="drawer-action-row compact">
+        <p>{{ drawerMode() === 'assign-member' ? ('orgchart.drawer.assignHint' | translate) : ('orgchart.drawer.moveHint' | translate) }}</p>
+      </div>
+
+      @if (drawerMode() === 'assign-member') {
+        <div class="detail-section">
+          <div class="section-heading">
+            <h3>{{ 'orgchart.form.userSearch' | translate }}</h3>
+          </div>
+
+          <div class="manager-picker">
+            <label class="org-form-field full manager-search-field">
+              <span>{{ 'orgchart.form.userSearch' | translate }}</span>
+              <input type="text" [ngModel]="candidateSearchTerm()" (ngModelChange)="onCandidateSearchChange($event)">
+            </label>
+
+            @if (selectedCandidateName()) {
+              <div class="selected-manager-chip">
+                <strong>{{ selectedCandidateName() }}</strong>
+              </div>
+            }
+
+            @if (candidateSearchLoading()) {
+              <p class="empty-inline">{{ 'orgchart.search.loading' | translate }}</p>
+            } @else if (candidateSearchResults().length > 0) {
+              <div class="manager-results">
+                @for (candidate of candidateSearchResults(); track candidate.id) {
+                  <button type="button" class="lite-card manager-result-card" (click)="chooseCandidate(candidate)">
+                    <span>{{ candidate.name }}</span>
+                    <small>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</small>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="detail-section">
+          <div class="section-heading">
+            <h3>{{ 'orgchart.form.targetNode' | translate }}</h3>
+            @if (selectedManagerName()) {
+              <button type="button" class="text-action-btn" (click)="clearManagerSelection()">
+                {{ 'orgchart.actions.clearManager' | translate }}
+              </button>
+            }
+          </div>
+
+          <div class="manager-picker">
+            <label class="org-form-field full manager-search-field">
+              <span>{{ 'orgchart.form.managerSearch' | translate }}</span>
+              <input type="text" [ngModel]="managerSearchTerm()" (ngModelChange)="onManagerSearchChange($event)">
+            </label>
+
+            @if (selectedManagerName()) {
+              <div class="selected-manager-chip">
+                <strong>{{ selectedManagerName() }}</strong>
+              </div>
+            }
+
+            @if (managerSearchLoading()) {
+              <p class="empty-inline">{{ 'orgchart.search.loading' | translate }}</p>
+            } @else if (managerSearchResults().length > 0) {
+              <div class="manager-results">
+                @for (candidate of managerSearchResults(); track candidate.id) {
+                  <button type="button" class="lite-card manager-result-card" (click)="chooseManager(candidate)">
+                    <span>{{ candidate.name }}</span>
+                    <small>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</small>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="drawer-footer-actions">
+        <button
+          type="button"
+          class="action-btn-icon orgchart-action-btn"
+          aria-label="Hủy"
+          [disabled]="saving()"
+          (click)="cancelForm()">
+          <img src="assets/icons/x.svg" alt="">
+        </button>
+        <button
+          type="button"
+          class="action-btn-icon orgchart-action-btn"
+          aria-label="Lưu"
+          [disabled]="saving()"
+          (click)="drawerMode() === 'assign-member' ? saveAssignMember() : saveMoveNode()">
+          <img [src]="saving() ? 'assets/icons/refresh-ccw.svg' : 'assets/icons/save.svg'" alt="" [class.rotating]="saving()">
+        </button>
+      </div>
     </div>
   } @else if (selectedDetail()) {
     <div class="detail-panel">
@@ -444,6 +541,33 @@
         } @else {
           <p class="empty-inline">{{ 'orgchart.detail.noProjects' | translate }}</p>
         }
+      </div>
+
+      <div class="drawer-action-row drawer-action-row-floating">
+        <button
+          type="button"
+          class="action-btn-icon orgchart-action-btn"
+          aria-label="Thêm user vào node"
+          [disabled]="saving()"
+          (click)="openAssignMemberForm()">
+          <img src="assets/icons/package-plus.svg" alt="">
+        </button>
+        <button
+          type="button"
+          class="action-btn-icon orgchart-action-btn"
+          aria-label="Đổi node"
+          [disabled]="saving()"
+          (click)="openMoveNodeForm()">
+          <img src="assets/icons/users-edit.svg" alt="">
+        </button>
+        <button
+          type="button"
+          class="action-btn-icon orgchart-action-btn danger"
+          aria-label="Xóa khỏi node"
+          [disabled]="saving()"
+          (click)="removeSelectedUserFromNode()">
+          <img src="assets/icons/x-circle.svg" alt="">
+        </button>
       </div>
     </div>
   }
