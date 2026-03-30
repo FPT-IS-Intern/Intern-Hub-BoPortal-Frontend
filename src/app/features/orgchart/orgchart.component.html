@@ -1,96 +1,100 @@
 <div class="orgchart-page">
-  <section class="orgchart-toolbar">
-    <div class="toolbar-controls">
-      <div class="keyword-field">
-        <app-shared-search
-          [value]="searchTerm()"
-          [placeholder]="searchPlaceholder()"
-          [debounceMs]="350"
-          width="100%"
-          (valueChange)="onSearchChange($event)">
-        </app-shared-search>
-      </div>
-
-      <div class="department-field">
-        <app-shared-dropdown
-          [options]="departmentOptions()"
-          [value]="selectedDepartment()"
-          width="100%"
-          (valueChange)="onDepartmentChange($event)">
-        </app-shared-dropdown>
-      </div>
-
-      <div class="status-field">
-        <app-shared-dropdown
-          [options]="statusOptions()"
-          [value]="selectedStatus()"
-          width="100%"
-          (valueChange)="onStatusChange($event)">
-        </app-shared-dropdown>
-      </div>
-
-      <div class="toolbar-actions">
-        <button type="button" class="btn-outline-custom reset-btn" (click)="resetFilters()">
-          {{ 'orgchart.actions.reset' | translate }}
-        </button>
-      </div>
-    </div>
-  </section>
-
-  @if (hasActiveFilters()) {
-    <section class="search-panel">
-      <div class="search-panel-header">
-        <div>
-          <h2>{{ 'orgchart.search.title' | translate }}</h2>
-          <p>{{ resultSummary() }}</p>
+  <div #toolbarStack class="toolbar-stack">
+    <section class="orgchart-toolbar">
+      <div class="toolbar-controls">
+        <div class="keyword-field">
+          <app-shared-search
+            [value]="searchTerm()"
+            [placeholder]="searchPlaceholder()"
+            [debounceMs]="350"
+            width="100%"
+            (valueChange)="onSearchChange($event)">
+          </app-shared-search>
         </div>
 
-        @if (searchLoading()) {
-          <div class="search-indicator">
-            <span class="custom-icon-loading rotate"></span>
-            <span>{{ 'orgchart.search.loading' | translate }}</span>
+        <div class="department-field">
+          <app-shared-dropdown
+            [options]="departmentOptions()"
+            [value]="selectedDepartment()"
+            width="100%"
+            (valueChange)="onDepartmentChange($event)">
+          </app-shared-dropdown>
+        </div>
+
+        <div class="status-field">
+          <app-shared-dropdown
+            [options]="statusOptions()"
+            [value]="selectedStatus()"
+            width="100%"
+            (valueChange)="onStatusChange($event)">
+          </app-shared-dropdown>
+        </div>
+
+        <div class="toolbar-actions">
+          <button type="button" class="btn-outline-custom reset-btn" (click)="resetFilters()">
+            {{ 'orgchart.actions.reset' | translate }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    @if (searchPanelVisible()) {
+      <section class="search-panel">
+        <div class="search-panel-header">
+          <div>
+            <h2>{{ 'orgchart.search.title' | translate }}</h2>
+            <p>{{ resultSummary() }}</p>
           </div>
-        }
-      </div>
 
-      @if (!searchLoading() && searchResults().length === 0) {
-        <div class="search-empty-state">
-          <app-no-data
-            [fullHeight]="false"
-            [title]="'orgchart.search.emptyTitle' | translate"
-            [message]="'orgchart.search.emptyMessage' | translate">
-            <span icon class="custom-icon-building"></span>
-          </app-no-data>
-        </div>
-      } @else {
-        <div class="search-results">
-          @for (result of searchResults(); track result.id) {
-            <button
-              type="button"
-              class="search-result-card"
-              [class.focusing]="focusingUserId() === result.id"
-              (click)="focusResult(result)">
-              <div class="result-avatar">
-                @if (result.avatar) {
-                  <img [src]="result.avatar" [alt]="result.name">
-                } @else {
-                  <span>{{ avatarFallback(result.name) }}</span>
-                }
-              </div>
-
-              <div class="result-copy">
-                <strong>{{ result.name }}</strong>
-                <span>{{ result.title || ('orgchart.common.noTitle' | translate) }}</span>
-                <small>{{ result.department || ('orgchart.common.noDepartment' | translate) }}</small>
-              </div>
-
-              <span [class]="statusClass(result.status)">{{ statusLabel(result.status) }}</span>
-            </button>
+          @if (searchLoading()) {
+            <div class="search-indicator">
+              <span class="custom-icon-loading rotate"></span>
+              <span>{{ 'orgchart.search.loading' | translate }}</span>
+            </div>
           }
         </div>
-      }
-    </section>
-  }
+
+        @if (!searchLoading() && searchResults().length === 0) {
+          <div class="search-empty-state">
+            <app-no-data
+              [fullHeight]="false"
+              [title]="'orgchart.search.emptyTitle' | translate"
+              [message]="'orgchart.search.emptyMessage' | translate">
+              <span icon class="custom-icon-building"></span>
+            </app-no-data>
+          </div>
+        } @else {
+          <div class="search-results">
+            @for (result of searchResults(); track result.id) {
+              <button
+                type="button"
+                class="search-result-card"
+                [class.focusing]="focusingUserId() === result.id"
+                (click)="focusResult(result)">
+                <div class="result-avatar">
+                  @if (result.avatar) {
+                    <img [src]="result.avatar" [alt]="result.name">
+                  } @else {
+                    <span>{{ avatarFallback(result.name) }}</span>
+                  }
+                </div>
+
+                <div class="result-copy">
+                  <strong>{{ result.name }}</strong>
+                  <span>{{ result.title || ('orgchart.common.noTitle' | translate) }}</span>
+                  <small>{{ result.department || ('orgchart.common.noDepartment' | translate) }}</small>
+                </div>
+
+                @if (result.status !== 'active') {
+                  <span [class]="statusClass(result.status)">{{ statusLabel(result.status) }}</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+  </div>
 
   <section class="orgchart-shell">
     @if (pageLoading()) {
@@ -114,9 +118,59 @@
         </app-no-data>
       </div>
     } @else if (rootNode()) {
-      <div class="tree-scroll">
-        <div class="tree-canvas" role="tree">
-          <ng-container *ngTemplateOutlet="branchTemplate; context: { $implicit: rootNode()! }"></ng-container>
+      <div
+        #treeViewport
+        class="tree-scroll"
+        [class.panning]="isPanning()"
+        [style.--orgchart-grid-minor-size.px]="gridMinorSize()"
+        [style.--orgchart-grid-major-size.px]="gridMajorSize()"
+        [style.--orgchart-grid-offset-x]="gridOffsetX()"
+        [style.--orgchart-grid-offset-y]="gridOffsetY()"
+        (wheel)="onTreeWheel($event)"
+        (pointerdown)="onTreePointerDown($event)"
+        (pointermove)="onTreePointerMove($event)"
+        (pointerup)="onTreePointerUp($event)"
+        (pointercancel)="onTreePointerUp($event)"
+        (pointerleave)="onTreePointerUp($event)">
+        <div class="tree-viewport-stage">
+          <div class="tree-zoom-stage" [style.transform]="viewportTransform()">
+            <div class="tree-canvas" role="tree">
+              <ng-container *ngTemplateOutlet="branchTemplate; context: { $implicit: rootNode()! }"></ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tree-viewport-toolbar">
+        <p class="viewport-hint">{{ 'orgchart.viewport.hint' | translate }}</p>
+
+        <div class="viewport-controls">
+          <button
+            type="button"
+            class="viewport-btn"
+            [attr.aria-label]="'orgchart.viewport.zoomOut' | translate"
+            [title]="'orgchart.viewport.zoomOut' | translate"
+            (click)="zoomOut()">
+            −
+          </button>
+
+          <button
+            type="button"
+            class="viewport-scale"
+            [attr.aria-label]="'orgchart.viewport.reset' | translate"
+            [title]="'orgchart.viewport.reset' | translate"
+            (click)="resetViewport()">
+            {{ zoomLabel() }}
+          </button>
+
+          <button
+            type="button"
+            class="viewport-btn"
+            [attr.aria-label]="'orgchart.viewport.zoomIn' | translate"
+            [title]="'orgchart.viewport.zoomIn' | translate"
+            (click)="zoomIn()">
+            +
+          </button>
         </div>
       </div>
     } @else {
@@ -158,37 +212,34 @@
           type="button"
           class="org-card"
           [class.highlighted]="node.isHighlighted"
-          [class.root-card]="node.depth === 0"
           [attr.role]="'treeitem'"
           [attr.aria-expanded]="node.hasChildren ? node.isExpanded : null"
           (click)="showUserDetail(node.id, $event)"
           (keydown)="onNodeKeydown(node, $event)">
-          <div class="card-topline">
-            <span class="metric-pill">
-              {{ node.subordinateCount }} {{ 'orgchart.card.members' | translate }}
-            </span>
-            <span [class]="statusClass(node.status)">{{ statusLabel(node.status) }}</span>
-          </div>
+          <span [class]="statusDotClass(node.status)" [attr.aria-label]="statusLabel(node.status)" [title]="statusLabel(node.status)"></span>
 
-          <div class="card-main">
-            <div class="card-avatar">
-              @if (node.avatar) {
-                <img [src]="node.avatar" [alt]="node.name">
-              } @else {
-                <span>{{ avatarFallback(node.name) }}</span>
-              }
+          <div class="card-header">
+            <div class="card-identity">
+              <div class="card-avatar">
+                @if (node.avatar) {
+                  <img [src]="node.avatar" [alt]="node.name">
+                } @else {
+                  <span>{{ avatarFallback(node.name) }}</span>
+                }
+              </div>
+
+              <div class="card-copy">
+                <strong>{{ node.name }}</strong>
+                <span class="card-meta-row">
+                  <span class="card-role">{{ node.title || ('orgchart.common.noTitle' | translate) }}</span>
+                </span>
+                @if (node.department?.trim()) {
+                  <span class="card-meta-row">
+                    <span class="card-department">{{ node.department }}</span>
+                  </span>
+                }
+              </div>
             </div>
-
-            <div class="card-copy">
-              <strong>{{ node.name }}</strong>
-              <span>{{ node.title || ('orgchart.common.noTitle' | translate) }}</span>
-              <small>{{ node.department || ('orgchart.common.noDepartment' | translate) }}</small>
-            </div>
-          </div>
-
-          <div class="card-footer">
-            <span class="footer-item">{{ node.email || ('orgchart.common.notAvailable' | translate) }}</span>
-            <span class="footer-item">{{ node.phone || ('orgchart.common.notAvailable' | translate) }}</span>
           </div>
         </button>
       </div>
@@ -224,19 +275,23 @@
   } @else if (selectedDetail()) {
     <div class="detail-panel">
       <div class="detail-hero">
-        <div class="detail-avatar">
-          @if (selectedDetail()?.avatar) {
-            <img [src]="selectedDetail()?.avatar || ''" [alt]="selectedDetail()?.name || ''">
-          } @else {
-            <span>{{ avatarFallback(selectedDetail()?.name) }}</span>
-          }
+        <div class="detail-identity">
+          <div class="detail-avatar">
+            @if (selectedDetail()?.avatar) {
+              <img [src]="selectedDetail()?.avatar || ''" [alt]="selectedDetail()?.name || ''">
+            } @else {
+              <span>{{ avatarFallback(selectedDetail()?.name) }}</span>
+            }
+          </div>
+
+          <div class="detail-copy">
+            <strong>{{ selectedDetail()?.name }}</strong>
+            <span>{{ selectedDetail()?.title || ('orgchart.common.noTitle' | translate) }}</span>
+            <small>{{ selectedDetail()?.department?.name || ('orgchart.common.noDepartment' | translate) }}</small>
+          </div>
         </div>
 
-        <div class="detail-copy">
-          <strong>{{ selectedDetail()?.name }}</strong>
-          <span>{{ selectedDetail()?.title || ('orgchart.common.noTitle' | translate) }}</span>
-          <small>{{ selectedDetail()?.department?.name || ('orgchart.common.noDepartment' | translate) }}</small>
-        </div>
+        <span class="detail-status-badge" [class]="statusClass(selectedDetail()!.status)">{{ statusLabel(selectedDetail()!.status) }}</span>
       </div>
 
       <div class="detail-grid">

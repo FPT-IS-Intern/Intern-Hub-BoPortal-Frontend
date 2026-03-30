@@ -1,4 +1,4 @@
-{
+﻿{
   "error": {
     "invalid_request": "Invalid request",
     "not_found": "Data not found",
@@ -72,12 +72,20 @@
       "collapse": "Collapse branch"
     },
     "status": {
-      "active": "Active",
+      "active": "Employed",
       "intern": "Intern",
-      "inactive": "Inactive"
+      "inactive": "Former employee"
     },
     "card": {
+      "title": "Title",
+      "department": "Department",
       "members": "reports"
+    },
+    "viewport": {
+      "hint": "Hold Ctrl and scroll to zoom. Drag the canvas background to pan.",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset view"
     },
     "detail": {
       "title": "Employee details",
@@ -1154,3 +1162,4 @@
     }
   }
 }
+

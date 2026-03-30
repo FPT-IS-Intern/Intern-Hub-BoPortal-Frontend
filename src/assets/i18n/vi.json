@@ -1,4 +1,4 @@
-{
+﻿{
   "error": {
     "invalid_request": "Yêu cầu không hợp lệ",
     "not_found": "Không tìm thấy dữ liệu",
@@ -72,12 +72,20 @@
       "collapse": "Thu gọn nhánh"
     },
     "status": {
-      "active": "Đang hoạt động",
+      "active": "Đang công tác",
       "intern": "Thực tập sinh",
-      "inactive": "Ngừng hoạt động"
+      "inactive": "Đã nghỉ việc"
     },
     "card": {
+      "title": "Chức vụ",
+      "department": "Phòng ban",
       "members": "cấp dưới"
+    },
+    "viewport": {
+      "hint": "Giữ Ctrl và cuộn để phóng to hoặc thu nhỏ. Kéo nền vùng cây để di chuyển.",
+      "zoomIn": "Phóng to",
+      "zoomOut": "Thu nhỏ",
+      "reset": "Đặt lại khung nhìn"
     },
     "detail": {
       "title": "Chi tiết nhân sự",
@@ -1154,3 +1162,4 @@
     }
   }
 }
+

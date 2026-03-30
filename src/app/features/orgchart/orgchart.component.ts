@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -44,11 +44,21 @@ interface UiOrgChartNode extends OrgChartUserNode {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrgChartComponent {
+  private static readonly MIN_ZOOM = 0.6;
+  private static readonly MAX_ZOOM = 1.8;
+  private static readonly ZOOM_STEP = 0.1;
+
   private readonly orgChartService = inject(OrgChartService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+
+  @ViewChild('treeViewport')
+  private treeViewportRef?: ElementRef<HTMLDivElement>;
+
+  @ViewChild('toolbarStack')
+  private toolbarStackRef?: ElementRef<HTMLDivElement>;
 
   protected readonly rootNode = signal<UiOrgChartNode | null>(null);
   protected readonly pageLoading = signal(true);
@@ -58,6 +68,7 @@ export class OrgChartComponent {
   protected readonly selectedDepartment = signal('');
   protected readonly selectedStatus = signal('');
   protected readonly searchResults = signal<OrgChartUserNode[]>([]);
+  protected readonly searchPanelOpen = signal(false);
   protected readonly selectedDetail = signal<OrgChartUserDetail | null>(null);
   protected readonly detailVisible = signal(false);
   protected readonly detailLoading = signal(false);
@@ -68,9 +79,16 @@ export class OrgChartComponent {
   protected readonly highlightedNodeId = signal<string | null>(null);
   protected readonly focusingUserId = signal<string | null>(null);
   protected readonly knownDepartmentNames = signal<string[]>([]);
+  protected readonly zoomScale = signal(1);
+  protected readonly isPanning = signal(false);
+  protected readonly panX = signal(0);
+  protected readonly panY = signal(0);
 
   protected readonly hasActiveFilters = computed(
     () => !!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus(),
+  );
+  protected readonly searchPanelVisible = computed(
+    () => this.hasActiveFilters() && this.searchPanelOpen(),
   );
   protected readonly selectedUserTitle = computed(
     () => this.selectedDetail()?.name || this.translateService.instant('orgchart.detail.title'),
@@ -84,6 +102,20 @@ export class OrgChartComponent {
       count: this.searchResults().length,
     });
   });
+  protected readonly zoomLabel = computed(() => `${Math.round(this.zoomScale() * 100)}%`);
+  protected readonly gridMinorSize = computed(() => 24 * this.zoomScale());
+  protected readonly gridMajorSize = computed(() => 120 * this.zoomScale());
+  protected readonly gridOffsetX = computed(() => `calc(50% + ${this.panX()}px)`);
+  protected readonly gridOffsetY = computed(() => `calc(50% + ${this.panY()}px)`);
+  protected readonly viewportTransform = computed(
+    () => `translate(calc(-50% + ${this.panX()}px), calc(-50% + ${this.panY()}px)) scale(${this.zoomScale()})`,
+  );
+
+  private activePointerId: number | null = null;
+  private panStartX = 0;
+  private panStartY = 0;
+  private panStartOffsetX = 0;
+  private panStartOffsetY = 0;
 
   constructor() {
     this.translateService
@@ -118,16 +150,19 @@ export class OrgChartComponent {
 
   protected onSearchChange(value: string): void {
     this.searchTerm.set(value);
+    this.searchPanelOpen.set(!!value.trim() || !!this.selectedDepartment() || !!this.selectedStatus());
     void this.runSearch();
   }
 
   protected onDepartmentChange(value: DropdownValue): void {
     this.selectedDepartment.set(this.dropdownValueToString(value));
+    this.searchPanelOpen.set(!!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus());
     void this.runSearch();
   }
 
   protected onStatusChange(value: DropdownValue): void {
     this.selectedStatus.set(this.dropdownValueToString(value));
+    this.searchPanelOpen.set(!!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus());
     void this.runSearch();
   }
 
@@ -136,11 +171,84 @@ export class OrgChartComponent {
     this.selectedDepartment.set('');
     this.selectedStatus.set('');
     this.searchResults.set([]);
+    this.searchPanelOpen.set(false);
     this.clearHighlights();
   }
 
   protected retryLoad(): void {
     void this.loadTree();
+  }
+
+  protected zoomIn(): void {
+    this.updateZoom(this.zoomScale() + OrgChartComponent.ZOOM_STEP);
+  }
+
+  protected zoomOut(): void {
+    this.updateZoom(this.zoomScale() - OrgChartComponent.ZOOM_STEP);
+  }
+
+  protected resetViewport(): void {
+    this.zoomScale.set(1);
+    this.panX.set(0);
+    this.panY.set(0);
+  }
+
+  protected onTreeWheel(event: WheelEvent): void {
+    if (!event.ctrlKey && !event.metaKey) {
+      return;
+    }
+
+    event.preventDefault();
+    const delta = event.deltaY < 0 ? OrgChartComponent.ZOOM_STEP : -OrgChartComponent.ZOOM_STEP;
+    this.updateZoom(this.zoomScale() + delta, event.clientX, event.clientY);
+  }
+
+  protected onTreePointerDown(event: PointerEvent): void {
+    if (event.pointerType === 'mouse' && event.button !== 0) {
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('.org-card, .expand-button, .viewport-btn, .viewport-scale')) {
+      return;
+    }
+
+    const viewport = this.treeViewportRef?.nativeElement;
+    if (!viewport) {
+      return;
+    }
+
+    this.isPanning.set(true);
+    this.activePointerId = event.pointerId;
+    this.panStartX = event.clientX;
+    this.panStartY = event.clientY;
+    this.panStartOffsetX = this.panX();
+    this.panStartOffsetY = this.panY();
+    viewport.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }
+
+  protected onTreePointerMove(event: PointerEvent): void {
+    if (!this.isPanning() || this.activePointerId !== event.pointerId) {
+      return;
+    }
+
+    this.panX.set(this.panStartOffsetX + (event.clientX - this.panStartX));
+    this.panY.set(this.panStartOffsetY + (event.clientY - this.panStartY));
+  }
+
+  protected onTreePointerUp(event: PointerEvent): void {
+    if (this.activePointerId !== event.pointerId) {
+      return;
+    }
+
+    const viewport = this.treeViewportRef?.nativeElement;
+    if (viewport?.hasPointerCapture(event.pointerId)) {
+      viewport.releasePointerCapture(event.pointerId);
+    }
+
+    this.isPanning.set(false);
+    this.activePointerId = null;
   }
 
   protected toggleNode(node: UiOrgChartNode, event?: Event): void {
@@ -213,6 +321,10 @@ export class OrgChartComponent {
     return `status-badge ${status}`;
   }
 
+  protected statusDotClass(status: OrgChartStatus): string {
+    return `status-dot ${status}`;
+  }
+
   protected onNodeKeydown(node: UiOrgChartNode, event: KeyboardEvent): void {
     if (event.key === 'ArrowRight') {
       event.preventDefault();
@@ -230,6 +342,21 @@ export class OrgChartComponent {
       event.preventDefault();
       void this.showUserDetail(node.id);
     }
+  }
+
+  @HostListener('document:pointerdown', ['$event'])
+  protected handleDocumentPointerDown(event: PointerEvent): void {
+    if (!this.searchPanelVisible()) {
+      return;
+    }
+
+    const target = event.target as Node | null;
+    const toolbarStack = this.toolbarStackRef?.nativeElement;
+    if (!target || !toolbarStack || toolbarStack.contains(target)) {
+      return;
+    }
+
+    this.searchPanelOpen.set(false);
   }
 
   private async loadTree(rootId?: string): Promise<void> {
@@ -350,8 +477,44 @@ export class OrgChartComponent {
   private scrollToNode(userId: string): void {
     setTimeout(() => {
       const element = document.querySelector<HTMLElement>(`[data-node-id="${userId}"]`);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      const viewport = this.treeViewportRef?.nativeElement;
+      if (!element || !viewport) {
+        return;
+      }
+
+      const targetRect = element.getBoundingClientRect();
+      const viewportRect = viewport.getBoundingClientRect();
+      const viewportCenterX = viewportRect.left + (viewportRect.width / 2);
+      const viewportCenterY = viewportRect.top + (viewportRect.height / 2);
+      const targetCenterX = targetRect.left + (targetRect.width / 2);
+      const targetCenterY = targetRect.top + (targetRect.height / 2);
+
+      this.panX.update((value) => value + (viewportCenterX - targetCenterX));
+      this.panY.update((value) => value + (viewportCenterY - targetCenterY));
     }, 80);
+  }
+
+  private updateZoom(nextZoom: number, clientX?: number, clientY?: number): void {
+    const currentZoom = this.zoomScale();
+    const clampedZoom = Math.min(OrgChartComponent.MAX_ZOOM, Math.max(OrgChartComponent.MIN_ZOOM, nextZoom));
+
+    const viewport = this.treeViewportRef?.nativeElement;
+    if (!viewport || clampedZoom === currentZoom) {
+      this.zoomScale.set(clampedZoom);
+      return;
+    }
+
+    if (clientX != null && clientY != null) {
+      const bounds = viewport.getBoundingClientRect();
+      const viewportVectorX = clientX - (bounds.left + (bounds.width / 2));
+      const viewportVectorY = clientY - (bounds.top + (bounds.height / 2));
+      const zoomRatio = clampedZoom / currentZoom;
+
+      this.panX.set(viewportVectorX - (zoomRatio * (viewportVectorX - this.panX())));
+      this.panY.set(viewportVectorY - (zoomRatio * (viewportVectorY - this.panY())));
+    }
+
+    this.zoomScale.set(clampedZoom);
   }
 
   private toUiNode(node: OrgChartUserNode, depth: number, isExpanded: boolean): UiOrgChartNode {
