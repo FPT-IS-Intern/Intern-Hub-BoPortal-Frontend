@@ -87,6 +87,13 @@
       "zoomOut": "Thu nhỏ",
       "reset": "Đặt lại khung nhìn"
     },
+    "focus": {
+      "title": "Chế độ tập trung cho cây sâu",
+      "levelLabel": "Độ sâu",
+      "backToTree": "Quay lại sơ đồ",
+      "manager": "Quản lý trực tiếp",
+      "directReports": "Cấp dưới trực tiếp"
+    },
     "detail": {
       "title": "Chi tiết nhân sự",
       "email": "Email",
@@ -1162,4 +1169,3 @@
     }
   }
 }
-

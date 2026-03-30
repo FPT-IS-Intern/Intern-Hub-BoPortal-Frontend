@@ -14,6 +14,7 @@ import {
   OrgChartPageResponse,
   OrgChartStatus,
   OrgChartUserDetail,
+  OrgChartUserLite,
   OrgChartUserNode,
 } from '@/models/orgchart.model';
 import { OrgChartService } from '@/services/api/orgchart.service';
@@ -25,6 +26,13 @@ interface UiOrgChartNode extends OrgChartUserNode {
   childrenLoaded: boolean;
   isHighlighted: boolean;
   depth: number;
+}
+
+interface FocusPathItem {
+  id: string;
+  label: string;
+  title?: string;
+  isEllipsis?: boolean;
 }
 
 @Component({
@@ -47,6 +55,7 @@ export class OrgChartComponent {
   private static readonly MIN_ZOOM = 0.6;
   private static readonly MAX_ZOOM = 1.8;
   private static readonly ZOOM_STEP = 0.1;
+  private static readonly DEEP_FOCUS_DEPTH = 6;
 
   private readonly orgChartService = inject(OrgChartService);
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -69,6 +78,8 @@ export class OrgChartComponent {
   protected readonly selectedStatus = signal('');
   protected readonly searchResults = signal<OrgChartUserNode[]>([]);
   protected readonly searchPanelOpen = signal(false);
+  protected readonly focusPath = signal<OrgChartUserLite[]>([]);
+  protected readonly forceTreeOverview = signal(false);
   protected readonly selectedDetail = signal<OrgChartUserDetail | null>(null);
   protected readonly detailVisible = signal(false);
   protected readonly detailLoading = signal(false);
@@ -93,6 +104,23 @@ export class OrgChartComponent {
   protected readonly selectedUserTitle = computed(
     () => this.selectedDetail()?.name || this.translateService.instant('orgchart.detail.title'),
   );
+  protected readonly deepFocusMode = computed(
+    () => !this.forceTreeOverview() && this.focusPath().length > OrgChartComponent.DEEP_FOCUS_DEPTH && !!this.selectedDetail(),
+  );
+  protected readonly condensedFocusPath = computed<FocusPathItem[]>(() => {
+    const path = this.focusPath();
+    if (path.length <= 6) {
+      return path.map((item) => ({ id: item.id, label: item.name, title: item.title ?? undefined }));
+    }
+
+    const head = path[0];
+    const tail = path.slice(-4);
+    return [
+      { id: head.id, label: head.name, title: head.title ?? undefined },
+      { id: '__ellipsis__', label: '...', isEllipsis: true },
+      ...tail.map((item) => ({ id: item.id, label: item.name, title: item.title ?? undefined })),
+    ];
+  });
   protected readonly resultSummary = computed(() => {
     if (!this.hasActiveFilters()) {
       return '';
@@ -164,15 +192,6 @@ export class OrgChartComponent {
     this.selectedStatus.set(this.dropdownValueToString(value));
     this.searchPanelOpen.set(!!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus());
     void this.runSearch();
-  }
-
-  protected resetFilters(): void {
-    this.searchTerm.set('');
-    this.selectedDepartment.set('');
-    this.selectedStatus.set('');
-    this.searchResults.set([]);
-    this.searchPanelOpen.set(false);
-    this.clearHighlights();
   }
 
   protected retryLoad(): void {
@@ -344,6 +363,21 @@ export class OrgChartComponent {
     }
   }
 
+  protected returnToTreeOverview(): void {
+    this.forceTreeOverview.set(true);
+  }
+
+  protected async focusPathNode(nodeId: string): Promise<void> {
+    this.focusingUserId.set(nodeId);
+    this.forceTreeOverview.set(false);
+    try {
+      await this.focusNode(nodeId);
+      await this.showUserDetail(nodeId);
+    } finally {
+      this.focusingUserId.set(null);
+    }
+  }
+
   @HostListener('document:pointerdown', ['$event'])
   protected handleDocumentPointerDown(event: PointerEvent): void {
     if (!this.searchPanelVisible()) {
@@ -438,6 +472,9 @@ export class OrgChartComponent {
     if (path.length === 0) {
       return;
     }
+
+    this.focusPath.set(path);
+    this.forceTreeOverview.set(false);
 
     const rootId = path[0]?.id;
     if (!this.rootNode() || this.rootNode()!.id !== rootId) {

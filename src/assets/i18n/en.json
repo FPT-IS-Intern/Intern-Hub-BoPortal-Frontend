@@ -87,6 +87,13 @@
       "zoomOut": "Zoom out",
       "reset": "Reset view"
     },
+    "focus": {
+      "title": "Deep hierarchy focus",
+      "levelLabel": "Depth",
+      "backToTree": "Back to chart",
+      "manager": "Manager",
+      "directReports": "Direct reports"
+    },
     "detail": {
       "title": "Employee details",
       "email": "Email",
@@ -1162,4 +1169,3 @@
     }
   }
 }
-

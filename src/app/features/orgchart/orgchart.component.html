@@ -29,12 +29,6 @@
             (valueChange)="onStatusChange($event)">
           </app-shared-dropdown>
         </div>
-
-        <div class="toolbar-actions">
-          <button type="button" class="btn-outline-custom reset-btn" (click)="resetFilters()">
-            {{ 'orgchart.actions.reset' | translate }}
-          </button>
-        </div>
       </div>
     </section>
 
@@ -116,6 +110,94 @@
           (actionClicked)="retryLoad()">
           <span icon class="custom-icon-error"></span>
         </app-no-data>
+      </div>
+    } @else if (deepFocusMode()) {
+      <div class="deep-focus-shell">
+        <div class="deep-focus-header">
+          <div>
+            <h2>{{ 'orgchart.focus.title' | translate }}</h2>
+            <p>
+              {{ 'orgchart.focus.levelLabel' | translate }}:
+              {{ focusPath().length }}
+            </p>
+          </div>
+
+          <button type="button" class="btn-outline-custom focus-back-btn" (click)="returnToTreeOverview()">
+            {{ 'orgchart.focus.backToTree' | translate }}
+          </button>
+        </div>
+
+        <div class="focus-breadcrumb">
+          @for (item of condensedFocusPath(); track item.id + item.label) {
+            @if (item.isEllipsis) {
+              <span class="focus-crumb ellipsis">{{ item.label }}</span>
+            } @else {
+              <button type="button" class="focus-crumb" (click)="focusPathNode(item.id)">
+                <strong>{{ item.label }}</strong>
+                @if (item.title) {
+                  <small>{{ item.title }}</small>
+                }
+              </button>
+            }
+          }
+        </div>
+
+        @if (selectedDetail()) {
+          <div class="focus-stage">
+            <section class="focus-current-card">
+              <div class="focus-current-head">
+                <div class="detail-avatar">
+                  @if (selectedDetail()?.avatar) {
+                    <img [src]="selectedDetail()?.avatar || ''" [alt]="selectedDetail()?.name || ''">
+                  } @else {
+                    <span>{{ avatarFallback(selectedDetail()?.name) }}</span>
+                  }
+                </div>
+
+                <div class="detail-copy">
+                  <strong>{{ selectedDetail()?.name }}</strong>
+                  <span>{{ selectedDetail()?.title || ('orgchart.common.noTitle' | translate) }}</span>
+                  <small>{{ selectedDetail()?.department?.name || ('orgchart.common.noDepartment' | translate) }}</small>
+                </div>
+
+                <span [class]="statusClass(selectedDetail()!.status)">{{ statusLabel(selectedDetail()!.status) }}</span>
+              </div>
+            </section>
+
+            <div class="focus-context-grid">
+              <section class="focus-context-card">
+                <div class="focus-context-title">{{ 'orgchart.focus.manager' | translate }}</div>
+                @if (selectedDetail()?.manager) {
+                  <button type="button" class="lite-card" (click)="focusPathNode(selectedDetail()!.manager!.id)">
+                    <span>{{ selectedDetail()?.manager?.name }}</span>
+                    <small>{{ selectedDetail()?.manager?.title }}</small>
+                  </button>
+                } @else {
+                  <p class="empty-inline">{{ 'orgchart.detail.noManager' | translate }}</p>
+                }
+              </section>
+
+              <section class="focus-context-card">
+                <div class="focus-context-title">
+                  {{ 'orgchart.focus.directReports' | translate }}
+                  <span>{{ selectedDetail()?.subordinateCount }}</span>
+                </div>
+                @if ((selectedDetail()?.subordinates?.length || 0) > 0) {
+                  <div class="focus-lite-grid">
+                    @for (member of selectedDetail()?.subordinates || []; track member.id) {
+                      <button type="button" class="lite-card" (click)="focusPathNode(member.id)">
+                        <span>{{ member.name }}</span>
+                        <small>{{ member.title }}</small>
+                      </button>
+                    }
+                  </div>
+                } @else {
+                  <p class="empty-inline">{{ 'orgchart.detail.noSubordinates' | translate }}</p>
+                }
+              </section>
+            </div>
+          </div>
+        }
       </div>
     } @else if (rootNode()) {
       <div
@@ -212,6 +294,7 @@
           type="button"
           class="org-card"
           [class.highlighted]="node.isHighlighted"
+          [class.root-card]="node.depth === 0"
           [attr.role]="'treeitem'"
           [attr.aria-expanded]="node.hasChildren ? node.isExpanded : null"
           (click)="showUserDetail(node.id, $event)"
