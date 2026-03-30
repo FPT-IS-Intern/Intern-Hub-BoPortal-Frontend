@@ -14,4 +14,5 @@ export const SIDEBAR_ICONS = {
   SHIELD_PLUS: 'custom-icon-shield-plus',
   MENU: 'custom-icon-layout-left',
   PACKAGE_SEARCH: 'custom-icon-package-search',
+  BUILDING: 'custom-icon-building',
 };

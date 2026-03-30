@@ -1,0 +1,312 @@
+<div class="orgchart-page">
+  <section class="orgchart-toolbar">
+    <div class="toolbar-controls">
+      <div class="keyword-field">
+        <app-shared-search
+          [value]="searchTerm()"
+          [placeholder]="searchPlaceholder()"
+          [debounceMs]="350"
+          width="100%"
+          (valueChange)="onSearchChange($event)">
+        </app-shared-search>
+      </div>
+
+      <div class="department-field">
+        <app-shared-dropdown
+          [options]="departmentOptions()"
+          [value]="selectedDepartment()"
+          width="100%"
+          (valueChange)="onDepartmentChange($event)">
+        </app-shared-dropdown>
+      </div>
+
+      <div class="status-field">
+        <app-shared-dropdown
+          [options]="statusOptions()"
+          [value]="selectedStatus()"
+          width="100%"
+          (valueChange)="onStatusChange($event)">
+        </app-shared-dropdown>
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn-outline-custom reset-btn" (click)="resetFilters()">
+          {{ 'orgchart.actions.reset' | translate }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  @if (hasActiveFilters()) {
+    <section class="search-panel">
+      <div class="search-panel-header">
+        <div>
+          <h2>{{ 'orgchart.search.title' | translate }}</h2>
+          <p>{{ resultSummary() }}</p>
+        </div>
+
+        @if (searchLoading()) {
+          <div class="search-indicator">
+            <span class="custom-icon-loading rotate"></span>
+            <span>{{ 'orgchart.search.loading' | translate }}</span>
+          </div>
+        }
+      </div>
+
+      @if (!searchLoading() && searchResults().length === 0) {
+        <div class="search-empty-state">
+          <app-no-data
+            [fullHeight]="false"
+            [title]="'orgchart.search.emptyTitle' | translate"
+            [message]="'orgchart.search.emptyMessage' | translate">
+            <span icon class="custom-icon-building"></span>
+          </app-no-data>
+        </div>
+      } @else {
+        <div class="search-results">
+          @for (result of searchResults(); track result.id) {
+            <button
+              type="button"
+              class="search-result-card"
+              [class.focusing]="focusingUserId() === result.id"
+              (click)="focusResult(result)">
+              <div class="result-avatar">
+                @if (result.avatar) {
+                  <img [src]="result.avatar" [alt]="result.name">
+                } @else {
+                  <span>{{ avatarFallback(result.name) }}</span>
+                }
+              </div>
+
+              <div class="result-copy">
+                <strong>{{ result.name }}</strong>
+                <span>{{ result.title || ('orgchart.common.noTitle' | translate) }}</span>
+                <small>{{ result.department || ('orgchart.common.noDepartment' | translate) }}</small>
+              </div>
+
+              <span [class]="statusClass(result.status)">{{ statusLabel(result.status) }}</span>
+            </button>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <section class="orgchart-shell">
+    @if (pageLoading()) {
+      <div class="loading-state">
+        <div class="loading-grid">
+          @for (_ of [1, 2, 3, 4, 5, 6]; track $index) {
+            <div class="loading-card"></div>
+          }
+        </div>
+      </div>
+    } @else if (pageError()) {
+      <div class="state-host">
+        <app-no-data
+          [fullHeight]="false"
+          [title]="'orgchart.error.title' | translate"
+          [message]="'orgchart.error.message' | translate"
+          [showAction]="true"
+          [actionText]="'orgchart.actions.retry' | translate"
+          (actionClicked)="retryLoad()">
+          <span icon class="custom-icon-error"></span>
+        </app-no-data>
+      </div>
+    } @else if (rootNode()) {
+      <div class="tree-scroll">
+        <div class="tree-canvas" role="tree">
+          <ng-container *ngTemplateOutlet="branchTemplate; context: { $implicit: rootNode()! }"></ng-container>
+        </div>
+      </div>
+    } @else {
+      <div class="state-host">
+        <app-no-data
+          [fullHeight]="false"
+          [title]="'orgchart.empty.title' | translate"
+          [message]="'orgchart.empty.message' | translate">
+          <span icon class="custom-icon-building"></span>
+        </app-no-data>
+      </div>
+    }
+  </section>
+</div>
+
+<ng-template #branchTemplate let-node>
+  <div class="tree-branch" [class.root-branch]="node.depth === 0">
+    <div class="node-row">
+      <div class="node-shell" [attr.data-node-id]="node.id">
+        @if (node.hasChildren) {
+          <button
+            type="button"
+            class="expand-button"
+            [class.loading]="node.isLoading"
+            [attr.aria-expanded]="node.isExpanded"
+            [attr.aria-label]="(node.isExpanded ? 'orgchart.actions.collapse' : 'orgchart.actions.expand') | translate"
+            (click)="toggleNode(node, $event)">
+            @if (node.isLoading) {
+              <span class="custom-icon-loading rotate"></span>
+            } @else {
+              <span>{{ node.isExpanded ? '−' : '+' }}</span>
+            }
+          </button>
+        } @else {
+          <span class="expand-placeholder"></span>
+        }
+
+        <button
+          type="button"
+          class="org-card"
+          [class.highlighted]="node.isHighlighted"
+          [class.root-card]="node.depth === 0"
+          [attr.role]="'treeitem'"
+          [attr.aria-expanded]="node.hasChildren ? node.isExpanded : null"
+          (click)="showUserDetail(node.id, $event)"
+          (keydown)="onNodeKeydown(node, $event)">
+          <div class="card-topline">
+            <span class="metric-pill">
+              {{ node.subordinateCount }} {{ 'orgchart.card.members' | translate }}
+            </span>
+            <span [class]="statusClass(node.status)">{{ statusLabel(node.status) }}</span>
+          </div>
+
+          <div class="card-main">
+            <div class="card-avatar">
+              @if (node.avatar) {
+                <img [src]="node.avatar" [alt]="node.name">
+              } @else {
+                <span>{{ avatarFallback(node.name) }}</span>
+              }
+            </div>
+
+            <div class="card-copy">
+              <strong>{{ node.name }}</strong>
+              <span>{{ node.title || ('orgchart.common.noTitle' | translate) }}</span>
+              <small>{{ node.department || ('orgchart.common.noDepartment' | translate) }}</small>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span class="footer-item">{{ node.email || ('orgchart.common.notAvailable' | translate) }}</span>
+            <span class="footer-item">{{ node.phone || ('orgchart.common.notAvailable' | translate) }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    @if (node.isExpanded && node.children.length > 0) {
+      <div class="children-wrap">
+        <div class="children-track">
+          @for (child of node.children; track child.id) {
+            <div class="child-item">
+              <ng-container *ngTemplateOutlet="branchTemplate; context: { $implicit: child }"></ng-container>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<app-side-drawer
+  [isVisible]="detailVisible()"
+  (isVisibleChange)="detailVisible.set($event)"
+  (close)="closeDetail()"
+  [title]="selectedUserTitle()"
+  width="460px">
+  @if (detailLoading()) {
+    <div class="detail-loading">
+      <div class="detail-loading-card"></div>
+      <div class="detail-loading-line long"></div>
+      <div class="detail-loading-line"></div>
+      <div class="detail-loading-line"></div>
+    </div>
+  } @else if (selectedDetail()) {
+    <div class="detail-panel">
+      <div class="detail-hero">
+        <div class="detail-avatar">
+          @if (selectedDetail()?.avatar) {
+            <img [src]="selectedDetail()?.avatar || ''" [alt]="selectedDetail()?.name || ''">
+          } @else {
+            <span>{{ avatarFallback(selectedDetail()?.name) }}</span>
+          }
+        </div>
+
+        <div class="detail-copy">
+          <strong>{{ selectedDetail()?.name }}</strong>
+          <span>{{ selectedDetail()?.title || ('orgchart.common.noTitle' | translate) }}</span>
+          <small>{{ selectedDetail()?.department?.name || ('orgchart.common.noDepartment' | translate) }}</small>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>{{ 'orgchart.detail.email' | translate }}</label>
+          <span>{{ selectedDetail()?.email || ('orgchart.common.notAvailable' | translate) }}</span>
+        </div>
+        <div class="detail-item">
+          <label>{{ 'orgchart.detail.phone' | translate }}</label>
+          <span>{{ selectedDetail()?.phone || ('orgchart.common.notAvailable' | translate) }}</span>
+        </div>
+        <div class="detail-item">
+          <label>{{ 'orgchart.detail.location' | translate }}</label>
+          <span>{{ selectedDetail()?.location || ('orgchart.common.notAvailable' | translate) }}</span>
+        </div>
+        <div class="detail-item">
+          <label>{{ 'orgchart.detail.joinedDate' | translate }}</label>
+          <span>{{ selectedDetail()?.joinedDate || ('orgchart.common.notAvailable' | translate) }}</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="section-heading">
+          <h3>{{ 'orgchart.detail.manager' | translate }}</h3>
+        </div>
+        @if (selectedDetail()?.manager) {
+          <div class="lite-grid">
+            <button type="button" class="lite-card" (click)="showUserDetail(selectedDetail()!.manager!.id)">
+              <span>{{ selectedDetail()?.manager?.name }}</span>
+              <small>{{ selectedDetail()?.manager?.title }}</small>
+            </button>
+          </div>
+        } @else {
+          <p class="empty-inline">{{ 'orgchart.detail.noManager' | translate }}</p>
+        }
+      </div>
+
+      <div class="detail-section">
+        <div class="section-heading">
+          <h3>{{ 'orgchart.detail.subordinates' | translate }}</h3>
+          <span>{{ selectedDetail()?.subordinateCount }}</span>
+        </div>
+        @if ((selectedDetail()?.subordinates?.length || 0) > 0) {
+          <div class="lite-grid">
+            @for (member of selectedDetail()?.subordinates || []; track member.id) {
+              <button type="button" class="lite-card" (click)="showUserDetail(member.id)">
+                <span>{{ member.name }}</span>
+                <small>{{ member.title }}</small>
+              </button>
+            }
+          </div>
+        } @else {
+          <p class="empty-inline">{{ 'orgchart.detail.noSubordinates' | translate }}</p>
+        }
+      </div>
+
+      <div class="detail-section">
+        <div class="section-heading">
+          <h3>{{ 'orgchart.detail.projects' | translate }}</h3>
+        </div>
+        @if ((selectedDetail()?.projects?.length || 0) > 0) {
+          <div class="project-list">
+            @for (project of selectedDetail()?.projects || []; track project) {
+              <span class="project-pill">{{ project }}</span>
+            }
+          </div>
+        } @else {
+          <p class="empty-inline">{{ 'orgchart.detail.noProjects' | translate }}</p>
+        }
+      </div>
+    </div>
+  }
+</app-side-drawer>

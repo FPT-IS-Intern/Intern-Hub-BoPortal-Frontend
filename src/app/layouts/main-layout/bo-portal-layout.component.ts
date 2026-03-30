@@ -185,6 +185,11 @@ export class BoPortalLayoutComponent {
         url: '/menus',
       },
       {
+        iconLeft: SIDEBAR_ICONS.BUILDING,
+        content: this.translateWithFallback('layout.menu.orgchart', 'Sơ đồ tổ chức'),
+        url: '/orgchart',
+      },
+      {
         iconLeft: SIDEBAR_ICONS.SETTINGS,
         content: this.translate.instant('layout.menu.systemSettings'),
         url: '/system-settings',
@@ -201,6 +206,9 @@ export class BoPortalLayoutComponent {
     StorageUtil.clearAll();
     this.router.navigate(['/login']);
   }
+
+  private translateWithFallback(key: string, fallback: string): string {
+    const translated = this.translate.instant(key);
+    return translated === key ? fallback : translated;
+  }
 }
-
-

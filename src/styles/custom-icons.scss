@@ -168,6 +168,10 @@
   @include custom-icon-file('/assets/icons/package-search.svg', 1.25rem);
 }
 
+.custom-icon-building {
+  @include custom-icon-file('/assets/icons/building.svg', 1.25rem);
+}
+
 .rotate {
   animation: rotate 1.5s linear infinite;
 }

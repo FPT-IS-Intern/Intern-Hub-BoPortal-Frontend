@@ -52,6 +52,13 @@ export const API_ENDPOINTS = {
     root: withBoPortal('/menus'),
     byId: (id: number) => withBoPortal(`/menus/${id}`),
   },
+  orgChart: {
+    root: withBoPortal('/orgchart'),
+    search: withBoPortal('/orgchart/users'),
+    byId: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),
+    subordinates: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}/subordinates`),
+    path: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}/path`),
+  },
   templates: {
     root: withBoPortal('/templates'),
     summary: withBoPortal('/templates/summary'),

@@ -39,8 +39,77 @@
       "notifications": "Notification bell",
       "checkin": "Check-in Configuration",
       "menus": "Menu Management",
+      "orgchart": "Organization chart",
       "systemSettings": "System Settings",
       "auditLog": "Audit Log"
+    }
+  },
+  "orgchart": {
+    "breadcrumb": {
+      "title": "Organization chart"
+    },
+    "header": {
+      "eyebrow": "Hierarchy",
+      "title": "Organization chart",
+      "subtitle": "Explore reporting lines, expand teams on demand, and inspect employee details directly from the tree."
+    },
+    "search": {
+      "placeholder": "Search by name, email, or title",
+      "title": "Matching people",
+      "summary": "{{count}} result(s) ready to focus in the tree",
+      "loading": "Searching...",
+      "emptyTitle": "No matching employees",
+      "emptyMessage": "Try another keyword or relax the current filters."
+    },
+    "filters": {
+      "allDepartments": "All departments",
+      "allStatuses": "All statuses"
+    },
+    "actions": {
+      "reset": "Reset",
+      "retry": "Retry",
+      "expand": "Expand branch",
+      "collapse": "Collapse branch"
+    },
+    "status": {
+      "active": "Active",
+      "intern": "Intern",
+      "inactive": "Inactive"
+    },
+    "card": {
+      "members": "reports"
+    },
+    "detail": {
+      "title": "Employee details",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "joinedDate": "Joined date",
+      "manager": "Direct manager",
+      "subordinates": "Direct subordinates",
+      "projects": "Projects",
+      "noManager": "This employee does not have a direct manager.",
+      "noSubordinates": "No direct subordinates available.",
+      "noProjects": "No project data available."
+    },
+    "common": {
+      "noTitle": "No title",
+      "noDepartment": "No department",
+      "notAvailable": "Not available"
+    },
+    "error": {
+      "title": "Unable to load organization chart",
+      "message": "The chart data could not be loaded. Please try again in a moment."
+    },
+    "empty": {
+      "title": "No organization data",
+      "message": "There is no employee data available to render the organization chart yet."
+    },
+    "toast": {
+      "loadError": "Unable to load organization chart",
+      "expandError": "Unable to expand this branch",
+      "detailError": "Unable to load employee details",
+      "searchError": "Unable to search employees"
     }
   },
   "login": {
@@ -1085,5 +1154,3 @@
     }
   }
 }
-
-

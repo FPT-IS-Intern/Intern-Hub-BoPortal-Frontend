@@ -39,8 +39,77 @@
       "notifications": "Chuông thông báo",
       "checkin": "Cấu hình Check-in",
       "menus": "Quản lý Menu",
+      "orgchart": "Sơ đồ tổ chức",
       "systemSettings": "Cấu hình hệ thống",
       "auditLog": "Nhật ký hệ thống"
+    }
+  },
+  "orgchart": {
+    "breadcrumb": {
+      "title": "Sơ đồ tổ chức"
+    },
+    "header": {
+      "eyebrow": "Sơ đồ",
+      "title": "Sơ đồ tổ chức",
+      "subtitle": "Theo dõi cây tổ chức, mở rộng từng nhánh theo nhu cầu và xem nhanh thông tin nhân sự ngay trên cây."
+    },
+    "search": {
+      "placeholder": "Tìm theo tên, email hoặc chức danh",
+      "title": "Kết quả phù hợp",
+      "summary": "Có {{count}} kết quả để mở nhanh trên cây",
+      "loading": "Đang tìm kiếm...",
+      "emptyTitle": "Không tìm thấy nhân sự phù hợp",
+      "emptyMessage": "Hãy thử từ khóa khác hoặc nới lỏng bộ lọc hiện tại."
+    },
+    "filters": {
+      "allDepartments": "Tất cả phòng ban",
+      "allStatuses": "Tất cả trạng thái"
+    },
+    "actions": {
+      "reset": "Đặt lại",
+      "retry": "Thử lại",
+      "expand": "Mở nhánh",
+      "collapse": "Thu gọn nhánh"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "intern": "Thực tập sinh",
+      "inactive": "Ngừng hoạt động"
+    },
+    "card": {
+      "members": "cấp dưới"
+    },
+    "detail": {
+      "title": "Chi tiết nhân sự",
+      "email": "Email",
+      "phone": "Số điện thoại",
+      "location": "Địa điểm",
+      "joinedDate": "Ngày vào làm",
+      "manager": "Quản lý trực tiếp",
+      "subordinates": "Cấp dưới trực tiếp",
+      "projects": "Dự án",
+      "noManager": "Nhân sự này chưa có quản lý trực tiếp.",
+      "noSubordinates": "Chưa có cấp dưới trực tiếp.",
+      "noProjects": "Chưa có dữ liệu dự án."
+    },
+    "common": {
+      "noTitle": "Chưa có chức danh",
+      "noDepartment": "Chưa có phòng ban",
+      "notAvailable": "Chưa cập nhật"
+    },
+    "error": {
+      "title": "Không tải được sơ đồ tổ chức",
+      "message": "Dữ liệu sơ đồ tổ chức hiện chưa sẵn sàng. Vui lòng thử lại sau."
+    },
+    "empty": {
+      "title": "Chưa có dữ liệu sơ đồ tổ chức",
+      "message": "Hiện chưa có dữ liệu nhân sự để hiển thị sơ đồ tổ chức."
+    },
+    "toast": {
+      "loadError": "Không tải được sơ đồ tổ chức",
+      "expandError": "Không mở được nhánh này",
+      "detailError": "Không tải được chi tiết nhân sự",
+      "searchError": "Không tìm kiếm được nhân sự"
     }
   },
   "login": {
@@ -1085,6 +1154,3 @@
     }
   }
 }
-
-
-

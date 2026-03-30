@@ -42,6 +42,10 @@ export const routes: Routes = [
         loadComponent: () => import('@/features/menu-management/menu-management.component').then((m) => m.MenuManagementComponent),
       },
       {
+        path: 'orgchart',
+        loadComponent: () => import('@/features/orgchart/orgchart.component').then((m) => m.OrgChartComponent),
+      },
+      {
         path: 'system-settings',
         loadComponent: () => import('@/features/system-settings/system-settings.component').then((m) => m.SystemSettingsComponent),
       },
