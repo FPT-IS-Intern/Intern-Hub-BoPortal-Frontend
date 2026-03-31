@@ -70,6 +70,8 @@
       "retry": "Thử lại",
       "expand": "Mở nhánh",
       "collapse": "Thu gọn nhánh",
+      "viewUser": "Xem người dùng",
+      "openMenu": "Mở menu thao tác",
       "assignMember": "Thêm user vào node",
       "moveNode": "Đổi node",
       "removeFromNode": "Xóa khỏi node",
@@ -83,6 +85,32 @@
       "moveTitle": "Đổi node cho user",
       "assignHint": "Tìm user có sẵn trong HRM rồi gán vào node đang xem.",
       "moveHint": "Chỉ đổi node quản lý trực tiếp, không chỉnh sửa hồ sơ user."
+    },
+    "modal": {
+      "assignTitle": "Thêm user vào node",
+      "assignTitleWithName": "Thêm user vào node {{name}}",
+      "assignSave": "Gán vào node",
+      "assignSaveWithCount": "Gán {{count}} user vào node",
+      "assignSearchPlaceholder": "Tìm user chưa thuộc node nào",
+      "assignSelectedSummary": "Đã chọn {{count}} user",
+      "loadingUsers": "Đang tải danh sách user...",
+      "assignEmptyTitle": "Chưa có user phù hợp",
+      "assignEmptyMessage": "Không tìm thấy user chưa được gán vào node nào."
+    },
+    "root": {
+      "emptyTitle": "Chưa có node gốc",
+      "emptyMessage": "Sơ đồ tổ chức hiện chưa có node gốc. Chọn một user để khởi tạo cây.",
+      "initAction": "Khởi tạo node gốc",
+      "selectEmptyTitle": "Cần chọn node gốc",
+      "selectEmptyMessage": "Có nhiều user chưa gán mentor. Chọn một user làm node gốc để xem sơ đồ tổ chức.",
+      "selectAction": "Chọn node gốc",
+      "initTitle": "Khởi tạo node gốc",
+      "selectTitle": "Chọn node gốc",
+      "initSave": "Tạo root",
+      "selectSave": "Chọn root",
+      "searchPlaceholder": "Tìm user để làm node gốc",
+      "emptyCandidateTitle": "Chưa có user phù hợp",
+      "emptyCandidateMessage": "Không tìm thấy user để khởi tạo node gốc."
     },
     "form": {
       "userSearch": "Tìm user theo tên hoặc email",
@@ -149,9 +177,14 @@
       "assignSuccess": "Đã thêm user vào node",
       "moveSuccess": "Đã đổi node cho user",
       "removeSuccess": "Đã xóa user khỏi node",
+      "selectRootSuccess": "Đã chọn node gốc",
+      "initRootSuccess": "Khởi tạo node gốc thành công",
       "assignError": "Không thể thêm user vào node",
       "moveError": "Không thể đổi node cho user",
-      "removeError": "Không thể xóa user khỏi node"
+      "removeError": "Không thể xóa user khỏi node",
+      "selectRootError": "Không thể chọn node gốc",
+      "initRootError": "Không thể khởi tạo node gốc",
+      "searchRootCandidatesError": "Không thể tải danh sách user"
     },
     "confirm": {
       "removeMessage": "Bạn có chắc muốn xóa {{name}} khỏi node hiện tại?"

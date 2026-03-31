@@ -104,10 +104,22 @@
       <div class="state-host">
         <app-no-data
           [fullHeight]="false"
-          title="Chua co node goc"
-          message="Org chart hien chua co root node. Chon mot user de khoi tao cay."
+          [title]="'orgchart.root.emptyTitle' | translate"
+          [message]="'orgchart.root.emptyMessage' | translate"
           [showAction]="true"
-          actionText="Khoi tao node goc"
+          [actionText]="'orgchart.root.initAction' | translate"
+          (actionClicked)="openRootInitModal()">
+          <span icon class="custom-icon-building"></span>
+        </app-no-data>
+      </div>
+    } @else if (canSelectRoot()) {
+      <div class="state-host">
+        <app-no-data
+          [fullHeight]="false"
+          [title]="'orgchart.root.selectEmptyTitle' | translate"
+          [message]="'orgchart.root.selectEmptyMessage' | translate"
+          [showAction]="true"
+          [actionText]="'orgchart.root.selectAction' | translate"
           (actionClicked)="openRootInitModal()">
           <span icon class="custom-icon-building"></span>
         </app-no-data>
@@ -345,7 +357,7 @@
             <button
               type="button"
               class="action-btn-icon orgchart-node-action"
-              aria-label="Xem user"
+              [attr.aria-label]="'orgchart.actions.viewUser' | translate"
               (click)="openUserDrawerFromNode(node.id, $event)">
               <img src="assets/icons/eye.svg" alt="">
             </button>
@@ -354,7 +366,7 @@
               <button
                 type="button"
                 class="action-btn-icon orgchart-node-action"
-                aria-label="Mở action"
+                [attr.aria-label]="'orgchart.actions.openMenu' | translate"
                 (click)="toggleNodeActionMenu(node.id, $event)">
                 <img src="assets/icons/settings-01.svg" alt="">
               </button>
@@ -364,21 +376,21 @@
                   <button
                     type="button"
                     class="action-btn-icon orgchart-node-action"
-                    aria-label="Thêm user vào node"
+                    [attr.aria-label]="'orgchart.actions.assignMember' | translate"
                     (click)="openAssignMemberFormForNode(node.id, $event)">
                     <img src="assets/icons/package-plus.svg" alt="">
                   </button>
                   <button
                     type="button"
                     class="action-btn-icon orgchart-node-action"
-                    aria-label="Đổi node"
+                    [attr.aria-label]="'orgchart.actions.moveNode' | translate"
                     (click)="openMoveNodeFormForNode(node.id, $event)">
                     <img src="assets/icons/users-edit.svg" alt="">
                   </button>
                   <button
                     type="button"
                     class="action-btn-icon orgchart-node-action danger"
-                    aria-label="Xóa khỏi node"
+                    [attr.aria-label]="'orgchart.actions.removeFromNode' | translate"
                     (click)="removeNodeMember(node.id, node.name, $event)">
                     <img src="assets/icons/x-circle.svg" alt="">
                   </button>
@@ -498,7 +510,7 @@
         <button
           type="button"
           class="action-btn-icon orgchart-action-btn"
-          aria-label="Hủy"
+          [attr.aria-label]="'orgchart.actions.cancel' | translate"
           [disabled]="saving()"
           (click)="cancelForm()">
           <img src="assets/icons/x.svg" alt="">
@@ -506,7 +518,7 @@
         <button
           type="button"
           class="action-btn-icon orgchart-action-btn"
-          aria-label="Lưu"
+          [attr.aria-label]="'orgchart.actions.save' | translate"
           [disabled]="saving()"
           (click)="drawerMode() === 'assign-member' ? saveAssignMember() : saveMoveNode()">
           <img [src]="saving() ? 'assets/icons/refresh-ccw.svg' : 'assets/icons/save.svg'" alt="" [class.rotating]="saving()">
@@ -614,14 +626,14 @@
   (cancel)="closeAssignMemberModal()"
   (save)="confirmAssignMemberFromModal()"
   [title]="assignModalTitle()"
-  cancelText="Hủy"
+  [cancelText]="'orgchart.actions.cancel' | translate"
   [saveText]="assignModalSaveText()"
   [okDisabled]="saving() || selectedCandidateCount() === 0"
   maxWidth="760px">
   <div class="assign-modal-body">
     <app-shared-search
       [value]="candidateSearchTerm()"
-      placeholder="Tìm user chưa thuộc node nào"
+      [placeholder]="'orgchart.modal.assignSearchPlaceholder' | translate"
       [debounceMs]="300"
       width="100%"
       (valueChange)="onCandidateSearchChange($event)">
@@ -629,43 +641,49 @@
 
     @if (selectedCandidateCount() > 0) {
       <div class="selected-manager-chip">
-        <strong>Đã chọn {{ selectedCandidateCount() }} user</strong>
+        <strong>{{ 'orgchart.modal.assignSelectedSummary' | translate: { count: selectedCandidateCount() } }}</strong>
       </div>
     }
 
-    @if (candidateSearchLoading()) {
-      <p class="empty-inline">Đang tải danh sách user...</p>
-    } @else if (candidateSearchResults().length === 0) {
-      <app-no-data
-        [fullHeight]="false"
-        title="Chưa có user phù hợp"
-        message="Không tìm thấy user chưa được gán vào node nào.">
-        <span icon class="custom-icon-users"></span>
-      </app-no-data>
-    } @else {
-      <div class="assignable-user-grid">
-        @for (candidate of candidateSearchResults(); track candidate.id) {
-          <button
-            type="button"
-            class="assignable-user-card"
-            [class.selected]="selectedCandidateIds().includes(candidate.id)"
-            (click)="chooseCandidate(candidate)">
-            <div class="assignable-user-avatar">
-              @if (candidate.avatar) {
-                <img [src]="candidate.avatar" [alt]="candidate.name">
-              } @else {
-                <span>{{ avatarFallback(candidate.name) }}</span>
-              }
-            </div>
+    <div class="assign-modal-results">
+      @if (candidateSearchLoading()) {
+        <div class="assign-modal-state">
+          <p class="empty-inline">{{ 'orgchart.modal.loadingUsers' | translate }}</p>
+        </div>
+      } @else if (candidateSearchResults().length === 0) {
+        <div class="assign-modal-state">
+          <app-no-data
+            [fullHeight]="false"
+            [title]="'orgchart.modal.assignEmptyTitle' | translate"
+            [message]="'orgchart.modal.assignEmptyMessage' | translate">
+            <span icon class="custom-icon-users"></span>
+          </app-no-data>
+        </div>
+      } @else {
+        <div class="assignable-user-grid">
+          @for (candidate of candidateSearchResults(); track candidate.id) {
+            <button
+              type="button"
+              class="assignable-user-card"
+              [class.selected]="selectedCandidateIds().includes(candidate.id)"
+              (click)="chooseCandidate(candidate)">
+              <div class="assignable-user-avatar">
+                @if (candidate.avatar) {
+                  <img [src]="candidate.avatar" [alt]="candidate.name">
+                } @else {
+                  <span>{{ avatarFallback(candidate.name) }}</span>
+                }
+              </div>
 
-            <div class="assignable-user-copy">
-              <strong>{{ candidate.name }}</strong>
-              <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
-            </div>
-          </button>
-        }
-      </div>
-    }
+              <div class="assignable-user-copy">
+                <strong>{{ candidate.name }}</strong>
+                <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      }
+    </div>
   </div>
 </app-modal-popup>
 
@@ -674,15 +692,15 @@
   (isVisibleChange)="closeRootInitModal()"
   (cancel)="closeRootInitModal()"
   (save)="confirmInitializeRoot()"
-  title="Khoi tao node goc"
-  cancelText="Huy"
-  saveText="Tao root"
+  [title]="rootModalTitle()"
+  [cancelText]="'orgchart.actions.cancel' | translate"
+  [saveText]="rootModalSaveText()"
   [okDisabled]="saving() || !selectedRootCandidateId()"
   maxWidth="760px">
   <div class="assign-modal-body">
     <app-shared-search
       [value]="rootCandidateSearchTerm()"
-      placeholder="Tim user de lam node goc"
+      [placeholder]="'orgchart.root.searchPlaceholder' | translate"
       [debounceMs]="300"
       width="100%"
       (valueChange)="onRootCandidateSearchChange($event)">
@@ -694,38 +712,44 @@
       </div>
     }
 
-    @if (rootCandidateSearchLoading()) {
-      <p class="empty-inline">Dang tai danh sach user...</p>
-    } @else if (rootCandidateResults().length === 0) {
-      <app-no-data
-        [fullHeight]="false"
-        title="Chua co user phu hop"
-        message="Khong tim thay user de khoi tao node goc.">
-        <span icon class="custom-icon-users"></span>
-      </app-no-data>
-    } @else {
-      <div class="assignable-user-grid">
-        @for (candidate of rootCandidateResults(); track candidate.id) {
-          <button
-            type="button"
-            class="assignable-user-card"
-            [class.selected]="selectedRootCandidateId() === candidate.id"
-            (click)="chooseRootCandidate(candidate)">
-            <div class="assignable-user-avatar">
-              @if (candidate.avatar) {
-                <img [src]="candidate.avatar" [alt]="candidate.name">
-              } @else {
-                <span>{{ avatarFallback(candidate.name) }}</span>
-              }
-            </div>
+    <div class="assign-modal-results">
+      @if (rootCandidateSearchLoading()) {
+        <div class="assign-modal-state">
+          <p class="empty-inline">{{ 'orgchart.modal.loadingUsers' | translate }}</p>
+        </div>
+      } @else if (rootCandidateResults().length === 0) {
+        <div class="assign-modal-state">
+          <app-no-data
+            [fullHeight]="false"
+            [title]="'orgchart.root.emptyCandidateTitle' | translate"
+            [message]="'orgchart.root.emptyCandidateMessage' | translate">
+            <span icon class="custom-icon-users"></span>
+          </app-no-data>
+        </div>
+      } @else {
+        <div class="assignable-user-grid">
+          @for (candidate of rootCandidateResults(); track candidate.id) {
+            <button
+              type="button"
+              class="assignable-user-card"
+              [class.selected]="selectedRootCandidateId() === candidate.id"
+              (click)="chooseRootCandidate(candidate)">
+              <div class="assignable-user-avatar">
+                @if (candidate.avatar) {
+                  <img [src]="candidate.avatar" [alt]="candidate.name">
+                } @else {
+                  <span>{{ avatarFallback(candidate.name) }}</span>
+                }
+              </div>
 
-            <div class="assignable-user-copy">
-              <strong>{{ candidate.name }}</strong>
-              <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
-            </div>
-          </button>
-        }
-      </div>
-    }
+              <div class="assignable-user-copy">
+                <strong>{{ candidate.name }}</strong>
+                <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      }
+    </div>
   </div>
 </app-modal-popup>

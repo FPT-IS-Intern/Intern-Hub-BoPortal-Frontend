@@ -70,6 +70,8 @@
       "retry": "Retry",
       "expand": "Expand branch",
       "collapse": "Collapse branch",
+      "viewUser": "View user",
+      "openMenu": "Open action menu",
       "assignMember": "Add user to node",
       "moveNode": "Move node",
       "removeFromNode": "Remove from node",
@@ -83,6 +85,32 @@
       "moveTitle": "Move user to another node",
       "assignHint": "Search an existing HRM user and attach them to the current node.",
       "moveHint": "Only change the reporting node. User profile data is not edited here."
+    },
+    "modal": {
+      "assignTitle": "Add user to node",
+      "assignTitleWithName": "Add user to node {{name}}",
+      "assignSave": "Assign to node",
+      "assignSaveWithCount": "Assign {{count}} users to node",
+      "assignSearchPlaceholder": "Search users not assigned to any node",
+      "assignSelectedSummary": "{{count}} user(s) selected",
+      "loadingUsers": "Loading users...",
+      "assignEmptyTitle": "No matching users",
+      "assignEmptyMessage": "No users available that are not assigned to any node."
+    },
+    "root": {
+      "emptyTitle": "No root node yet",
+      "emptyMessage": "The organization chart does not have a root node yet. Choose a user to initialize the tree.",
+      "initAction": "Initialize root node",
+      "selectEmptyTitle": "Root node selection required",
+      "selectEmptyMessage": "Multiple users do not have a mentor. Choose one of them as the root node to view the organization chart.",
+      "selectAction": "Choose root node",
+      "initTitle": "Initialize root node",
+      "selectTitle": "Choose root node",
+      "initSave": "Create root",
+      "selectSave": "Choose root",
+      "searchPlaceholder": "Search a user to become the root node",
+      "emptyCandidateTitle": "No matching users",
+      "emptyCandidateMessage": "No user found to initialize the root node."
     },
     "form": {
       "userSearch": "Search user by name or email",
@@ -149,9 +177,14 @@
       "assignSuccess": "User added to node successfully",
       "moveSuccess": "User moved successfully",
       "removeSuccess": "User removed from node successfully",
+      "selectRootSuccess": "Root node selected successfully",
+      "initRootSuccess": "Root node initialized successfully",
       "assignError": "Unable to add user to node",
       "moveError": "Unable to move user",
-      "removeError": "Unable to remove user from node"
+      "removeError": "Unable to remove user from node",
+      "selectRootError": "Unable to select root node",
+      "initRootError": "Unable to initialize root node",
+      "searchRootCandidatesError": "Unable to load the user list"
     },
     "confirm": {
       "removeMessage": "Do you want to remove {{name}} from the current node?"

@@ -83,6 +83,8 @@ export class OrgChartComponent {
   protected readonly pageLoading = signal(true);
   protected readonly pageError = signal(false);
   protected readonly rootInitializationAvailable = signal(false);
+  protected readonly rootSelectionRequired = signal(false);
+  protected readonly selectedRootId = signal<string | null>(null);
   protected readonly searchLoading = signal(false);
   protected readonly searchTerm = signal('');
   protected readonly selectedDepartment = signal('');
@@ -138,6 +140,9 @@ export class OrgChartComponent {
   );
   protected readonly canInitializeRoot = computed(
     () => this.pageError() && this.rootInitializationAvailable(),
+  );
+  protected readonly canSelectRoot = computed(
+    () => this.pageError() && this.rootSelectionRequired(),
   );
   protected readonly isFormMode = computed(() => this.drawerMode() !== 'view');
   protected readonly drawerTitle = computed(() => {
@@ -205,12 +210,18 @@ export class OrgChartComponent {
   });
   protected readonly assignModalTitle = computed(() => {
     const targetName = this.assignTargetNodeName();
-    return targetName ? `Thêm user vào node ${targetName}` : 'Thêm user vào node';
+    return this.translateService.instant(
+      targetName ? 'orgchart.modal.assignTitleWithName' : 'orgchart.modal.assignTitle',
+      { name: targetName },
+    );
   });
   protected readonly selectedCandidateCount = computed(() => this.selectedCandidateIds().length);
   protected readonly assignModalSaveText = computed(() => {
     const count = this.selectedCandidateCount();
-    return count > 0 ? `Gán ${count} user vào node` : 'Gán vào node';
+    return this.translateService.instant(
+      count > 0 ? 'orgchart.modal.assignSaveWithCount' : 'orgchart.modal.assignSave',
+      { count },
+    );
   });
 
   protected readonly selectedRootCandidateName = computed(() => {
@@ -223,6 +234,16 @@ export class OrgChartComponent {
     }
     return this.rootCandidateResults().find((item) => item.id === selectedId)?.name ?? '';
   });
+  protected readonly rootModalTitle = computed(() => (
+    this.translateService.instant(
+      this.rootSelectionRequired() ? 'orgchart.root.selectTitle' : 'orgchart.root.initTitle',
+    )
+  ));
+  protected readonly rootModalSaveText = computed(() => (
+    this.translateService.instant(
+      this.rootSelectionRequired() ? 'orgchart.root.selectSave' : 'orgchart.root.initSave',
+    )
+  ));
 
   private activePointerId: number | null = null;
   private panStartX = 0;
@@ -280,7 +301,7 @@ export class OrgChartComponent {
   }
 
   protected retryLoad(): void {
-    void this.loadTree();
+    void this.loadTree(this.selectedRootId() ?? undefined);
   }
 
   protected async openRootInitModal(): Promise<void> {
@@ -318,13 +339,24 @@ export class OrgChartComponent {
 
     this.saving.set(true);
     try {
+      if (this.rootSelectionRequired()) {
+        this.selectedRootId.set(userId);
+        this.closeRootInitModal();
+        await this.loadTree(userId);
+        this.toastService.success(this.translateService.instant('orgchart.toast.selectRootSuccess'));
+        return;
+      }
+
       const request: OrgChartInitializeRootRequest = { userId };
       await firstValueFrom(this.orgChartService.initializeRoot(request));
+      this.selectedRootId.set(userId);
       this.closeRootInitModal();
-      await this.loadTree();
-      this.toastService.success('Khoi tao node goc thanh cong');
+      await this.loadTree(userId);
+      this.toastService.success(this.translateService.instant('orgchart.toast.initRootSuccess'));
     } catch {
-      this.toastService.error('Khong the khoi tao node goc');
+      this.toastService.error(this.translateService.instant(
+        this.rootSelectionRequired() ? 'orgchart.toast.selectRootError' : 'orgchart.toast.initRootError',
+      ));
     } finally {
       this.saving.set(false);
     }
@@ -811,18 +843,24 @@ export class OrgChartComponent {
   }
 
   private async loadTree(rootId?: string): Promise<void> {
+    const effectiveRootId = rootId ?? this.selectedRootId() ?? undefined;
     this.pageLoading.set(true);
     this.pageError.set(false);
     this.rootInitializationAvailable.set(false);
+    this.rootSelectionRequired.set(false);
 
     try {
-      const response = await firstValueFrom(this.orgChartService.getTree(rootId, 2));
+      const response = await firstValueFrom(this.orgChartService.getTree(effectiveRootId, 2));
       this.rootNode.set(response.data ? this.toUiNode(response.data, 0, true) : null);
+      if (response.data?.id) {
+        this.selectedRootId.set(response.data.id);
+      }
       this.collectDepartments();
     } catch (error) {
       this.rootNode.set(null);
       this.pageError.set(true);
       this.rootInitializationAvailable.set(this.isRootMissingError(error));
+      this.rootSelectionRequired.set(this.isRootSelectionRequiredError(error));
       this.toastService.error(this.translateService.instant('orgchart.toast.loadError'));
     } finally {
       this.pageLoading.set(false);
@@ -963,7 +1001,7 @@ export class OrgChartComponent {
       );
     } catch {
       this.rootCandidateResults.set([]);
-      this.toastService.error('Khong the tai danh sach user');
+      this.toastService.error(this.translateService.instant('orgchart.toast.searchRootCandidatesError'));
     } finally {
       this.rootCandidateSearchLoading.set(false);
     }
@@ -1163,4 +1201,11 @@ export class OrgChartComponent {
     const code = maybeError?.error?.status?.code?.toLowerCase?.() ?? '';
     return message.includes('root user not found') || message.includes('org chart root') || code.includes('not_found');
   }
+
+  private isRootSelectionRequiredError(error: unknown): boolean {
+    const maybeError = error as { error?: { status?: { message?: string; code?: string } } };
+    const message = maybeError?.error?.status?.message?.toLowerCase?.() ?? '';
+    return message.includes('multiple org chart root candidates') || message.includes('rootid is required');
+  }
 }
+
