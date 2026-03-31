@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { ResponseApi } from '@goat-bravos/shared-lib-client';
 import { API_ENDPOINTS } from '@/core/config/api-endpoints';
 import {
+  OrgChartBulkManagerUpdateRequest,
+  OrgChartBulkManagerUpdateResponse,
   OrgChartPageResponse,
   OrgChartUserUpsertRequest,
   OrgChartUserDetail,
@@ -69,6 +71,16 @@ export class OrgChartService {
     });
   }
 
+  bulkUpdateManager(
+    request: OrgChartBulkManagerUpdateRequest,
+  ): Observable<ResponseApi<OrgChartBulkManagerUpdateResponse>> {
+    return this.apiClient.put<ResponseApi<OrgChartBulkManagerUpdateResponse>>(
+      API_ENDPOINTS.orgChart.bulkManager,
+      request,
+      { skipErrorToast: true },
+    );
+  }
+
   deleteUser(userId: string | number): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.delete<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.delete(userId), {
       skipErrorToast: true,
@@ -90,6 +102,25 @@ export class OrgChartService {
           ...(query ? { q: query } : {}),
           ...(department ? { department } : {}),
           ...(status ? { status } : {}),
+          page,
+          limit,
+        },
+        skipErrorToast: true,
+      },
+    );
+  }
+
+  getAssignableUsers(
+    query?: string,
+    page = 1,
+    limit = 10,
+  ): Observable<ResponseApi<OrgChartPageResponse<OrgChartUserLite>>> {
+    return this.apiClient.get<ResponseApi<OrgChartPageResponse<OrgChartUserLite>>>(
+      API_ENDPOINTS.orgChart.assignableUsers,
+      {
+        headers: OrgChartService.SKIP_LOADING_HEADER,
+        params: {
+          ...(query ? { q: query } : {}),
           page,
           limit,
         },

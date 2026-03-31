@@ -12,6 +12,7 @@ import { SideDrawerComponent } from '@/components/popups/side-drawer/side-drawer
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
 import {
+  OrgChartBulkManagerUpdateRequest,
   OrgChartPageResponse,
   OrgChartStatus,
   OrgChartUserDetail,
@@ -19,7 +20,6 @@ import {
   OrgChartUserNode,
 } from '@/models/orgchart.model';
 import { OrgChartService } from '@/services/api/orgchart.service';
-import { UserManagementService } from '@/services/api/user-management.service';
 
 type DrawerMode = 'view' | 'assign-member' | 'move-node';
 
@@ -61,9 +61,9 @@ export class OrgChartComponent {
   private static readonly MAX_ZOOM = 1.8;
   private static readonly ZOOM_STEP = 0.1;
   private static readonly DEEP_FOCUS_DEPTH = 6;
+  private static readonly ASSIGNABLE_USER_LIMIT = 10;
 
   private readonly orgChartService = inject(OrgChartService);
-  private readonly userManagementService = inject(UserManagementService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
@@ -118,7 +118,6 @@ export class OrgChartComponent {
   protected readonly assignModalVisible = signal(false);
   protected readonly assignTargetNodeId = signal<string | null>(null);
   protected readonly assignTargetNodeName = signal('');
-  protected readonly assignedUserIds = signal<string[]>([]);
 
   protected readonly hasActiveFilters = computed(
     () => !!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus(),
@@ -374,9 +373,11 @@ export class OrgChartComponent {
 
     this.saving.set(true);
     try {
-      await Promise.all(
-        selectedUserIds.map((userId) => firstValueFrom(this.orgChartService.updateManager(userId, targetNodeId))),
-      );
+      const request: OrgChartBulkManagerUpdateRequest = {
+        userIds: selectedUserIds,
+        managerId: targetNodeId,
+      };
+      await firstValueFrom(this.orgChartService.bulkUpdateManager(request));
       await this.reloadTree(targetNodeId);
       this.closeAssignMemberModal();
       this.toastService.success(this.translateService.instant('orgchart.toast.assignSuccess'));
@@ -850,36 +851,17 @@ export class OrgChartComponent {
     this.openMoveNodeForm();
   }
 
-  private async ensureAssignedUserIds(): Promise<void> {
-    if (this.assignedUserIds().length > 0) {
-      return;
-    }
-
-    const response = await firstValueFrom(this.orgChartService.searchUsers(undefined, undefined, undefined, 1, 500));
-    this.assignedUserIds.set((response.data?.data ?? []).map((item) => item.id));
-  }
-
   private async searchAssignableUsers(queryInput?: string): Promise<void> {
     const query = (queryInput ?? this.candidateSearchTerm()).trim();
     this.candidateSearchLoading.set(true);
     try {
-      await this.ensureAssignedUserIds();
       const response = await firstValueFrom(
-        this.userManagementService.filterUsers({ keyword: query || undefined }, 1, 50, true),
+        this.orgChartService.getAssignableUsers(query || undefined, 1, OrgChartComponent.ASSIGNABLE_USER_LIMIT),
       );
       const currentNodeId = this.assignTargetNodeId() || this.selectedDetail()?.id;
-      const assignedIds = new Set(this.assignedUserIds());
       this.candidateSearchResults.set(
-        (response.data?.items ?? [])
-          .filter((item) => !assignedIds.has(item.userId))
-          .filter((item) => item.userId !== currentNodeId)
-          .map((item) => ({
-            id: item.userId,
-            name: item.fullName || item.email || item.userId,
-            title: item.position || undefined,
-            avatar: item.avatarUrl ?? null,
-          }))
-          .slice(0, 10),
+        (response.data?.data ?? [])
+          .filter((item) => item.id !== currentNodeId),
       );
     } catch {
       this.candidateSearchResults.set([]);

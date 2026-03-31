@@ -58,6 +58,17 @@ export interface OrgChartUserUpsertRequest {
   managerId?: number | null;
 }
 
+export interface OrgChartBulkManagerUpdateRequest {
+  userIds: Array<string | number>;
+  managerId?: string | number | null;
+}
+
+export interface OrgChartBulkManagerUpdateResponse {
+  updatedUserIds: string[];
+  managerId?: string | null;
+  updatedCount: number;
+}
+
 export interface OrgChartMeta {
   total: number;
   page: number;
