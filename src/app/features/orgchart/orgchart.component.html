@@ -100,6 +100,18 @@
           }
         </div>
       </div>
+    } @else if (canInitializeRoot()) {
+      <div class="state-host">
+        <app-no-data
+          [fullHeight]="false"
+          title="Chua co node goc"
+          message="Org chart hien chua co root node. Chon mot user de khoi tao cay."
+          [showAction]="true"
+          actionText="Khoi tao node goc"
+          (actionClicked)="openRootInitModal()">
+          <span icon class="custom-icon-building"></span>
+        </app-no-data>
+      </div>
     } @else if (pageError()) {
       <div class="state-host">
         <app-no-data
@@ -638,6 +650,67 @@
             class="assignable-user-card"
             [class.selected]="selectedCandidateIds().includes(candidate.id)"
             (click)="chooseCandidate(candidate)">
+            <div class="assignable-user-avatar">
+              @if (candidate.avatar) {
+                <img [src]="candidate.avatar" [alt]="candidate.name">
+              } @else {
+                <span>{{ avatarFallback(candidate.name) }}</span>
+              }
+            </div>
+
+            <div class="assignable-user-copy">
+              <strong>{{ candidate.name }}</strong>
+              <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
+            </div>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</app-modal-popup>
+
+<app-modal-popup
+  [isVisible]="rootInitModalVisible()"
+  (isVisibleChange)="closeRootInitModal()"
+  (cancel)="closeRootInitModal()"
+  (save)="confirmInitializeRoot()"
+  title="Khoi tao node goc"
+  cancelText="Huy"
+  saveText="Tao root"
+  [okDisabled]="saving() || !selectedRootCandidateId()"
+  maxWidth="760px">
+  <div class="assign-modal-body">
+    <app-shared-search
+      [value]="rootCandidateSearchTerm()"
+      placeholder="Tim user de lam node goc"
+      [debounceMs]="300"
+      width="100%"
+      (valueChange)="onRootCandidateSearchChange($event)">
+    </app-shared-search>
+
+    @if (selectedRootCandidateName()) {
+      <div class="selected-manager-chip">
+        <strong>{{ selectedRootCandidateName() }}</strong>
+      </div>
+    }
+
+    @if (rootCandidateSearchLoading()) {
+      <p class="empty-inline">Dang tai danh sach user...</p>
+    } @else if (rootCandidateResults().length === 0) {
+      <app-no-data
+        [fullHeight]="false"
+        title="Chua co user phu hop"
+        message="Khong tim thay user de khoi tao node goc.">
+        <span icon class="custom-icon-users"></span>
+      </app-no-data>
+    } @else {
+      <div class="assignable-user-grid">
+        @for (candidate of rootCandidateResults(); track candidate.id) {
+          <button
+            type="button"
+            class="assignable-user-card"
+            [class.selected]="selectedRootCandidateId() === candidate.id"
+            (click)="chooseRootCandidate(candidate)">
             <div class="assignable-user-avatar">
               @if (candidate.avatar) {
                 <img [src]="candidate.avatar" [alt]="candidate.name">

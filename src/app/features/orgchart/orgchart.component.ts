@@ -13,6 +13,7 @@ import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
 import {
   OrgChartBulkManagerUpdateRequest,
+  OrgChartInitializeRootRequest,
   OrgChartPageResponse,
   OrgChartStatus,
   OrgChartUserDetail,
@@ -20,6 +21,7 @@ import {
   OrgChartUserNode,
 } from '@/models/orgchart.model';
 import { OrgChartService } from '@/services/api/orgchart.service';
+import { UserManagementService } from '@/services/api/user-management.service';
 
 type DrawerMode = 'view' | 'assign-member' | 'move-node';
 
@@ -62,8 +64,10 @@ export class OrgChartComponent {
   private static readonly ZOOM_STEP = 0.1;
   private static readonly DEEP_FOCUS_DEPTH = 6;
   private static readonly ASSIGNABLE_USER_LIMIT = 10;
+  private static readonly ROOT_CANDIDATE_LIMIT = 10;
 
   private readonly orgChartService = inject(OrgChartService);
+  private readonly userManagementService = inject(UserManagementService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
@@ -78,6 +82,7 @@ export class OrgChartComponent {
   protected readonly rootNode = signal<UiOrgChartNode | null>(null);
   protected readonly pageLoading = signal(true);
   protected readonly pageError = signal(false);
+  protected readonly rootInitializationAvailable = signal(false);
   protected readonly searchLoading = signal(false);
   protected readonly searchTerm = signal('');
   protected readonly selectedDepartment = signal('');
@@ -118,12 +123,21 @@ export class OrgChartComponent {
   protected readonly assignModalVisible = signal(false);
   protected readonly assignTargetNodeId = signal<string | null>(null);
   protected readonly assignTargetNodeName = signal('');
+  protected readonly rootInitModalVisible = signal(false);
+  protected readonly rootCandidateSearchTerm = signal('');
+  protected readonly rootCandidateSearchLoading = signal(false);
+  protected readonly rootCandidateResults = signal<OrgChartUserLite[]>([]);
+  protected readonly selectedRootCandidateId = signal<string | null>(null);
+  protected readonly selectedRootCandidateLabel = signal('');
 
   protected readonly hasActiveFilters = computed(
     () => !!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus(),
   );
   protected readonly searchPanelVisible = computed(
     () => this.hasActiveFilters() && this.searchPanelOpen(),
+  );
+  protected readonly canInitializeRoot = computed(
+    () => this.pageError() && this.rootInitializationAvailable(),
   );
   protected readonly isFormMode = computed(() => this.drawerMode() !== 'view');
   protected readonly drawerTitle = computed(() => {
@@ -199,6 +213,17 @@ export class OrgChartComponent {
     return count > 0 ? `Gán ${count} user vào node` : 'Gán vào node';
   });
 
+  protected readonly selectedRootCandidateName = computed(() => {
+    const selectedId = this.selectedRootCandidateId();
+    if (!selectedId) {
+      return '';
+    }
+    if (this.selectedRootCandidateLabel()) {
+      return this.selectedRootCandidateLabel();
+    }
+    return this.rootCandidateResults().find((item) => item.id === selectedId)?.name ?? '';
+  });
+
   private activePointerId: number | null = null;
   private panStartX = 0;
   private panStartY = 0;
@@ -256,6 +281,53 @@ export class OrgChartComponent {
 
   protected retryLoad(): void {
     void this.loadTree();
+  }
+
+  protected async openRootInitModal(): Promise<void> {
+    this.rootInitModalVisible.set(true);
+    this.rootCandidateSearchTerm.set('');
+    this.rootCandidateResults.set([]);
+    this.selectedRootCandidateId.set(null);
+    this.selectedRootCandidateLabel.set('');
+    await this.searchRootCandidates('');
+  }
+
+  protected closeRootInitModal(): void {
+    this.rootInitModalVisible.set(false);
+    this.rootCandidateSearchTerm.set('');
+    this.rootCandidateResults.set([]);
+    this.selectedRootCandidateId.set(null);
+    this.selectedRootCandidateLabel.set('');
+  }
+
+  protected onRootCandidateSearchChange(value: string): void {
+    this.rootCandidateSearchTerm.set(value);
+    void this.searchRootCandidates(value);
+  }
+
+  protected chooseRootCandidate(candidate: OrgChartUserLite): void {
+    this.selectedRootCandidateId.set(candidate.id);
+    this.selectedRootCandidateLabel.set(candidate.name);
+  }
+
+  protected async confirmInitializeRoot(): Promise<void> {
+    const userId = this.selectedRootCandidateId();
+    if (!userId || this.saving()) {
+      return;
+    }
+
+    this.saving.set(true);
+    try {
+      const request: OrgChartInitializeRootRequest = { userId };
+      await firstValueFrom(this.orgChartService.initializeRoot(request));
+      this.closeRootInitModal();
+      await this.loadTree();
+      this.toastService.success('Khoi tao node goc thanh cong');
+    } catch {
+      this.toastService.error('Khong the khoi tao node goc');
+    } finally {
+      this.saving.set(false);
+    }
   }
 
   protected toggleNodeActions(nodeId: string, event?: Event): void {
@@ -741,13 +813,16 @@ export class OrgChartComponent {
   private async loadTree(rootId?: string): Promise<void> {
     this.pageLoading.set(true);
     this.pageError.set(false);
+    this.rootInitializationAvailable.set(false);
 
     try {
       const response = await firstValueFrom(this.orgChartService.getTree(rootId, 2));
       this.rootNode.set(response.data ? this.toUiNode(response.data, 0, true) : null);
       this.collectDepartments();
-    } catch {
+    } catch (error) {
+      this.rootNode.set(null);
       this.pageError.set(true);
+      this.rootInitializationAvailable.set(this.isRootMissingError(error));
       this.toastService.error(this.translateService.instant('orgchart.toast.loadError'));
     } finally {
       this.pageLoading.set(false);
@@ -868,6 +943,29 @@ export class OrgChartComponent {
       this.toastService.error(this.translateService.instant('orgchart.toast.searchUserError'));
     } finally {
       this.candidateSearchLoading.set(false);
+    }
+  }
+
+  private async searchRootCandidates(queryInput?: string): Promise<void> {
+    const query = (queryInput ?? this.rootCandidateSearchTerm()).trim();
+    this.rootCandidateSearchLoading.set(true);
+    try {
+      const response = await firstValueFrom(
+        this.userManagementService.filterUsers({ keyword: query || undefined }, 1, OrgChartComponent.ROOT_CANDIDATE_LIMIT, true),
+      );
+      this.rootCandidateResults.set(
+        (response.data?.items ?? []).map((item) => ({
+          id: item.userId,
+          name: item.fullName || item.email || item.userId,
+          title: item.position || undefined,
+          avatar: item.avatarUrl ?? null,
+        })),
+      );
+    } catch {
+      this.rootCandidateResults.set([]);
+      this.toastService.error('Khong the tai danh sach user');
+    } finally {
+      this.rootCandidateSearchLoading.set(false);
     }
   }
 
@@ -1057,5 +1155,12 @@ export class OrgChartComponent {
 
   private dropdownValueToString(value: DropdownValue): string {
     return value == null ? '' : String(value);
+  }
+
+  private isRootMissingError(error: unknown): boolean {
+    const maybeError = error as { error?: { status?: { message?: string; code?: string } } };
+    const message = maybeError?.error?.status?.message?.toLowerCase?.() ?? '';
+    const code = maybeError?.error?.status?.code?.toLowerCase?.() ?? '';
+    return message.includes('root user not found') || message.includes('org chart root') || code.includes('not_found');
   }
 }

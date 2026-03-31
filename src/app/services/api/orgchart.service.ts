@@ -6,6 +6,7 @@ import { API_ENDPOINTS } from '@/core/config/api-endpoints';
 import {
   OrgChartBulkManagerUpdateRequest,
   OrgChartBulkManagerUpdateResponse,
+  OrgChartInitializeRootRequest,
   OrgChartPageResponse,
   OrgChartUserUpsertRequest,
   OrgChartUserDetail,
@@ -48,6 +49,12 @@ export class OrgChartService {
 
   getUserDetail(userId: string | number): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.get<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.byId(userId), {
+      skipErrorToast: true,
+    });
+  }
+
+  initializeRoot(request: OrgChartInitializeRootRequest): Observable<ResponseApi<OrgChartUserDetail>> {
+    return this.apiClient.post<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.initializeRoot, request, {
       skipErrorToast: true,
     });
   }

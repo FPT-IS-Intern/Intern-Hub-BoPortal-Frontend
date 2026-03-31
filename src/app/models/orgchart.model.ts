@@ -63,6 +63,10 @@ export interface OrgChartBulkManagerUpdateRequest {
   managerId?: string | number | null;
 }
 
+export interface OrgChartInitializeRootRequest {
+  userId: string | number;
+}
+
 export interface OrgChartBulkManagerUpdateResponse {
   updatedUserIds: string[];
   managerId?: string | null;

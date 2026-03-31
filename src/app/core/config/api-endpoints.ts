@@ -54,6 +54,7 @@ export const API_ENDPOINTS = {
   },
   orgChart: {
     root: withBoPortal('/orgchart'),
+    initializeRoot: withBoPortal('/orgchart/root'),
     create: withBoPortal('/orgchart/users'),
     search: withBoPortal('/orgchart/users'),
     assignableUsers: withBoPortal('/orgchart/assignable-users'),
