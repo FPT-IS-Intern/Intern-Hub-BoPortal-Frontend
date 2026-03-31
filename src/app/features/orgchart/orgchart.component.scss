@@ -1308,8 +1308,7 @@
 .search-panel::-webkit-scrollbar-button,
 .tree-scroll::-webkit-scrollbar-button,
 .focus-breadcrumb::-webkit-scrollbar-button,
-.manager-results::-webkit-scrollbar-button,
-.assign-modal-results::-webkit-scrollbar-button {
+.manager-results::-webkit-scrollbar-button {
   display: none;
   height: 0;
 }
@@ -1330,10 +1329,12 @@
 }
 
 .root-modal-results {
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.root-modal-results::-webkit-scrollbar {
+.root-modal-results::-webkit-scrollbar,
+.root-modal-results::-webkit-scrollbar-button {
   display: none;
 }
 
