@@ -753,3 +753,14 @@
     </div>
   </div>
 </app-modal-popup>
+
+<app-confirm-popup
+  [isVisible]="removeConfirmVisible()"
+  (isVisibleChange)="closeRemoveConfirm()"
+  [title]="'orgchart.confirm.removeTitle' | translate"
+  [message]="'orgchart.confirm.removeMessage' | translate: { name: removeConfirmTarget()?.name }"
+  [cancelText]="'orgchart.actions.cancel' | translate"
+  [confirmText]="'orgchart.confirm.removeConfirm' | translate"
+  (confirm)="confirmRemoveFromNode()"
+  (cancel)="closeRemoveConfirm()">
+</app-confirm-popup>

@@ -187,7 +187,9 @@
       "searchRootCandidatesError": "Không thể tải danh sách user"
     },
     "confirm": {
-      "removeMessage": "Bạn có chắc muốn xóa {{name}} khỏi node hiện tại?"
+      "removeTitle": "Xác nhận xóa khỏi node",
+      "removeMessage": "Bạn có chắc muốn xóa {{name}} khỏi node hiện tại?",
+      "removeConfirm": "Xóa khỏi node"
     }
   },
   "login": {

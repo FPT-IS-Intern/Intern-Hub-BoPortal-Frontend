@@ -187,7 +187,9 @@
       "searchRootCandidatesError": "Unable to load the user list"
     },
     "confirm": {
-      "removeMessage": "Do you want to remove {{name}} from the current node?"
+      "removeTitle": "Confirm removal",
+      "removeMessage": "Do you want to remove {{name}} from the current node?",
+      "removeConfirm": "Remove from node"
     }
   },
   "login": {

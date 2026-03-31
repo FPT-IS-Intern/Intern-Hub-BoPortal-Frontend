@@ -71,11 +71,18 @@ export class OrgChartService {
     });
   }
 
-  updateManager(userId: string | number, managerId?: string | number | null): Observable<ResponseApi<OrgChartUserDetail>> {
-    return this.apiClient.put<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.manager(userId), {}, {
-      params: managerId == null ? {} : { managerId },
-      skipErrorToast: true,
-    });
+  updateManager(
+    userId: string | number,
+    managerId?: string | number | null
+  ): Observable<ResponseApi<OrgChartBulkManagerUpdateResponse>> {
+    return this.apiClient.put<ResponseApi<OrgChartBulkManagerUpdateResponse>>(
+      API_ENDPOINTS.orgChart.bulkManager,
+      {
+        userIds: [userId],
+        managerId: managerId ?? null,
+      },
+      { skipErrorToast: true },
+    );
   }
 
   bulkUpdateManager(

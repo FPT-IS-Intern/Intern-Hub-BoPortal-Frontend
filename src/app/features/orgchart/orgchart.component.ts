@@ -10,6 +10,7 @@ import { DropdownOption, DropdownValue, SharedDropdownComponent } from '@/compon
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { SideDrawerComponent } from '@/components/popups/side-drawer/side-drawer.component';
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
+import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
 import {
   OrgChartBulkManagerUpdateRequest,
@@ -52,6 +53,7 @@ interface FocusPathItem {
     SharedDropdownComponent,
     SideDrawerComponent,
     ModalPopup,
+    ConfirmPopup,
     NoDataComponent,
   ],
   templateUrl: './orgchart.component.html',
@@ -59,7 +61,7 @@ interface FocusPathItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrgChartComponent {
-  private static readonly MIN_ZOOM = 0.6;
+  private static readonly MIN_ZOOM = 0.4;
   private static readonly MAX_ZOOM = 1.8;
   private static readonly ZOOM_STEP = 0.1;
   private static readonly DEEP_FOCUS_DEPTH = 6;
@@ -125,6 +127,11 @@ export class OrgChartComponent {
   protected readonly assignModalVisible = signal(false);
   protected readonly assignTargetNodeId = signal<string | null>(null);
   protected readonly assignTargetNodeName = signal('');
+  protected readonly moveModalVisible = signal(false);
+  protected readonly moveTargetNodeId = signal<string | null>(null);
+  protected readonly moveTargetNodeName = signal('');
+  protected readonly removeConfirmVisible = signal(false);
+  protected readonly removeConfirmTarget = signal<{ id: string; name: string; closeDetail: boolean } | null>(null);
   protected readonly rootInitModalVisible = signal(false);
   protected readonly rootCandidateSearchTerm = signal('');
   protected readonly rootCandidateSearchLoading = signal(false);
@@ -516,29 +523,7 @@ export class OrgChartComponent {
     if (this.saving()) {
       return;
     }
-
-    const confirmed = window.confirm(
-      this.translateService.instant('orgchart.confirm.removeMessage', { name: userName }),
-    );
-    if (!confirmed) {
-      return;
-    }
-
-    this.saving.set(true);
-    try {
-      await firstValueFrom(this.orgChartService.updateManager(userId, null));
-      await this.reloadTree(undefined, userId);
-      if (this.selectedDetail()?.id === userId) {
-        this.closeDetail();
-      }
-      this.activeNodeActionId.set(null);
-      this.expandedNodeActionId.set(null);
-      this.toastService.success(this.translateService.instant('orgchart.toast.removeSuccess'));
-    } catch {
-      this.toastService.error(this.translateService.instant('orgchart.toast.removeError'));
-    } finally {
-      this.saving.set(false);
-    }
+    this.openRemoveConfirm(userId, userName, this.selectedDetail()?.id === userId);
   }
 
   protected async removeSelectedUserFromNode(): Promise<void> {
@@ -546,20 +531,36 @@ export class OrgChartComponent {
     if (!detail || this.saving()) {
       return;
     }
+    this.openRemoveConfirm(detail.id, detail.name, true);
+  }
 
-    const confirmed = window.confirm(
-      this.translateService.instant('orgchart.confirm.removeMessage', { name: detail.name }),
-    );
-    if (!confirmed) {
+  protected openRemoveConfirm(userId: string, userName: string, closeDetail: boolean): void {
+    this.removeConfirmTarget.set({ id: userId, name: userName, closeDetail });
+    this.removeConfirmVisible.set(true);
+  }
+
+  protected closeRemoveConfirm(): void {
+    this.removeConfirmVisible.set(false);
+    this.removeConfirmTarget.set(null);
+  }
+
+  protected async confirmRemoveFromNode(): Promise<void> {
+    const target = this.removeConfirmTarget();
+    if (!target || this.saving()) {
       return;
     }
 
     this.saving.set(true);
     try {
-      await firstValueFrom(this.orgChartService.updateManager(detail.id, null));
-      await this.reloadTree(undefined, detail.id);
-      this.closeDetail();
+      await firstValueFrom(this.orgChartService.updateManager(target.id, null));
+      await this.reloadTree(undefined, target.id);
+      if (target.closeDetail) {
+        this.closeDetail();
+      }
+      this.activeNodeActionId.set(null);
+      this.expandedNodeActionId.set(null);
       this.toastService.success(this.translateService.instant('orgchart.toast.removeSuccess'));
+      this.closeRemoveConfirm();
     } catch {
       this.toastService.error(this.translateService.instant('orgchart.toast.removeError'));
     } finally {
@@ -1208,4 +1209,3 @@ export class OrgChartComponent {
     return message.includes('multiple org chart root candidates') || message.includes('rootid is required');
   }
 }
-
