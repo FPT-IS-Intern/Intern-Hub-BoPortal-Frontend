@@ -1,97 +1,98 @@
 <div class="orgchart-page">
-  <div #toolbarStack class="toolbar-stack">
-    <section class="orgchart-toolbar">
-      <div class="toolbar-controls">
-        <div class="keyword-field">
-          <app-shared-search
-            [value]="searchTerm()"
-            [placeholder]="searchPlaceholder()"
-            [debounceMs]="350"
-            width="100%"
-            (valueChange)="onSearchChange($event)">
-          </app-shared-search>
-        </div>
-
-        <div class="department-field">
-          <app-shared-dropdown
-            [options]="departmentOptions()"
-            [value]="selectedDepartment()"
-            width="100%"
-            (valueChange)="onDepartmentChange($event)">
-          </app-shared-dropdown>
-        </div>
-
-        <div class="status-field">
-          <app-shared-dropdown
-            [options]="statusOptions()"
-            [value]="selectedStatus()"
-            width="100%"
-            (valueChange)="onStatusChange($event)">
-          </app-shared-dropdown>
-        </div>
-
-      </div>
-    </section>
-
-    @if (searchPanelVisible()) {
-      <section class="search-panel">
-        <div class="search-panel-header">
-          <div>
-            <h2>{{ 'orgchart.search.title' | translate }}</h2>
-            <p>{{ resultSummary() }}</p>
-          </div>
-
-          @if (searchLoading()) {
-            <div class="search-indicator">
-              <span class="custom-icon-loading rotate"></span>
-              <span>{{ 'orgchart.search.loading' | translate }}</span>
-            </div>
-          }
-        </div>
-
-        @if (!searchLoading() && searchResults().length === 0) {
-          <div class="search-empty-state">
-            <app-no-data
-              [fullHeight]="false"
-              [title]="'orgchart.search.emptyTitle' | translate"
-              [message]="'orgchart.search.emptyMessage' | translate">
-              <span icon class="custom-icon-building"></span>
-            </app-no-data>
-          </div>
-        } @else {
-          <div class="search-results">
-            @for (result of searchResults(); track result.id) {
-              <button
-                type="button"
-                class="search-result-card"
-                [class.focusing]="focusingUserId() === result.id"
-                (click)="focusResult(result)">
-                <div class="result-avatar">
-                  @if (result.avatar) {
-                    <img [src]="result.avatar" [alt]="result.name">
-                  } @else {
-                    <span>{{ avatarFallback(result.name) }}</span>
-                  }
-                </div>
-
-                <div class="result-copy">
-                  <strong>{{ result.name }}</strong>
-                  <span>{{ result.title || ('orgchart.common.noTitle' | translate) }}</span>
-                  <small>{{ result.department || ('orgchart.common.noDepartment' | translate) }}</small>
-                </div>
-
-                @if (result.status !== 'active') {
-                  <span [class]="statusClass(result.status)">{{ statusLabel(result.status) }}</span>
-                }
-              </button>
-            }
-          </div>
-        }
-      </section>
-    }
-  </div>
-
   <section class="orgchart-shell">
+    <div class="orgchart-shell-head">
+      <div #toolbarStack class="toolbar-stack">
+        <section class="orgchart-toolbar">
+          <div class="toolbar-controls">
+            <div class="keyword-field">
+              <app-shared-search
+                [value]="searchTerm()"
+                [placeholder]="searchPlaceholder()"
+                [debounceMs]="350"
+                width="100%"
+                (valueChange)="onSearchChange($event)">
+              </app-shared-search>
+            </div>
+
+            <div class="department-field">
+              <app-shared-dropdown
+                [options]="departmentOptions()"
+                [value]="selectedDepartment()"
+                width="100%"
+                (valueChange)="onDepartmentChange($event)">
+              </app-shared-dropdown>
+            </div>
+
+            <div class="status-field">
+              <app-shared-dropdown
+                [options]="statusOptions()"
+                [value]="selectedStatus()"
+                width="100%"
+                (valueChange)="onStatusChange($event)">
+              </app-shared-dropdown>
+            </div>
+          </div>
+        </section>
+
+        @if (searchPanelVisible()) {
+          <section class="search-panel">
+            <div class="search-panel-header">
+              <div>
+                <h2>{{ 'orgchart.search.title' | translate }}</h2>
+                <p>{{ resultSummary() }}</p>
+              </div>
+
+              @if (searchLoading()) {
+                <div class="search-indicator">
+                  <span class="custom-icon-loading rotate"></span>
+                  <span>{{ 'orgchart.search.loading' | translate }}</span>
+                </div>
+              }
+            </div>
+
+            @if (!searchLoading() && searchResults().length === 0) {
+              <div class="search-empty-state">
+                <app-no-data
+                  [fullHeight]="false"
+                  [title]="'orgchart.search.emptyTitle' | translate"
+                  [message]="'orgchart.search.emptyMessage' | translate">
+                  <span icon class="custom-icon-building"></span>
+                </app-no-data>
+              </div>
+            } @else {
+              <div class="search-results">
+                @for (result of searchResults(); track result.id) {
+                  <button
+                    type="button"
+                    class="search-result-card"
+                    [class.focusing]="focusingUserId() === result.id"
+                    (click)="focusResult(result)">
+                    <div class="result-avatar">
+                      @if (result.avatar) {
+                        <img [src]="result.avatar" [alt]="result.name">
+                      } @else {
+                        <span>{{ avatarFallback(result.name) }}</span>
+                      }
+                    </div>
+
+                    <div class="result-copy">
+                      <strong>{{ result.name }}</strong>
+                      <span>{{ result.title || ('orgchart.common.noTitle' | translate) }}</span>
+                      <small>{{ result.department || ('orgchart.common.noDepartment' | translate) }}</small>
+                    </div>
+
+                    @if (result.status !== 'active') {
+                      <span [class]="statusClass(result.status)">{{ statusLabel(result.status) }}</span>
+                    }
+                  </button>
+                }
+              </div>
+            }
+          </section>
+        }
+      </div>
+    </div>
+
     @if (pageLoading()) {
       <div class="loading-state">
         <div class="loading-grid">
@@ -246,10 +247,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="tree-viewport-toolbar">
-        <p class="viewport-hint">{{ 'orgchart.viewport.hint' | translate }}</p>
 
         <div class="viewport-controls">
           <button
