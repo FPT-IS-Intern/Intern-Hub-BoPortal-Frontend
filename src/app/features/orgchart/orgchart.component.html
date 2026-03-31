@@ -295,10 +295,11 @@
           type="button"
           class="org-card"
           [class.highlighted]="node.isHighlighted"
+          [class.actions-open]="activeNodeActionId() === node.id"
           [class.root-card]="node.depth === 0"
           [attr.role]="'treeitem'"
           [attr.aria-expanded]="node.hasChildren ? node.isExpanded : null"
-          (click)="showUserDetail(node.id, $event)"
+          (click)="toggleNodeActions(node.id, $event)"
           (keydown)="onNodeKeydown(node, $event)">
           <span [class]="statusDotClass(node.status)" [attr.aria-label]="statusLabel(node.status)" [title]="statusLabel(node.status)"></span>
 
@@ -326,6 +327,54 @@
             </div>
           </div>
         </button>
+
+        @if (activeNodeActionId() === node.id) {
+          <div class="node-action-hub">
+            <button
+              type="button"
+              class="action-btn-icon orgchart-node-action"
+              aria-label="Xem user"
+              (click)="openUserDrawerFromNode(node.id, $event)">
+              <img src="assets/icons/eye.svg" alt="">
+            </button>
+
+            <div class="node-action-stack">
+              <button
+                type="button"
+                class="action-btn-icon orgchart-node-action"
+                aria-label="Mở action"
+                (click)="toggleNodeActionMenu(node.id, $event)">
+                <img src="assets/icons/settings-01.svg" alt="">
+              </button>
+
+              @if (expandedNodeActionId() === node.id) {
+                <div class="node-quick-actions">
+                  <button
+                    type="button"
+                    class="action-btn-icon orgchart-node-action"
+                    aria-label="Thêm user vào node"
+                    (click)="openAssignMemberFormForNode(node.id, $event)">
+                    <img src="assets/icons/package-plus.svg" alt="">
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn-icon orgchart-node-action"
+                    aria-label="Đổi node"
+                    (click)="openMoveNodeFormForNode(node.id, $event)">
+                    <img src="assets/icons/users-edit.svg" alt="">
+                  </button>
+                  <button
+                    type="button"
+                    class="action-btn-icon orgchart-node-action danger"
+                    aria-label="Xóa khỏi node"
+                    (click)="removeNodeMember(node.id, node.name, $event)">
+                    <img src="assets/icons/x-circle.svg" alt="">
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
       </div>
     </div>
 
@@ -543,32 +592,67 @@
         }
       </div>
 
-      <div class="drawer-action-row drawer-action-row-floating">
-        <button
-          type="button"
-          class="action-btn-icon orgchart-action-btn"
-          aria-label="Thêm user vào node"
-          [disabled]="saving()"
-          (click)="openAssignMemberForm()">
-          <img src="assets/icons/package-plus.svg" alt="">
-        </button>
-        <button
-          type="button"
-          class="action-btn-icon orgchart-action-btn"
-          aria-label="Đổi node"
-          [disabled]="saving()"
-          (click)="openMoveNodeForm()">
-          <img src="assets/icons/users-edit.svg" alt="">
-        </button>
-        <button
-          type="button"
-          class="action-btn-icon orgchart-action-btn danger"
-          aria-label="Xóa khỏi node"
-          [disabled]="saving()"
-          (click)="removeSelectedUserFromNode()">
-          <img src="assets/icons/x-circle.svg" alt="">
-        </button>
-      </div>
     </div>
   }
 </app-side-drawer>
+
+<app-modal-popup
+  [isVisible]="assignModalVisible()"
+  (isVisibleChange)="closeAssignMemberModal()"
+  (cancel)="closeAssignMemberModal()"
+  (save)="confirmAssignMemberFromModal()"
+  [title]="assignModalTitle()"
+  cancelText="Hủy"
+  [saveText]="assignModalSaveText()"
+  [okDisabled]="saving() || selectedCandidateCount() === 0"
+  maxWidth="760px">
+  <div class="assign-modal-body">
+    <app-shared-search
+      [value]="candidateSearchTerm()"
+      placeholder="Tìm user chưa thuộc node nào"
+      [debounceMs]="300"
+      width="100%"
+      (valueChange)="onCandidateSearchChange($event)">
+    </app-shared-search>
+
+    @if (selectedCandidateCount() > 0) {
+      <div class="selected-manager-chip">
+        <strong>Đã chọn {{ selectedCandidateCount() }} user</strong>
+      </div>
+    }
+
+    @if (candidateSearchLoading()) {
+      <p class="empty-inline">Đang tải danh sách user...</p>
+    } @else if (candidateSearchResults().length === 0) {
+      <app-no-data
+        [fullHeight]="false"
+        title="Chưa có user phù hợp"
+        message="Không tìm thấy user chưa được gán vào node nào.">
+        <span icon class="custom-icon-users"></span>
+      </app-no-data>
+    } @else {
+      <div class="assignable-user-grid">
+        @for (candidate of candidateSearchResults(); track candidate.id) {
+          <button
+            type="button"
+            class="assignable-user-card"
+            [class.selected]="selectedCandidateIds().includes(candidate.id)"
+            (click)="chooseCandidate(candidate)">
+            <div class="assignable-user-avatar">
+              @if (candidate.avatar) {
+                <img [src]="candidate.avatar" [alt]="candidate.name">
+              } @else {
+                <span>{{ avatarFallback(candidate.name) }}</span>
+              }
+            </div>
+
+            <div class="assignable-user-copy">
+              <strong>{{ candidate.name }}</strong>
+              <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
+            </div>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</app-modal-popup>

@@ -9,6 +9,7 @@ import { ToastService } from '@/services/common/toast.service';
 import { DropdownOption, DropdownValue, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { SideDrawerComponent } from '@/components/popups/side-drawer/side-drawer.component';
+import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
 import {
   OrgChartPageResponse,
@@ -48,6 +49,7 @@ interface FocusPathItem {
     SharedSearchComponent,
     SharedDropdownComponent,
     SideDrawerComponent,
+    ModalPopup,
     NoDataComponent,
   ],
   templateUrl: './orgchart.component.html',
@@ -96,11 +98,12 @@ export class OrgChartComponent {
   protected readonly highlightedNodeId = signal<string | null>(null);
   protected readonly focusingUserId = signal<string | null>(null);
   protected readonly knownDepartmentNames = signal<string[]>([]);
+  protected readonly activeNodeActionId = signal<string | null>(null);
+  protected readonly expandedNodeActionId = signal<string | null>(null);
   protected readonly zoomScale = signal(1);
   protected readonly isPanning = signal(false);
   protected readonly panX = signal(0);
   protected readonly panY = signal(0);
-  protected readonly positionOptions = signal<string[]>([]);
   protected readonly managerSearchTerm = signal('');
   protected readonly managerSearchLoading = signal(false);
   protected readonly managerSearchResults = signal<OrgChartUserLite[]>([]);
@@ -111,6 +114,11 @@ export class OrgChartComponent {
   protected readonly candidateSearchResults = signal<OrgChartUserLite[]>([]);
   protected readonly selectedCandidateId = signal<string | null>(null);
   protected readonly selectedCandidateLabel = signal('');
+  protected readonly selectedCandidateIds = signal<string[]>([]);
+  protected readonly assignModalVisible = signal(false);
+  protected readonly assignTargetNodeId = signal<string | null>(null);
+  protected readonly assignTargetNodeName = signal('');
+  protected readonly assignedUserIds = signal<string[]>([]);
 
   protected readonly hasActiveFilters = computed(
     () => !!this.searchTerm().trim() || !!this.selectedDepartment() || !!this.selectedStatus(),
@@ -182,6 +190,15 @@ export class OrgChartComponent {
     }
     return this.candidateSearchResults().find((item) => item.id === selectedId)?.name ?? '';
   });
+  protected readonly assignModalTitle = computed(() => {
+    const targetName = this.assignTargetNodeName();
+    return targetName ? `Thêm user vào node ${targetName}` : 'Thêm user vào node';
+  });
+  protected readonly selectedCandidateCount = computed(() => this.selectedCandidateIds().length);
+  protected readonly assignModalSaveText = computed(() => {
+    const count = this.selectedCandidateCount();
+    return count > 0 ? `Gán ${count} user vào node` : 'Gán vào node';
+  });
 
   private activePointerId: number | null = null;
   private panStartX = 0;
@@ -218,7 +235,6 @@ export class OrgChartComponent {
       });
 
     void this.loadTree();
-    void this.loadMetaOptions();
   }
 
   protected onSearchChange(value: string): void {
@@ -243,6 +259,35 @@ export class OrgChartComponent {
     void this.loadTree();
   }
 
+  protected toggleNodeActions(nodeId: string, event?: Event): void {
+    event?.stopPropagation();
+    this.activeNodeActionId.update((current) => (current === nodeId ? null : nodeId));
+    this.expandedNodeActionId.set(null);
+  }
+
+  protected toggleNodeActionMenu(nodeId: string, event?: Event): void {
+    event?.stopPropagation();
+    this.activeNodeActionId.set(nodeId);
+    this.expandedNodeActionId.update((current) => (current === nodeId ? null : nodeId));
+  }
+
+  protected async openUserDrawerFromNode(userId: string, event?: Event): Promise<void> {
+    event?.stopPropagation();
+    this.activeNodeActionId.set(null);
+    this.expandedNodeActionId.set(null);
+    await this.showUserDetail(userId);
+  }
+
+  protected async openAssignMemberFormForNode(userId: string, event?: Event): Promise<void> {
+    event?.stopPropagation();
+    await this.openAssignMemberModalForNode(userId);
+  }
+
+  protected async openMoveNodeFormForNode(userId: string, event?: Event): Promise<void> {
+    event?.stopPropagation();
+    await this.openDrawerForm(userId, 'move-node');
+  }
+
   protected openAssignMemberForm(): void {
     const detail = this.selectedDetail();
     if (!detail) {
@@ -252,6 +297,31 @@ export class OrgChartComponent {
     this.drawerMode.set('assign-member');
     this.selectedCandidateId.set(null);
     this.selectedCandidateLabel.set('');
+    this.candidateSearchTerm.set('');
+    this.candidateSearchResults.set([]);
+  }
+
+  protected async openAssignMemberModalForNode(userId: string): Promise<void> {
+    const node = this.rootNode() ? this.findNode(this.rootNode()!, userId) : null;
+    this.activeNodeActionId.set(null);
+    this.expandedNodeActionId.set(null);
+    this.assignTargetNodeId.set(userId);
+    this.assignTargetNodeName.set(node?.name ?? '');
+    this.assignModalVisible.set(true);
+    this.selectedCandidateId.set(null);
+    this.selectedCandidateLabel.set('');
+    this.selectedCandidateIds.set([]);
+    this.candidateSearchTerm.set('');
+    await this.searchAssignableUsers('');
+  }
+
+  protected closeAssignMemberModal(): void {
+    this.assignModalVisible.set(false);
+    this.assignTargetNodeId.set(null);
+    this.assignTargetNodeName.set('');
+    this.selectedCandidateId.set(null);
+    this.selectedCandidateLabel.set('');
+    this.selectedCandidateIds.set([]);
     this.candidateSearchTerm.set('');
     this.candidateSearchResults.set([]);
   }
@@ -294,6 +364,29 @@ export class OrgChartComponent {
     }
   }
 
+  protected async confirmAssignMemberFromModal(): Promise<void> {
+    const targetNodeId = this.assignTargetNodeId();
+    const selectedUserIds = this.selectedCandidateIds();
+    if (!targetNodeId || selectedUserIds.length === 0 || this.saving()) {
+      this.toastService.error(this.translateService.instant('orgchart.toast.selectUserError'));
+      return;
+    }
+
+    this.saving.set(true);
+    try {
+      await Promise.all(
+        selectedUserIds.map((userId) => firstValueFrom(this.orgChartService.updateManager(userId, targetNodeId))),
+      );
+      await this.reloadTree(targetNodeId);
+      this.closeAssignMemberModal();
+      this.toastService.success(this.translateService.instant('orgchart.toast.assignSuccess'));
+    } catch {
+      this.toastService.error(this.translateService.instant('orgchart.toast.assignError'));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
   protected async saveMoveNode(): Promise<void> {
     const detail = this.selectedDetail();
     if (!detail || this.saving()) {
@@ -308,6 +401,36 @@ export class OrgChartComponent {
       this.toastService.success(this.translateService.instant('orgchart.toast.moveSuccess'));
     } catch {
       this.toastService.error(this.translateService.instant('orgchart.toast.moveError'));
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  protected async removeNodeMember(userId: string, userName: string, event?: Event): Promise<void> {
+    event?.stopPropagation();
+    if (this.saving()) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      this.translateService.instant('orgchart.confirm.removeMessage', { name: userName }),
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    this.saving.set(true);
+    try {
+      await firstValueFrom(this.orgChartService.updateManager(userId, null));
+      await this.reloadTree(undefined, userId);
+      if (this.selectedDetail()?.id === userId) {
+        this.closeDetail();
+      }
+      this.activeNodeActionId.set(null);
+      this.expandedNodeActionId.set(null);
+      this.toastService.success(this.translateService.instant('orgchart.toast.removeSuccess'));
+    } catch {
+      this.toastService.error(this.translateService.instant('orgchart.toast.removeError'));
     } finally {
       this.saving.set(false);
     }
@@ -357,18 +480,23 @@ export class OrgChartComponent {
 
   protected onCandidateSearchChange(value: string): void {
     this.candidateSearchTerm.set(value);
-    if (!value.trim()) {
-      this.selectedCandidateId.set(null);
-      this.selectedCandidateLabel.set('');
-    }
-    void this.searchAssignableUsers();
+    void this.searchAssignableUsers(value);
   }
 
   protected chooseCandidate(candidate: OrgChartUserLite): void {
+    const currentIds = this.selectedCandidateIds();
+    if (currentIds.includes(candidate.id)) {
+      this.selectedCandidateIds.set(currentIds.filter((id) => id !== candidate.id));
+      if (this.selectedCandidateId() === candidate.id) {
+        this.selectedCandidateId.set(null);
+        this.selectedCandidateLabel.set('');
+      }
+      return;
+    }
+
+    this.selectedCandidateIds.set([...currentIds, candidate.id]);
     this.selectedCandidateId.set(candidate.id);
     this.selectedCandidateLabel.set(candidate.name);
-    this.candidateSearchTerm.set(candidate.name);
-    this.candidateSearchResults.set([]);
   }
 
   protected chooseManager(candidate: OrgChartUserLite): void {
@@ -428,7 +556,7 @@ export class OrgChartComponent {
     }
 
     const target = event.target as HTMLElement | null;
-    if (target?.closest('.org-card, .expand-button, .viewport-btn, .viewport-scale')) {
+    if (target?.closest('.org-card, .expand-button, .viewport-btn, .viewport-scale, .node-action-hub, .node-quick-actions')) {
       return;
     }
 
@@ -568,7 +696,7 @@ export class OrgChartComponent {
 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      void this.showUserDetail(node.id);
+      this.toggleNodeActions(node.id);
     }
   }
 
@@ -589,17 +717,24 @@ export class OrgChartComponent {
 
   @HostListener('document:pointerdown', ['$event'])
   protected handleDocumentPointerDown(event: PointerEvent): void {
-    if (!this.searchPanelVisible()) {
-      return;
-    }
-
     const target = event.target as Node | null;
-    const toolbarStack = this.toolbarStackRef?.nativeElement;
-    if (!target || !toolbarStack || toolbarStack.contains(target)) {
-      return;
+
+    if (!this.searchPanelVisible()) {
+      // continue, because node actions may still need closing
+    } else {
+      const toolbarStack = this.toolbarStackRef?.nativeElement;
+      if (target && toolbarStack && !toolbarStack.contains(target)) {
+        this.searchPanelOpen.set(false);
+      }
     }
 
-    this.searchPanelOpen.set(false);
+    if (this.activeNodeActionId()) {
+      const actionHost = (target as HTMLElement | null)?.closest('.node-shell');
+      if (!actionHost) {
+        this.activeNodeActionId.set(null);
+        this.expandedNodeActionId.set(null);
+      }
+    }
   }
 
   private async loadTree(rootId?: string): Promise<void> {
@@ -615,15 +750,6 @@ export class OrgChartComponent {
       this.toastService.error(this.translateService.instant('orgchart.toast.loadError'));
     } finally {
       this.pageLoading.set(false);
-    }
-  }
-
-  private async loadMetaOptions(): Promise<void> {
-    try {
-      const response = await firstValueFrom(this.userManagementService.getMetaOptions());
-      this.positionOptions.set([...(response.data?.positions ?? [])].sort((left, right) => left.localeCompare(right)));
-    } catch {
-      this.positionOptions.set([]);
     }
   }
 
@@ -713,28 +839,47 @@ export class OrgChartComponent {
     }
   }
 
-  private async searchAssignableUsers(): Promise<void> {
-    const query = this.candidateSearchTerm().trim();
-    if (!query) {
-      this.candidateSearchResults.set([]);
+  private async openDrawerForm(userId: string, mode: DrawerMode): Promise<void> {
+    this.activeNodeActionId.set(null);
+    this.expandedNodeActionId.set(null);
+    await this.showUserDetail(userId);
+    if (mode === 'assign-member') {
+      this.openAssignMemberForm();
+      return;
+    }
+    this.openMoveNodeForm();
+  }
+
+  private async ensureAssignedUserIds(): Promise<void> {
+    if (this.assignedUserIds().length > 0) {
       return;
     }
 
+    const response = await firstValueFrom(this.orgChartService.searchUsers(undefined, undefined, undefined, 1, 500));
+    this.assignedUserIds.set((response.data?.data ?? []).map((item) => item.id));
+  }
+
+  private async searchAssignableUsers(queryInput?: string): Promise<void> {
+    const query = (queryInput ?? this.candidateSearchTerm()).trim();
     this.candidateSearchLoading.set(true);
     try {
+      await this.ensureAssignedUserIds();
       const response = await firstValueFrom(
-        this.userManagementService.filterUsers({ keyword: query }, 1, 8, true),
+        this.userManagementService.filterUsers({ keyword: query || undefined }, 1, 50, true),
       );
-      const currentNodeId = this.selectedDetail()?.id;
+      const currentNodeId = this.assignTargetNodeId() || this.selectedDetail()?.id;
+      const assignedIds = new Set(this.assignedUserIds());
       this.candidateSearchResults.set(
         (response.data?.items ?? [])
+          .filter((item) => !assignedIds.has(item.userId))
           .filter((item) => item.userId !== currentNodeId)
           .map((item) => ({
             id: item.userId,
             name: item.fullName || item.email || item.userId,
             title: item.position || undefined,
             avatar: item.avatarUrl ?? null,
-          })),
+          }))
+          .slice(0, 10),
       );
     } catch {
       this.candidateSearchResults.set([]);
