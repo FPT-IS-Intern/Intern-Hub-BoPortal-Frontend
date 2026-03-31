@@ -7,33 +7,22 @@ import { TranslateService } from '@ngx-translate/core';
 import { HeaderComponent, HeaderData } from '@/components/header/header.component';
 import { SidebarComponent, SidebarData } from '@/components/sidebar/sidebar.component';
 import { SIDEBAR_ICONS } from '@/core/sidebar-icons';
-import { BreadcrumbComponent } from '@/components/breadcrumb/breadcrumb.component';
-import { BreadcrumbService } from '@/services/common/breadcrumb.service';
 import { AuthService } from '@/services/api/auth.service';
 import { StorageUtil } from '@/core/utils/storage.util';
 
 @Component({
   selector: 'app-bo-portal-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, BreadcrumbComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
   templateUrl: './bo-portal-layout.component.html',
   styleUrls: ['./bo-portal-layout.component.scss'],
 })
 export class BoPortalLayoutComponent {
-  protected readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly authService = inject(AuthService);
 
   constructor() {
-    // Clear breadcrumbs immediately on any navigation start to avoid stale titles
-    this.router.events.pipe(
-      takeUntilDestroyed(),
-      filter(event => event instanceof NavigationStart)
-    ).subscribe(() => {
-      this.breadcrumbService.clearBreadcrumbs();
-    });
-
     this.translate.onLangChange
       .pipe(takeUntilDestroyed())
       .subscribe(() => {
