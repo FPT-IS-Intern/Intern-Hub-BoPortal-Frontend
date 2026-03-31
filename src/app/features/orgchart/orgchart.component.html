@@ -685,6 +685,83 @@
 </app-modal-popup>
 
 <app-modal-popup
+  [isVisible]="moveModalVisible()"
+  (isVisibleChange)="closeMoveNodeModal()"
+  (cancel)="closeMoveNodeModal()"
+  (save)="saveMoveNode()"
+  [title]="moveModalTitle()"
+  [cancelText]="'orgchart.actions.cancel' | translate"
+  [saveText]="'orgchart.modal.moveSave' | translate"
+  [okDisabled]="saving() || !formManagerId()"
+  maxWidth="760px">
+  <div class="assign-modal-body">
+    <app-shared-search
+      [value]="managerSearchTerm()"
+      [placeholder]="'orgchart.modal.moveSearchPlaceholder' | translate"
+      [debounceMs]="300"
+      width="100%"
+      (valueChange)="onManagerSearchChange($event)">
+    </app-shared-search>
+
+    <div class="assign-modal-toolbar">
+      @if (selectedManagerName()) {
+        <div class="selected-manager-chip">
+          <strong>{{ 'orgchart.modal.moveSelectedSummary' | translate: { name: selectedManagerName() } }}</strong>
+        </div>
+      } @else {
+        <p class="empty-inline">{{ 'orgchart.modal.moveHelper' | translate }}</p>
+      }
+
+      @if (selectedManagerName()) {
+        <button type="button" class="text-action-btn" (click)="clearManagerSelection()">
+          {{ 'orgchart.actions.clearManager' | translate }}
+        </button>
+      }
+    </div>
+
+    <div class="assign-modal-results">
+      @if (managerSearchLoading()) {
+        <div class="assign-modal-state">
+          <p class="empty-inline">{{ 'orgchart.search.loading' | translate }}</p>
+        </div>
+      } @else if (managerSearchResults().length === 0 && !selectedManagerName()) {
+        <div class="assign-modal-state">
+          <app-no-data
+            [fullHeight]="false"
+            [title]="'orgchart.modal.moveEmptyTitle' | translate"
+            [message]="'orgchart.modal.moveEmptyMessage' | translate">
+            <span icon class="custom-icon-users"></span>
+          </app-no-data>
+        </div>
+      } @else {
+        <div class="assignable-user-grid">
+          @for (candidate of managerSearchResults(); track candidate.id) {
+            <button
+              type="button"
+              class="assignable-user-card"
+              [class.selected]="formManagerId() === candidate.id"
+              (click)="chooseManager(candidate)">
+              <div class="assignable-user-avatar">
+                @if (candidate.avatar) {
+                  <img [src]="candidate.avatar" [alt]="candidate.name">
+                } @else {
+                  <span>{{ avatarFallback(candidate.name) }}</span>
+                }
+              </div>
+
+              <div class="assignable-user-copy">
+                <strong>{{ candidate.name }}</strong>
+                <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</app-modal-popup>
+
+<app-modal-popup
   [isVisible]="rootInitModalVisible()"
   (isVisibleChange)="closeRootInitModal()"
   (cancel)="closeRootInitModal()"

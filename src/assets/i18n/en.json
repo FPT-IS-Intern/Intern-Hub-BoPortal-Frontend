@@ -92,10 +92,18 @@
       "assignSave": "Assign to node",
       "assignSaveWithCount": "Assign {{count}} users to node",
       "assignSearchPlaceholder": "Search users not assigned to any node",
-      "assignSelectedSummary": "{{count}} user(s) selected",
+      "assignSelectedSummary": "Selecting {{count}} user(s)",
       "loadingUsers": "Loading users...",
       "assignEmptyTitle": "No matching users",
-      "assignEmptyMessage": "No users available that are not assigned to any node."
+      "assignEmptyMessage": "No users available that are not assigned to any node.",
+      "moveTitle": "Select a new manager",
+      "moveTitleWithName": "Select a new manager for {{name}}",
+      "moveSave": "Update parent node",
+      "moveSearchPlaceholder": "Find a new manager",
+      "moveSelectedSummary": "Selected manager: {{name}}",
+      "moveHelper": "Select a new manager for this user.",
+      "moveEmptyTitle": "No valid parent nodes",
+      "moveEmptyMessage": "No valid parent nodes found in the org chart."
     },
     "root": {
       "emptyTitle": "No root node yet",

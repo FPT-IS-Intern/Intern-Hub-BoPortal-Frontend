@@ -230,6 +230,13 @@ export class OrgChartComponent {
       { count },
     );
   });
+  protected readonly moveModalTitle = computed(() => {
+    const targetName = this.moveTargetNodeName();
+    return this.translateService.instant(
+      targetName ? 'orgchart.modal.moveTitleWithName' : 'orgchart.modal.moveTitle',
+      { name: targetName },
+    );
+  });
 
   protected readonly selectedRootCandidateName = computed(() => {
     const selectedId = this.selectedRootCandidateId();
@@ -395,7 +402,7 @@ export class OrgChartComponent {
 
   protected async openMoveNodeFormForNode(userId: string, event?: Event): Promise<void> {
     event?.stopPropagation();
-    await this.openDrawerForm(userId, 'move-node');
+    await this.openMoveNodeModalForNode(userId);
   }
 
   protected openAssignMemberForm(): void {
@@ -500,16 +507,16 @@ export class OrgChartComponent {
   }
 
   protected async saveMoveNode(): Promise<void> {
-    const detail = this.selectedDetail();
-    if (!detail || this.saving()) {
+    const targetNodeId = this.moveTargetNodeId() ?? this.selectedDetail()?.id;
+    if (!targetNodeId || this.saving()) {
       return;
     }
 
     this.saving.set(true);
     try {
-      await firstValueFrom(this.orgChartService.updateManager(detail.id, this.formManagerId()));
-      await this.reloadTree(detail.id);
-      this.drawerMode.set('view');
+      await firstValueFrom(this.orgChartService.updateManager(targetNodeId, this.formManagerId()));
+      await this.reloadTree(targetNodeId);
+      this.closeMoveNodeModal();
       this.toastService.success(this.translateService.instant('orgchart.toast.moveSuccess'));
     } catch {
       this.toastService.error(this.translateService.instant('orgchart.toast.moveError'));
@@ -570,11 +577,7 @@ export class OrgChartComponent {
 
   protected onManagerSearchChange(value: string): void {
     this.managerSearchTerm.set(value);
-    if (!value.trim()) {
-      this.formManagerLabel.set('');
-      this.formManagerId.set(null);
-    }
-    void this.searchManagers();
+    void this.searchManagers(value);
   }
 
   protected clearManagerSelection(): void {
@@ -925,26 +928,24 @@ export class OrgChartComponent {
     }
   }
 
-  private async searchManagers(): Promise<void> {
-    const query = this.managerSearchTerm().trim();
-    if (!query) {
+  private async searchManagers(queryInput?: string): Promise<void> {
+    const targetNodeId = this.moveTargetNodeId() ?? this.selectedDetail()?.id;
+    if (!targetNodeId) {
       this.managerSearchResults.set([]);
       return;
     }
+    const query = (queryInput ?? this.managerSearchTerm()).trim();
 
     this.managerSearchLoading.set(true);
     try {
-      const response = await firstValueFrom(this.orgChartService.searchUsers(query, undefined, undefined, 1, 8));
-      const currentUserId = this.selectedDetail()?.id;
+      const response = await firstValueFrom(this.orgChartService.getParentCandidates(targetNodeId, query || undefined, 1, 8));
       this.managerSearchResults.set(
-        (response.data?.data ?? [])
-          .filter((item) => item.id !== currentUserId)
-          .map((item) => ({
-            id: item.id,
-            name: item.name,
-            title: item.title ?? undefined,
-            avatar: item.avatar ?? null,
-          })),
+        (response.data?.data ?? []).map((item) => ({
+          id: item.id,
+          name: item.name,
+          title: item.title ?? undefined,
+          avatar: item.avatar ?? null,
+        })),
       );
     } catch {
       this.managerSearchResults.set([]);
@@ -963,6 +964,30 @@ export class OrgChartComponent {
       return;
     }
     this.openMoveNodeForm();
+  }
+
+  private async openMoveNodeModalForNode(userId: string): Promise<void> {
+    const node = this.rootNode() ? this.findNode(this.rootNode()!, userId) : null;
+    this.activeNodeActionId.set(null);
+    this.expandedNodeActionId.set(null);
+    this.moveTargetNodeId.set(userId);
+    this.moveTargetNodeName.set(node?.name ?? '');
+    this.formManagerId.set(null);
+    this.formManagerLabel.set('');
+    this.managerSearchTerm.set('');
+    this.managerSearchResults.set([]);
+    this.moveModalVisible.set(true);
+    await this.searchManagers('');
+  }
+
+  protected closeMoveNodeModal(): void {
+    this.moveModalVisible.set(false);
+    this.moveTargetNodeId.set(null);
+    this.moveTargetNodeName.set('');
+    this.formManagerId.set(null);
+    this.formManagerLabel.set('');
+    this.managerSearchResults.set([]);
+    this.managerSearchTerm.set('');
   }
 
   private async searchAssignableUsers(queryInput?: string): Promise<void> {

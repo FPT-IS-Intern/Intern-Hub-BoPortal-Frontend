@@ -143,6 +143,27 @@ export class OrgChartService {
     );
   }
 
+  getParentCandidates(
+    userId: string | number,
+    query?: string,
+    page = 1,
+    limit = 10,
+  ): Observable<ResponseApi<OrgChartPageResponse<OrgChartUserLite>>> {
+    return this.apiClient.get<ResponseApi<OrgChartPageResponse<OrgChartUserLite>>>(
+      API_ENDPOINTS.orgChart.nodes,
+      {
+        headers: OrgChartService.SKIP_LOADING_HEADER,
+        params: {
+          userId,
+          ...(query ? { q: query } : {}),
+          page,
+          limit,
+        },
+        skipErrorToast: true,
+      },
+    );
+  }
+
   getPath(userId: string | number): Observable<ResponseApi<{ data: OrgChartUserLite[] }>> {
     return this.apiClient.get<ResponseApi<{ data: OrgChartUserLite[] }>>(API_ENDPOINTS.orgChart.path(userId), {
       headers: OrgChartService.SKIP_LOADING_HEADER,

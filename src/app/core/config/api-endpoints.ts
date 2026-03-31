@@ -58,6 +58,7 @@ export const API_ENDPOINTS = {
     create: withBoPortal('/orgchart/users'),
     search: withBoPortal('/orgchart/users'),
     assignableUsers: withBoPortal('/orgchart/assignable-users'),
+    nodes: withBoPortal('/orgchart/nodes'),
     byId: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),
     update: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),
     delete: (userId: string | number) => withBoPortal(`/orgchart/users/${userId}`),

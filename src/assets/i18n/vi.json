@@ -92,10 +92,18 @@
       "assignSave": "Gán vào node",
       "assignSaveWithCount": "Gán {{count}} user vào node",
       "assignSearchPlaceholder": "Tìm user chưa thuộc node nào",
-      "assignSelectedSummary": "Đã chọn {{count}} user",
+      "assignSelectedSummary": "Đang chọn {{count}} người",
       "loadingUsers": "Đang tải danh sách user...",
       "assignEmptyTitle": "Chưa có user phù hợp",
-      "assignEmptyMessage": "Không tìm thấy user chưa được gán vào node nào."
+      "assignEmptyMessage": "Không tìm thấy user chưa được gán vào node nào.",
+      "moveTitle": "Chọn cấp trên mới",
+      "moveTitleWithName": "Chọn cấp trên mới cho {{name}}",
+      "moveSave": "Cập nhật node cha",
+      "moveSearchPlaceholder": "Tìm cấp trên mới",
+      "moveSelectedSummary": "Cấp trên đã chọn: {{name}}",
+      "moveHelper": "Chọn cấp trên mới cho user này.",
+      "moveEmptyTitle": "Chưa có node cha phù hợp",
+      "moveEmptyMessage": "Không tìm thấy node cha phù hợp trong sơ đồ tổ chức."
     },
     "root": {
       "emptyTitle": "Chưa có node gốc",
