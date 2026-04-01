@@ -10,30 +10,32 @@
     Role áp dụng: <b>{{ roleName || '—' }}</b>
   </div>
 
-  <div class="dialog">
-    <div class="dialog-top">
-      <div class="filter-bar">
-        <div class="filter-item">
-          <div class="label">Loại phiếu</div>
-          <app-shared-dropdown
-            width="360px"
-            placeholder="Chọn loại phiếu"
-            [options]="ticketTypeOptions()"
-            [value]="selectedTicketTypeId()"
-            (valueChange)="onTicketTypeChange($event)"
-            [maxLabelChars]="38"
-          />
-        </div>
+  <div class="ticket-approver">
+    <div class="ticket-type-row">
+      <div class="field">
+        <div class="label">Loại phiếu</div>
+        <app-shared-dropdown
+          width="100%"
+          placeholder="Chọn loại phiếu"
+          [options]="ticketTypeOptions()"
+          [value]="selectedTicketTypeId()"
+          (valueChange)="onTicketTypeChange($event)"
+          [maxLabelChars]="52"
+        />
       </div>
     </div>
 
-    <div class="dialog-grid">
-      <div class="panel">
+    <div class="content-grid">
+      <section class="panel">
         <div class="panel-title">Người duyệt hiện tại</div>
         <div class="panel-body">
+          <div class="panel-hint" *ngIf="approverUsers().length > 0">
+            Click “Gỡ” để bỏ người duyệt khỏi loại phiếu này.
+          </div>
+
           <app-no-data *ngIf="approverUsers().length === 0" />
 
-          <div class="user-list" *ngIf="approverUsers().length > 0">
+          <div class="list-scroll" *ngIf="approverUsers().length > 0">
             <div class="user-row" *ngFor="let u of approverUsers()">
               <div class="user-avatar">
                 <img *ngIf="u.avatarUrl; else initials" [src]="u.avatarUrl" alt="" />
@@ -49,27 +51,33 @@
                 </div>
               </div>
               <div class="user-actions">
-                <button type="button" class="danger" (click)="removeApprover(u)">Gỡ</button>
+                <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="panel">
+      <section class="panel">
         <div class="panel-title">Thêm người duyệt</div>
         <div class="panel-body">
-          <div class="search-row">
+          <div class="search-bar">
             <app-shared-search
               [placeholder]="'Tìm theo tên hoặc email'"
               [value]="keyword()"
               (valueChange)="onKeywordChange($event)"
               (search)="searchCandidates()"
             />
-            <button type="button" class="primary" (click)="searchCandidates()">Tìm</button>
+            <button type="button" class="btn-primary-custom btn-small" (click)="searchCandidates()">
+              Tìm
+            </button>
           </div>
 
-          <div class="user-list" *ngIf="candidates().length > 0">
+          <div class="panel-hint" *ngIf="!keyword()">
+            Nhập từ khóa để tìm người dùng và thêm vào danh sách người duyệt.
+          </div>
+
+          <div class="list-scroll" *ngIf="candidates().length > 0">
             <div class="user-row" *ngFor="let u of candidates()">
               <div class="user-avatar">
                 <img *ngIf="u.avatarUrl; else initials2" [src]="u.avatarUrl" alt="" />
@@ -85,14 +93,14 @@
                 </div>
               </div>
               <div class="user-actions">
-                <button type="button" class="primary" (click)="addApprover(u)">Thêm</button>
+                <button type="button" class="btn-primary-custom btn-small" (click)="addApprover(u)">Thêm</button>
               </div>
             </div>
           </div>
 
           <app-no-data *ngIf="candidates().length === 0 && keyword()" />
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </app-modal-popup>

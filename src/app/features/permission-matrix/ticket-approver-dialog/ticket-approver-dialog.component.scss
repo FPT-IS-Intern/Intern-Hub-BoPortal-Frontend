@@ -1,51 +1,33 @@
-.dialog {
+.ticket-approver-role b {
+  color: var(--app-color-text-900);
+}
+
+.ticket-approver {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-.dialog-top {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.filter-bar {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-item {
+.ticket-type-row .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.ticket-approver-role b {
-  color: var(--app-color-text-900);
-}
 .label {
   font-size: 12px;
   font-weight: 700;
   color: var(--neutral-color-800);
 }
 
-
-.dialog-note {
-  font-size: 13px;
-  color: var(--neutral-color-700);
-}
-
-.dialog-grid {
+.content-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
 @media (max-width: 900px) {
-  .dialog-grid {
+  .content-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -69,21 +51,29 @@
   padding: 12px;
 }
 
-.search-row {
+.panel-hint {
+  font-size: 12px;
+  color: var(--neutral-color-600);
+  margin-bottom: 10px;
+}
+
+.search-bar {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.search-row app-shared-search {
+.search-bar app-shared-search {
   flex: 1;
 }
 
-.user-list {
+.list-scroll {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 12px;
+  max-height: 360px;
+  overflow: auto;
+  padding-right: 2px;
 }
 
 .user-row {
@@ -145,21 +135,11 @@
   gap: 8px;
 }
 
-button.primary,
-button.danger {
-  border: 0;
+.btn-small {
+  height: 34px;
+  padding: 0 14px;
   border-radius: 10px;
-  padding: 8px 12px;
   font-weight: 700;
-  cursor: pointer;
+  font-size: 13px;
 }
 
-button.primary {
-  background: var(--brand-500);
-  color: var(--neutral-color-0);
-}
-
-button.danger {
-  background: var(--utility-50);
-  color: var(--utility-700);
-}
