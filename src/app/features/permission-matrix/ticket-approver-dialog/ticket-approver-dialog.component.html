@@ -9,20 +9,6 @@
   <div modalHeaderRight class="ticket-approver-role">Role áp dụng: <b>{{ roleName || '—' }}</b></div>
 
   <div class="ticket-approver">
-    <div class="ticket-type-row">
-      <div class="field">
-        <div class="label">Loại phiếu</div>
-        <app-shared-dropdown
-          width="100%"
-          placeholder="Chọn loại phiếu"
-          [options]="ticketTypeOptions()"
-          [value]="selectedTicketTypeId()"
-          (valueChange)="onTicketTypeChange($event)"
-          [maxLabelChars]="52"
-        />
-      </div>
-    </div>
-
     <div class="content-grid">
       <section class="panel">
         <div class="panel-body">
@@ -59,14 +45,15 @@
                 </div>
                 <div class="user-info">
                   <div class="user-name">{{ u.fullName || '—' }}</div>
-                  <div class="user-meta">
-                    {{ u.email || '' }}
-                    <span *ngIf="u.role">· {{ u.role }}</span>
-                  </div>
+                <div class="user-meta">
+                  {{ u.email || '' }}
+                  <span *ngIf="u.role">· {{ u.role }}</span>
+                  <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
                 </div>
-                <div class="user-actions">
-                  <button type="button" class="btn-primary-custom btn-small" (click)="addApprover(u)">Thêm</button>
-                </div>
+              </div>
+              <div class="user-actions">
+                <button type="button" class="btn-primary-custom btn-small" (click)="addApprover(u)">Thêm</button>
+              </div>
               </div>
             </div>
 
@@ -110,14 +97,15 @@
                 </div>
                 <div class="user-info">
                   <div class="user-name">{{ u.fullName || '—' }}</div>
-                  <div class="user-meta">
-                    {{ u.email || '' }}
-                    <span *ngIf="u.role">· {{ u.role }}</span>
-                  </div>
-                </div>
-                <div class="user-actions">
-                  <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
-                </div>
+              <div class="user-meta">
+                {{ u.email || '' }}
+                <span *ngIf="u.role">· {{ u.role }}</span>
+                <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
+            </div>
               </div>
             </div>
           </div>

@@ -8,18 +8,6 @@
   gap: 14px;
 }
 
-.ticket-type-row .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--neutral-color-800);
-}
-
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
@@ -195,6 +183,21 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.badge {
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--neutral-color-200);
+  background: var(--neutral-color-10);
+  color: var(--neutral-color-800);
+  font-weight: 700;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .user-actions {
