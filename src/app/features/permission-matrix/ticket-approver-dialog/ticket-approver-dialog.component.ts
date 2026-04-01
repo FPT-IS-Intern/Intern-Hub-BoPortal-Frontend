@@ -118,12 +118,20 @@ export class TicketApproverDialogComponent {
     })
       .pipe(
         switchMap(({ ids1, ids2 }) => {
-          const level1 = new Set(ids1.data ?? []);
-          const level2 = new Set(ids2.data ?? []);
+          const level1Raw = ids1.data ?? [];
+          const level2Raw = ids2.data ?? [];
+          const level1 = new Set(level1Raw);
+          const level2 = new Set(level2Raw);
           this.level1ApproverIds.set(level1);
           this.level2ApproverIds.set(level2);
 
-          const ids = this.levelSignal() === 2 ? Array.from(level2) : Array.from(level1);
+          // Split current list by exact level:
+          // - level 2 popup: only level 2 users
+          // - level 1 popup: only level 1 users (exclude users already in level 2)
+          const ids =
+            this.levelSignal() === 2
+              ? level2Raw
+              : level1Raw.filter((id) => !level2.has(id));
           if (ids.length === 0) return of([]);
           return forkJoin(ids.map((id) => this.userService.getUserById(id)));
         }),
@@ -190,6 +198,14 @@ export class TicketApproverDialogComponent {
     const q = this.keyword().trim();
     const excludeSet = this.levelSignal() === 2 ? this.level2ApproverIds() : this.level1ApproverIds();
 
+    // Safety: only allow search within the currently selected role in permission matrix.
+    if (!this.canFilterByRole()) {
+      this.candidates.set([]);
+      this.placeholderCandidates.set([]);
+      this.candidatesLoading.set(false);
+      return;
+    }
+
     // Prefer local filter on default placeholder data to avoid unnecessary API calls.
     if (q) {
       const norm = q.toLowerCase();
@@ -210,26 +226,13 @@ export class TicketApproverDialogComponent {
     const requestWithRole: UserFilterRequest = {
       keyword: q || undefined,
       sysStatuses: ['ACTIVE'],
-      roles: this.canFilterByRole() ? [this.roleName] : undefined,
-    };
-    const requestNoRole: UserFilterRequest = {
-      keyword: q || undefined,
-      sysStatuses: ['ACTIVE'],
+      roles: [this.roleName],
     };
 
     this.userService
       .filterUsers(requestWithRole, 1, 10, true)
       .pipe(
-        switchMap((res) => {
-          const firstItems = res.data?.items ?? [];
-          if (firstItems.length > 0 || !this.canFilterByRole()) {
-            return of(firstItems);
-          }
-          // Role filter can be stale/non-standard -> fallback to generic search.
-          return this.userService.filterUsers(requestNoRole, 1, 10, true).pipe(
-            switchMap((fallbackRes) => of(fallbackRes.data?.items ?? [])),
-          );
-        }),
+        switchMap((res) => of(res.data?.items ?? [])),
         finalize(() => this.candidatesLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
