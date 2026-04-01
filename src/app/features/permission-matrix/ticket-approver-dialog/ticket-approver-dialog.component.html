@@ -71,10 +71,6 @@
             />
           </div>
 
-          <div class="panel-hint" *ngIf="!keyword()">
-            Nhập từ khóa để tìm người dùng và thêm vào danh sách người duyệt.
-          </div>
-
           <div class="list-scroll" *ngIf="candidates().length > 0">
             <div class="user-row" *ngFor="let u of candidates()">
               <div class="user-avatar">
@@ -96,7 +92,7 @@
             </div>
           </div>
 
-          <app-no-data *ngIf="candidates().length === 0 && keyword()" />
+          <app-no-data *ngIf="candidates().length === 0 && !candidatesLoading()" />
         </div>
       </section>
     </div>

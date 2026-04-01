@@ -170,6 +170,12 @@ export class TicketApproverDialogComponent {
               sysStatus: d.status,
             })) as UserListItem[];
           this.approverUsers.set(list);
+
+          // Refresh candidate list after assigned approvers change.
+          const q = this.keyword().trim();
+          if (q || this.canFilterByRole()) {
+            this.searchCandidates();
+          }
         },
         error: (err) => {
           console.error(err);
@@ -188,7 +194,8 @@ export class TicketApproverDialogComponent {
     }
 
     const q = this.keyword().trim();
-    if (!q) {
+    // If we can't filter by role and user doesn't provide keyword, avoid fetching a huge list.
+    if (!q && !this.canFilterByRole()) {
       this.candidates.set([]);
       return;
     }
@@ -196,7 +203,7 @@ export class TicketApproverDialogComponent {
     this.candidatesLoading.set(true);
 
     const request: UserFilterRequest = {
-      keyword: q,
+      keyword: q || undefined,
       sysStatuses: ['ACTIVE'],
       roles: this.canFilterByRole() ? [this.roleName] : undefined,
     };
@@ -270,4 +277,3 @@ export class TicketApproverDialogComponent {
       });
   }
 }
-
