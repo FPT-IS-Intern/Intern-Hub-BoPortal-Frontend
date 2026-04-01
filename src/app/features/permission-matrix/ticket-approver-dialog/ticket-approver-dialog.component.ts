@@ -17,7 +17,11 @@ import { finalize, forkJoin, of, switchMap } from 'rxjs';
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
-import { DropdownOption, DropdownValue, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
+import {
+  DropdownOption,
+  DropdownValue,
+  SharedDropdownComponent,
+} from '@/components/shared-dropdown/shared-dropdown.component';
 import { LoadingService } from '@/services/common/loading.service';
 import { ToastService } from '@/services/common/toast.service';
 import { TicketApproverConfigService, TicketTypeItem } from '@/services/api/ticket-approver-config.service';
@@ -50,6 +54,7 @@ export class TicketApproverDialogComponent {
 
   protected readonly isVisible = signal(false);
   protected readonly keyword = signal('');
+
   protected readonly ticketTypes = signal<TicketTypeItem[]>([]);
   protected readonly selectedTicketTypeId = signal<string>('');
   protected readonly ticketTypeOptions = computed<DropdownOption[]>(() =>
@@ -59,6 +64,14 @@ export class TicketApproverDialogComponent {
       description: t.description ?? undefined,
     })),
   );
+
+  // Used to decide whether we can apply role filter for /users/search.
+  protected readonly userMetaRoles = signal<string[]>([]);
+  protected readonly canFilterByRole = computed(() => {
+    const name = (this.roleName || '').trim();
+    if (!name) return false;
+    return this.userMetaRoles().includes(name);
+  });
 
   protected readonly approverIds = signal<Set<string>>(new Set());
   protected readonly approverUsers = signal<UserListItem[]>([]);
@@ -89,27 +102,32 @@ export class TicketApproverDialogComponent {
 
   reload(): void {
     this.loadingService.show();
-    this.ticketService
-      .getTicketTypes()
+    forkJoin({
+      types: this.ticketService.getTicketTypes(),
+      meta: this.userService.getMetaOptions(),
+    })
       .pipe(
         finalize(() => this.loadingService.hide()),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (res) => {
-          const types = res.data ?? [];
-          this.ticketTypes.set(types);
+        next: ({ types, meta }) => {
+          const typesData = types.data ?? [];
+          const metaRoles = meta.data?.roles ?? [];
+          this.userMetaRoles.set(metaRoles);
+          this.ticketTypes.set(typesData);
 
           const current = this.selectedTicketTypeId();
           const nextId =
-            current && types.some((t) => t.ticketTypeId === current) ? current : types[0]?.ticketTypeId ?? '';
+            current && typesData.some((t) => t.ticketTypeId === current) ? current : typesData[0]?.ticketTypeId ?? '';
           this.selectedTicketTypeId.set(nextId);
           this.loadApprovers();
         },
         error: (err) => {
           console.error(err);
-          this.toastService.error('Không thể tải danh sách loại phiếu');
+          this.toastService.error('Không thể tải dữ liệu cấu hình');
           this.ticketTypes.set([]);
+          this.userMetaRoles.set([]);
           this.selectedTicketTypeId.set('');
           this.approverUsers.set([]);
           this.approverIds.set(new Set());
@@ -180,7 +198,7 @@ export class TicketApproverDialogComponent {
     const request: UserFilterRequest = {
       keyword: q,
       sysStatuses: ['ACTIVE'],
-      roles: this.roleName ? [this.roleName] : undefined,
+      roles: this.canFilterByRole() ? [this.roleName] : undefined,
     };
 
     this.userService
