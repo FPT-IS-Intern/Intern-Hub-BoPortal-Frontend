@@ -21,9 +21,16 @@
   <ng-template #cell let-row let-col="col">
     @if (col.key === '__resource') {
       @if (row.resourceCode === 'duyet-phieu-yeu-cau-cap-1' || row.resourceCode === 'duyet-phieu-yeu-cau-cap-2') {
-        <button type="button" class="approver-row-link" (click)="requestTicketApproverConfig(row)">
+        <div
+          class="approver-row-clickable"
+          role="button"
+          tabindex="0"
+          (click)="requestTicketApproverConfig(row)"
+          (keydown.enter)="requestTicketApproverConfig(row)"
+          (keydown.space)="requestTicketApproverConfig(row)"
+        >
           {{ row.function }}
-        </button>
+        </div>
       } @else {
         {{ row.function }}
       }
@@ -56,4 +63,3 @@
     />
   </ng-template>
 </app-data-table>
-
