@@ -17,6 +17,7 @@ import { finalize, forkJoin, of, switchMap } from 'rxjs';
 import { ModalPopup } from '@/components/popups/modal-popup/modal-popup';
 import { SharedSearchComponent } from '@/components/shared-search/shared-search.component';
 import { NoDataComponent } from '@/components/no-data/no-data.component';
+import { DropdownOption, DropdownValue, SharedDropdownComponent } from '@/components/shared-dropdown/shared-dropdown.component';
 import { LoadingService } from '@/services/common/loading.service';
 import { ToastService } from '@/services/common/toast.service';
 import { TicketApproverConfigService, TicketTypeItem } from '@/services/api/ticket-approver-config.service';
@@ -26,7 +27,7 @@ import { UserFilterRequest, UserListItem } from '@/models/user-management.model'
 @Component({
   selector: 'app-ticket-approver-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalPopup, SharedSearchComponent, NoDataComponent],
+  imports: [CommonModule, FormsModule, ModalPopup, SharedSearchComponent, NoDataComponent, SharedDropdownComponent],
   templateUrl: './ticket-approver-dialog.component.html',
   styleUrl: './ticket-approver-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,6 +54,14 @@ export class TicketApproverDialogComponent {
   protected readonly keyword = signal('');
   protected readonly ticketTypes = signal<TicketTypeItem[]>([]);
   protected readonly selectedTicketTypeId = signal<string>('');
+  protected readonly ticketTypeOptions = computed<DropdownOption[]>(() => {
+    const types = this.ticketTypes();
+    return (types ?? []).map((t) => ({
+      label: t.typeName,
+      value: t.ticketTypeId,
+      description: t.description ?? undefined,
+    }));
+  });
 
   protected readonly approverIds = signal<Set<string>>(new Set());
   protected readonly approverUsers = signal<UserListItem[]>([]);
@@ -72,8 +81,9 @@ export class TicketApproverDialogComponent {
     this.keyword.set(value ?? '');
   }
 
-  onTicketTypeChange(value: string): void {
-    this.selectedTicketTypeId.set(value ?? '');
+  onTicketTypeChange(value: DropdownValue): void {
+    const next = value == null ? '' : String(value);
+    this.selectedTicketTypeId.set(next);
     this.keyword.set('');
     this.candidates.set([]);
     this.loadApprovers();
@@ -238,4 +248,3 @@ export class TicketApproverDialogComponent {
       });
   }
 }
-

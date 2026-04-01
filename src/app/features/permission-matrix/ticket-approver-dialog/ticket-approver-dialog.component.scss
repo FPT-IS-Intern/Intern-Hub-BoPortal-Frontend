@@ -6,23 +6,31 @@
 
 .dialog-top {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-bar {
+  display: flex;
   align-items: flex-end;
+  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.field {
+.filter-item {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.field.note {
+.filter-note {
   flex: 1;
-  min-width: 220px;
+  min-width: 240px;
+  text-align: right;
   font-size: 13px;
   color: var(--neutral-color-700);
-  padding-bottom: 6px;
+  padding-bottom: 8px;
 }
 
 .label {
@@ -31,13 +39,11 @@
   color: var(--neutral-color-800);
 }
 
-.select {
-  height: 40px;
-  border: 1px solid var(--neutral-color-200);
-  border-radius: 12px;
-  padding: 0 12px;
-  background: var(--neutral-color-0);
-  min-width: 260px;
+@media (max-width: 900px) {
+  .filter-note {
+    text-align: left;
+    padding-bottom: 0;
+  }
 }
 
 .dialog-note {

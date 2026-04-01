@@ -8,22 +8,22 @@
 >
   <div class="dialog">
     <div class="dialog-top">
-      <div class="field">
-        <div class="label">Loại phiếu</div>
-        <select
-          class="select"
-          [ngModel]="selectedTicketTypeId()"
-          (ngModelChange)="onTicketTypeChange($event)"
-        >
-          <option value="" disabled>Chọn loại phiếu</option>
-          <option *ngFor="let t of ticketTypes()" [value]="t.ticketTypeId">
-            {{ t.typeName }}
-          </option>
-        </select>
-      </div>
+      <div class="filter-bar">
+        <div class="filter-item">
+          <div class="label">Loại phiếu</div>
+          <app-shared-dropdown
+            width="360px"
+            placeholder="Chọn loại phiếu"
+            [options]="ticketTypeOptions()"
+            [value]="selectedTicketTypeId()"
+            (valueChange)="onTicketTypeChange($event)"
+            [maxLabelChars]="38"
+          />
+        </div>
 
-      <div class="field note">
-        Chỉ hiển thị người dùng thuộc role: <b>{{ roleName || '—' }}</b>
+        <div class="filter-note">
+          Role áp dụng: <b>{{ roleName || '—' }}</b>
+        </div>
       </div>
     </div>
 
@@ -96,4 +96,3 @@
     </div>
   </div>
 </app-modal-popup>
-
