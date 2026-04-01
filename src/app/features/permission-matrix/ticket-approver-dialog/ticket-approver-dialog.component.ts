@@ -69,6 +69,7 @@ export class TicketApproverDialogComponent {
   protected readonly candidatesLoading = signal(false);
 
   protected readonly title = computed(() => `Cấu hình người duyệt cấp ${this.level}`);
+  private searchTimer: number | null = null;
 
   close(): void {
     this.isVisible.set(false);
@@ -79,6 +80,7 @@ export class TicketApproverDialogComponent {
 
   onKeywordChange(value: string): void {
     this.keyword.set(value ?? '');
+    this.scheduleCandidateSearch();
   }
 
   onTicketTypeChange(value: DropdownValue): void {
@@ -171,10 +173,16 @@ export class TicketApproverDialogComponent {
       return;
     }
 
+    const q = this.keyword().trim();
+    if (!q) {
+      this.candidates.set([]);
+      return;
+    }
+
     this.candidatesLoading.set(true);
 
     const request: UserFilterRequest = {
-      keyword: this.keyword().trim() || undefined,
+      keyword: q,
       sysStatuses: ['ACTIVE'],
       roles: this.roleName ? [this.roleName] : undefined,
     };
@@ -197,6 +205,16 @@ export class TicketApproverDialogComponent {
           this.candidates.set([]);
         },
       });
+  }
+
+  private scheduleCandidateSearch(): void {
+    if (this.searchTimer != null) {
+      window.clearTimeout(this.searchTimer);
+    }
+    this.searchTimer = window.setTimeout(() => {
+      this.searchTimer = null;
+      this.searchCandidates();
+    }, 350);
   }
 
   addApprover(user: UserListItem): void {

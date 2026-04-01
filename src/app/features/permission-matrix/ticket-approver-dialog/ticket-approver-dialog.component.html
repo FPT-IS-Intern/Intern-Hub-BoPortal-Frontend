@@ -59,7 +59,6 @@
       </section>
 
       <section class="panel">
-        <div class="panel-title">Thêm người duyệt</div>
         <div class="panel-body">
           <div class="search-bar">
             <app-shared-search
@@ -68,9 +67,6 @@
               (valueChange)="onKeywordChange($event)"
               (search)="searchCandidates()"
             />
-            <button type="button" class="btn-primary-custom btn-small" (click)="searchCandidates()">
-              Tìm
-            </button>
           </div>
 
           <div class="panel-hint" *ngIf="!keyword()">
