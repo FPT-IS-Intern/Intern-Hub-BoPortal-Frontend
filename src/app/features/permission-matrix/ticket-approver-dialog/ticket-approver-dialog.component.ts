@@ -75,6 +75,7 @@ export class TicketApproverDialogComponent {
 
   protected readonly approverIds = signal<Set<string>>(new Set());
   protected readonly approverUsers = signal<UserListItem[]>([]);
+  protected readonly approversLoading = signal(false);
   protected readonly candidates = signal<UserListItem[]>([]);
   protected readonly candidatesLoading = signal(false);
 
@@ -140,9 +141,11 @@ export class TicketApproverDialogComponent {
     if (!ticketTypeId) {
       this.approverUsers.set([]);
       this.approverIds.set(new Set());
+      this.approversLoading.set(false);
       return;
     }
 
+    this.approversLoading.set(true);
     this.loadingService.show();
     this.ticketService
       .getApproverIds(ticketTypeId, this.level)
@@ -153,7 +156,10 @@ export class TicketApproverDialogComponent {
           if (ids.length === 0) return of([]);
           return forkJoin(ids.map((id) => this.userService.getUserById(id)));
         }),
-        finalize(() => this.loadingService.hide()),
+        finalize(() => {
+          this.loadingService.hide();
+          this.approversLoading.set(false);
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({

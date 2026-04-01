@@ -33,9 +33,20 @@
             Click “Gỡ” để bỏ người duyệt khỏi loại phiếu này.
           </div>
 
-          <app-no-data *ngIf="approverUsers().length === 0" />
+          <div class="skeleton-list" *ngIf="approversLoading()">
+            <div class="skeleton-row" *ngFor="let _ of [1,2,3,4,5,6]">
+              <div class="sk-avatar"></div>
+              <div class="sk-lines">
+                <div class="sk-line sk-line-1"></div>
+                <div class="sk-line sk-line-2"></div>
+              </div>
+              <div class="sk-btn"></div>
+            </div>
+          </div>
 
-          <div class="list-scroll" *ngIf="approverUsers().length > 0">
+          <app-no-data *ngIf="!approversLoading() && approverUsers().length === 0" />
+
+          <div class="list-scroll" *ngIf="!approversLoading() && approverUsers().length > 0">
             <div class="user-row" *ngFor="let u of approverUsers()">
               <div class="user-avatar">
                 <img *ngIf="u.avatarUrl; else initials" [src]="u.avatarUrl" alt="" />
@@ -71,7 +82,18 @@
             />
           </div>
 
-          <div class="list-scroll" *ngIf="candidates().length > 0">
+          <div class="skeleton-list" *ngIf="candidatesLoading()">
+            <div class="skeleton-row" *ngFor="let _ of [1,2,3,4,5,6,7,8,9,10]">
+              <div class="sk-avatar"></div>
+              <div class="sk-lines">
+                <div class="sk-line sk-line-1"></div>
+                <div class="sk-line sk-line-2"></div>
+              </div>
+              <div class="sk-btn sk-btn-primary"></div>
+            </div>
+          </div>
+
+          <div class="list-scroll" *ngIf="!candidatesLoading() && candidates().length > 0">
             <div class="user-row" *ngFor="let u of candidates()">
               <div class="user-avatar">
                 <img *ngIf="u.avatarUrl; else initials2" [src]="u.avatarUrl" alt="" />
@@ -92,7 +114,7 @@
             </div>
           </div>
 
-          <app-no-data *ngIf="candidates().length === 0 && !candidatesLoading()" />
+          <app-no-data *ngIf="!candidatesLoading() && candidates().length === 0" />
         </div>
       </section>
     </div>
