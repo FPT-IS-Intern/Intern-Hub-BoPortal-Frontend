@@ -6,9 +6,7 @@
   [maxWidth]="'900px'"
   (cancel)="close()"
 >
-  <div modalHeaderRight class="ticket-approver-role">
-    Role áp dụng: <b>{{ roleName || '—' }}</b>
-  </div>
+  <div modalHeaderRight class="ticket-approver-role">Role áp dụng: <b>{{ roleName || '—' }}</b></div>
 
   <div class="ticket-approver">
     <div class="ticket-type-row">
@@ -27,49 +25,6 @@
 
     <div class="content-grid">
       <section class="panel">
-        <div class="panel-title">Người duyệt hiện tại</div>
-        <div class="panel-body">
-          <div class="panel-hint" *ngIf="approverUsers().length > 0">
-            Click “Gỡ” để bỏ người duyệt khỏi loại phiếu này.
-          </div>
-
-          <div class="skeleton-list" *ngIf="approversLoading()">
-            <div class="skeleton-row" *ngFor="let _ of [1,2,3,4,5,6]">
-              <div class="sk-avatar"></div>
-              <div class="sk-lines">
-                <div class="sk-line sk-line-1"></div>
-                <div class="sk-line sk-line-2"></div>
-              </div>
-              <div class="sk-btn"></div>
-            </div>
-          </div>
-
-          <app-no-data *ngIf="!approversLoading() && approverUsers().length === 0" />
-
-          <div class="list-scroll" *ngIf="!approversLoading() && approverUsers().length > 0">
-            <div class="user-row" *ngFor="let u of approverUsers()">
-              <div class="user-avatar">
-                <img *ngIf="u.avatarUrl; else initials" [src]="u.avatarUrl" alt="" />
-                <ng-template #initials>
-                  <div class="initials">{{ (u.fullName || 'U').slice(0, 1) }}</div>
-                </ng-template>
-              </div>
-              <div class="user-info">
-                <div class="user-name">{{ u.fullName || '—' }}</div>
-                <div class="user-meta">
-                  {{ u.email || '' }}
-                  <span *ngIf="u.role">· {{ u.role }}</span>
-                </div>
-              </div>
-              <div class="user-actions">
-                <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
         <div class="panel-body">
           <div class="search-bar">
             <app-shared-search
@@ -83,7 +38,7 @@
           </div>
 
           <div class="skeleton-list" *ngIf="candidatesLoading()">
-            <div class="skeleton-row" *ngFor="let _ of [1,2,3,4,5,6,7,8,9,10]">
+            <div class="skeleton-row" *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
               <div class="sk-avatar"></div>
               <div class="sk-lines">
                 <div class="sk-line sk-line-1"></div>
@@ -117,6 +72,50 @@
           <app-no-data *ngIf="!candidatesLoading() && candidates().length === 0" />
         </div>
       </section>
+
+      <div class="col-divider" aria-hidden="true"></div>
+
+      <section class="panel">
+        <div class="panel-title">Người duyệt hiện tại</div>
+        <div class="panel-body">
+          <div class="panel-hint" *ngIf="approverUsers().length > 0">Click “Gỡ” để bỏ người duyệt khỏi loại phiếu này.</div>
+
+          <div class="skeleton-list" *ngIf="approversLoading()">
+            <div class="skeleton-row" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+              <div class="sk-avatar"></div>
+              <div class="sk-lines">
+                <div class="sk-line sk-line-1"></div>
+                <div class="sk-line sk-line-2"></div>
+              </div>
+              <div class="sk-btn"></div>
+            </div>
+          </div>
+
+          <app-no-data *ngIf="!approversLoading() && approverUsers().length === 0" />
+
+          <div class="list-scroll" *ngIf="!approversLoading() && approverUsers().length > 0">
+            <div class="user-row" *ngFor="let u of approverUsers()">
+              <div class="user-avatar">
+                <img *ngIf="u.avatarUrl; else initials" [src]="u.avatarUrl" alt="" />
+                <ng-template #initials>
+                  <div class="initials">{{ (u.fullName || 'U').slice(0, 1) }}</div>
+                </ng-template>
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ u.fullName || '—' }}</div>
+                <div class="user-meta">
+                  {{ u.email || '' }}
+                  <span *ngIf="u.role">· {{ u.role }}</span>
+                </div>
+              </div>
+              <div class="user-actions">
+                <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </app-modal-popup>
+
