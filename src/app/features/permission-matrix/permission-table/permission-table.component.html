@@ -20,23 +20,18 @@
 
   <ng-template #cell let-row let-col="col">
     @if (col.key === '__resource') {
-      {{ row.function }}
+      @if (row.resourceCode === 'duyet-phieu-yeu-cau-cap-1' || row.resourceCode === 'duyet-phieu-yeu-cau-cap-2') {
+        <button type="button" class="approver-row-link" (click)="requestTicketApproverConfig(row)">
+          {{ row.function }}
+        </button>
+      } @else {
+        {{ row.function }}
+      }
     } @else {
       <label class="custom-checkbox">
         <input type="checkbox" [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()" />
         <span class="checkmark"></span>
       </label>
-
-      @if (col.key === 'approve' && (row.resourceCode === 'duyet-phieu-yeu-cau-cap-1' || row.resourceCode === 'duyet-phieu-yeu-cau-cap-2')) {
-        <button
-          type="button"
-          class="approver-config-btn"
-          (click)="requestTicketApproverConfig(row)"
-          title="Cấu hình người duyệt"
-        >
-          <span class="custom-icon-settings"></span>
-        </button>
-      }
     }
   </ng-template>
 
