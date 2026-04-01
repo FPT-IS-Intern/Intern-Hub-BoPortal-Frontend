@@ -74,6 +74,30 @@
   max-height: 360px;
   overflow: auto;
   padding-right: 2px;
+
+  /* Match global scrollbar styling (see main layout). */
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--neutral-300);
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--neutral-400);
+    }
+  }
+
+  @supports (scrollbar-color: auto) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--neutral-300) transparent;
+  }
 }
 
 .user-row {
