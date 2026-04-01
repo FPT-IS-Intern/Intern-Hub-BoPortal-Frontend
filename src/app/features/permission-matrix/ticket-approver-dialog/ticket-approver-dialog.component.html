@@ -64,6 +64,8 @@
             <app-shared-search
               [placeholder]="'Tìm theo tên hoặc email'"
               [value]="keyword()"
+              [debounceMs]="400"
+              width="100%"
               (valueChange)="onKeywordChange($event)"
               (search)="searchCandidates()"
             />

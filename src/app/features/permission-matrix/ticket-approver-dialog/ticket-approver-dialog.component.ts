@@ -41,9 +41,7 @@ export class TicketApproverDialogComponent {
 
   @Input({ required: true }) set visible(v: boolean) {
     this.isVisible.set(!!v);
-    if (v) {
-      this.reload();
-    }
+    if (v) this.reload();
   }
   @Output() visibleChange = new EventEmitter<boolean>();
 
@@ -54,14 +52,13 @@ export class TicketApproverDialogComponent {
   protected readonly keyword = signal('');
   protected readonly ticketTypes = signal<TicketTypeItem[]>([]);
   protected readonly selectedTicketTypeId = signal<string>('');
-  protected readonly ticketTypeOptions = computed<DropdownOption[]>(() => {
-    const types = this.ticketTypes();
-    return (types ?? []).map((t) => ({
+  protected readonly ticketTypeOptions = computed<DropdownOption[]>(() =>
+    (this.ticketTypes() ?? []).map((t) => ({
       label: t.typeName,
       value: t.ticketTypeId,
       description: t.description ?? undefined,
-    }));
-  });
+    })),
+  );
 
   protected readonly approverIds = signal<Set<string>>(new Set());
   protected readonly approverUsers = signal<UserListItem[]>([]);
@@ -69,7 +66,6 @@ export class TicketApproverDialogComponent {
   protected readonly candidatesLoading = signal(false);
 
   protected readonly title = computed(() => `Cấu hình người duyệt cấp ${this.level}`);
-  private searchTimer: number | null = null;
 
   close(): void {
     this.isVisible.set(false);
@@ -80,7 +76,7 @@ export class TicketApproverDialogComponent {
 
   onKeywordChange(value: string): void {
     this.keyword.set(value ?? '');
-    this.scheduleCandidateSearch();
+    this.searchCandidates();
   }
 
   onTicketTypeChange(value: DropdownValue): void {
@@ -207,16 +203,6 @@ export class TicketApproverDialogComponent {
       });
   }
 
-  private scheduleCandidateSearch(): void {
-    if (this.searchTimer != null) {
-      window.clearTimeout(this.searchTimer);
-    }
-    this.searchTimer = window.setTimeout(() => {
-      this.searchTimer = null;
-      this.searchCandidates();
-    }, 350);
-  }
-
   addApprover(user: UserListItem): void {
     if (!user.userId) return;
     const ticketTypeId = this.selectedTicketTypeId();
@@ -266,3 +252,4 @@ export class TicketApproverDialogComponent {
       });
   }
 }
+
