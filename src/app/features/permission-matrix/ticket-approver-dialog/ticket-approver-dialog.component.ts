@@ -59,6 +59,7 @@ export class TicketApproverDialogComponent {
   protected readonly approversLoading = signal(false);
 
   protected readonly candidates = signal<UserListItem[]>([]);
+  protected readonly placeholderCandidates = signal<UserListItem[]>([]);
   protected readonly candidatesLoading = signal(false);
 
   protected readonly userMetaRoles = signal<string[]>([]);
@@ -75,6 +76,7 @@ export class TicketApproverDialogComponent {
     this.visibleChange.emit(false);
     this.keyword.set('');
     this.candidates.set([]);
+    this.placeholderCandidates.set([]);
   }
 
   onKeywordChange(value: string): void {
@@ -177,11 +179,34 @@ export class TicketApproverDialogComponent {
     return '';
   }
 
+  protected showLevel1CornerTag(u: UserListItem): boolean {
+    if (this.levelSignal() !== 2) return false;
+    const id = String(u.userId ?? '');
+    if (!id) return false;
+    return this.level1ApproverIds().has(id) && !this.level2ApproverIds().has(id);
+  }
+
   searchCandidates(): void {
     const q = this.keyword().trim();
+    const excludeSet = this.levelSignal() === 2 ? this.level2ApproverIds() : this.level1ApproverIds();
+
+    // Prefer local filter on default placeholder data to avoid unnecessary API calls.
+    if (q) {
+      const norm = q.toLowerCase();
+      const local = this.placeholderCandidates().filter((u) => {
+        const name = (u.fullName ?? '').toLowerCase();
+        const email = (u.email ?? '').toLowerCase();
+        const role = (u.role ?? '').toLowerCase();
+        return name.includes(norm) || email.includes(norm) || role.includes(norm);
+      });
+      if (local.length > 0) {
+        this.candidates.set(local.filter((u) => !excludeSet.has(String(u.userId))));
+        this.candidatesLoading.set(false);
+        return;
+      }
+    }
 
     this.candidatesLoading.set(true);
-    const excludeSet = this.levelSignal() === 2 ? this.level2ApproverIds() : this.level1ApproverIds();
     const requestWithRole: UserFilterRequest = {
       keyword: q || undefined,
       sysStatuses: ['ACTIVE'],
@@ -210,11 +235,19 @@ export class TicketApproverDialogComponent {
       )
       .subscribe({
         next: (items) => {
-          this.candidates.set(items.filter((u) => !excludeSet.has(String(u.userId))));
+          const filtered = items.filter((u) => !excludeSet.has(String(u.userId)));
+          this.candidates.set(filtered);
+          if (!q) {
+            // Keep latest default page as local placeholder data for fast local search.
+            this.placeholderCandidates.set(filtered);
+          }
         },
         error: (err) => {
           console.error(err);
           this.candidates.set([]);
+          if (!q) {
+            this.placeholderCandidates.set([]);
+          }
         },
       });
   }

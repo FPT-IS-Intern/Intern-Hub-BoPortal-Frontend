@@ -36,7 +36,9 @@
             </div>
 
             <div class="list-scroll" *ngIf="!candidatesLoading() && candidates().length > 0">
-              <div class="user-row" *ngFor="let u of candidates()">
+              <div class="user-row candidate-row" *ngFor="let u of candidates()">
+                <span class="level1-corner-tag" *ngIf="showLevel1CornerTag(u)">Quyền duyệt cấp 1</span>
+
                 <div class="user-avatar">
                   <img *ngIf="u.avatarUrl; else initials2" [src]="u.avatarUrl" alt="" />
                   <ng-template #initials2>
@@ -48,7 +50,6 @@
                   <div class="user-meta">
                     {{ u.email || '' }}
                     <span *ngIf="u.role">· {{ u.role }}</span>
-                    <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
                   </div>
                 </div>
                 <div class="user-actions">
@@ -112,3 +113,4 @@
     </div>
   </div>
 </app-modal-popup>
+
