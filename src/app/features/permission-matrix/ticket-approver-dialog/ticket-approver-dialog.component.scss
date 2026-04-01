@@ -13,7 +13,6 @@
 .filter-bar {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -24,27 +23,15 @@
   gap: 6px;
 }
 
-.filter-note {
-  flex: 1;
-  min-width: 240px;
-  text-align: right;
-  font-size: 13px;
-  color: var(--neutral-color-700);
-  padding-bottom: 8px;
+.ticket-approver-role b {
+  color: var(--app-color-text-900);
 }
-
 .label {
   font-size: 12px;
   font-weight: 700;
   color: var(--neutral-color-800);
 }
 
-@media (max-width: 900px) {
-  .filter-note {
-    text-align: left;
-    padding-bottom: 0;
-  }
-}
 
 .dialog-note {
   font-size: 13px;

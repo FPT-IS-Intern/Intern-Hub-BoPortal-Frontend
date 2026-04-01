@@ -6,6 +6,10 @@
   [maxWidth]="'900px'"
   (cancel)="close()"
 >
+  <div modalHeaderRight class="ticket-approver-role">
+    Role áp dụng: <b>{{ roleName || '—' }}</b>
+  </div>
+
   <div class="dialog">
     <div class="dialog-top">
       <div class="filter-bar">
@@ -19,10 +23,6 @@
             (valueChange)="onTicketTypeChange($event)"
             [maxLabelChars]="38"
           />
-        </div>
-
-        <div class="filter-note">
-          Role áp dụng: <b>{{ roleName || '—' }}</b>
         </div>
       </div>
     </div>

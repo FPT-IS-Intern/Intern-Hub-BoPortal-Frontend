@@ -29,9 +29,23 @@
 .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 12px;
     padding: 16px 24px;
     border-bottom: 1px solid var(--app-color-border-muted);
+}
+
+.modal-header-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.modal-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--app-color-text-600);
+    white-space: nowrap;
 }
 
 .modal-title {
@@ -39,6 +53,9 @@
     font-size: 16px;
     font-weight: 600;
     color: var(--app-color-text-main-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .modal-close-btn {
@@ -144,5 +161,4 @@
         transform: translateY(0) scale(1);
     }
 }
-
 
