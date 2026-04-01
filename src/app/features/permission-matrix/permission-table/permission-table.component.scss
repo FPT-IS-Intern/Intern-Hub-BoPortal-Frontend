@@ -181,29 +181,6 @@
   }
 }
 
-.approver-config-btn {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 8px;
-  color: var(--app-color-text-700, #374151);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  margin-left: 6px;
-}
-
-.approver-config-btn:hover {
-  background: var(--app-color-surface-soft, rgba(0, 0, 0, 0.04));
-}
-
-:host ::ng-deep .approver-config-btn .custom-icon-settings {
-  width: 18px;
-  height: 18px;
-}
-
 .permission-users-icon {
   width: 64px;
   height: 64px;
@@ -219,13 +196,9 @@
   color: var(--app-color-primary, #f28c18);
   font-weight: 700;
   line-height: 1.2;
+  background-image: none !important;
 }
 
 .approver-row-link:hover {
   text-decoration: underline;
-}
-
-/* Remove legacy icon button styling (no longer used) */
-.approver-config-btn {
-  display: none;
 }
