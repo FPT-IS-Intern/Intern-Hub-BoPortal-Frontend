@@ -209,7 +209,7 @@ export class TicketApproverDialogComponent {
     };
 
     this.userService
-      .filterUsers(request, 1, 24, true)
+      .filterUsers(request, 1, 10, true)
       .pipe(
         finalize(() => this.candidatesLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
