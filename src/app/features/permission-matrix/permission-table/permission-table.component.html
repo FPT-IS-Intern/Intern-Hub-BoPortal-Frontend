@@ -1,50 +1,64 @@
 <app-data-table
-    tableClass="permission-table"
-    wrapperClass="matrix-wrapper"
-    [columns]="tableColumns"
-    [rows]="pagedRows"
-    [enableRowAlt]="true"
-    [enableRowHover]="true"
-    [showPagination]="rows.length > pageSize"
-    [emptyColspan]="tableColumns.length">
-    <ng-template #header let-col>
-        @if (col.key === '__resource') {
-        {{ col.label | translate }}
-        } @else {
-        <div class="header-content">
-            <span>{{ col.label | translate }}</span>
-        </div>
-        }
-    </ng-template>
+  tableClass="permission-table"
+  wrapperClass="matrix-wrapper"
+  [columns]="tableColumns"
+  [rows]="pagedRows"
+  [enableRowAlt]="true"
+  [enableRowHover]="true"
+  [showPagination]="rows.length > pageSize"
+  [emptyColspan]="tableColumns.length"
+>
+  <ng-template #header let-col>
+    @if (col.key === '__resource') {
+      {{ col.label | translate }}
+    } @else {
+      <div class="header-content">
+        <span>{{ col.label | translate }}</span>
+      </div>
+    }
+  </ng-template>
 
-    <ng-template #cell let-row let-col="col">
-        @if (col.key === '__resource') {
-        {{ row.function }}
-        } @else {
-        <label class="custom-checkbox">
-            <input type="checkbox" [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()">
-            <span class="checkmark"></span>
-        </label>
-        }
-    </ng-template>
+  <ng-template #cell let-row let-col="col">
+    @if (col.key === '__resource') {
+      {{ row.function }}
+    } @else {
+      <label class="custom-checkbox">
+        <input type="checkbox" [(ngModel)]="row[col.key]" (ngModelChange)="onPermissionChange()" />
+        <span class="checkmark"></span>
+      </label>
 
-    <ng-template #empty>
-        <app-no-data
-            [title]="'permissionMatrix.table.empty.title' | translate"
-            [message]="'permissionMatrix.table.empty.message' | translate"
-            [fullHeight]="false">
-            <span icon class="custom-icon-shield-plus permission-users-icon"></span>
-        </app-no-data>
-    </ng-template>
+      @if (col.key === 'approve' && (row.resourceCode === 'duyet-phieu-yeu-cau-cap-1' || row.resourceCode === 'duyet-phieu-yeu-cau-cap-2')) {
+        <button
+          type="button"
+          class="approver-config-btn"
+          (click)="requestTicketApproverConfig(row)"
+          title="Cấu hình người duyệt"
+        >
+          <span class="custom-icon-settings"></span>
+        </button>
+      }
+    }
+  </ng-template>
 
-    <ng-template #pagination>
-        <app-pagination
-            [pageIndex]="pageIndex"
-            [pageSize]="pageSize"
-            [total]="total"
-            [displayRange]="displayRange"
-            (pageIndexChange)="onPageIndexChange($event)"
-            (pageSizeChange)="onPageSizeChange($event)">
-        </app-pagination>
-    </ng-template>
+  <ng-template #empty>
+    <app-no-data
+      [title]="'permissionMatrix.table.empty.title' | translate"
+      [message]="'permissionMatrix.table.empty.message' | translate"
+      [fullHeight]="false"
+    >
+      <span icon class="custom-icon-shield-plus permission-users-icon"></span>
+    </app-no-data>
+  </ng-template>
+
+  <ng-template #pagination>
+    <app-pagination
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [total]="total"
+      [displayRange]="displayRange"
+      (pageIndexChange)="onPageIndexChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
+  </ng-template>
 </app-data-table>
+

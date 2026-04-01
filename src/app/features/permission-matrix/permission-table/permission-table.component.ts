@@ -19,6 +19,7 @@ export class PermissionTableComponent {
     @Input() columns: readonly PermissionColumn[] = [];
     @Input() rows: PermissionRow[] = [];
     @Output() permissionChange = new EventEmitter<PermissionRow[]>();
+    @Output() ticketApproverConfig = new EventEmitter<{ level: 1 | 2 }>();
 
     pageIndex = 1;
     pageSize = 10;
@@ -48,7 +49,22 @@ export class PermissionTableComponent {
         this.pageIndex = 1;
     }
     onPermissionChange(): void {
+        // Keep approval permission consistent: level 2 implies level 1.
+        const level1 = this.rows.find(r => (r.resourceCode ?? '').trim() === 'duyet-phieu-yeu-cau-cap-1');
+        const level2 = this.rows.find(r => (r.resourceCode ?? '').trim() === 'duyet-phieu-yeu-cau-cap-2');
+        if (level1 && level2 && level2.approve && !level1.approve) {
+            level1.approve = true;
+        }
         this.permissionChange.emit(this.rows);
+    }
+
+    requestTicketApproverConfig(row: PermissionRow): void {
+        const code = (row.resourceCode ?? '').trim();
+        if (code === 'duyet-phieu-yeu-cau-cap-1') {
+            this.ticketApproverConfig.emit({ level: 1 });
+        } else if (code === 'duyet-phieu-yeu-cau-cap-2') {
+            this.ticketApproverConfig.emit({ level: 2 });
+        }
     }
 
     get tableColumns(): DataTableColumn[] {
@@ -74,5 +90,3 @@ export class PermissionTableComponent {
         return [base, ...permissions];
     }
 }
-
-

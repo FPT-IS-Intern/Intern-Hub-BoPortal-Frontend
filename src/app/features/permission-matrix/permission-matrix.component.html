@@ -49,7 +49,8 @@
       </div>
     } @else {
       <app-permission-table [columns]="permissionColumns" [rows]="filteredRows()"
-        (permissionChange)="permissionRows.set($event)"></app-permission-table>
+        (permissionChange)="permissionRows.set($event)"
+        (ticketApproverConfig)="openTicketApproverDialog($event)"></app-permission-table>
     }
   </div>
 
@@ -72,4 +73,11 @@
   <app-create-resource-dialog [(isVisible)]="isCreateResourceVisible"
     (save)="onCreateResource($event)"></app-create-resource-dialog>
   }
+
+  <app-ticket-approver-dialog
+    [visible]="isTicketApproverDialogVisible"
+    (visibleChange)="isTicketApproverDialogVisible = $event"
+    [level]="ticketApproverDialogLevel"
+    [roleName]="selectedRoleName()"
+  />
 </div>

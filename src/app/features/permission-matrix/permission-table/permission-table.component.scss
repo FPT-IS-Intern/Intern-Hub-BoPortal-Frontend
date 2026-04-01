@@ -105,6 +105,7 @@
 
   .cell-checkbox {
     padding: 0 !important;
+    position: relative;
 
     .custom-checkbox {
       display: flex;
@@ -178,6 +179,29 @@
       }
     }
   }
+}
+
+.approver-config-btn {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  color: var(--app-color-text-700, #374151);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.approver-config-btn:hover {
+  background: var(--app-color-surface-soft, rgba(0, 0, 0, 0.04));
+}
+
+:host ::ng-deep .approver-config-btn .custom-icon-settings {
+  width: 18px;
+  height: 18px;
 }
 
 .permission-users-icon {

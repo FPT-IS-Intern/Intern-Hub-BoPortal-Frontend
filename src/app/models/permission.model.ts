@@ -1,5 +1,6 @@
 export interface PermissionRow {
     resourceId?: string;
+    resourceCode?: string;
     function: string;
     create: boolean;
     view: boolean;
@@ -12,7 +13,7 @@ export interface PermissionRow {
 }
 
 export interface PermissionColumn {
-    key: Exclude<keyof PermissionRow, 'resourceId' | 'function'>;
+    key: Exclude<keyof PermissionRow, 'resourceId' | 'resourceCode' | 'function'>;
     label: string;
 }
 

@@ -19,6 +19,7 @@ import { ConfirmPopup } from '@/components/popups/confirm-popup/confirm-popup';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PERMISSION_COLUMNS } from '@/core/constants/permission-matrix.constants';
 import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/table-skeleton.component';
+import { TicketApproverDialogComponent } from './ticket-approver-dialog/ticket-approver-dialog.component';
 
 @Component({
   selector: 'app-permission-matrix',
@@ -35,6 +36,7 @@ import { TableSkeletonComponent } from '@/components/skeletons/table-skeleton/ta
     ConfirmPopup,
     TranslateModule,
     TableSkeletonComponent,
+    TicketApproverDialogComponent,
   ],
   templateUrl: './permission-matrix.component.html',
   styleUrl: './permission-matrix.component.scss',
@@ -56,6 +58,11 @@ export class PermissionMatrixComponent implements OnInit {
   protected readonly allResources = signal<AuthzResource[]>([]);
   protected readonly selectedRoleId = signal<string | null>(null);
   protected readonly permissionRows = signal<PermissionRow[]>([]);
+  protected readonly selectedRoleName = computed(() => {
+    const id = this.selectedRoleId();
+    if (!id) return '';
+    return this.roles().find(r => r.id === id)?.name ?? '';
+  });
 
   protected readonly isEmpty = computed(() => {
     return !this.isInitLoading() && !this.isError() && (this.roles().length === 0 || this.allResources().length === 0);
@@ -66,6 +73,9 @@ export class PermissionMatrixComponent implements OnInit {
   protected isConfirmVisible = false;
   protected isCreateRoleVisible = false;
   protected isCreateResourceVisible = false;
+
+  protected isTicketApproverDialogVisible = false;
+  protected ticketApproverDialogLevel: 1 | 2 = 1;
 
   // Filtered rows for the table
   protected readonly filteredRows = computed(() => {
@@ -244,6 +254,7 @@ export class PermissionMatrixComponent implements OnInit {
       const actions = permMap.get(String(resource.id)) ?? [];
       return {
         resourceId: resource.id,
+        resourceCode: resource.code,
         function: resource.name,
         create: actions.includes('create'),
         view: actions.includes('read'),
@@ -268,6 +279,15 @@ export class PermissionMatrixComponent implements OnInit {
       return;
     }
     this.isConfirmVisible = true;
+  }
+
+  protected openTicketApproverDialog(event: { level: 1 | 2 }): void {
+    if (!this.selectedRoleId()) {
+      this.toastService.warning('Vui lòng chọn role trước');
+      return;
+    }
+    this.ticketApproverDialogLevel = event.level;
+    this.isTicketApproverDialogVisible = true;
   }
 
   protected handleConfirmSave(): void {

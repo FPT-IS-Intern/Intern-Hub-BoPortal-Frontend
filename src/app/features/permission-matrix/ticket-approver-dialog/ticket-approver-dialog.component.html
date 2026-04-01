@@ -1,0 +1,99 @@
+<app-modal-popup
+  [isVisible]="isVisible()"
+  [title]="title()"
+  cancelText="Đóng"
+  [showFooter]="false"
+  [maxWidth]="'900px'"
+  (cancel)="close()"
+>
+  <div class="dialog">
+    <div class="dialog-top">
+      <div class="field">
+        <div class="label">Loại phiếu</div>
+        <select
+          class="select"
+          [ngModel]="selectedTicketTypeId()"
+          (ngModelChange)="onTicketTypeChange($event)"
+        >
+          <option value="" disabled>Chọn loại phiếu</option>
+          <option *ngFor="let t of ticketTypes()" [value]="t.ticketTypeId">
+            {{ t.typeName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="field note">
+        Chỉ hiển thị người dùng thuộc role: <b>{{ roleName || '—' }}</b>
+      </div>
+    </div>
+
+    <div class="dialog-grid">
+      <div class="panel">
+        <div class="panel-title">Người duyệt hiện tại</div>
+        <div class="panel-body">
+          <app-no-data *ngIf="approverUsers().length === 0" />
+
+          <div class="user-list" *ngIf="approverUsers().length > 0">
+            <div class="user-row" *ngFor="let u of approverUsers()">
+              <div class="user-avatar">
+                <img *ngIf="u.avatarUrl; else initials" [src]="u.avatarUrl" alt="" />
+                <ng-template #initials>
+                  <div class="initials">{{ (u.fullName || 'U').slice(0, 1) }}</div>
+                </ng-template>
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ u.fullName || '—' }}</div>
+                <div class="user-meta">
+                  {{ u.email || '' }}
+                  <span *ngIf="u.role">· {{ u.role }}</span>
+                </div>
+              </div>
+              <div class="user-actions">
+                <button type="button" class="danger" (click)="removeApprover(u)">Gỡ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Thêm người duyệt</div>
+        <div class="panel-body">
+          <div class="search-row">
+            <app-shared-search
+              [placeholder]="'Tìm theo tên hoặc email'"
+              [value]="keyword()"
+              (valueChange)="onKeywordChange($event)"
+              (search)="searchCandidates()"
+            />
+            <button type="button" class="primary" (click)="searchCandidates()">Tìm</button>
+          </div>
+
+          <div class="user-list" *ngIf="candidates().length > 0">
+            <div class="user-row" *ngFor="let u of candidates()">
+              <div class="user-avatar">
+                <img *ngIf="u.avatarUrl; else initials2" [src]="u.avatarUrl" alt="" />
+                <ng-template #initials2>
+                  <div class="initials">{{ (u.fullName || 'U').slice(0, 1) }}</div>
+                </ng-template>
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ u.fullName || '—' }}</div>
+                <div class="user-meta">
+                  {{ u.email || '' }}
+                  <span *ngIf="u.role">· {{ u.role }}</span>
+                </div>
+              </div>
+              <div class="user-actions">
+                <button type="button" class="primary" (click)="addApprover(u)">Thêm</button>
+              </div>
+            </div>
+          </div>
+
+          <app-no-data *ngIf="candidates().length === 0 && keyword()" />
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal-popup>
+
