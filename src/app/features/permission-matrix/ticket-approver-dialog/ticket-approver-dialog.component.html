@@ -45,15 +45,15 @@
                 </div>
                 <div class="user-info">
                   <div class="user-name">{{ u.fullName || '—' }}</div>
-                <div class="user-meta">
-                  {{ u.email || '' }}
-                  <span *ngIf="u.role">· {{ u.role }}</span>
-                  <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
+                  <div class="user-meta">
+                    {{ u.email || '' }}
+                    <span *ngIf="u.role">· {{ u.role }}</span>
+                    <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="user-actions">
-                <button type="button" class="btn-primary-custom btn-small" (click)="addApprover(u)">Thêm</button>
-              </div>
+                <div class="user-actions">
+                  <button type="button" class="btn-primary-custom btn-small" (click)="addApprover(u)">Thêm</button>
+                </div>
               </div>
             </div>
 
@@ -69,8 +69,6 @@
       <section class="panel">
         <div class="panel-title">Người duyệt hiện tại</div>
         <div class="panel-body">
-          <div class="panel-hint" *ngIf="approverUsers().length > 0">Click “Gỡ” để bỏ người duyệt khỏi loại phiếu này.</div>
-
           <div class="list-area">
             <div class="skeleton-list" *ngIf="approversLoading()">
               <div class="skeleton-row" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
@@ -97,15 +95,15 @@
                 </div>
                 <div class="user-info">
                   <div class="user-name">{{ u.fullName || '—' }}</div>
-              <div class="user-meta">
-                {{ u.email || '' }}
-                <span *ngIf="u.role">· {{ u.role }}</span>
-                <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
-              </div>
-            </div>
-            <div class="user-actions">
-              <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
-            </div>
+                  <div class="user-meta">
+                    {{ u.email || '' }}
+                    <span *ngIf="u.role">· {{ u.role }}</span>
+                    <span class="badge" *ngIf="badgeForUser(u)">{{ badgeForUser(u) }}</span>
+                  </div>
+                </div>
+                <div class="user-actions">
+                  <button type="button" class="btn-outline-custom btn-small" (click)="removeApprover(u)">Gỡ</button>
+                </div>
               </div>
             </div>
           </div>

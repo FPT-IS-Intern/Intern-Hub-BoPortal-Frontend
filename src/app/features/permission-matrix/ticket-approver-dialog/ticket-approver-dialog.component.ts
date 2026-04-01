@@ -44,10 +44,13 @@ export class TicketApproverDialogComponent {
   }
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  @Input({ required: true }) level: 1 | 2 = 1;
+  @Input({ required: true }) set level(v: 1 | 2) {
+    this.levelSignal.set(v ?? 1);
+  }
   @Input({ required: true }) roleName: string = '';
 
   protected readonly isVisible = signal(false);
+  protected readonly levelSignal = signal<1 | 2>(1);
   protected readonly keyword = signal('');
 
   protected readonly level1ApproverIds = signal<Set<string>>(new Set());
@@ -58,7 +61,6 @@ export class TicketApproverDialogComponent {
   protected readonly candidates = signal<UserListItem[]>([]);
   protected readonly candidatesLoading = signal(false);
 
-  // Used to decide whether we can apply role filter for /users/search.
   protected readonly userMetaRoles = signal<string[]>([]);
   protected readonly canFilterByRole = computed(() => {
     const name = (this.roleName || '').trim();
@@ -66,7 +68,7 @@ export class TicketApproverDialogComponent {
     return this.userMetaRoles().includes(name);
   });
 
-  protected readonly title = computed(() => `Cấu hình người duyệt cấp ${this.level}`);
+  protected readonly title = computed(() => `Cấu hình người duyệt cấp ${this.levelSignal()}`);
 
   close(): void {
     this.isVisible.set(false);
@@ -90,8 +92,7 @@ export class TicketApproverDialogComponent {
       )
       .subscribe({
         next: (meta) => {
-          const metaRoles = meta.data?.roles ?? [];
-          this.userMetaRoles.set(metaRoles);
+          this.userMetaRoles.set(meta.data?.roles ?? []);
           this.loadApprovers();
         },
         error: (err) => {
@@ -120,7 +121,7 @@ export class TicketApproverDialogComponent {
           this.level1ApproverIds.set(level1);
           this.level2ApproverIds.set(level2);
 
-          const ids = this.level === 2 ? Array.from(level2) : Array.from(level1);
+          const ids = this.levelSignal() === 2 ? Array.from(level2) : Array.from(level1);
           if (ids.length === 0) return of([]);
           return forkJoin(ids.map((id) => this.userService.getUserById(id)));
         }),
@@ -145,11 +146,8 @@ export class TicketApproverDialogComponent {
             })) as UserListItem[];
           this.approverUsers.set(list);
 
-          // Refresh candidate list after assigned approvers change.
-          const q = this.keyword().trim();
-          if (q || this.canFilterByRole()) {
-            this.searchCandidates();
-          }
+          // Always load default candidates (10 rows) when popup data is ready.
+          this.searchCandidates();
         },
         error: (err) => {
           console.error(err);
@@ -168,13 +166,12 @@ export class TicketApproverDialogComponent {
     const inL1 = this.level1ApproverIds().has(id);
     const inL2 = this.level2ApproverIds().has(id);
 
-    if (this.level === 2) {
+    if (this.levelSignal() === 2) {
       if (inL2) return 'Cấp 2';
       if (inL1) return 'Quyền duyệt cấp 1';
       return '';
     }
 
-    // Level 1 dialog shows all approvers; highlight who also has level 2.
     if (inL2) return 'Cấp 2';
     if (inL1) return 'Cấp 1';
     return '';
@@ -182,31 +179,37 @@ export class TicketApproverDialogComponent {
 
   searchCandidates(): void {
     const q = this.keyword().trim();
-    // If we can't filter by role and user doesn't provide keyword, avoid fetching a huge list.
-    if (!q && !this.canFilterByRole()) {
-      this.candidates.set([]);
-      return;
-    }
 
     this.candidatesLoading.set(true);
-
-    const request: UserFilterRequest = {
+    const excludeSet = this.levelSignal() === 2 ? this.level2ApproverIds() : this.level1ApproverIds();
+    const requestWithRole: UserFilterRequest = {
       keyword: q || undefined,
       sysStatuses: ['ACTIVE'],
       roles: this.canFilterByRole() ? [this.roleName] : undefined,
     };
-
-    const excludeSet = this.level === 2 ? this.level2ApproverIds() : this.level1ApproverIds();
+    const requestNoRole: UserFilterRequest = {
+      keyword: q || undefined,
+      sysStatuses: ['ACTIVE'],
+    };
 
     this.userService
-      .filterUsers(request, 1, 10, true)
+      .filterUsers(requestWithRole, 1, 10, true)
       .pipe(
+        switchMap((res) => {
+          const firstItems = res.data?.items ?? [];
+          if (firstItems.length > 0 || !this.canFilterByRole()) {
+            return of(firstItems);
+          }
+          // Role filter can be stale/non-standard -> fallback to generic search.
+          return this.userService.filterUsers(requestNoRole, 1, 10, true).pipe(
+            switchMap((fallbackRes) => of(fallbackRes.data?.items ?? [])),
+          );
+        }),
         finalize(() => this.candidatesLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (res) => {
-          const items = res.data?.items ?? [];
+        next: (items) => {
           this.candidates.set(items.filter((u) => !excludeSet.has(String(u.userId))));
         },
         error: (err) => {
@@ -222,7 +225,7 @@ export class TicketApproverDialogComponent {
 
     this.loadingService.show();
     this.ticketService
-      .assignApprover(userId, this.level)
+      .assignApprover(userId, this.levelSignal())
       .pipe(
         finalize(() => this.loadingService.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -245,7 +248,7 @@ export class TicketApproverDialogComponent {
 
     this.loadingService.show();
     this.ticketService
-      .removeApprover(userId, this.level)
+      .removeApprover(userId, this.levelSignal())
       .pipe(
         finalize(() => this.loadingService.hide()),
         takeUntilDestroyed(this.destroyRef),
@@ -262,4 +265,3 @@ export class TicketApproverDialogComponent {
       });
   }
 }
-

@@ -75,9 +75,9 @@
   }
 
   <app-ticket-approver-dialog
+    [level]="ticketApproverDialogLevel"
     [visible]="isTicketApproverDialogVisible"
     (visibleChange)="isTicketApproverDialogVisible = $event"
-    [level]="ticketApproverDialogLevel"
     [roleName]="selectedRoleName()"
   />
 </div>
