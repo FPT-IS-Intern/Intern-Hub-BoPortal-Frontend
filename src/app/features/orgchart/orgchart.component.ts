@@ -882,6 +882,12 @@ export class OrgChartComponent {
     }
   }
 
+  protected onNodeDoubleClick(node: UiOrgChartNode, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.toggleNode(node, event);
+  }
+
   protected returnToTreeOverview(): void {
     this.forceTreeOverview.set(true);
   }

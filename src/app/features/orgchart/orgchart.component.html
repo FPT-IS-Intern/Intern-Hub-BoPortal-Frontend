@@ -321,6 +321,7 @@
           [attr.role]="'treeitem'"
           [attr.aria-expanded]="node.hasChildren ? node.isExpanded : null"
           (click)="toggleNodeActions(node.id, $event)"
+          (dblclick)="onNodeDoubleClick(node, $event)"
           (keydown)="onNodeKeydown(node, $event)">
           <span [class]="statusDotClass(node.status)" [attr.aria-label]="statusLabel(node.status)" [title]="statusLabel(node.status)"></span>
 
