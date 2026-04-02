@@ -108,7 +108,7 @@ export class TicketApproverDialogComponent {
       });
   }
 
-  private loadApprovers(): void {
+  private loadApprovers(reloadCandidates: boolean = true): void {
     this.approversLoading.set(true);
     this.loadingService.show();
 
@@ -156,8 +156,13 @@ export class TicketApproverDialogComponent {
             })) as UserListItem[];
           this.approverUsers.set(list);
 
-          // Always load default candidates (10 rows) when popup data is ready.
-          this.searchCandidates();
+          if (reloadCandidates) {
+            // Initial open/reload: fetch candidate list from API.
+            this.searchCandidates();
+          } else {
+            // Add/remove action: keep current candidates and only re-apply exclusion locally.
+            this.reapplyCandidateExclusion();
+          }
         },
         error: (err) => {
           console.error(err);
@@ -269,7 +274,7 @@ export class TicketApproverDialogComponent {
       .subscribe({
         next: () => {
           this.toastService.success('Cập nhật thành công');
-          this.loadApprovers();
+          this.loadApprovers(false);
         },
         error: (err) => {
           console.error(err);
@@ -292,12 +297,20 @@ export class TicketApproverDialogComponent {
       .subscribe({
         next: () => {
           this.toastService.success('Cập nhật thành công');
-          this.loadApprovers();
+          this.loadApprovers(false);
         },
         error: (err) => {
           console.error(err);
           this.toastService.error('Cập nhật thất bại');
         },
       });
+  }
+
+  private reapplyCandidateExclusion(): void {
+    const excludeSet = this.levelSignal() === 2 ? this.level2ApproverIds() : this.level1ApproverIds();
+    this.candidates.set(this.candidates().filter((u) => !excludeSet.has(String(u.userId))));
+    this.placeholderCandidates.set(
+      this.placeholderCandidates().filter((u) => !excludeSet.has(String(u.userId))),
+    );
   }
 }
