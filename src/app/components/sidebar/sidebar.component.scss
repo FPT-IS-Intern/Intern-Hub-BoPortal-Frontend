@@ -40,6 +40,10 @@
     .sidebar-item {
       padding: 0 12px;
     }
+
+    .sidebar-item-content {
+      justify-content: flex-start;
+    }
   }
 
   >div {
@@ -108,7 +112,7 @@
 
     &-content {
       display: flex;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       gap: 12px;
       height: 100%;
