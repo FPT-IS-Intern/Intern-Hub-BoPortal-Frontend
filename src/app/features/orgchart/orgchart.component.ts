@@ -511,11 +511,13 @@ export class OrgChartComponent {
     if (!targetNodeId || this.saving()) {
       return;
     }
+    const selectedManagerId = this.formManagerId();
+    const movingCurrentRoot = targetNodeId === this.rootNode()?.id;
 
     this.saving.set(true);
     try {
-      await firstValueFrom(this.orgChartService.updateManager(targetNodeId, this.formManagerId()));
-      await this.reloadTree(targetNodeId);
+      await firstValueFrom(this.orgChartService.updateUserManager(targetNodeId, selectedManagerId));
+      await this.reloadTree(targetNodeId, undefined, movingCurrentRoot ? selectedManagerId ?? undefined : undefined);
       this.closeMoveNodeModal();
       this.toastService.success(this.translateService.instant('orgchart.toast.moveSuccess'));
     } catch {
@@ -935,12 +937,28 @@ export class OrgChartComponent {
       return;
     }
     const query = (queryInput ?? this.managerSearchTerm()).trim();
+    const targetIsCurrentRoot = targetNodeId === this.rootNode()?.id;
 
     this.managerSearchLoading.set(true);
     try {
-      const response = await firstValueFrom(this.orgChartService.getParentCandidates(targetNodeId, query || undefined, 1, 8));
+      const [response, unassignedResponse] = await Promise.all([
+        firstValueFrom(this.orgChartService.getParentCandidates(targetNodeId, query || undefined, 1, 8)),
+        targetIsCurrentRoot
+          ? firstValueFrom(this.orgChartService.getAssignableUsers(query || undefined, 1, 8))
+          : Promise.resolve(null),
+      ]);
+      const dedupedCandidates = new Map<string, OrgChartUserLite>();
+      for (const candidate of response.data?.data ?? []) {
+        dedupedCandidates.set(candidate.id, candidate);
+      }
+      for (const candidate of unassignedResponse?.data?.data ?? []) {
+        dedupedCandidates.set(candidate.id, candidate);
+      }
+
       this.managerSearchResults.set(
-        (response.data?.data ?? []).map((item) => ({
+        Array.from(dedupedCandidates.values())
+          .filter((item) => item.id !== targetNodeId)
+          .map((item) => ({
           id: item.id,
           name: item.name,
           title: item.title ?? undefined,
@@ -1033,9 +1051,9 @@ export class OrgChartComponent {
     }
   }
 
-  private async reloadTree(focusUserId?: string, deletedUserId?: string): Promise<void> {
+  private async reloadTree(focusUserId?: string, deletedUserId?: string, preferredRootId?: string): Promise<void> {
     const currentRootId = this.rootNode()?.id;
-    const nextRootId = currentRootId && currentRootId !== deletedUserId ? currentRootId : undefined;
+    const nextRootId = preferredRootId ?? (currentRootId && currentRootId !== deletedUserId ? currentRootId : undefined);
     await this.loadTree(nextRootId);
 
     if (focusUserId) {

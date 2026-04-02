@@ -85,6 +85,22 @@ export class OrgChartService {
     );
   }
 
+  updateUserManager(
+    userId: string | number,
+    managerId?: string | number | null,
+  ): Observable<ResponseApi<OrgChartUserDetail>> {
+    return this.apiClient.put<ResponseApi<OrgChartUserDetail>>(
+      API_ENDPOINTS.orgChart.manager(userId),
+      {},
+      {
+        params: {
+          ...(managerId != null ? { managerId } : {}),
+        },
+        skipErrorToast: true,
+      },
+    );
+  }
+
   bulkUpdateManager(
     request: OrgChartBulkManagerUpdateRequest,
   ): Observable<ResponseApi<OrgChartBulkManagerUpdateResponse>> {
