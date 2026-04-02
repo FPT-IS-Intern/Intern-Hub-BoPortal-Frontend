@@ -813,6 +813,7 @@
       "phone": "Phone number",
       "role": "Role",
       "position": "Position",
+      "mentor": "Mentor",
       "department": "Department",
       "status": "Status",
       

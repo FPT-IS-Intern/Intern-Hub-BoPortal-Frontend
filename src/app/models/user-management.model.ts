@@ -35,6 +35,15 @@ export interface UserDetail {
   status?: UserSystemStatus;
   loginStatus?: UserLoginStatus;
   department?: string;
+  mentorId?: string | number;
+  mentorName?: string;
+  mentor?: {
+    id?: string | number;
+    userId?: string | number;
+    fullName?: string;
+    name?: string;
+    email?: string;
+  } | null;
   activated?: boolean;
   deleted?: boolean;
 }

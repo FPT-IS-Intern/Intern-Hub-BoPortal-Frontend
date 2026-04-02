@@ -206,6 +206,7 @@ export class UserManagementComponent {
       'users.detail.role',
       'users.detail.position',
       'users.detail.department',
+      'users.detail.mentor',
     ]) as Record<string, string>;
     return [
       { label: labels['users.detail.userId'], value: `${user.userId}` },
@@ -214,6 +215,7 @@ export class UserManagementComponent {
       { label: labels['users.detail.role'], value: this.safeValue(user.role) },
       { label: labels['users.detail.position'], value: this.safeValue(user.positionCode) },
       { label: labels['users.detail.department'], value: this.safeValue(user.department) },
+      { label: labels['users.detail.mentor'], value: this.safeValue(this.resolveMentorName(user)) },
     ];
   });
 
@@ -759,7 +761,54 @@ export class UserManagementComponent {
   }
 
   private normalizeUserDetail(user: UserDetail): UserDetail {
-    return { ...user, userId: this.normalizeUserId(user.userId) };
+    const rawUser = user as UserDetail & {
+      mentor_id?: string | number | null;
+      mentor_name?: string | null;
+      mentor?: {
+        id?: string | number;
+        user_id?: string | number;
+        userId?: string | number;
+        full_name?: string;
+        fullName?: string;
+        name?: string;
+        email?: string;
+      } | null;
+    };
+
+    const rawMentor = rawUser.mentor;
+    const normalizedMentor = rawMentor
+      ? {
+        id: rawMentor.id,
+        userId: rawMentor.userId ?? rawMentor.user_id,
+        fullName: rawMentor.fullName ?? rawMentor.full_name,
+        name: rawMentor.name,
+        email: rawMentor.email,
+      }
+      : null;
+
+    return {
+      ...user,
+      userId: this.normalizeUserId(user.userId),
+      mentorId: user.mentorId ?? rawUser.mentor_id ?? normalizedMentor?.userId ?? normalizedMentor?.id,
+      mentorName: user.mentorName ?? rawUser.mentor_name ?? normalizedMentor?.fullName ?? normalizedMentor?.name,
+      mentor: normalizedMentor,
+    };
+  }
+
+  private resolveMentorName(user: UserDetail): string {
+    if (user.mentorName?.trim()) {
+      return user.mentorName.trim();
+    }
+    if (user.mentor?.fullName?.trim()) {
+      return user.mentor.fullName.trim();
+    }
+    if (user.mentor?.name?.trim()) {
+      return user.mentor.name.trim();
+    }
+    if (user.mentor?.email?.trim()) {
+      return user.mentor.email.trim();
+    }
+    return '';
   }
 
   protected currentAuthStatus(): string {
@@ -858,5 +907,3 @@ export class UserManagementComponent {
     }
   }
 }
-
-
