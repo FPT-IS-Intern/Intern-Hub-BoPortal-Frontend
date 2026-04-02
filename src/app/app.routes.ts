@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'general',
+    redirectTo: 'users',
     pathMatch: 'full',
   },
   {
@@ -30,7 +30,7 @@ export const routes: Routes = [
       // Kept for backward compatibility (login currently navigates to /main).
       {
         path: 'main',
-        redirectTo: 'general',
+        redirectTo: 'users',
         pathMatch: 'full',
       },
       {
