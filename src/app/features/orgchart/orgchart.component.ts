@@ -33,6 +33,8 @@ interface UiOrgChartNode extends OrgChartUserNode {
   childrenLoaded: boolean;
   isHighlighted: boolean;
   depth: number;
+  subtreeWidthUnits: number;
+  centerUnits: number;
 }
 
 interface FocusPathItem {
@@ -787,12 +789,12 @@ export class OrgChartComponent {
     }
 
     if (node.isExpanded) {
-      this.rootNode.update((root) => (root ? this.patchNode(root, node.id, (target) => ({ ...target, isExpanded: false })) : root));
+      this.updateRootTree((root) => this.patchNode(root, node.id, (target) => ({ ...target, isExpanded: false })));
       return;
     }
 
     if (node.childrenLoaded) {
-      this.rootNode.update((root) => (root ? this.patchNode(root, node.id, (target) => ({ ...target, isExpanded: true })) : root));
+      this.updateRootTree((root) => this.patchNode(root, node.id, (target) => ({ ...target, isExpanded: true })));
       return;
     }
 
@@ -861,6 +863,18 @@ export class OrgChartComponent {
 
   protected statusDotClass(status: OrgChartStatus): string {
     return `status-dot ${status}`;
+  }
+
+  protected branchWidth(node: UiOrgChartNode): string {
+    return `calc(var(--orgchart-node-width) * ${Math.max(node.subtreeWidthUnits, 1)})`;
+  }
+
+  protected branchAnchor(node: UiOrgChartNode): string {
+    return `calc(var(--orgchart-node-width) * ${node.centerUnits})`;
+  }
+
+  protected nodeOffset(node: UiOrgChartNode): string {
+    return `calc(var(--orgchart-node-width) * ${Math.max(node.centerUnits - 0.5, 0)})`;
   }
 
   protected onNodeKeydown(node: UiOrgChartNode, event: KeyboardEvent): void {
@@ -934,7 +948,7 @@ export class OrgChartComponent {
 
     try {
       const response = await firstValueFrom(this.orgChartService.getTree(effectiveRootId, 2));
-      this.rootNode.set(response.data ? this.toUiNode(response.data, 0, true) : null);
+      this.rootNode.set(response.data ? this.withLayout(this.toUiNode(response.data, 0, true)) : null);
       if (response.data?.id) {
         this.selectedRootId.set(response.data.id);
       }
@@ -951,7 +965,7 @@ export class OrgChartComponent {
   }
 
   private async loadChildren(nodeId: string): Promise<void> {
-    this.rootNode.update((root) => (root ? this.patchNode(root, nodeId, (target) => ({ ...target, isLoading: true })) : root));
+    this.updateRootTree((root) => this.patchNode(root, nodeId, (target) => ({ ...target, isLoading: true })));
 
     try {
       const response = await firstValueFrom(this.orgChartService.getSubordinates(nodeId, 1, 50));
@@ -960,20 +974,16 @@ export class OrgChartComponent {
       const nextDepth = currentNode ? currentNode.depth + 1 : 1;
       const children = (payload?.data ?? []).map((child) => this.toUiNode(child, nextDepth, false));
 
-      this.rootNode.update((root) => (
-        root
-          ? this.patchNode(root, nodeId, (target) => ({
-            ...target,
-            children,
-            isExpanded: true,
-            isLoading: false,
-            childrenLoaded: true,
-          }))
-          : root
-      ));
+      this.updateRootTree((root) => this.patchNode(root, nodeId, (target) => ({
+        ...target,
+        children,
+        isExpanded: true,
+        isLoading: false,
+        childrenLoaded: true,
+      })));
       this.collectDepartments();
     } catch {
-      this.rootNode.update((root) => (root ? this.patchNode(root, nodeId, (target) => ({ ...target, isLoading: false })) : root));
+      this.updateRootTree((root) => this.patchNode(root, nodeId, (target) => ({ ...target, isLoading: false })));
       this.toastService.error(this.translateService.instant('orgchart.toast.expandError'));
     }
   }
@@ -1253,7 +1263,7 @@ export class OrgChartComponent {
       if (!currentNode.childrenLoaded || !currentNode.children.some((child) => child.id === nextId)) {
         await this.loadChildren(currentId);
       } else if (!currentNode.isExpanded) {
-        this.rootNode.update((root) => (root ? this.patchNode(root, currentId, (target) => ({ ...target, isExpanded: true })) : root));
+        this.updateRootTree((root) => this.patchNode(root, currentId, (target) => ({ ...target, isExpanded: true })));
       }
     }
 
@@ -1263,12 +1273,12 @@ export class OrgChartComponent {
 
   private highlightNode(userId: string): void {
     this.highlightedNodeId.set(userId);
-    this.rootNode.update((root) => (root ? this.mapTree(root, (node) => ({ ...node, isHighlighted: node.id === userId })) : root));
+    this.updateRootTree((root) => this.mapTree(root, (node) => ({ ...node, isHighlighted: node.id === userId })));
   }
 
   private clearHighlights(): void {
     this.highlightedNodeId.set(null);
-    this.rootNode.update((root) => (root ? this.mapTree(root, (node) => ({ ...node, isHighlighted: false })) : root));
+    this.updateRootTree((root) => this.mapTree(root, (node) => ({ ...node, isHighlighted: false })));
   }
 
   private scrollToNode(userId: string): void {
@@ -1324,7 +1334,45 @@ export class OrgChartComponent {
       isLoading: false,
       childrenLoaded: children.length > 0,
       isHighlighted: false,
+      subtreeWidthUnits: 1,
+      centerUnits: 0.5,
     };
+  }
+
+  private withLayout(node: UiOrgChartNode): UiOrgChartNode {
+    const children = node.children.map((child) => this.withLayout(child));
+    if (!node.isExpanded || children.length === 0) {
+      return {
+        ...node,
+        children,
+        subtreeWidthUnits: 1,
+        centerUnits: 0.5,
+      };
+    }
+
+    let offset = 0;
+    let firstCenter = 0;
+    let lastCenter = 0;
+
+    children.forEach((child, index) => {
+      const childCenter = offset + child.centerUnits;
+      if (index === 0) {
+        firstCenter = childCenter;
+      }
+      lastCenter = childCenter;
+      offset += child.subtreeWidthUnits;
+    });
+
+    return {
+      ...node,
+      children,
+      subtreeWidthUnits: Math.max(offset, 1),
+      centerUnits: (firstCenter + lastCenter) / 2,
+    };
+  }
+
+  private updateRootTree(updater: (root: UiOrgChartNode) => UiOrgChartNode): void {
+    this.rootNode.update((root) => (root ? this.withLayout(updater(root)) : root));
   }
 
   private mapTree(node: UiOrgChartNode, mapper: (node: UiOrgChartNode) => UiOrgChartNode): UiOrgChartNode {

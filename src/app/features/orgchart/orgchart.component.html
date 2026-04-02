@@ -291,9 +291,13 @@
 </div>
 
 <ng-template #branchTemplate let-node>
-  <div class="tree-branch" [class.root-branch]="node.depth === 0">
+  <div
+    class="tree-branch"
+    [class.root-branch]="node.depth === 0"
+    [style.width]="branchWidth(node)"
+    [style.--orgchart-branch-anchor]="branchAnchor(node)">
     <div class="node-row">
-      <div class="node-shell" [attr.data-node-id]="node.id">
+      <div class="node-shell" [style.margin-left]="nodeOffset(node)" [attr.data-node-id]="node.id">
         @if (node.hasChildren) {
           <button
             type="button"
@@ -404,7 +408,11 @@
       <div class="children-wrap">
         <div class="children-track">
           @for (child of node.children; track child.id) {
-            <div class="child-item">
+            <div
+              class="child-item"
+              [style.width]="branchWidth(child)"
+              [style.flex-basis]="branchWidth(child)"
+              [style.--orgchart-child-anchor]="branchAnchor(child)">
               <ng-container *ngTemplateOutlet="branchTemplate; context: { $implicit: child }"></ng-container>
             </div>
           }
