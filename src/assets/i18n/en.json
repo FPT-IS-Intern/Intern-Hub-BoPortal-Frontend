@@ -103,7 +103,16 @@
       "moveSelectedSummary": "Selected manager: {{name}}",
       "moveHelper": "Select a new manager for this user.",
       "moveEmptyTitle": "No valid parent nodes",
-      "moveEmptyMessage": "No valid parent nodes found in the org chart."
+      "moveEmptyMessage": "No valid parent nodes found in the org chart.",
+      "removeTitle": "Delete node and reassign",
+      "removeTitleWithName": "Delete node {{name}} and reassign",
+      "removeSave": "Delete node",
+      "removeSearchPlaceholder": "Find replacement mentor",
+      "removeSelectedSummary": "Replacement mentor: {{name}}",
+      "removeHelper": "Select a replacement mentor before deleting this node.",
+      "removeLeafHelper": "This node has no direct subordinates, so it can be deleted immediately after confirmation.",
+      "removeEmptyTitle": "No replacement mentors",
+      "removeEmptyMessage": "Only parent nodes (with children) and users outside the tree can be selected."
     },
     "root": {
       "emptyTitle": "No root node yet",

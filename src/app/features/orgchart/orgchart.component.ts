@@ -67,6 +67,8 @@ export class OrgChartComponent {
   private static readonly DEEP_FOCUS_DEPTH = 6;
   private static readonly ASSIGNABLE_USER_LIMIT = 10;
   private static readonly ROOT_CANDIDATE_LIMIT = 10;
+  private static readonly DELETE_REASSIGN_CANDIDATE_LIMIT = 20;
+  private static readonly SUBORDINATE_PAGE_LIMIT = 100;
 
   private readonly orgChartService = inject(OrgChartService);
   private readonly userManagementService = inject(UserManagementService);
@@ -131,7 +133,12 @@ export class OrgChartComponent {
   protected readonly moveTargetNodeId = signal<string | null>(null);
   protected readonly moveTargetNodeName = signal('');
   protected readonly removeConfirmVisible = signal(false);
-  protected readonly removeConfirmTarget = signal<{ id: string; name: string; closeDetail: boolean } | null>(null);
+  protected readonly removeConfirmTarget = signal<{ id: string; name: string; closeDetail: boolean; requiresReplacement: boolean } | null>(null);
+  protected readonly removeReplacementSearchTerm = signal('');
+  protected readonly removeReplacementSearchLoading = signal(false);
+  protected readonly removeReplacementResults = signal<OrgChartUserLite[]>([]);
+  protected readonly removeReplacementId = signal<string | null>(null);
+  protected readonly removeReplacementLabel = signal('');
   protected readonly rootInitModalVisible = signal(false);
   protected readonly rootCandidateSearchTerm = signal('');
   protected readonly rootCandidateSearchLoading = signal(false);
@@ -248,6 +255,24 @@ export class OrgChartComponent {
     }
     return this.rootCandidateResults().find((item) => item.id === selectedId)?.name ?? '';
   });
+  protected readonly selectedRemoveReplacementName = computed(() => {
+    const selectedId = this.removeReplacementId();
+    if (!selectedId) {
+      return '';
+    }
+    if (this.removeReplacementLabel()) {
+      return this.removeReplacementLabel();
+    }
+    return this.removeReplacementResults().find((item) => item.id === selectedId)?.name ?? '';
+  });
+  protected readonly removeModalTitle = computed(() => {
+    const targetName = this.removeConfirmTarget()?.name;
+    return this.translateService.instant(
+      targetName ? 'orgchart.modal.removeTitleWithName' : 'orgchart.modal.removeTitle',
+      { name: targetName },
+    );
+  });
+  protected readonly removeRequiresReplacement = computed(() => this.removeConfirmTarget()?.requiresReplacement ?? false);
   protected readonly rootModalTitle = computed(() => (
     this.translateService.instant(
       this.rootSelectionRequired() ? 'orgchart.root.selectTitle' : 'orgchart.root.initTitle',
@@ -544,23 +569,59 @@ export class OrgChartComponent {
   }
 
   protected openRemoveConfirm(userId: string, userName: string, closeDetail: boolean): void {
-    this.removeConfirmTarget.set({ id: userId, name: userName, closeDetail });
+    const targetNode = this.rootNode() ? this.findNode(this.rootNode()!, userId) : null;
+    const detail = this.selectedDetail();
+    const hasChildrenFromNode = targetNode?.hasChildren ?? false;
+    const hasChildrenFromDetail = detail?.id === userId ? detail.hasChildren : false;
+    const requiresReplacement =
+      userId === this.rootNode()?.id || hasChildrenFromNode || hasChildrenFromDetail;
+
+    this.removeConfirmTarget.set({ id: userId, name: userName, closeDetail, requiresReplacement });
+    this.removeReplacementSearchTerm.set('');
+    this.removeReplacementResults.set([]);
+    this.removeReplacementId.set(null);
+    this.removeReplacementLabel.set('');
     this.removeConfirmVisible.set(true);
+    if (requiresReplacement) {
+      void this.searchRemoveReplacementCandidates('');
+    }
   }
 
   protected closeRemoveConfirm(): void {
     this.removeConfirmVisible.set(false);
     this.removeConfirmTarget.set(null);
+    this.removeReplacementSearchTerm.set('');
+    this.removeReplacementResults.set([]);
+    this.removeReplacementId.set(null);
+    this.removeReplacementLabel.set('');
   }
 
   protected async confirmRemoveFromNode(): Promise<void> {
     const target = this.removeConfirmTarget();
+    const replacementId = this.removeReplacementId();
     if (!target || this.saving()) {
+      return;
+    }
+    if (target.requiresReplacement && !replacementId) {
       return;
     }
 
     this.saving.set(true);
     try {
+      if (target.requiresReplacement) {
+        const subordinateIds = await this.loadAllDirectSubordinateIds(target.id);
+        if (subordinateIds.length > 0) {
+          await firstValueFrom(this.orgChartService.bulkUpdateManager({
+            userIds: subordinateIds,
+            managerId: replacementId,
+          }));
+        }
+
+        if (target.id === this.rootNode()?.id) {
+          await firstValueFrom(this.orgChartService.updateUserManager(target.id, replacementId));
+        }
+      }
+
       await firstValueFrom(this.orgChartService.updateManager(target.id, null));
       await this.reloadTree(undefined, target.id);
       if (target.closeDetail) {
@@ -619,6 +680,16 @@ export class OrgChartComponent {
     this.formManagerLabel.set(candidate.name);
     this.managerSearchTerm.set(candidate.name);
     this.managerSearchResults.set([]);
+  }
+
+  protected onRemoveReplacementSearchChange(value: string): void {
+    this.removeReplacementSearchTerm.set(value);
+    void this.searchRemoveReplacementCandidates(value);
+  }
+
+  protected chooseRemoveReplacement(candidate: OrgChartUserLite): void {
+    this.removeReplacementId.set(candidate.id);
+    this.removeReplacementLabel.set(candidate.name);
   }
 
   protected cancelForm(): void {
@@ -971,6 +1042,88 @@ export class OrgChartComponent {
     } finally {
       this.managerSearchLoading.set(false);
     }
+  }
+
+  private async searchRemoveReplacementCandidates(queryInput?: string): Promise<void> {
+    const targetId = this.removeConfirmTarget()?.id;
+    if (!targetId) {
+      this.removeReplacementResults.set([]);
+      return;
+    }
+
+    const query = (queryInput ?? this.removeReplacementSearchTerm()).trim();
+    this.removeReplacementSearchLoading.set(true);
+    try {
+      const [parentResponse, assignableResponse] = await Promise.all([
+        firstValueFrom(
+          this.orgChartService.getParentCandidates(
+            targetId,
+            query || undefined,
+            1,
+            OrgChartComponent.DELETE_REASSIGN_CANDIDATE_LIMIT,
+          ),
+        ),
+        firstValueFrom(
+          this.orgChartService.getAssignableUsers(
+            query || undefined,
+            1,
+            OrgChartComponent.DELETE_REASSIGN_CANDIDATE_LIMIT,
+          ),
+        ),
+      ]);
+
+      const parentCandidates = parentResponse.data?.data ?? [];
+      const parentChecks = await Promise.all(
+        parentCandidates.map(async (candidate) => {
+          try {
+            const detail = await firstValueFrom(this.orgChartService.getUserDetail(candidate.id));
+            return detail.data?.hasChildren ? candidate : null;
+          } catch {
+            return null;
+          }
+        }),
+      );
+
+      const deduped = new Map<string, OrgChartUserLite>();
+      for (const candidate of parentChecks) {
+        if (candidate && candidate.id !== targetId) {
+          deduped.set(candidate.id, candidate);
+        }
+      }
+      for (const candidate of assignableResponse.data?.data ?? []) {
+        if (candidate.id !== targetId) {
+          deduped.set(candidate.id, candidate);
+        }
+      }
+
+      this.removeReplacementResults.set(Array.from(deduped.values()));
+    } catch {
+      this.removeReplacementResults.set([]);
+      this.toastService.error(this.translateService.instant('orgchart.toast.searchManagerError'));
+    } finally {
+      this.removeReplacementSearchLoading.set(false);
+    }
+  }
+
+  private async loadAllDirectSubordinateIds(userId: string): Promise<string[]> {
+    const ids: string[] = [];
+    let page = 1;
+    let totalPages = 1;
+
+    while (page <= totalPages) {
+      const response = await firstValueFrom(
+        this.orgChartService.getSubordinates(userId, page, OrgChartComponent.SUBORDINATE_PAGE_LIMIT),
+      );
+      const payload = response.data;
+      const items = payload?.data ?? [];
+      for (const item of items) {
+        ids.push(item.id);
+      }
+      totalPages = payload?.meta?.totalPages ?? 1;
+      page += 1;
+    }
+
+    return ids;
   }
 
   private async openDrawerForm(userId: string, mode: DrawerMode): Promise<void> {

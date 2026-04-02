@@ -103,7 +103,16 @@
       "moveSelectedSummary": "Cấp trên đã chọn: {{name}}",
       "moveHelper": "Chọn cấp trên mới cho user này.",
       "moveEmptyTitle": "Chưa có node cha phù hợp",
-      "moveEmptyMessage": "Không tìm thấy node cha phù hợp trong sơ đồ tổ chức."
+      "moveEmptyMessage": "Không tìm thấy node cha phù hợp trong sơ đồ tổ chức.",
+      "removeTitle": "Xóa node và gán lại",
+      "removeTitleWithName": "Xóa node {{name}} và gán lại",
+      "removeSave": "Xóa node",
+      "removeSearchPlaceholder": "Tìm mentor thay thế",
+      "removeSelectedSummary": "Mentor thay thế: {{name}}",
+      "removeHelper": "Bắt buộc chọn mentor thay thế trước khi xóa node này.",
+      "removeLeafHelper": "Node này không có cấp dưới trực tiếp nên có thể xóa ngay sau khi xác nhận.",
+      "removeEmptyTitle": "Không có mentor thay thế phù hợp",
+      "removeEmptyMessage": "Chỉ cho phép chọn node có con và user chưa có trong cây."
     },
     "root": {
       "emptyTitle": "Chưa có node gốc",

@@ -828,8 +828,88 @@
   </div>
 </app-modal-popup>
 
+<app-modal-popup
+  [isVisible]="removeConfirmVisible() && removeRequiresReplacement()"
+  (isVisibleChange)="closeRemoveConfirm()"
+  (cancel)="closeRemoveConfirm()"
+  (save)="confirmRemoveFromNode()"
+  [title]="removeModalTitle()"
+  [cancelText]="'orgchart.actions.cancel' | translate"
+  [saveText]="'orgchart.modal.removeSave' | translate"
+  [okDisabled]="saving() || (removeRequiresReplacement() && !removeReplacementId())"
+  maxWidth="760px">
+  <div class="assign-modal-body">
+    @if (removeRequiresReplacement()) {
+      <app-shared-search
+        [value]="removeReplacementSearchTerm()"
+        [placeholder]="'orgchart.modal.removeSearchPlaceholder' | translate"
+        [debounceMs]="300"
+        width="100%"
+        (valueChange)="onRemoveReplacementSearchChange($event)">
+      </app-shared-search>
+
+      <div class="assign-modal-toolbar">
+        @if (selectedRemoveReplacementName()) {
+          <div class="selected-manager-chip">
+            <strong>{{ 'orgchart.modal.removeSelectedSummary' | translate: { name: selectedRemoveReplacementName() } }}</strong>
+          </div>
+        } @else {
+          <p class="empty-inline">{{ 'orgchart.modal.removeHelper' | translate }}</p>
+        }
+      </div>
+
+      <div class="assign-modal-results">
+        @if (removeReplacementSearchLoading()) {
+          <div class="assign-modal-state">
+            <p class="empty-inline">{{ 'orgchart.search.loading' | translate }}</p>
+          </div>
+        } @else if (removeReplacementResults().length === 0) {
+          <div class="assign-modal-state">
+            <app-no-data
+              [fullHeight]="false"
+              [title]="'orgchart.modal.removeEmptyTitle' | translate"
+              [message]="'orgchart.modal.removeEmptyMessage' | translate">
+              <span icon class="custom-icon-users"></span>
+            </app-no-data>
+          </div>
+        } @else {
+          <div class="assignable-user-grid">
+            @for (candidate of removeReplacementResults(); track candidate.id) {
+              <button
+                type="button"
+                class="assignable-user-card"
+                [class.selected]="removeReplacementId() === candidate.id"
+                (click)="chooseRemoveReplacement(candidate)">
+                <div class="assignable-user-avatar">
+                  @if (candidate.avatar) {
+                    <img [src]="candidate.avatar" [alt]="candidate.name">
+                  } @else {
+                    <span>{{ avatarFallback(candidate.name) }}</span>
+                  }
+                </div>
+
+                <div class="assignable-user-copy">
+                  <strong>{{ candidate.name }}</strong>
+                  <span>{{ candidate.title || ('orgchart.common.noTitle' | translate) }}</span>
+                </div>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="assign-modal-state">
+        <p class="empty-inline">{{ 'orgchart.confirm.removeMessage' | translate: { name: removeConfirmTarget()?.name } }}</p>
+      </div>
+      <div class="assign-modal-state">
+        <p class="empty-inline">{{ 'orgchart.modal.removeLeafHelper' | translate }}</p>
+      </div>
+    }
+  </div>
+</app-modal-popup>
+
 <app-confirm-popup
-  [isVisible]="removeConfirmVisible()"
+  [isVisible]="removeConfirmVisible() && !removeRequiresReplacement()"
   (isVisibleChange)="closeRemoveConfirm()"
   [title]="'orgchart.confirm.removeTitle' | translate"
   [message]="'orgchart.confirm.removeMessage' | translate: { name: removeConfirmTarget()?.name }"
