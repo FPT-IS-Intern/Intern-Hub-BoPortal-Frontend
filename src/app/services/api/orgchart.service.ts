@@ -24,6 +24,7 @@ export class OrgChartService {
 
   getTree(rootId?: string | number | null, maxDepth = 2): Observable<ResponseApi<OrgChartUserNode>> {
     return this.apiClient.get<ResponseApi<OrgChartUserNode>>(API_ENDPOINTS.orgChart.root, {
+      headers: OrgChartService.SKIP_LOADING_HEADER,
       params: {
         ...(rootId != null ? { rootId } : {}),
         maxDepth,
@@ -49,24 +50,28 @@ export class OrgChartService {
 
   getUserDetail(userId: string | number): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.get<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.byId(userId), {
+      headers: OrgChartService.SKIP_LOADING_HEADER,
       skipErrorToast: true,
     });
   }
 
   initializeRoot(request: OrgChartInitializeRootRequest): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.post<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.initializeRoot, request, {
+      headers: OrgChartService.SKIP_LOADING_HEADER,
       skipErrorToast: true,
     });
   }
 
   createUser(request: OrgChartUserUpsertRequest): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.post<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.create, request, {
+      headers: OrgChartService.SKIP_LOADING_HEADER,
       skipErrorToast: true,
     });
   }
 
   updateUser(userId: string | number, request: OrgChartUserUpsertRequest): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.patch<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.update(userId), request, {
+      headers: OrgChartService.SKIP_LOADING_HEADER,
       skipErrorToast: true,
     });
   }
@@ -81,7 +86,10 @@ export class OrgChartService {
         userIds: [userId],
         managerId: managerId ?? null,
       },
-      { skipErrorToast: true },
+      {
+        headers: OrgChartService.SKIP_LOADING_HEADER,
+        skipErrorToast: true,
+      },
     );
   }
 
@@ -93,6 +101,7 @@ export class OrgChartService {
       API_ENDPOINTS.orgChart.manager(userId),
       {},
       {
+        headers: OrgChartService.SKIP_LOADING_HEADER,
         params: {
           ...(managerId != null ? { managerId } : {}),
         },
@@ -107,12 +116,16 @@ export class OrgChartService {
     return this.apiClient.put<ResponseApi<OrgChartBulkManagerUpdateResponse>>(
       API_ENDPOINTS.orgChart.bulkManager,
       request,
-      { skipErrorToast: true },
+      {
+        headers: OrgChartService.SKIP_LOADING_HEADER,
+        skipErrorToast: true,
+      },
     );
   }
 
   deleteUser(userId: string | number): Observable<ResponseApi<OrgChartUserDetail>> {
     return this.apiClient.delete<ResponseApi<OrgChartUserDetail>>(API_ENDPOINTS.orgChart.delete(userId), {
+      headers: OrgChartService.SKIP_LOADING_HEADER,
       skipErrorToast: true,
     });
   }

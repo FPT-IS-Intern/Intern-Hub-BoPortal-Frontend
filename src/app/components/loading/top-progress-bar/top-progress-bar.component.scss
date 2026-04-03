@@ -5,46 +5,39 @@
   width: 100%;
   height: 3px;
   z-index: 3000000;
-  appearance: none;
-  -webkit-appearance: none;
-  border: none;
   background: rgba(var(--app-color-primary-rgb, 225, 131, 8), 0.1);
   pointer-events: none;
   display: block;
+  overflow: hidden;
 }
 
-/* Background track */
-.top-progress-bar::-webkit-progress-bar {
-  background: transparent;
+.top-progress-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 109, 0, 0.9) 0%,
+    #ff6d00 70%,
+    rgba(255, 109, 0, 0.65) 100%
+  );
+  animation: progress-grow 1.35s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* The 'shooting star' effect for indeterminate state */
-.top-progress-bar:indeterminate {
-  background-image: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 109, 0, 0.4) 20%,
-      #ff6d00 50%,
-      rgba(255, 109, 0, 0.4) 80%,
-      transparent 100%);
-  background-size: 200% 100%;
-  animation: progress-streak 0.8s infinite ease-in-out;
-}
-
-@keyframes progress-streak {
+@keyframes progress-grow {
   0% {
-    background-position: 200% 0;
+    width: 0;
+    opacity: 0.95;
+  }
+
+  60% {
+    width: 72%;
+    opacity: 1;
   }
 
   100% {
-    background-position: -200% 0;
+    width: 92%;
+    opacity: 0.85;
   }
-}
-
-/* Fallback for browsers that don't support indeterminate styling well */
-.top-progress-bar::-webkit-progress-value {
-  background: #ff6d00;
-}
-
-.top-progress-bar::-moz-progress-bar {
-  background: #ff6d00;
 }
