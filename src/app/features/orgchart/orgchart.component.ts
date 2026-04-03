@@ -135,7 +135,13 @@ export class OrgChartComponent {
   protected readonly moveTargetNodeId = signal<string | null>(null);
   protected readonly moveTargetNodeName = signal('');
   protected readonly removeConfirmVisible = signal(false);
-  protected readonly removeConfirmTarget = signal<{ id: string; name: string; closeDetail: boolean; requiresReplacement: boolean } | null>(null);
+  protected readonly removeConfirmTarget = signal<{
+    id: string;
+    name: string;
+    closeDetail: boolean;
+    requiresReplacement: boolean;
+    parentId: string | null;
+  } | null>(null);
   protected readonly removeReplacementSearchTerm = signal('');
   protected readonly removeReplacementSearchLoading = signal(false);
   protected readonly removeReplacementResults = signal<OrgChartUserLite[]>([]);
@@ -575,10 +581,11 @@ export class OrgChartComponent {
     const detail = this.selectedDetail();
     const hasChildrenFromNode = targetNode?.hasChildren ?? false;
     const hasChildrenFromDetail = detail?.id === userId ? detail.hasChildren : false;
+    const parentId = targetNode?.managerId ?? (detail?.id === userId ? detail.manager?.id ?? null : null);
     const requiresReplacement =
       userId === this.rootNode()?.id || hasChildrenFromNode || hasChildrenFromDetail;
 
-    this.removeConfirmTarget.set({ id: userId, name: userName, closeDetail, requiresReplacement });
+    this.removeConfirmTarget.set({ id: userId, name: userName, closeDetail, requiresReplacement, parentId });
     this.removeReplacementSearchTerm.set('');
     this.removeReplacementResults.set([]);
     this.removeReplacementId.set(null);
@@ -611,6 +618,17 @@ export class OrgChartComponent {
     this.saving.set(true);
     try {
       if (target.requiresReplacement) {
+        const replacementExistsInTree = this.rootNode() ? !!this.findNode(this.rootNode()!, replacementId!) : false;
+        const removingRootNode = target.id === this.rootNode()?.id;
+
+        if (!replacementExistsInTree) {
+          if (removingRootNode) {
+            await firstValueFrom(this.orgChartService.updateUserManager(target.id, replacementId));
+          } else if (target.parentId) {
+            await firstValueFrom(this.orgChartService.updateUserManager(replacementId!, target.parentId));
+          }
+        }
+
         const subordinateIds = await this.loadAllDirectSubordinateIds(target.id);
         if (subordinateIds.length > 0) {
           await firstValueFrom(this.orgChartService.bulkUpdateManager({
@@ -619,7 +637,7 @@ export class OrgChartComponent {
           }));
         }
 
-        if (target.id === this.rootNode()?.id) {
+        if (removingRootNode && replacementExistsInTree) {
           await firstValueFrom(this.orgChartService.updateUserManager(target.id, replacementId));
         }
       }
