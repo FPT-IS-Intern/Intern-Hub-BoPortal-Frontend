@@ -608,6 +608,7 @@ export class OrgChartComponent {
   protected async confirmRemoveFromNode(): Promise<void> {
     const target = this.removeConfirmTarget();
     const replacementId = this.removeReplacementId();
+    const removingRootNode = !!target && target.id === this.rootNode()?.id;
     if (!target || this.saving()) {
       return;
     }
@@ -619,7 +620,6 @@ export class OrgChartComponent {
     try {
       if (target.requiresReplacement) {
         const replacementExistsInTree = this.rootNode() ? !!this.findNode(this.rootNode()!, replacementId!) : false;
-        const removingRootNode = target.id === this.rootNode()?.id;
 
         if (!replacementExistsInTree) {
           if (removingRootNode) {
@@ -643,7 +643,11 @@ export class OrgChartComponent {
       }
 
       await firstValueFrom(this.orgChartService.updateManager(target.id, null));
-      await this.reloadTree(undefined, target.id);
+      const nextRootId = removingRootNode ? replacementId : undefined;
+      if (nextRootId) {
+        this.selectedRootId.set(nextRootId);
+      }
+      await this.reloadTree(undefined, target.id, nextRootId ?? undefined);
       if (target.closeDetail) {
         this.closeDetail();
       }
