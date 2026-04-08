@@ -262,7 +262,16 @@ export class MenuManagementComponent {
 
   protected readonly titleValidationErrorKey = computed<string | null>(() => {
     const title = this.formState().title.trim();
-    return title ? null : 'menus.dialog.form.title.error';
+    if (!title) return 'menus.dialog.form.title.error';
+
+    const normalizedTitle = normalizeMenuTitle(title);
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const duplicated = allMenus(this.menus()).some((m) => {
+      if (excludeId && m.id === excludeId) return false;
+      return normalizeMenuTitle(m.title) === normalizedTitle;
+    });
+
+    return duplicated ? 'menus.validation.titleDuplicate' : null;
   });
 
   protected readonly titleErrorKey = computed<string | null>(() => {
@@ -278,6 +287,15 @@ export class MenuManagementComponent {
     if (!path.startsWith('/') || /\s/.test(path) || !/^\/[A-Za-z0-9\-._~/:]*$/.test(path)) {
       return 'menus.validation.pathFormat';
     }
+
+    const normalizedPath = normalizeMenuPath(path);
+    const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const duplicated = allMenus(this.menus()).some((m) => {
+      if (excludeId && m.id === excludeId) return false;
+      return normalizeMenuPath(m.path) === normalizedPath;
+    });
+
+    if (duplicated) return 'menus.validation.pathDuplicate';
     return null;
   });
 
@@ -937,4 +955,16 @@ function normalizeRoleCodes(roleCodes: string[]): string[] {
     if (trimmed) unique.add(trimmed);
   }
   return Array.from(unique);
+}
+
+function normalizeMenuTitle(title: string | undefined): string {
+  return (title || '').trim().toLowerCase();
+}
+
+function normalizeMenuPath(path: string | undefined): string {
+  const trimmed = (path || '').trim().toLowerCase();
+  if (trimmed.length > 1 && trimmed.endsWith('/')) {
+    return trimmed.slice(0, -1);
+  }
+  return trimmed;
 }

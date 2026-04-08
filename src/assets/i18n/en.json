@@ -1119,8 +1119,10 @@
     "validation": {
       "codeFormat": "Menu code must be UPPERCASE and contain only letters, numbers, underscore (e.g., USER_MANAGEMENT).",
       "codeDuplicate": "Menu code already exists.",
+      "titleDuplicate": "Menu title already exists.",
       "pathRequired": "Please enter Path.",
       "pathFormat": "Path must start with / and contain no spaces.",
+      "pathDuplicate": "Menu path already exists.",
       "iconRequired": "Please enter Icon (CSS class name).",
       "sortOrderFormat": "Sort order must be a non-negative integer.",
       "sortOrderDuplicate": "Sort order is already used in this level.",
