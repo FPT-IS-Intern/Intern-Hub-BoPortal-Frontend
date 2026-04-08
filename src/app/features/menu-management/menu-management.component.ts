@@ -99,7 +99,6 @@ export class MenuManagementComponent {
   protected readonly formMode = signal<FormMode>('create');
   protected readonly editingMenuId = signal<number | null>(null);
   protected readonly formState = signal<MenuFormState>({ ...EMPTY_FORM });
-  protected readonly originalRoleCodes = signal<string[]>([]);
   protected readonly roleCodeInputErrorKey = signal<string | null>(null);
   protected readonly formSubmitted = signal(false);
   private sortOrderTouched = false;
@@ -479,7 +478,6 @@ export class MenuManagementComponent {
       status: 'INACTIVE',
     });
     this.selectedRoleName.set('');
-    this.originalRoleCodes.set([]);
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
     this.sortOrderTouched = false;
@@ -508,7 +506,6 @@ export class MenuManagementComponent {
       sortOrder: String(item.sortOrder ?? 0),
       status: item.status || 'ACTIVE',
     });
-    this.originalRoleCodes.set(normalizedRoleCodes);
     this.selectedRoleName.set('');
     this.roleCodeInputErrorKey.set(null);
     this.formSubmitted.set(false);
@@ -631,7 +628,7 @@ export class MenuManagementComponent {
   protected saveForm(): void {
     this.formSubmitted.set(true);
     const state = this.formState();
-    const normalizedRoleCodes = this.getRoleCodesForSubmit(state);
+    const normalizedRoleCodes = normalizeRoleCodes(state.roleCodes);
 
     const firstHardErrorKey =
       this.codeValidationErrorKey() ||
@@ -710,7 +707,7 @@ export class MenuManagementComponent {
       path: state.path.trim() || undefined,
       icon: state.icon.trim() || undefined,
       parentId: state.parentId || undefined,
-      roleCodes: this.getRoleCodesForSubmit(state),
+      roleCodes: state.roleCodes.length ? normalizeRoleCodes(state.roleCodes) : undefined,
       sortOrder: desiredSortOrder,
       status: state.status,
     };
@@ -754,7 +751,7 @@ export class MenuManagementComponent {
       path: state.path.trim() || undefined,
       icon: state.icon.trim() || undefined,
       parentId: state.parentId || undefined,
-      roleCodes: this.getRoleCodesForSubmit(state),
+      roleCodes: state.roleCodes.length ? normalizeRoleCodes(state.roleCodes) : undefined,
       sortOrder: desiredSortOrder,
       status: state.status,
     };
@@ -832,17 +829,6 @@ export class MenuManagementComponent {
     const name = this.pendingDeleteMenu()?.title || this.translateService.instant('menus.table.title');
     return this.translateService.instant('menus.confirmDelete.message', { title: name });
   });
-
-  private getRoleCodesForSubmit(state: MenuFormState): string[] | undefined {
-    const normalized = normalizeRoleCodes(state.roleCodes);
-    if (this.formMode() !== 'edit') {
-      return normalized.length ? normalized : undefined;
-    }
-
-    const existing = new Set(normalizeRoleCodes(this.originalRoleCodes()));
-    const appendedOnly = normalized.filter((code) => !existing.has(code));
-    return appendedOnly.length ? appendedOnly : undefined;
-  }
 }
 
 function matchesKeyword(item: PortalMenuItem, kw: string): boolean {
