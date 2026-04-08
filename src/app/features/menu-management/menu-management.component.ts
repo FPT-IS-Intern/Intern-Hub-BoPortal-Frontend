@@ -501,7 +501,7 @@ export class MenuManagementComponent {
       path: item.path || '',
       icon: item.icon || '',
       parentId: item.parentId ?? null,
-      roleCodes: [...(item.roleCodes || [])],
+      roleCodes: normalizeRoleCodes(item.roleCodes || []),
       sortOrder: String(item.sortOrder ?? 0),
       status: item.status || 'ACTIVE',
     });
@@ -627,6 +627,7 @@ export class MenuManagementComponent {
   protected saveForm(): void {
     this.formSubmitted.set(true);
     const state = this.formState();
+    const normalizedRoleCodes = normalizeRoleCodes(state.roleCodes);
 
     const firstHardErrorKey =
       this.codeValidationErrorKey() ||
@@ -649,7 +650,7 @@ export class MenuManagementComponent {
       path: state.path.trim() || undefined,
       icon: state.icon.trim() || undefined,
       parentId: state.parentId || undefined,
-      roleCodes: state.roleCodes.length ? state.roleCodes : undefined,
+      roleCodes: normalizedRoleCodes.length ? normalizedRoleCodes : undefined,
       sortOrder: parseInt(state.sortOrder.trim() || '0', 10) || 0,
       status: state.status,
     };
@@ -912,10 +913,19 @@ function buildRequestFromMenuItem(item: PortalMenuItem): PortalMenuRequest {
     path: item.path?.trim() || undefined,
     icon: item.icon?.trim() || undefined,
     parentId: item.parentId ?? undefined,
-    roleCodes: item.roleCodes?.length ? item.roleCodes : undefined,
+    roleCodes: item.roleCodes?.length ? normalizeRoleCodes(item.roleCodes) : undefined,
     sortOrder: Number(item.sortOrder ?? 0) || 0,
     status: item.status || 'ACTIVE',
   };
 }
 
+function normalizeRoleCodes(roleCodes: string[]): string[] {
+  if (!roleCodes?.length) return [];
+  const unique = new Set<string>();
+  for (const code of roleCodes) {
+    const trimmed = (code ?? '').trim();
+    if (trimmed) unique.add(trimmed);
+  }
+  return Array.from(unique);
+}
 
