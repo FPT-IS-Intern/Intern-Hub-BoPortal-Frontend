@@ -116,9 +116,18 @@ export class MenuManagementComponent {
   protected readonly rolesLoadError = signal(false);
 
   protected readonly roleOptions = computed<DropdownOption[]>(() =>
-    (this.roles() ?? [])
-      .filter((r) => (r.name || '').trim())
-      .map((r) => ({ label: r.name, value: r.name })),
+    {
+      const selectedRoles = new Set(
+        this.formState().roleCodes
+          .map((role) => (role || '').trim())
+          .filter(Boolean),
+      );
+
+      return (this.roles() ?? [])
+        .map((role) => (role.name || '').trim())
+        .filter((roleName) => !!roleName && !selectedRoles.has(roleName))
+        .map((roleName) => ({ label: roleName, value: roleName }));
+    },
   );
   protected readonly sortOrderBlockedValue = signal<number | null>(null);
   protected readonly sortOrderBlockedMenu = signal<PortalMenuItem | null>(null);
