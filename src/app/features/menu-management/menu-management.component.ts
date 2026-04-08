@@ -290,12 +290,23 @@ export class MenuManagementComponent {
 
     const normalizedPath = normalizeMenuPath(path);
     const excludeId = this.formMode() === 'edit' ? this.editingMenuId() : null;
+    const parentId = normalizeParentId(this.formState().parentId);
     const duplicated = allMenus(this.menus()).some((m) => {
       if (excludeId && m.id === excludeId) return false;
       return normalizeMenuPath(m.path) === normalizedPath;
     });
 
     if (duplicated) return 'menus.validation.pathDuplicate';
+
+    const hasPrefixConflictInSameLevel = allMenus(this.menus()).some((m) => {
+      if (excludeId && m.id === excludeId) return false;
+      if (normalizeParentId(m.parentId) !== parentId) return false;
+      const currentPath = normalizeMenuPath(m.path);
+      if (!currentPath || !normalizedPath) return false;
+      return isPathPrefixConflict(currentPath, normalizedPath);
+    });
+
+    if (hasPrefixConflictInSameLevel) return 'menus.validation.pathPrefixConflict';
     return null;
   });
 
@@ -967,4 +978,9 @@ function normalizeMenuPath(path: string | undefined): string {
     return trimmed.slice(0, -1);
   }
   return trimmed;
+}
+
+function isPathPrefixConflict(existingPath: string, incomingPath: string): boolean {
+  if (existingPath === incomingPath) return true;
+  return incomingPath.startsWith(`${existingPath}/`) || existingPath.startsWith(`${incomingPath}/`);
 }

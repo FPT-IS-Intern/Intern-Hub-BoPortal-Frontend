@@ -1123,6 +1123,7 @@
       "pathRequired": "Please enter Path.",
       "pathFormat": "Path must start with / and contain no spaces.",
       "pathDuplicate": "Menu path already exists.",
+      "pathPrefixConflict": "Sibling paths cannot include one another (e.g. /hrm and /hrm/manage-tickets).",
       "iconRequired": "Please enter Icon (CSS class name).",
       "sortOrderFormat": "Sort order must be a non-negative integer.",
       "sortOrderDuplicate": "Sort order is already used in this level.",

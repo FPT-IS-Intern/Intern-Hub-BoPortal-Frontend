@@ -1123,6 +1123,7 @@
       "pathRequired": "Vui lòng nhập đường dẫn (Path).",
       "pathFormat": "Path phải bắt đầu bằng / và không chứa khoảng trắng.",
       "pathDuplicate": "Đường dẫn menu đã tồn tại.",
+      "pathPrefixConflict": "Path cùng cấp không được bao hàm nhau (ví dụ /hrm và /hrm/manage-tickets).",
       "iconRequired": "Vui lòng nhập Icon (tên class CSS).",
       "sortOrderFormat": "Thứ tự phải là số nguyên không âm.",
       "sortOrderDuplicate": "Thứ tự hiển thị đã được dùng trong cùng cấp.",
