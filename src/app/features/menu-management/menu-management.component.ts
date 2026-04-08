@@ -654,7 +654,7 @@ export class MenuManagementComponent {
       path: state.path.trim() || undefined,
       icon: state.icon.trim() || undefined,
       parentId: state.parentId || undefined,
-      roleCodes: normalizedRoleCodes.length ? normalizedRoleCodes : undefined,
+      roleCodes: normalizedRoleCodes?.length ? normalizedRoleCodes : undefined,
       sortOrder: parseInt(state.sortOrder.trim() || '0', 10) || 0,
       status: state.status,
     };
